@@ -18,6 +18,7 @@ import android.content.Intent;
 
 public class Main implements IXposedHookLoadPackage {
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lparam) throws Throwable {
+        if (!lparam.packageName.equals("jp.naver.line.android")) return;
         XSharedPreferences prefs = new XSharedPreferences("io.github.chipppppppppp.lime", "settings");
         prefs.reload();
         boolean deleteVoom = prefs.getBoolean("delete_voom", true);
@@ -42,7 +43,21 @@ public class Main implements IXposedHookLoadPackage {
             XposedHelpers.findAndHookMethod(hookTarget, "onAttachedToWindow", new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    ((ViewGroup) ((View) param.thisObject).getParent().getParent().getParent()).removeAllViews();
+                    ViewGroup viewGroup = ((ViewGroup) ((View) param.thisObject).getParent().getParent().getParent());
+                    viewGroup.setVisibility(View.GONE);
+                    ViewGroup.LayoutParams layoutParams = viewGroup.getLayoutParams();
+                    layoutParams.height = 0;
+                    viewGroup.setLayoutParams(layoutParams);
+                }
+            });
+            XposedHelpers.findAndHookMethod(hookTarget, "onDrawForeground", Canvas.class, new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    ViewGroup viewGroup = ((ViewGroup) ((View) param.thisObject).getParent().getParent().getParent());
+                    viewGroup.setVisibility(View.GONE);
+                    ViewGroup.LayoutParams layoutParams = viewGroup.getLayoutParams();
+                    layoutParams.height = 0;
+                    viewGroup.setLayoutParams(layoutParams);
                 }
             });
             hookTarget = lparam.classLoader.loadClass("com.linecorp.line.admolin.smartch.v2.view.SmartChannelViewLayout");
