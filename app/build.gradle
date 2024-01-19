@@ -20,6 +20,12 @@ android {
             keyAlias 'android'
             keyPassword 'android'
         }
+        release {
+            storeFile file('release.jks')
+            storePassword System.getenv('STORE_PASSWORD')
+            keyAlias System.getenv('KEY_ALIAS')
+            keyPassword System.getenv('KEY_PASSWORD')
+        }
     }
 
     buildTypes {
@@ -31,6 +37,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles += 'proguard-rules.pro'
+            if (file('release.jks').exists()) {
+                signingConfig signingConfigs.release
+            }
         }
     }
     compileOptions {

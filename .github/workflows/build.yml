@@ -9,6 +9,12 @@ on:
       - '*.gradle'
       - '*.properties'
   workflow_dispatch:
+    inputs:
+      release:
+        description: 'Release'
+        type: boolean
+        required: true
+        default: false
 
 jobs:
   build:
@@ -35,7 +41,23 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          ./gradlew assemble --no-daemon
+          if [[ "${{ inputs.release }}" == "true" ]] && [[ "${{ secrets.STORE_FILE }}" == "" ]]; then
+            echo -e "\nERROR!\n\nリリースするには､ 署名鍵を設定する必要があります｡\n\n"
+            echo "STORE_FILE: JKS形式の署名鍵をBase64でエンコードした文字列"
+            echo "STORE_PASSWORD: キーストアのパスワード"
+            echo "KEY_ALIAS: 署名のエイリアス"
+            echo "KEY_PASSWORD: 署名のパスワード"
+            exit 1
+          elif [[ "${{ inputs.release }}" == "true" ]]; then
+            echo "${{ secrets.STORE_FILE }}" | base64 -d > app/release.jks
+            export STORE_PASSWORD="${{ secrets.STORE_PASSWORD }}"
+            export KEY_ALIAS="${{ secrets.KEY_ALIAS }}"
+            export KEY_PASSWORD="${{ secrets.KEY_PASSWORD }}"
+            ./gradlew aR --no-daemon
+          else
+            ./gradlew assemble --no-daemon
+          fi
+
           {
             echo "version=$(grep versionName app/build.gradle | awk '{print $2}' | tr -d \")"
             echo "commit=$(echo ${{ github.sha }} | cut -c-7)"
@@ -47,3 +69,12 @@ jobs:
         with:
           name: ${{ env.repo }}(v${{ env.version }}@${{ env.commit }})
           path: app/build/outputs/apk/**/app-*.apk
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: github.event.inputs.release == 'true'
+        with:
+          tag_name: v${{ env.version }}
+          draft: true
+          prerelease: false
+          files: app/build/outputs/apk/release/app-release.apk
