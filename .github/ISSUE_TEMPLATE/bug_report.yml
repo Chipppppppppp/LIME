@@ -1,0 +1,29 @@
+name: 不具合の報告
+description: バグや開発側が想定していない動作などの報告
+labels: [bug]
+title: "[Bug] タイトルを入力"
+body:
+  - type: textarea
+    attributes:
+      label: 内容の詳細
+      placeholder: 具体的に記述してください
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 再現する手順
+      placeholder: 可能な限り具体的に記述してください
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: モジュールのバージョン
+      placeholder: "1.0"
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: LINEアプリのバージョン
+      placeholder: 14.0.1
+    validations:
+      required: true
