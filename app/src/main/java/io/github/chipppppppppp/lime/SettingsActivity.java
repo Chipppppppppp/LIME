@@ -1,4 +1,4 @@
-package com.example.lime;
+package io.github.chipppppppppp.lime;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
