@@ -6,6 +6,13 @@ This is an Xposed Module to clean LINE.
 
 LINE を掃除する Xposed Module です。
 
+## インストール
+
+- Magisk, [LSPosed](https://github.com/LSPosed/LSPosed) をインストール
+- Releases から apk ファイルをインストール
+  - Play プロテクトによりブロックされた場合、「詳細」から「インストールする」をタップ
+- LSPosed のモジュールから LIME に移動し、「モジュールの有効化」と LINE アプリにチェックを入れる
+
 ## 機能
 
 - Delete the VOOM icon: 画面下部の VOOM アイコンの削除
@@ -17,6 +24,6 @@ LINE を掃除する Xposed Module です。
 
 - 稀にホームタブの広告の空白が残る
 - Web View を Custom Tabs にリダイレクトした場合、下部に余白が生じる
-- LSPosed Framework でのアイコンがデフォルトになっている
+- LSPosed でのアイコンがデフォルトになっている
 
 新しいバグや修正は報告をお願いします。
