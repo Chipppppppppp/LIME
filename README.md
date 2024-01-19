@@ -1,5 +1,7 @@
 # <img src="app/src/main/ic_launcher-playstore.png" width="60px"> LIME: Adkiller for LINE
 
+[![Latest Release](https://img.shields.io/github/v/release/Chipppppppppp/ComfortableTabs?label=latest)](https://github.com/Chipppppppppp/ComfortableTabs/releases)
+
 ## 概要
 
 This is an Xposed Module to clean LINE. 
@@ -19,4 +21,4 @@ LINE を掃除する Xposed Module です。
 - Web View を Custom Tabs にリダイレクトした場合、下部に余白が生じる
 - LSPosed Framework でのアイコンがデフォルトになっている
 
-新しいバグや修正は報告をお願いします。
+新しいバグや修正を発見した場合、ぜひ報告をお願いします。
