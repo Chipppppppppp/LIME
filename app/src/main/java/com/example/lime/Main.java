@@ -18,6 +18,10 @@ import android.content.Intent;
 
 public class Main implements IXposedHookLoadPackage {
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lparam) throws Throwable {
+        if(!lparam.packageName.equals("jp.naver.line.android")) {
+            return;
+        }
+
         XSharedPreferences prefs = new XSharedPreferences("com.example.lime", "settings");
         prefs.reload();
         boolean deleteVoom = prefs.getBoolean("delete_voom", true);
