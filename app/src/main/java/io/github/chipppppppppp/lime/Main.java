@@ -33,7 +33,9 @@ public class Main implements IXposedHookLoadPackage {
             XposedHelpers.findAndHookMethod(hookTarget, "onResume", new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    ((ViewGroup) ((Activity) param.thisObject).findViewById(2131433343)).getChildAt(6).setVisibility(View.GONE);
+                    Activity activity = (Activity) param.thisObject;
+                    int resourceId = activity.getResources().getIdentifier("main_tab_container", "id", activity.getPackageName());
+                    ((ViewGroup) activity.findViewById(resourceId)).getChildAt(6).setVisibility(View.GONE);
                 }
             });
         }
