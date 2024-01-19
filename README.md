@@ -9,7 +9,7 @@ LINE を掃除する Xposed Module です。
 ## インストール
 
 - Magisk, [LSPosed](https://github.com/LSPosed/LSPosed) をインストール
-- Releases から apk ファイルをインストール
+- [Releases](https://github.com/Chipppppppppp/LIME/releases) から apk ファイルをインストール
   - Play プロテクトによりブロックされた場合、「詳細」から「インストールする」をタップ
 - LSPosed のモジュールから LIME に移動し、「モジュールの有効化」と LINE アプリにチェックを入れる
 
