@@ -1,4 +1,4 @@
-# <img src="app/src/main/ic_launcher-playstore.png" width="30px"> LIME: Adkiller for LINE
+# <img src="app/src/main/ic_launcher-playstore.png" width="60px"> LIME: Adkiller for LINE
 
 ## 概要
 
