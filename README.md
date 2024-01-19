@@ -1,12 +1,20 @@
 # <img src="app/src/main/ic_launcher-playstore.png" width="60px"> LIME: Adkiller for LINE
 
-[![Latest Release](https://img.shields.io/github/v/release/Chipppppppppp/ComfortableTabs?label=latest)](https://github.com/Chipppppppppp/ComfortableTabs/releases)
+[![Latest Release](https://img.shields.io/github/v/release/Chipppppppppp/LIME?label=latest)](https://github.com/Chipppppppppp/LIME/releases)
+[![License](https://img.shields.io/github/license/Chipppppppppp/LIME)](https://github.com/Chipppppppppp/LIME/blob/main/LICENSE)
 
 ## 概要
 
 This is an Xposed Module to clean LINE. 
 
 LINE を掃除する Xposed Module です。
+
+## インストール
+
+- Magisk, [LSPosed](https://github.com/LSPosed/LSPosed) をインストール
+- [Releases](https://github.com/Chipppppppppp/LIME/releases) から apk ファイルをインストール
+  - Play プロテクトによりブロックされた場合、「詳細」から「インストールする」をタップ
+- LSPosed のモジュールから LIME に移動し、「モジュールの有効化」と LINE アプリにチェックを入れる
 
 ## 機能
 
@@ -19,6 +27,6 @@ LINE を掃除する Xposed Module です。
 
 - 稀にホームタブの広告の空白が残る
 - Web View を Custom Tabs にリダイレクトした場合、下部に余白が生じる
-- LSPosed Framework でのアイコンがデフォルトになっている
+- LSPosed でのアイコンがデフォルトになっている
 
-新しいバグや修正を発見した場合、ぜひ報告をお願いします。
+新たなバグや修正方法を見つけた場合報告をお願いします。
