@@ -25,7 +25,6 @@ LINE を掃除する Xposed Module です。
 
 ## 既知の問題
 
-- 稀にホームタブの広告の空白が残る
 - Web View を Custom Tabs にリダイレクトした場合、下部に余白が生じる
 - LSPosed でのアイコンがデフォルトのままになっている
 
