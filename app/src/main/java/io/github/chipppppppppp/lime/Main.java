@@ -1,20 +1,22 @@
 package io.github.chipppppppppp.lime;
 
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.IXposedHookLoadPackage;
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import de.robv.android.xposed.XposedHelpers;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XSharedPreferences;
-
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Canvas;
+import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
-import android.net.Uri;
 import android.webkit.WebView;
+
 import androidx.browser.customtabs.CustomTabsIntent;
-import android.content.Intent;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
+import de.robv.android.xposed.IXposedHookLoadPackage;
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XSharedPreferences;
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class Main implements IXposedHookLoadPackage {
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lparam) throws Throwable {
@@ -33,7 +35,21 @@ public class Main implements IXposedHookLoadPackage {
             XposedHelpers.findAndHookMethod(hookTarget, "onResume", new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    ((ViewGroup) ((Activity) param.thisObject).findViewById(2131433343)).getChildAt(6).setVisibility(View.GONE);
+                    Activity activity = (Activity) param.thisObject;
+                    int resourceId = activity.getResources().getIdentifier("main_tab_container", "id", activity.getPackageName());
+                    ViewGroup vG = ((ViewGroup) activity.findViewById(resourceId));
+                    View chat = vG.getChildAt(4); // chat
+                    vG.getChildAt(5).setVisibility(View.GONE); // timeline spacer
+                    vG.getChildAt(6).setVisibility(View.GONE); // timeline
+                    View newsSpacer = vG.getChildAt(7); // news spacer
+
+                    ConstraintLayout.LayoutParams paramChat = (ConstraintLayout.LayoutParams)chat.getLayoutParams();
+                    paramChat.rightToLeft = vG.getChildAt(7).getId();
+                    chat.setLayoutParams(paramChat);
+
+                    ConstraintLayout.LayoutParams paramNewsSpacer = (ConstraintLayout.LayoutParams)newsSpacer.getLayoutParams();
+                    paramNewsSpacer.leftToRight = chat.getId();
+                    newsSpacer.setLayoutParams(paramNewsSpacer);
                 }
             });
         }
