@@ -1,0 +1,11 @@
+name: 機能の提案
+description: 新しい機能や改善点などの提案
+labels: [enhancement]
+title: "[Feature Request] タイトルを入力"
+body:
+  - type: textarea
+    attributes:
+      label: 提案内容
+      placeholder: ここに提案を入力してください
+    validations:
+      required: true

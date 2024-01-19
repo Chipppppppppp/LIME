@@ -11,22 +11,22 @@ LINE を掃除する Xposed Module です。
 
 ## インストール
 
-- Magisk, [LSPosed](https://github.com/LSPosed/LSPosed) をインストール
-- [Releases](https://github.com/Chipppppppppp/LIME/releases) から apk ファイルをインストール
-  - Play プロテクトによりブロックされた場合、「詳細」から「インストールする」をタップ
-- LSPosed のモジュールから LIME に移動し、「モジュールの有効化」と LINE アプリにチェックを入れる
+1. [**Magisk**](//github.com/topjohnwu/Magisk) 及び [**LSPosed**](//github.com/LSPosed/LSPosed) をインストール
+2. [Releases](//github.com/Chipppppppppp/LIME/releases/latest) から APK ファイルをDL＆インストール
+> [!NOTE]
+> Play プロテクトによりブロックされた場合、<kbd>詳細</kbd>から<kbd>インストールする</kbd>をタップ
+3. LSPosed のモジュールから LIME に移動し、<kbd>モジュールの有効化</kbd>と LINE アプリにチェックを入れる
 
 ## 機能
 
-- Delete the VOOM icon: 画面下部の VOOM アイコンの削除
-- Delete ads: 広告の削除
-- Redirect Web View: Web View を好きなブラウザにリダイレクト
-  - Open in your browser: ブラウザで開く
+- 画面下部の VOOM アイコンの削除
+- 広告の削除
+- WebView(アプリ内ブラウザ) を好きなブラウザにリダイレクト
 
 ## 既知の問題
 
 - 稀にホームタブの広告の空白が残る
-- Web View を Custom Tabs にリダイレクトした場合、下部に余白が生じる
+- WebView を Custom Tabs にリダイレクトした場合、下部に余白が生じる
 - LSPosed でのアイコンがデフォルトのままになっている
 
-新たなバグや修正方法を見つけた場合報告をお願いします。
+新たなバグや修正方法を見つけた場合は、[報告](//github.com/Chipppppppppp/LIME/issues/new/choose)をお願いします。
