@@ -42,8 +42,7 @@ public class Main implements IXposedHookLoadPackage {
             XposedHelpers.findAndHookMethod(hookTarget, "onAttachedToWindow", new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    View view = ((View) ((View) param.thisObject).getParent().getParent().getParent());
-                    ((ViewGroup) view.getParent()).removeView(view);
+                    ((ViewGroup) ((View) param.thisObject).getParent().getParent().getParent()).removeAllViews();
                 }
             });
             hookTarget = lparam.classLoader.loadClass("com.linecorp.line.admolin.smartch.v2.view.SmartChannelViewLayout");
