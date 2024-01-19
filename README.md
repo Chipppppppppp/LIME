@@ -1,7 +1,5 @@
 # <img src="app/src/main/ic_launcher-playstore.png" width="60px"> LIME: Adkiller for LINE
 
-[![Latest Release](https://img.shields.io/github/v/release/Chipppppppppp/LIME?label=latest)](https://github.com/Chipppppppppp/LIME/releases)
-
 ## 概要
 
 This is an Xposed Module to clean LINE. 
