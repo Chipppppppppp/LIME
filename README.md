@@ -8,6 +8,13 @@ This is an Xposed Module to clean LINE.
 
 LINE を掃除する Xposed Module です。
 
+## インストール
+
+- Magisk, [LSPosed](https://github.com/LSPosed/LSPosed) をインストール
+- [Releases](https://github.com/Chipppppppppp/LIME/releases) から apk ファイルをインストール
+  - Play プロテクトによりブロックされた場合、「詳細」から「インストールする」をタップ
+- LSPosed のモジュールから LIME に移動し、「モジュールの有効化」と LINE アプリにチェックを入れる
+
 ## 機能
 
 - Delete the VOOM icon: 画面下部の VOOM アイコンの削除
