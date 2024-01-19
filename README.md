@@ -20,13 +20,13 @@ LINE を掃除する Xposed Module です。
 
 - Delete the VOOM icon: 画面下部の VOOM アイコンの削除
 - Delete ads: 広告の削除
-- Redirect Web View: Web View を好きなブラウザにリダイレクト
-  - Open in your browser: ブラウザで開く
+- Redirect Web View to Custom Tabs: Web View を好きなブラウザにリダイレクト
+  - Open in your browser: ブラウザアプリで開く
 
 ## 既知の問題
 
 - 稀にホームタブの広告の空白が残る
 - Web View を Custom Tabs にリダイレクトした場合、下部に余白が生じる
-- LSPosed でのアイコンがデフォルトになっている
+- LSPosed でのアイコンがデフォルトのままになっている
 
 新たなバグや修正方法を見つけた場合報告をお願いします。
