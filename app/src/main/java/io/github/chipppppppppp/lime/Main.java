@@ -1,4 +1,4 @@
-package com.example.lime;
+package io.github.chipppppppppp.lime;
 
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -18,7 +18,7 @@ import android.content.Intent;
 
 public class Main implements IXposedHookLoadPackage {
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lparam) throws Throwable {
-        XSharedPreferences prefs = new XSharedPreferences("com.example.lime", "settings");
+        XSharedPreferences prefs = new XSharedPreferences("io.github.chipppppppppp.lime", "settings");
         prefs.reload();
         boolean deleteVoom = prefs.getBoolean("delete_voom", true);
         boolean deleteAds = prefs.getBoolean("delete_ads", true);
