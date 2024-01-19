@@ -1,1 +1,4 @@
 /build
+/release
+/src/androidTest
+/src/test
