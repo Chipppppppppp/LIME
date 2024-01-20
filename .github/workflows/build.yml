@@ -58,7 +58,7 @@ jobs:
         if: github.event.inputs.release == 'true'
         run: |
           if [[ "${{ secrets.STORE_FILE }}" == "" ]]; then
-            echo -e "\nERROR!\nリリースするには､ 署名鍵を設定する必要があります｡\n\n"
+            echo -e "\nERROR!\nリリースするには､ 署名鍵を設定する必要があります｡\n"
             echo "STORE_FILE: JKS形式の署名鍵をBase64でエンコードした文字列"
             echo "STORE_PASSWORD: キーストアのパスワード"
             echo "KEY_ALIAS: 署名のエイリアス"
@@ -67,7 +67,7 @@ jobs:
             exit 1
           fi
           if [[ "${{ steps.check-tag.outputs.exists }}" == "true" ]]; then
-            echo -e "\nERROR!\n既に同じタグが存在します｡\n\n"
+            echo -e "\nERROR!\n既に同じタグが存在します｡\n"
             echo "build.gradle の versionName を変更してください"
             echo ""
             exit 1
