@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.TextView;
+
 import androidx.browser.customtabs.CustomTabsIntent;
 import java.lang.reflect.*;
 
@@ -29,6 +31,20 @@ public class Main implements IXposedHookLoadPackage {
         boolean openInBrowser = prefs.getBoolean("open_in_browser", false);
 
         Class hookTarget;
+
+        hookTarget = lparam.classLoader.loadClass("android.widget.TextView");
+        XposedBridge.hookAllMethods(hookTarget, "setText", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                TextView textView = (TextView) param.thisObject;
+                XposedBridge.log(textView.getText().toString());
+                View parent = (View) textView.getParent();
+                while (parent != null) {
+                    XposedBridge.log(parent.getClass().getName());
+                    parent = (View) parent.getParent();
+                }
+            }
+        });
 
         if (deleteVoom || deleteWallet) {
             hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.activity.main.MainActivity");
