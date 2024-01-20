@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- General -->
+    <string name="dialog_positive">OK</string>
+
+    <!-- Xposed API -->
+    <string name="xposed_desc">LINE をクリーンに。</string>
+
+    <!-- SettingsActivity -->
+    <string name="switch_delete_voom">VOOM アイコンを削除</string>
+    <string name="switch_delete_ads">広告を削除</string>
+    <string name="switch_redirect_web_view">Web View をカスタムタブにリダイレクト</string>
+    <string name="switch_open_in_browser">ブラウザで開く</string>
+    <string name="module_not_enabled_title">エラー</string>
+    <string name="module_not_enabled_text">モジュールが有効化されていません！</string>
+</resources>
