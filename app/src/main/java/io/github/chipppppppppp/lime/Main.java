@@ -80,6 +80,7 @@ public class Main implements IXposedHookLoadPackage {
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     WebView webView = (WebView) param.thisObject;
                     Activity activity = (Activity) webView.getContext();
+                    if (!activity.getClass().getName().equals("jp.naver.line.android.activity.iab.InAppBrowserActivity")) return;
                     webView.setVisibility(View.GONE);
                     webView.stopLoading();
                     Uri uri = Uri.parse((String) param.args[0]);
@@ -88,7 +89,9 @@ public class Main implements IXposedHookLoadPackage {
                         intent.setData(uri);
                         activity.startActivity(intent);
                     } else {
-                        CustomTabsIntent tabsIntent = new CustomTabsIntent.Builder().setShowTitle(true).build();
+                        CustomTabsIntent tabsIntent = new CustomTabsIntent.Builder()
+                                .setShowTitle(true)
+                                .build();
                         tabsIntent.launchUrl(activity, uri);
                     }
                     activity.finish();
