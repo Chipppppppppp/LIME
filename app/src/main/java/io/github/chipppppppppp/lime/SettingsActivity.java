@@ -16,6 +16,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.settings_activity);
 
         Switch switchDeleteVoom = findViewById(R.id.switch_delete_voom);
+        Switch switchDeleteWallet = findViewById(R.id.switch_delete_wallet);
         Switch switchDeleteAds = findViewById(R.id.switch_delete_ads);
         Switch switchRedirectWebView = findViewById(R.id.switch_redirect_webview);
         Switch switchOpenInBrowser = findViewById(R.id.switch_open_in_browser);
@@ -24,12 +25,17 @@ public class SettingsActivity extends AppCompatActivity {
             SharedPreferences prefs;
             prefs = getSharedPreferences("settings", MODE_WORLD_READABLE);
             switchDeleteVoom.setChecked(prefs.getBoolean("delete_voom", true));
+            switchDeleteWallet.setChecked(prefs.getBoolean("delete_wallet", true));
             switchDeleteAds.setChecked(prefs.getBoolean("delete_ads", true));
             switchRedirectWebView.setChecked(prefs.getBoolean("redirect_webview", true));
             switchOpenInBrowser.setChecked(prefs.getBoolean("open_in_browser", false));
 
             switchDeleteVoom.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 prefs.edit().putBoolean("delete_voom", isChecked).apply();
+            });
+
+            switchDeleteWallet.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                prefs.edit().putBoolean("delete_wallet", isChecked).apply();
             });
 
             switchDeleteAds.setOnCheckedChangeListener((buttonView, isChecked) -> {
