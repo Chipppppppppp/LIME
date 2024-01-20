@@ -17,7 +17,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         Switch switchDeleteVoom = findViewById(R.id.switch_delete_voom);
         Switch switchDeleteAds = findViewById(R.id.switch_delete_ads);
-        Switch switchRedirectWebView = findViewById(R.id.switch_redirect_web_view);
+        Switch switchRedirectWebView = findViewById(R.id.switch_redirect_webview);
         Switch switchOpenInBrowser = findViewById(R.id.switch_open_in_browser);
 
         try {
@@ -25,7 +25,7 @@ public class SettingsActivity extends AppCompatActivity {
             prefs = getSharedPreferences("settings", MODE_WORLD_READABLE);
             switchDeleteVoom.setChecked(prefs.getBoolean("delete_voom", true));
             switchDeleteAds.setChecked(prefs.getBoolean("delete_ads", true));
-            switchRedirectWebView.setChecked(prefs.getBoolean("redirect_web_view", true));
+            switchRedirectWebView.setChecked(prefs.getBoolean("redirect_webview", true));
             switchOpenInBrowser.setChecked(prefs.getBoolean("open_in_browser", false));
 
             switchDeleteVoom.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -37,7 +37,7 @@ public class SettingsActivity extends AppCompatActivity {
             });
 
             switchRedirectWebView.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                prefs.edit().putBoolean("redirect_web_view", isChecked).apply();
+                prefs.edit().putBoolean("redirect_webview", isChecked).apply();
                 if (isChecked) switchOpenInBrowser.setEnabled(true);
                 else {
                     switchOpenInBrowser.setEnabled(false);

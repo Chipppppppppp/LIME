@@ -27,17 +27,6 @@ android {
             keyPassword System.getenv('KEY_PASSWORD')
         }
     }
-    signingConfigs {
-        debug {
-            storeFile rootProject.file('debug.keystore')
-        }
-        release {
-            storeFile rootProject.file('release.keystore')
-            storePassword System.getenv('KEYSTORE_PASSWORD')
-            keyAlias System.getenv('KEY_ALIAS')
-            keyPassword System.getenv('KEY_PASSWORD')
-        }
-    }
     buildTypes {
         debug {
             minifyEnabled false
@@ -48,6 +37,7 @@ android {
             minifyEnabled false
             proguardFiles += 'proguard-rules.pro'
             if (file('release.jks').exists()) {
+                signingConfig signingConfigs.release
             }
         }
     }
