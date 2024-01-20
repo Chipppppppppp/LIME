@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-
 import androidx.browser.customtabs.CustomTabsIntent;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
