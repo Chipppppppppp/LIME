@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Xposed API -->
+    <string name="xposed_desc">LINE をクリーンに。</string>
+
     <!-- SettingsActivity -->
     <string name="switch_delete_voom">VOOM アイコンを削除</string>
     <string name="switch_delete_ads">広告を削除</string>
