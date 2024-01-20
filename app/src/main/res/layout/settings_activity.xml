@@ -9,27 +9,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Delete the VOOM icon" />
+        android:text="@string/switch_delete_voom" />
 
     <Switch
         android:id="@+id/switch_delete_ads"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Delete ads" />
+        android:text="@string/switch_delete_ads" />
 
     <Switch
         android:id="@+id/switch_redirect_web_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Redirect Web View to Custom Tabs" />
+        android:text="@string/switch_redirect_web_view" />
 
     <Switch
         android:id="@+id/switch_open_in_browser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Open in your browser" />
+        android:text="@string/switch_open_in_browser" />
 
 </LinearLayout>
