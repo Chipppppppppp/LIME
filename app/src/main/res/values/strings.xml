@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LIME</string>
+    <string translatable="false" name="app_name">LIME</string>
     <string name="title_activity_settings">SettingsActivity</string>
 
     <!-- Preference Titles -->
@@ -16,4 +16,10 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
+    <!-- SettingsActivity -->
+    <string name="switch_delete_voom">Delete the VOOM icon</string>
+    <string name="switch_delete_ads">Delete ads</string>
+    <string name="switch_redirect_web_view">Redirect Web View to Custom Tabs</string>
+    <string name="switch_open_in_browser">Open in your browser</string>
 </resources>
