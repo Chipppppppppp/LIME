@@ -23,7 +23,7 @@ public class Main implements IXposedHookLoadPackage {
         prefs.reload();
         boolean deleteVoom = prefs.getBoolean("delete_voom", true);
         boolean deleteAds = prefs.getBoolean("delete_ads", true);
-        boolean redirectWebView = prefs.getBoolean("redirect_web_view", true);
+        boolean redirectWebView = prefs.getBoolean("redirect_webview", true);
         boolean openInBrowser = prefs.getBoolean("open_in_browser", false);
 
         Class hookTarget;
