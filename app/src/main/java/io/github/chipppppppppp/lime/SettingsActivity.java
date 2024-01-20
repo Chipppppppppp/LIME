@@ -55,9 +55,9 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void showModuleNotEnabledAlert(Context context) {
         new AlertDialog.Builder(this)
-                .setTitle(context.getString(R.string.app_name))
-                .setMessage(context.getString(R.string.app_name))
-                .setPositiveButton(context.getString(R.string.app_name), new DialogInterface.OnClickListener() {
+                .setTitle(context.getString(R.string.module_not_enabled_title))
+                .setMessage(context.getString(R.string.module_not_enabled_text))
+                .setPositiveButton(context.getString(R.string.dialog_positive), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();
