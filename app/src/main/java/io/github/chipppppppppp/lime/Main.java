@@ -78,11 +78,15 @@ public class Main implements IXposedHookLoadPackage {
             XposedBridge.hookAllMethods(hookTarget, "loadUrl", new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    Uri uri = Uri.parse((String) param.args[0]);
+                    if (uri.getHost() != null && uri.getHost().endsWith("line.me")) {
+                        XposedBridge.invokeOriginalMethod(param.method, param.thisObject, param.args);
+                        return;
+                    }
                     WebView webView = (WebView) param.thisObject;
                     Activity activity = (Activity) webView.getContext();
                     webView.setVisibility(View.GONE);
                     webView.stopLoading();
-                    Uri uri = Uri.parse((String) param.args[0]);
                     if (openInBrowser) {
                         Intent intent = new Intent(Intent.ACTION_VIEW);
                         intent.setData(uri);
