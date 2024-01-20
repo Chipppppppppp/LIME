@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import androidx.browser.customtabs.CustomTabsIntent;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
@@ -37,18 +36,8 @@ public class Main implements IXposedHookLoadPackage {
                     Activity activity = (Activity) param.thisObject;
                     int resourceId = activity.getResources().getIdentifier("main_tab_container", "id", activity.getPackageName());
                     ViewGroup vG = ((ViewGroup) activity.findViewById(resourceId));
-                    View chat = vG.getChildAt(4); // chat
                     vG.getChildAt(5).setVisibility(View.GONE); // timeline spacer
                     vG.getChildAt(6).setVisibility(View.GONE); // timeline
-                    View newsSpacer = vG.getChildAt(7); // news spacer
-
-                    ConstraintLayout.LayoutParams paramChat = (ConstraintLayout.LayoutParams)chat.getLayoutParams();
-                    paramChat.rightToLeft = vG.getChildAt(7).getId();
-                    chat.setLayoutParams(paramChat);
-
-                    ConstraintLayout.LayoutParams paramNewsSpacer = (ConstraintLayout.LayoutParams)newsSpacer.getLayoutParams();
-                    paramNewsSpacer.leftToRight = chat.getId();
-                    newsSpacer.setLayoutParams(paramNewsSpacer);
                 }
             });
         }
