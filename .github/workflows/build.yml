@@ -59,16 +59,18 @@ jobs:
         if: github.event.inputs.release == 'true'
         run: |
           if [[ "${{ secrets.STORE_FILE }}" == "" ]]; then
-            echo -e "\nERROR!\n\nリリースするには､ 署名鍵を設定する必要があります｡\n\n"
+            echo -e "\nERROR!\nリリースするには､ 署名鍵を設定する必要があります｡\n\n"
             echo "STORE_FILE: JKS形式の署名鍵をBase64でエンコードした文字列"
             echo "STORE_PASSWORD: キーストアのパスワード"
             echo "KEY_ALIAS: 署名のエイリアス"
             echo "KEY_PASSWORD: 署名のパスワード"
+            echo ""
             exit 1
           fi
           if [[ "${{ steps.check-tag.outputs.exists }}" == "true" ]]; then
-            echo -e "\nERROR!\n\n既に同じタグが存在します｡\n\n"
+            echo -e "\nERROR!\n既に同じタグが存在します｡\n\n"
             echo "build.gradle の versionName を変更してください"
+            echo ""
             exit 1
           fi
 
@@ -94,7 +96,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: github.event.inputs.release == 'true'
         with:
-          tag_name: v${{ env.version }}
+          tag_name: ${{ env.version }}
           draft: true
           prerelease: false
           files: app/build/outputs/apk/release/app-release.apk
