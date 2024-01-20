@@ -27,7 +27,7 @@
     <string name="switch_delete_voom">Delete the VOOM icon</string>
     <string name="switch_delete_wallet">Delete the Wallet icon</string>
     <string name="switch_delete_ads">Delete ads</string>
-    <string name="switch_redirect_webview">Redirect WebView to Custom Tabs</string>
+    <string name="switch_redirect_webview">Redirect WebView to your browser</string>
     <string name="switch_open_in_browser">Open in your browser</string>
     <string name="module_not_enabled_title">Error</string>
     <string name="module_not_enabled_text">Module not enabled!</string>
