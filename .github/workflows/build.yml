@@ -83,7 +83,7 @@ jobs:
             ./gradlew aR --no-daemon
             cp -f app/build/outputs/apk/release/app-release.apk ${{ env.repo }}-${{ env.version }}.apk
           else
-            ./gradlew assemble --no-daemon
+            ./gradlew assembleDebug --no-daemon
           fi
 
       - name: Upload APK
