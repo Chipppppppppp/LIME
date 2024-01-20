@@ -44,10 +44,16 @@ jobs:
       - name: Set environments
         run: |
           {
-            echo "version=$(grep versionName app/build.gradle | awk '{print $2}' | tr -d \")"
+            echo "version=v$(grep versionName app/build.gradle | awk '{print $2}' | tr -d \")"
             echo "commit=$(echo ${{ github.sha }} | cut -c-7)"
             echo "repo=$(echo ${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/})"
           } >> $GITHUB_ENV
+
+      - name: Check tag exists
+        uses: mukunku/tag-exists-action@v1.5.0
+        id: check-tag
+        with: 
+          tag: "${{ env.version }}"
 
       - name: Release check
         if: github.event.inputs.release == 'true'
@@ -60,7 +66,7 @@ jobs:
             echo "KEY_PASSWORD: 署名のパスワード"
             exit 1
           fi
-          if git show-ref --tags --verify --quiet "refs/tags/${{ env.version }}"; then
+          if [[ "${{ steps.check-tag.outputs.exists }}" == "true" ]]; then
             echo -e "\nERROR!\n\n既に同じタグが存在します｡\n\n"
             echo "build.gradle の versionName を変更してください"
             exit 1
