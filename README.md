@@ -25,7 +25,6 @@ LINE を掃除する Xposed Module です。
 
 ## 既知の問題
 
-- WebView を Custom Tabs にリダイレクトした場合、下部に余白が生じる
 - LSPosed でのアイコンがデフォルトのままになっている
 
 新たなバグや修正方法を見つけた場合は、[報告](//github.com/Chipppppppppp/LIME/issues/new/choose)をお願いします。
