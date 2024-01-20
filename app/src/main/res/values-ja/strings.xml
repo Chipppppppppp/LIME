@@ -8,10 +8,11 @@
 
     <!-- SettingsActivity -->
     <string name="switch_delete_voom">VOOM アイコンを削除</string>
-    <string name="switch_delete_wallet">Wallet アイコンを削除</string>
+    <string name="switch_delete_wallet">ウォレットアイコンを削除</string>
+    <string name="switch_distribute_evenly">アイコンを均等に配置</string>
     <string name="switch_delete_ads">広告を削除</string>
     <string name="switch_redirect_webview">WebView をデフォルトブラウザにリダイレクト</string>
-    <string name="switch_open_in_browser">ブラウザで開く</string>
+    <string name="switch_open_in_browser">ブラウザアプリで開く</string>
     <string name="module_not_enabled_title">エラー</string>
     <string name="module_not_enabled_text">モジュールが有効化されていません！</string>
 </resources>

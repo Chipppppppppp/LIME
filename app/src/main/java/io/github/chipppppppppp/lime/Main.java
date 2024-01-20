@@ -26,6 +26,7 @@ public class Main implements IXposedHookLoadPackage {
         prefs.reload();
         boolean deleteVoom = prefs.getBoolean("delete_voom", true);
         boolean deleteWallet = prefs.getBoolean("delete_wallet", true);
+        boolean distributeEvenly = prefs.getBoolean("distribute_evenly", true);
         boolean deleteAds = prefs.getBoolean("delete_ads", true);
         boolean redirectWebView = prefs.getBoolean("redirect_webview", true);
         boolean openInBrowser = prefs.getBoolean("open_in_browser", false);
@@ -55,13 +56,13 @@ public class Main implements IXposedHookLoadPackage {
                     if (deleteVoom) {
                         int timelineSpacerResId = activity.getResources().getIdentifier("bnb_timeline_spacer", "id", activity.getPackageName());
                         int timelineResId = activity.getResources().getIdentifier("bnb_timeline", "id", activity.getPackageName());
-                        activity.findViewById(timelineSpacerResId).setVisibility(View.GONE);
+                        if (distributeEvenly) activity.findViewById(timelineSpacerResId).setVisibility(View.GONE);
                         activity.findViewById(timelineResId).setVisibility(View.GONE);
                     }
                     if (deleteWallet) {
                         int walletSpacerResId = activity.getResources().getIdentifier("bnb_wallet_spacer", "id", activity.getPackageName());
                         int walletResId = activity.getResources().getIdentifier("bnb_wallet", "id", activity.getPackageName());
-                        activity.findViewById(walletSpacerResId).setVisibility(View.GONE);
+                        if (distributeEvenly) activity.findViewById(walletSpacerResId).setVisibility(View.GONE);
                         activity.findViewById(walletResId).setVisibility(View.GONE);
                     }
                 }
