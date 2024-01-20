@@ -27,14 +27,6 @@ android {
             keyPassword System.getenv('KEY_PASSWORD')
         }
     }
-    signingConfigs {
-        release {
-            storeFile rootProject.file('release.jks')
-            storePassword System.getenv('STORE_PASSWORD')
-            keyAlias System.getenv('KEY_ALIAS')
-            keyPassword System.getenv('KEY_PASSWORD')
-        }
-    }
     buildTypes {
         debug {
             minifyEnabled false
