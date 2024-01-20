@@ -1,0 +1,100 @@
+name: Build
+
+on:
+  push:
+    paths:
+      - '.github/workflows/build.yml'
+      - 'app/**'
+      - 'gradle/**'
+      - '*.gradle'
+      - '*.properties'
+  workflow_dispatch:
+    inputs:
+      release:
+        description: 'Release'
+        type: boolean
+        required: true
+        default: false
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches/
+            ~/.gradle/wrapper/
+          key: ${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+
+      - name: Set environments
+        run: |
+          {
+            echo "version=v$(grep versionName app/build.gradle | awk '{print $2}' | tr -d \")"
+            echo "commit=$(echo ${{ github.sha }} | cut -c-7)"
+            echo "repo=$(echo ${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/})"
+          } >> $GITHUB_ENV
+
+      - name: Check tag exists
+        uses: mukunku/tag-exists-action@v1.5.0
+        id: check-tag
+        with: 
+          tag: "${{ env.version }}"
+
+      - name: Release check
+        if: github.event.inputs.release == 'true'
+        run: |
+          if [[ "${{ secrets.STORE_FILE }}" == "" ]]; then
+            echo -e "\nERROR!\n\nリリースするには､ 署名鍵を設定する必要があります｡\n\n"
+            echo "STORE_FILE: JKS形式の署名鍵をBase64でエンコードした文字列"
+            echo "STORE_PASSWORD: キーストアのパスワード"
+            echo "KEY_ALIAS: 署名のエイリアス"
+            echo "KEY_PASSWORD: 署名のパスワード"
+            exit 1
+          fi
+          if [[ "${{ steps.check-tag.outputs.exists }}" == "true" ]]; then
+            echo -e "\nERROR!\n\n既に同じタグが存在します｡\n\n"
+            echo "build.gradle の versionName を変更してください"
+            exit 1
+          fi
+
+      - name: Build with Gradle
+        run: |
+          if [[ "${{ inputs.release }}" == "true" ]]; then
+            echo "${{ secrets.STORE_FILE }}" | base64 -d > app/release.jks
+            export STORE_PASSWORD="${{ secrets.STORE_PASSWORD }}"
+            export KEY_ALIAS="${{ secrets.KEY_ALIAS }}"
+            export KEY_PASSWORD="${{ secrets.KEY_PASSWORD }}"
+            ./gradlew aR --no-daemon
+          else
+            ./gradlew assemble --no-daemon
+          fi
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.repo }}(v${{ env.version }}@${{ env.commit }})
+          path: app/build/outputs/apk/**/app-*.apk
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: github.event.inputs.release == 'true'
+        with:
+          tag_name: v${{ env.version }}
+          draft: true
+          prerelease: false
+          files: app/build/outputs/apk/release/app-release.apk
