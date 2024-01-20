@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import androidx.browser.customtabs.CustomTabsIntent;
+import java.lang.reflect.*;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
@@ -47,21 +48,21 @@ public class Main implements IXposedHookLoadPackage {
             XposedHelpers.findAndHookMethod(hookTarget, "onAttachedToWindow", new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    ViewGroup viewGroup = ((ViewGroup) ((View) param.thisObject).getParent().getParent().getParent());
-                    viewGroup.setVisibility(View.GONE);
-                    ViewGroup.LayoutParams layoutParams = viewGroup.getLayoutParams();
+                    View view = ((View) ((View) param.thisObject).getParent().getParent().getParent());
+                    view.setVisibility(View.GONE);
+                    ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
                     layoutParams.height = 0;
-                    viewGroup.setLayoutParams(layoutParams);
+                    view.setLayoutParams(layoutParams);
                 }
             });
             XposedHelpers.findAndHookMethod(hookTarget, "onDrawForeground", Canvas.class, new XC_MethodHook() {
                 @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    ViewGroup viewGroup = ((ViewGroup) ((View) param.thisObject).getParent().getParent().getParent());
-                    viewGroup.setVisibility(View.GONE);
-                    ViewGroup.LayoutParams layoutParams = viewGroup.getLayoutParams();
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    View view = ((View) ((View) param.thisObject).getParent().getParent().getParent());
+                    view.setVisibility(View.GONE);
+                    ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
                     layoutParams.height = 0;
-                    viewGroup.setLayoutParams(layoutParams);
+                    view.setLayoutParams(layoutParams);
                 }
             });
             hookTarget = lparam.classLoader.loadClass("com.linecorp.line.admolin.smartch.v2.view.SmartChannelViewLayout");
