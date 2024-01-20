@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+
 import androidx.browser.customtabs.CustomTabsIntent;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -22,22 +23,31 @@ public class Main implements IXposedHookLoadPackage {
         XSharedPreferences prefs = new XSharedPreferences("io.github.chipppppppppp.lime", "settings");
         prefs.reload();
         boolean deleteVoom = prefs.getBoolean("delete_voom", true);
+        boolean deleteWallet = prefs.getBoolean("delete_wallet", true);
         boolean deleteAds = prefs.getBoolean("delete_ads", true);
-        boolean redirectWebView = prefs.getBoolean("redirect_webview", true);
+        boolean redirectWebView = prefs.getBoolean("redirect_web_view", true);
         boolean openInBrowser = prefs.getBoolean("open_in_browser", false);
 
         Class hookTarget;
 
-        if (deleteVoom) {
+        if (deleteVoom || deleteWallet) {
             hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.activity.main.MainActivity");
             XposedHelpers.findAndHookMethod(hookTarget, "onResume", new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     Activity activity = (Activity) param.thisObject;
-                    int timelineSpacerResId = activity.getResources().getIdentifier("bnb_timeline_spacer", "id", activity.getPackageName());
-                    int timelineResId = activity.getResources().getIdentifier("bnb_timeline", "id", activity.getPackageName());
-                    activity.findViewById(timelineSpacerResId).setVisibility(View.GONE);
-                    activity.findViewById(timelineResId).setVisibility(View.GONE);
+                    if (deleteVoom) {
+                        int timelineSpacerResId = activity.getResources().getIdentifier("bnb_timeline_spacer", "id", activity.getPackageName());
+                        int timelineResId = activity.getResources().getIdentifier("bnb_timeline", "id", activity.getPackageName());
+                        activity.findViewById(timelineSpacerResId).setVisibility(View.GONE);
+                        activity.findViewById(timelineResId).setVisibility(View.GONE);
+                    }
+                    if (deleteWallet) {
+                        int walletSpacerResId = activity.getResources().getIdentifier("bnb_wallet_spacer", "id", activity.getPackageName());
+                        int walletResId = activity.getResources().getIdentifier("bnb_wallet", "id", activity.getPackageName());
+                        activity.findViewById(walletSpacerResId).setVisibility(View.GONE);
+                        activity.findViewById(walletResId).setVisibility(View.GONE);
+                    }
                 }
             });
         }
