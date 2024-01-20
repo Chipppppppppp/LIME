@@ -17,6 +17,9 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
 
+    <!-- General -->
+    <string name="dialog_positive">OK</string>
+
     <!-- Xposed API -->
     <string name="xposed_desc">Clean LINE.</string>
 
@@ -25,4 +28,6 @@
     <string name="switch_delete_ads">Delete ads</string>
     <string name="switch_redirect_web_view">Redirect Web View to Custom Tabs</string>
     <string name="switch_open_in_browser">Open in your browser</string>
+    <string name="module_not_enabled_title">Error</string>
+    <string name="module_not_enabled_text">Module not enabled!</string>
 </resources>
