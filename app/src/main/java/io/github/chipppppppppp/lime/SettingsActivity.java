@@ -1,6 +1,8 @@
 package io.github.chipppppppppp.lime;
 
 import android.os.Bundle;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Switch;
 import android.content.SharedPreferences;
@@ -17,31 +19,50 @@ public class SettingsActivity extends AppCompatActivity {
         Switch switchRedirectWebView = findViewById(R.id.switch_redirect_web_view);
         Switch switchOpenInBrowser = findViewById(R.id.switch_open_in_browser);
 
-        SharedPreferences prefs = getSharedPreferences("settings", MODE_WORLD_READABLE);
-        switchDeleteVoom.setChecked(prefs.getBoolean("delete_voom", true));
-        switchDeleteAds.setChecked(prefs.getBoolean("delete_ads", true));
-        switchRedirectWebView.setChecked(prefs.getBoolean("redirect_web_view", true));
-        switchOpenInBrowser.setChecked(prefs.getBoolean("open_in_browser", false));
+        try {
+            SharedPreferences prefs;
+            prefs = getSharedPreferences("settings", MODE_WORLD_READABLE);
+            switchDeleteVoom.setChecked(prefs.getBoolean("delete_voom", true));
+            switchDeleteAds.setChecked(prefs.getBoolean("delete_ads", true));
+            switchRedirectWebView.setChecked(prefs.getBoolean("redirect_web_view", true));
+            switchOpenInBrowser.setChecked(prefs.getBoolean("open_in_browser", false));
 
-        switchDeleteVoom.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            prefs.edit().putBoolean("delete_voom", isChecked).apply();
-        });
+            switchDeleteVoom.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                prefs.edit().putBoolean("delete_voom", isChecked).apply();
+            });
 
-        switchDeleteAds.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            prefs.edit().putBoolean("delete_ads", isChecked).apply();
-        });
+            switchDeleteAds.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                prefs.edit().putBoolean("delete_ads", isChecked).apply();
+            });
 
-        switchRedirectWebView.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            prefs.edit().putBoolean("redirect_web_view", isChecked).apply();
-            if (isChecked) switchOpenInBrowser.setEnabled(true);
-            else {
-                switchOpenInBrowser.setEnabled(false);
-                switchOpenInBrowser.setChecked(false);
-            }
-        });
+            switchRedirectWebView.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                prefs.edit().putBoolean("redirect_web_view", isChecked).apply();
+                if (isChecked) switchOpenInBrowser.setEnabled(true);
+                else {
+                    switchOpenInBrowser.setEnabled(false);
+                    switchOpenInBrowser.setChecked(false);
+                }
+            });
 
-        switchOpenInBrowser.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            prefs.edit().putBoolean("open_in_browser", isChecked).apply();
-        });
+            switchOpenInBrowser.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                prefs.edit().putBoolean("open_in_browser", isChecked).apply();
+            });
+        } catch (SecurityException e) {
+            showModuleNotEnabledAlert();
+        }
+    }
+
+    private void showModuleNotEnabledAlert() {
+        new AlertDialog.Builder(this)
+                .setTitle("Error")
+                .setMessage("Module not enabled!")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .setCancelable(false)
+                .show();
     }
 }
