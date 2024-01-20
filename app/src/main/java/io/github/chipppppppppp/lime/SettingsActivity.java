@@ -1,5 +1,6 @@
 package io.github.chipppppppppp.lime;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -48,15 +49,15 @@ public class SettingsActivity extends AppCompatActivity {
                 prefs.edit().putBoolean("open_in_browser", isChecked).apply();
             });
         } catch (SecurityException e) {
-            showModuleNotEnabledAlert();
+            showModuleNotEnabledAlert(this);
         }
     }
 
-    private void showModuleNotEnabledAlert() {
+    private void showModuleNotEnabledAlert(Context context) {
         new AlertDialog.Builder(this)
-                .setTitle("Error")
-                .setMessage("Module not enabled!")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setTitle(context.getString(R.string.module_not_enabled_title))
+                .setMessage(context.getString(R.string.module_not_enabled_text))
+                .setPositiveButton(context.getString(R.string.dialog_positive), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();
