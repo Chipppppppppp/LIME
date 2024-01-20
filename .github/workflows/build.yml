@@ -50,7 +50,7 @@ jobs:
           } >> $GITHUB_ENV
 
       - name: Release check
-        if: inputs.release == 'true'
+        if: github.event.inputs.release == 'true'
         run: |
           if [[ "${{ secrets.STORE_FILE }}" == "" ]]; then
             echo -e "\nERROR!\n\nリリースするには､ 署名鍵を設定する必要があります｡\n\n"
