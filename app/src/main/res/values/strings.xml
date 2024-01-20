@@ -17,6 +17,9 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
 
+    <!-- Xposed API -->
+    <string name="xposed_desc">Clean LINE.</string>
+
     <!-- SettingsActivity -->
     <string name="switch_delete_voom">Delete the VOOM icon</string>
     <string name="switch_delete_ads">Delete ads</string>
