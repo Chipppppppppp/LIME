@@ -35,20 +35,10 @@ public class Main implements IXposedHookLoadPackage {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     Activity activity = (Activity) param.thisObject;
-                    int resourceId = activity.getResources().getIdentifier("main_tab_container", "id", activity.getPackageName());
-                    ViewGroup vG = ((ViewGroup) activity.findViewById(resourceId));
-                    View chat = vG.getChildAt(4); // chat
-                    vG.getChildAt(5).setVisibility(View.GONE); // timeline spacer
-                    vG.getChildAt(6).setVisibility(View.GONE); // timeline
-                    View newsSpacer = vG.getChildAt(7); // news spacer
-
-                    ConstraintLayout.LayoutParams paramChat = (ConstraintLayout.LayoutParams)chat.getLayoutParams();
-                    paramChat.rightToLeft = vG.getChildAt(7).getId();
-                    chat.setLayoutParams(paramChat);
-
-                    ConstraintLayout.LayoutParams paramNewsSpacer = (ConstraintLayout.LayoutParams)newsSpacer.getLayoutParams();
-                    paramNewsSpacer.leftToRight = chat.getId();
-                    newsSpacer.setLayoutParams(paramNewsSpacer);
+                    int timelineSpacerResId = activity.getResources().getIdentifier("bnb_timeline_spacer", "id", activity.getPackageName());
+                    int timelineResId = activity.getResources().getIdentifier("bnb_timeline", "id", activity.getPackageName());
+                    activity.findViewById(timelineSpacerResId).setVisibility(View.GONE);
+                    activity.findViewById(timelineResId).setVisibility(View.GONE);
                 }
             });
         }
