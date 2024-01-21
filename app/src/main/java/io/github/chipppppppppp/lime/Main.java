@@ -31,7 +31,7 @@ public class Main implements IXposedHookLoadPackage {
 
         Class hookTarget;
 
-        if (deleteVoom || deleteWallet || deleteIconLabels) {
+        if (deleteVoom || deleteWallet) {
             hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.activity.main.MainActivity");
             XposedHelpers.findAndHookMethod(hookTarget, "onResume", new XC_MethodHook() {
                 @Override
@@ -49,13 +49,16 @@ public class Main implements IXposedHookLoadPackage {
                         if (distributeEvenly) activity.findViewById(walletSpacerResId).setVisibility(View.GONE);
                         activity.findViewById(walletResId).setVisibility(View.GONE);
                     }
-                    if (deleteIconLabels) {
-                        String[] resNames = {"bnb_home_v2", "bnb_chat", "bnb_timeline", "bnb_news", "bnb_call", "bnb_wallet"};
-                        for (String resName : resNames) {
-                            int resId = activity.getResources().getIdentifier(resName, "id", activity.getPackageName());
-                            ((ViewGroup) activity.findViewById(resId)).getChildAt(5).setVisibility(View.GONE);
-                        }
-                    }
+                }
+            });
+        }
+
+        if (deleteIconLabels) {
+            hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.activity.main.bottomnavigationbar.BottomNavigationBarTextView");
+            XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    ((View) param.thisObject).setVisibility(View.GONE);
                 }
             });
         }
