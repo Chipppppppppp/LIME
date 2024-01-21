@@ -64,32 +64,46 @@ public class Main implements IXposedHookLoadPackage {
         }
 
         if (deleteAds) {
-            hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.common.view.lifecycle.LadAdView");
-            XposedHelpers.findAndHookMethod(hookTarget, "onAttachedToWindow", new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    View view = ((View) ((View) param.thisObject).getParent().getParent().getParent());
-                    view.setVisibility(View.GONE);
-                    ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-                    layoutParams.height = 0;
-                    view.setLayoutParams(layoutParams);
-                }
-            });
-            XposedHelpers.findAndHookMethod(hookTarget, "onDrawForeground", Canvas.class, new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    View view = ((View) ((View) param.thisObject).getParent().getParent().getParent());
-                    view.setVisibility(View.GONE);
-                    ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-                    layoutParams.height = 0;
-                    view.setLayoutParams(layoutParams);
-                }
-            });
             hookTarget = lparam.classLoader.loadClass("com.linecorp.line.admolin.smartch.v2.view.SmartChannelViewLayout");
             XposedHelpers.findAndHookMethod(hookTarget, "dispatchDraw", Canvas.class, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     ((View) ((View) param.thisObject).getParent()).setVisibility(View.GONE);
+                }
+            });
+            hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.common.view.lifecycle.LadAdView");
+            XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    ((View) param.thisObject).setVisibility(View.GONE);
+                }
+            });
+            hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.inventory.home.LadHomeImageAdView");
+            XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    ((View) param.thisObject).setVisibility(View.GONE);
+                }
+            });
+            hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.inventory.home.LadHomeBigBannerImageAdView");
+            XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    ((View) param.thisObject).setVisibility(View.GONE);
+                }
+            });
+            hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.inventory.home.LadHomeBigBannerVideoAdView");
+            XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    ((View) param.thisObject).setVisibility(View.GONE);
+                }
+            });
+            hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.inventory.album.LadAlbumImageAdView");
+            XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    ((View) param.thisObject).setVisibility(View.GONE);
                 }
             });
         }
