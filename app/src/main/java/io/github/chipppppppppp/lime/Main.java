@@ -1,11 +1,11 @@
 package io.github.chipppppppppp.lime;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import androidx.browser.customtabs.CustomTabsIntent;
 
@@ -72,10 +72,14 @@ public class Main implements IXposedHookLoadPackage {
                 }
             });
             hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.common.view.lifecycle.LadAdView");
-            XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+            XposedHelpers.findAndHookMethod(hookTarget, "onAttachedToWindow", new XC_MethodHook() {
                 @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    ((View) param.thisObject).setVisibility(View.GONE);
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    View view = ((View) ((View) param.thisObject).getParent().getParent().getParent());
+                    view.setVisibility(View.GONE);
+                    ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+                    layoutParams.height = 0;
+                    view.setLayoutParams(layoutParams);
                 }
             });
             hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.inventory.album.LadAlbumImageAdView");
@@ -179,18 +183,16 @@ public class Main implements IXposedHookLoadPackage {
         }
 
         if (redirectWebView) {
-            hookTarget = lparam.classLoader.loadClass("android.webkit.WebView");
-            XposedBridge.hookAllMethods(hookTarget, "loadUrl", new XC_MethodHook() {
+            hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.activity.iab.InAppBrowserActivity");
+            XposedBridge.hookAllMethods(hookTarget, "onResume", new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    WebView webView = (WebView) param.thisObject;
-                    Context context = webView.getContext();
-                    if (!(context instanceof Activity)) return;
-                    Activity activity = (Activity) webView.getContext();
-                    if (!activity.getClass().getName().equals("jp.naver.line.android.activity.iab.InAppBrowserActivity")) return;
+                    Activity activity = (Activity) param.thisObject;
+                    int webViewResId = activity.getResources().getIdentifier("iab_webview", "id", activity.getPackageName());
+                    WebView webView = (WebView) activity.findViewById(webViewResId);
                     webView.setVisibility(View.GONE);
                     webView.stopLoading();
-                    Uri uri = Uri.parse((String) param.args[0]);
+                    Uri uri = Uri.parse(webView.getUrl());
                     if (openInBrowser) {
                         Intent intent = new Intent(Intent.ACTION_VIEW);
                         intent.setData(uri);
