@@ -1,11 +1,11 @@
 package io.github.chipppppppppp.lime;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.WebView;
 import androidx.browser.customtabs.CustomTabsIntent;
 
@@ -78,7 +78,7 @@ public class Main implements IXposedHookLoadPackage {
                     ((View) param.thisObject).setVisibility(View.GONE);
                 }
             });
-            hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.inventory.home.LadHomeImageAdView");
+            hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.inventory.album.LadAlbumImageAdView");
             XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -99,7 +99,77 @@ public class Main implements IXposedHookLoadPackage {
                     ((View) param.thisObject).setVisibility(View.GONE);
                 }
             });
-            hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.inventory.album.LadAlbumImageAdView");
+            hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.inventory.home.LadHomeImageAdView");
+            XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    ((View) param.thisObject).setVisibility(View.GONE);
+                }
+            });
+            hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.inventory.home.LadHomePerformanceAdView");
+            XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    ((View) param.thisObject).setVisibility(View.GONE);
+                }
+            });
+            hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.inventory.home.LadHomeYjBigBannerAdView");
+            XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    ((View) param.thisObject).setVisibility(View.GONE);
+                }
+            });
+            hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.inventory.home.LadHomeYjImageAdView");
+            XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    ((View) param.thisObject).setVisibility(View.GONE);
+                }
+            });
+            hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.inventory.openchat.LadOpenChatHeaderAdView");
+            XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    ((View) param.thisObject).setVisibility(View.GONE);
+                }
+            });
+            hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.inventory.openchat.LadOpenChatImageAdView");
+            XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    ((View) param.thisObject).setVisibility(View.GONE);
+                }
+            });
+            hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.inventory.timeline.post.LadPostAdView");
+            XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    ((View) param.thisObject).setVisibility(View.GONE);
+                }
+            });
+            hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.inventory.wallet.LadWalletBigBannerImageAdView");
+            XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    ((View) param.thisObject).setVisibility(View.GONE);
+                }
+            });
+            hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.inventory.wallet.LadWalletBigBannerVideoAdView");
+            XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    ((View) param.thisObject).setVisibility(View.GONE);
+                }
+            });
+            hookTarget = lparam.classLoader.loadClass("com.linecorp.square.v2.view.ad.common.SquareCommonHeaderGoogleBannerAdView");
+            XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    ((View) param.thisObject).setVisibility(View.GONE);
+                }
+            });
+            hookTarget = lparam.classLoader.loadClass("com.linecorp.square.v2.view.ad.common.SquareCommonHeaderGoogleNativeAdView");
             XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -114,6 +184,8 @@ public class Main implements IXposedHookLoadPackage {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     WebView webView = (WebView) param.thisObject;
+                    Context context = webView.getContext();
+                    if (!(context instanceof Activity)) return;
                     Activity activity = (Activity) webView.getContext();
                     if (!activity.getClass().getName().equals("jp.naver.line.android.activity.iab.InAppBrowserActivity")) return;
                     webView.setVisibility(View.GONE);
