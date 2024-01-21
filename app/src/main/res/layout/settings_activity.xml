@@ -26,6 +26,13 @@
         android:text="@string/switch_distribute_evenly" />
 
     <Switch
+        android:id="@+id/switch_delete_icon_labels"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/switch_delete_icon_labels" />
+
+    <Switch
         android:id="@+id/switch_delete_ads"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

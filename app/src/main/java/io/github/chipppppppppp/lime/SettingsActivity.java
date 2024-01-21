@@ -18,6 +18,7 @@ public class SettingsActivity extends AppCompatActivity {
         Switch switchDeleteVoom = findViewById(R.id.switch_delete_voom);
         Switch switchDeleteWallet = findViewById(R.id.switch_delete_wallet);
         Switch switchDistributeEvenly = findViewById(R.id.switch_distribute_evenly);
+        Switch switchDeleteIconLabels = findViewById(R.id.switch_delete_icon_labels);
         Switch switchDeleteAds = findViewById(R.id.switch_delete_ads);
         Switch switchRedirectWebView = findViewById(R.id.switch_redirect_webview);
         Switch switchOpenInBrowser = findViewById(R.id.switch_open_in_browser);
@@ -28,6 +29,7 @@ public class SettingsActivity extends AppCompatActivity {
             switchDeleteVoom.setChecked(prefs.getBoolean("delete_voom", true));
             switchDeleteWallet.setChecked(prefs.getBoolean("delete_wallet", true));
             switchDistributeEvenly.setChecked(prefs.getBoolean("distribute_evenly", true));
+            switchDeleteIconLabels.setChecked(prefs.getBoolean("delete_icon_labels", false));
             switchDeleteAds.setChecked(prefs.getBoolean("delete_ads", true));
             switchRedirectWebView.setChecked(prefs.getBoolean("redirect_webview", true));
             switchOpenInBrowser.setChecked(prefs.getBoolean("open_in_browser", false));
@@ -42,6 +44,10 @@ public class SettingsActivity extends AppCompatActivity {
 
             switchDistributeEvenly.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 prefs.edit().putBoolean("distribute_evenly", isChecked).apply();
+            });
+
+            switchDeleteIconLabels.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                prefs.edit().putBoolean("delete_icon_labels", isChecked).apply();
             });
 
             switchDeleteAds.setOnCheckedChangeListener((buttonView, isChecked) -> {

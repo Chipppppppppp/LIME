@@ -7,10 +7,7 @@ import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.widget.TextView;
-
 import androidx.browser.customtabs.CustomTabsIntent;
-import java.lang.reflect.*;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
@@ -27,27 +24,14 @@ public class Main implements IXposedHookLoadPackage {
         boolean deleteVoom = prefs.getBoolean("delete_voom", true);
         boolean deleteWallet = prefs.getBoolean("delete_wallet", true);
         boolean distributeEvenly = prefs.getBoolean("distribute_evenly", true);
+        boolean deleteIconLabels = prefs.getBoolean("delete_icon_labels", false);
         boolean deleteAds = prefs.getBoolean("delete_ads", true);
         boolean redirectWebView = prefs.getBoolean("redirect_webview", true);
         boolean openInBrowser = prefs.getBoolean("open_in_browser", false);
 
         Class hookTarget;
 
-        hookTarget = lparam.classLoader.loadClass("android.widget.TextView");
-        XposedBridge.hookAllMethods(hookTarget, "setText", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                TextView textView = (TextView) param.thisObject;
-                XposedBridge.log(textView.getText().toString());
-                View parent = (View) textView.getParent();
-                while (parent != null) {
-                    XposedBridge.log(parent.getClass().getName());
-                    parent = (View) parent.getParent();
-                }
-            }
-        });
-
-        if (deleteVoom || deleteWallet) {
+        if (deleteVoom || deleteWallet || deleteIconLabels) {
             hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.activity.main.MainActivity");
             XposedHelpers.findAndHookMethod(hookTarget, "onResume", new XC_MethodHook() {
                 @Override
@@ -64,6 +48,13 @@ public class Main implements IXposedHookLoadPackage {
                         int walletResId = activity.getResources().getIdentifier("bnb_wallet", "id", activity.getPackageName());
                         if (distributeEvenly) activity.findViewById(walletSpacerResId).setVisibility(View.GONE);
                         activity.findViewById(walletResId).setVisibility(View.GONE);
+                    }
+                    if (deleteIconLabels) {
+                        String[] resNames = {"bnb_home_v2", "bnb_chat", "bnb_timeline", "bnb_news", "bnb_call", "bnb_wallet"};
+                        for (String resName : resNames) {
+                            int resId = activity.getResources().getIdentifier(resName, "id", activity.getPackageName());
+                            ((ViewGroup) activity.findViewById(resId)).getChildAt(5).setVisibility(View.GONE);
+                        }
                     }
                 }
             });
