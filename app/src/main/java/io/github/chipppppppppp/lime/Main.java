@@ -26,6 +26,7 @@ public class Main implements IXposedHookLoadPackage {
         boolean distributeEvenly = prefs.getBoolean("distribute_evenly", true);
         boolean deleteIconLabels = prefs.getBoolean("delete_icon_labels", false);
         boolean deleteAds = prefs.getBoolean("delete_ads", true);
+        boolean deleteRecommendation = prefs.getBoolean("delete_recommendation", true);
         boolean redirectWebView = prefs.getBoolean("redirect_webview", true);
         boolean openInBrowser = prefs.getBoolean("open_in_browser", false);
 
@@ -38,16 +39,20 @@ public class Main implements IXposedHookLoadPackage {
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     Activity activity = (Activity) param.thisObject;
                     if (deleteVoom) {
-                        int timelineSpacerResId = activity.getResources().getIdentifier("bnb_timeline_spacer", "id", activity.getPackageName());
                         int timelineResId = activity.getResources().getIdentifier("bnb_timeline", "id", activity.getPackageName());
-                        if (distributeEvenly) activity.findViewById(timelineSpacerResId).setVisibility(View.GONE);
                         activity.findViewById(timelineResId).setVisibility(View.GONE);
+                        if (distributeEvenly) {
+                            int timelineSpacerResId = activity.getResources().getIdentifier("bnb_timeline_spacer", "id", activity.getPackageName());
+                            activity.findViewById(timelineSpacerResId).setVisibility(View.GONE);
+                        }
                     }
                     if (deleteWallet) {
-                        int walletSpacerResId = activity.getResources().getIdentifier("bnb_wallet_spacer", "id", activity.getPackageName());
                         int walletResId = activity.getResources().getIdentifier("bnb_wallet", "id", activity.getPackageName());
-                        if (distributeEvenly) activity.findViewById(walletSpacerResId).setVisibility(View.GONE);
                         activity.findViewById(walletResId).setVisibility(View.GONE);
+                        if (distributeEvenly) {
+                            int walletSpacerResId = activity.getResources().getIdentifier("bnb_wallet_spacer", "id", activity.getPackageName());
+                            activity.findViewById(walletSpacerResId).setVisibility(View.GONE);
+                        }
                     }
                 }
             });
@@ -71,6 +76,7 @@ public class Main implements IXposedHookLoadPackage {
                     ((View) ((View) param.thisObject).getParent()).setVisibility(View.GONE);
                 }
             });
+
             hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.common.view.lifecycle.LadAdView");
             XposedHelpers.findAndHookMethod(hookTarget, "onAttachedToWindow", new XC_MethodHook() {
                 @Override
@@ -82,6 +88,7 @@ public class Main implements IXposedHookLoadPackage {
                     view.setLayoutParams(layoutParams);
                 }
             });
+
             String[] adClassNames = {
                     "com.linecorp.line.ladsdk.ui.inventory.album.LadAlbumImageAdView",
                     "com.linecorp.line.ladsdk.ui.inventory.home.LadHomeBigBannerImageAdView",
@@ -98,7 +105,6 @@ public class Main implements IXposedHookLoadPackage {
                     "com.linecorp.square.v2.view.ad.common.SquareCommonHeaderGoogleBannerAdView",
                     "com.linecorp.square.v2.view.ad.common.SquareCommonHeaderGoogleNativeAdView",
             };
-
             for (String adClassName : adClassNames) {
                 hookTarget = lparam.classLoader.loadClass(adClassName);
                 XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
@@ -108,6 +114,19 @@ public class Main implements IXposedHookLoadPackage {
                     }
                 });
             }
+        }
+
+        if (deleteRecommendation) {
+            hookTarget = lparam.classLoader.loadClass("android.widget.LinearLayout");
+            XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    View view = (View) param.thisObject;
+                    Activity activity = (Activity) view.getContext();
+                    int recommendationResId = activity.getResources().getIdentifier("home_tab_contents_recommendation_placement", "id", activity.getPackageName());
+                    if (view.getId() == recommendationResId) view.setVisibility(View.GONE);
+                }
+            });
         }
 
         if (redirectWebView) {
