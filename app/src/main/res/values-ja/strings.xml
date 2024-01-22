@@ -12,6 +12,7 @@
     <string name="switch_distribute_evenly">アイコンを均等に配置</string>
     <string name="switch_delete_icon_labels">アイコンのラベルを削除</string>
     <string name="switch_delete_ads">広告を削除</string>
+    <string name="switch_delete_recommendation">おすすめを削除</string>
     <string name="switch_redirect_webview">WebView をデフォルトブラウザにリダイレクト</string>
     <string name="switch_open_in_browser">ブラウザアプリで開く</string>
     <string name="module_not_enabled_title">エラー</string>
