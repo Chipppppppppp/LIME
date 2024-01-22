@@ -31,11 +31,13 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
+            multiDexEnabled false
             proguardFiles += 'proguard-rules.pro'
             signingConfig signingConfigs.android
         }
         release {
             minifyEnabled false
+            multiDexEnabled false
             proguardFiles += 'proguard-rules.pro'
             if (file('release.jks').exists()) {
                 signingConfig signingConfigs.release
