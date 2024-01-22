@@ -78,7 +78,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .setPositiveButton(context.getString(R.string.dialog_positive), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        finish();
+                        finishAndRemoveTask();
                     }
                 })
                 .setCancelable(false)

@@ -9,6 +9,7 @@
         android:theme="@style/Theme.LIME">
         <activity
             android:name=".SettingsActivity"
+            android:clearTaskOnLaunch="true"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
