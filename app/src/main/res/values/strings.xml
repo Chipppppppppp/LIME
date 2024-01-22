@@ -29,6 +29,7 @@
     <string name="switch_distribute_evenly">Distribute the icons evenly</string>
     <string name="switch_delete_icon_labels">Delete the icon labels</string>
     <string name="switch_delete_ads">Delete ads</string>
+    <string name="switch_delete_recommendation">Delete recommendation</string>
     <string name="switch_redirect_webview">Redirect WebView to the default browser</string>
     <string name="switch_open_in_browser">Open in the browser app</string>
     <string name="module_not_enabled_title">Error</string>
