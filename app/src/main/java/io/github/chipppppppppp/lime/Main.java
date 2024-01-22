@@ -122,6 +122,7 @@ public class Main implements IXposedHookLoadPackage {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     View view = (View) param.thisObject;
+                    if (!(view.getContext() instanceof Activity)) return;
                     Activity activity = (Activity) view.getContext();
                     int recommendationResId = activity.getResources().getIdentifier("home_tab_contents_recommendation_placement", "id", activity.getPackageName());
                     if (view.getId() == recommendationResId) view.setVisibility(View.GONE);
