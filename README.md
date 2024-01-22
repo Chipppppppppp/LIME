@@ -1,11 +1,11 @@
 # <img src="app/src/main/ic_launcher-playstore.png" width="60px"> LIME: Adkiller for LINE
 
-[![Latest Release](https://img.shields.io/github/v/release/Chipppppppppp/LIME?label=latest)](https://github.com/Chipppppppppp/LIME/releases)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Chipppppppppp/LIME/blob/master/LICENSE)
+[![Latest Release](https://img.shields.io/github/v/release/Chipppppppppp/LIME?label=latest)](//github.com/Chipppppppppp/LIME/releases/latest)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ## 概要
 
-This is an Xposed Module to clean LINE. 
+This is an Xposed Module to clean [**LINE**](//line.me). 
 
 LINE を掃除する Xposed Module です。
 
@@ -19,12 +19,14 @@ LINE を掃除する Xposed Module です。
 
 ## 機能
 
-- 画面下部の VOOM・ウォレットアイコンの削除
+- 画面下部の \[VOOM]・\[ウォレット]アイコンの削除
 - 広告の削除
-- WebView (アプリ内ブラウザ) をデフォルトブラウザにリダイレクト
+- WebView (アプリ内ブラウザ) を規定のブラウザにリダイレクト
 
 ## 既知の問題
 
 - 稀にホームタブの広告の場所に余白が残る
+
+## 問題の報告
 
 新たなバグや修正方法を見つけた場合は、[報告](//github.com/Chipppppppppp/LIME/issues/new/choose)をお願いします。
