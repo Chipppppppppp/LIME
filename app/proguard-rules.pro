@@ -1,1 +1,1 @@
--keep de.robv.android.xposed.**
+
