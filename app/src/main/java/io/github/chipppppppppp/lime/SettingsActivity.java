@@ -1,14 +1,14 @@
 package io.github.chipppppppppp.lime;
 
-import android.content.Context;
-import android.os.Bundle;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
-import androidx.appcompat.app.AppCompatActivity;
-import android.widget.Switch;
 import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.widget.Switch;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +84,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .setPositiveButton(context.getString(R.string.dialog_positive), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        finish();
+                        finishAndRemoveTask();
                     }
                 })
                 .setCancelable(false)
