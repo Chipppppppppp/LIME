@@ -148,11 +148,12 @@ public class Main implements IXposedHookLoadPackage {
         if (deleteRecommendation) {
             hookTarget = lparam.classLoader.loadClass("android.widget.LinearLayout");
             XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+                int recommendationResId = -1;
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     View view = (View) param.thisObject;
                     Context context = view.getContext();
-                    int recommendationResId = context.getResources().getIdentifier("home_tab_contents_recommendation_placement", "id", context.getPackageName());
+                    if (recommendationResId == -1) recommendationResId = context.getResources().getIdentifier("home_tab_contents_recommendation_placement", "id", context.getPackageName());
                     if (view.getId() == recommendationResId) view.setVisibility(View.GONE);
                 }
             });
