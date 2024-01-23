@@ -21,7 +21,7 @@ LINE を掃除する Xposed Module です。
 
 ### 非 Root 端末
 
-1. [**LSPatch または LSPatch Manager**](//github.com/LSPosed/LSPatch) をインストール
+1. [**LSPatch**](//github.com/LSPosed/LSPatch) をインストール
 2. [Releases](//github.com/Chipppppppppp/LIME/releases/latest) から APK ファイルをDL
 3. [APKMirror](//www.apkmirror.com/) などから LINE apk を DL
 4. 指示に従って LINE apk に LIME apk をパッチする
