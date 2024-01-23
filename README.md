@@ -11,11 +11,21 @@ LINE を掃除する Xposed Module です。
 
 ## インストール
 
+### Root 端末
+
 1. [**Magisk**](//github.com/topjohnwu/Magisk) 及び [**LSPosed**](//github.com/LSPosed/LSPosed) をインストール
-2. [Releases](//github.com/Chipppppppppp/LIME/releases/latest) から APK ファイルをDL＆インストール
+2. [Releases](//github.com/Chipppppppppp/LIME/releases/latest) から APK ファイルを DL & インストール
 > [!NOTE]
 > Play プロテクトによりブロックされた場合、<kbd>詳細</kbd>から<kbd>インストールする</kbd>をタップ
 3. LSPosed のモジュールから LIME に移動し、<kbd>モジュールの有効化</kbd>と LINE アプリにチェックを入れる
+
+### 非 Root 端末
+
+1. [**LSPatch または LSPatch Manager**](//github.com/LSPosed/LSPatch) をインストール
+2. [Releases](//github.com/Chipppppppppp/LIME/releases/latest) から APK ファイルをDL
+3. [APKMirror](//www.apkmirror.com/) などから LINE apk を DL
+4. 指示に従って LINE apk に LIME apk をパッチする
+5. パッチされた LINE apk をインストール
 
 ## 機能
 
