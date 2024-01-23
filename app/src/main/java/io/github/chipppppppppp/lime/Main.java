@@ -1,6 +1,7 @@
 package io.github.chipppppppppp.lime;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.net.Uri;
@@ -81,9 +82,27 @@ public class Main implements IXposedHookLoadPackage {
             XposedHelpers.findAndHookMethod(hookTarget, "onAttachedToWindow", new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    View view = ((View) ((View) param.thisObject).getParent().getParent().getParent());
+                    View view = (View) param.thisObject;
                     view.setVisibility(View.GONE);
                     ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+                    layoutParams.height = 0;
+                    view.setLayoutParams(layoutParams);
+
+                    view = (View) ((View) param.thisObject).getParent();
+                    view.setVisibility(View.GONE);
+                    layoutParams = view.getLayoutParams();
+                    layoutParams.height = 0;
+                    view.setLayoutParams(layoutParams);
+
+                    view = (View) ((View) param.thisObject).getParent().getParent();
+                    view.setVisibility(View.GONE);
+                    layoutParams = view.getLayoutParams();
+                    layoutParams.height = 0;
+                    view.setLayoutParams(layoutParams);
+
+                    view = (View) ((View) param.thisObject).getParent().getParent().getParent();
+                    view.setVisibility(View.GONE);
+                    layoutParams = view.getLayoutParams();
                     layoutParams.height = 0;
                     view.setLayoutParams(layoutParams);
                 }
@@ -107,10 +126,20 @@ public class Main implements IXposedHookLoadPackage {
             };
             for (String adClassName : adClassNames) {
                 hookTarget = lparam.classLoader.loadClass(adClassName);
-                XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+                XposedBridge.hookAllMethods(hookTarget, "onAttachedToWindow", new XC_MethodHook() {
                     @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        ((View) param.thisObject).setVisibility(View.GONE);
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        View view = (View) param.thisObject;
+                        view.setVisibility(View.GONE);
+                        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+                        layoutParams.height = 0;
+                        view.setLayoutParams(layoutParams);
+
+                        view = (View) ((View) param.thisObject).getParent();
+                        view.setVisibility(View.GONE);
+                        layoutParams = view.getLayoutParams();
+                        layoutParams.height = 0;
+                        view.setLayoutParams(layoutParams);
                     }
                 });
             }
@@ -122,9 +151,8 @@ public class Main implements IXposedHookLoadPackage {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     View view = (View) param.thisObject;
-                    if (!(view.getContext() instanceof Activity)) return;
-                    Activity activity = (Activity) view.getContext();
-                    int recommendationResId = activity.getResources().getIdentifier("home_tab_contents_recommendation_placement", "id", activity.getPackageName());
+                    Context context = view.getContext();
+                    int recommendationResId = context.getResources().getIdentifier("home_tab_contents_recommendation_placement", "id", context.getPackageName());
                     if (view.getId() == recommendationResId) view.setVisibility(View.GONE);
                 }
             });
