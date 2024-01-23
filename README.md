@@ -5,7 +5,7 @@
 
 ## 概要
 
-This is an Xposed Module to clean LINE. 
+This is an Xposed Module to clean LINE.
 
 LINE を掃除する Xposed Module です。
 
