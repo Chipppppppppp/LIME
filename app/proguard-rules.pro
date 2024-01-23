@@ -1,1 +1,1 @@
--keep de.robv.android.xposed.**
+-keep class io.github.chipppppppppp.lime.Main

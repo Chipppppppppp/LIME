@@ -36,7 +36,7 @@ android {
             signingConfig signingConfigs.android
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
             multiDexEnabled false
             proguardFiles += 'proguard-rules.pro'
             if (file('release.jks').exists()) {
