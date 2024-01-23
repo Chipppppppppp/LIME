@@ -1,14 +1,14 @@
 package io.github.chipppppppppp.lime;
 
-import android.content.Context;
-import android.os.Bundle;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
-import androidx.appcompat.app.AppCompatActivity;
-import android.widget.Switch;
 import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.widget.Switch;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +20,7 @@ public class SettingsActivity extends AppCompatActivity {
         Switch switchDistributeEvenly = findViewById(R.id.switch_distribute_evenly);
         Switch switchDeleteIconLabels = findViewById(R.id.switch_delete_icon_labels);
         Switch switchDeleteAds = findViewById(R.id.switch_delete_ads);
+        Switch switchDeleteRecommendation = findViewById(R.id.switch_delete_recommendation);
         Switch switchRedirectWebView = findViewById(R.id.switch_redirect_webview);
         Switch switchOpenInBrowser = findViewById(R.id.switch_open_in_browser);
 
@@ -31,6 +32,7 @@ public class SettingsActivity extends AppCompatActivity {
             switchDistributeEvenly.setChecked(prefs.getBoolean("distribute_evenly", true));
             switchDeleteIconLabels.setChecked(prefs.getBoolean("delete_icon_labels", false));
             switchDeleteAds.setChecked(prefs.getBoolean("delete_ads", true));
+            switchDeleteRecommendation.setChecked(prefs.getBoolean("delete_recommendation", true));
             switchRedirectWebView.setChecked(prefs.getBoolean("redirect_webview", true));
             switchOpenInBrowser.setChecked(prefs.getBoolean("open_in_browser", false));
 
@@ -52,6 +54,10 @@ public class SettingsActivity extends AppCompatActivity {
 
             switchDeleteAds.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 prefs.edit().putBoolean("delete_ads", isChecked).apply();
+            });
+
+            switchDeleteRecommendation.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                prefs.edit().putBoolean("delete_recommendation", isChecked).apply();
             });
 
             switchRedirectWebView.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -78,7 +84,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .setPositiveButton(context.getString(R.string.dialog_positive), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        finish();
+                        finishAndRemoveTask();
                     }
                 })
                 .setCancelable(false)
