@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="main_bnb_button_height">102dp</dimen>
+    <dimen name="main_bnb_button_width">77dp</dimen>
+    <dimen name="gnav_icon_offset">14dp</dimen>
+</resources>

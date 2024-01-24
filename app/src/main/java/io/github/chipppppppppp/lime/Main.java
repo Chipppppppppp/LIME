@@ -3,6 +3,7 @@ package io.github.chipppppppppp.lime;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.XModuleResources;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.support.customtabs.CustomTabsIntent;
@@ -11,16 +12,22 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.webkit.WebView;
 
+import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
+import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_InitPackageResources;
+import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
-public class Main implements IXposedHookLoadPackage {
+public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
+    public String MODULE_PATH;
+    public final String PACKAGE = "jp.naver.line.android";
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lparam) throws Throwable {
-        if (!lparam.packageName.equals("jp.naver.line.android")) return;
+        if (!lparam.packageName.equals(PACKAGE)) return;
         XSharedPreferences prefs = new XSharedPreferences("io.github.chipppppppppp.lime", "settings");
         prefs.reload();
         boolean deleteVoom = prefs.getBoolean("delete_voom", true);
@@ -199,5 +206,32 @@ public class Main implements IXposedHookLoadPackage {
                 }
             });
         }
+    }
+
+    @Override
+    public void handleInitPackageResources(XC_InitPackageResources.InitPackageResourcesParam resparam) throws Throwable {
+        if (!resparam.packageName.equals(PACKAGE)) return;
+
+        XModuleResources xModuleResources = XModuleResources.createInstance(MODULE_PATH, resparam.res);
+
+        XSharedPreferences prefs = new XSharedPreferences("io.github.chipppppppppp.lime", "settings");
+        prefs.reload();
+        boolean deleteIconLabels = prefs.getBoolean("delete_icon_labels", false);
+
+        if(deleteIconLabels) {
+            resparam.res.setReplacement(PACKAGE, "dimen", "main_bnb_button_height", xModuleResources.fwd(R.dimen.main_bnb_button_height));
+            resparam.res.setReplacement(PACKAGE, "dimen", "main_bnb_button_width", xModuleResources.fwd(R.dimen.main_bnb_button_width));
+            resparam.res.hookLayout(PACKAGE, "layout", "app_main_bottom_navigation_bar_button", new XC_LayoutInflated() {
+                @Override
+                public void handleLayoutInflated(XC_LayoutInflated.LayoutInflatedParam liparam) throws Throwable {
+                    liparam.view.setTranslationY(xModuleResources.getDimensionPixelSize(R.dimen.gnav_icon_offset));
+                }
+            });
+        }
+    }
+
+    @Override
+    public void initZygote(StartupParam startupParam) throws Throwable {
+        MODULE_PATH = startupParam.modulePath;
     }
 }
