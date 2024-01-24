@@ -30,7 +30,7 @@ public class SettingsActivity extends Activity {
             switchDeleteVoom.setChecked(prefs.getBoolean("delete_voom", true));
             switchDeleteWallet.setChecked(prefs.getBoolean("delete_wallet", true));
             switchDistributeEvenly.setChecked(prefs.getBoolean("distribute_evenly", true));
-            switchDeleteIconLabels.setChecked(prefs.getBoolean("delete_icon_labels", false));
+            switchDeleteIconLabels.setChecked(prefs.getBoolean("delete_icon_labels", true));
             switchDeleteAds.setChecked(prefs.getBoolean("delete_ads", true));
             switchDeleteRecommendation.setChecked(prefs.getBoolean("delete_recommendation", true));
             switchRedirectWebView.setChecked(prefs.getBoolean("redirect_webview", true));
