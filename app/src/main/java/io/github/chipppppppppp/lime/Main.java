@@ -28,6 +28,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
     public final String PACKAGE = "jp.naver.line.android";
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lparam) throws Throwable {
         if (!lparam.packageName.equals(PACKAGE)) return;
+
         XSharedPreferences prefs = new XSharedPreferences("io.github.chipppppppppp.lime", "settings");
         prefs.reload();
         boolean deleteVoom = prefs.getBoolean("delete_voom", true);
@@ -213,12 +214,11 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
         if (!resparam.packageName.equals(PACKAGE)) return;
 
         XModuleResources xModuleResources = XModuleResources.createInstance(MODULE_PATH, resparam.res);
-
         XSharedPreferences prefs = new XSharedPreferences("io.github.chipppppppppp.lime", "settings");
         prefs.reload();
         boolean deleteIconLabels = prefs.getBoolean("delete_icon_labels", false);
 
-        if(deleteIconLabels) {
+        if (deleteIconLabels) {
             resparam.res.setReplacement(PACKAGE, "dimen", "main_bnb_button_height", xModuleResources.fwd(R.dimen.main_bnb_button_height));
             resparam.res.setReplacement(PACKAGE, "dimen", "main_bnb_button_width", xModuleResources.fwd(R.dimen.main_bnb_button_width));
             resparam.res.hookLayout(PACKAGE, "layout", "app_main_bottom_navigation_bar_button", new XC_LayoutInflated() {
