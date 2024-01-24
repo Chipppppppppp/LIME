@@ -33,10 +33,6 @@ LINE を掃除する Xposed Module です。
 - 広告の削除
 - WebView (アプリ内ブラウザ) を規定のブラウザにリダイレクト
 
-## 既知の問題
-
-- 稀にホームタブの広告の場所に余白が残る
-
 ## 問題の報告
 
 新たなバグや修正方法を見つけた場合は、[報告](https://github.com/Chipppppppppp/LIME/issues/new/choose)をお願いします。
