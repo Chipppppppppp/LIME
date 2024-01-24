@@ -5,7 +5,7 @@
 
 ## 概要
 
-This is an Xposed Module to clean [**LINE**](https://line.me). 
+This is an Xposed Module to clean [**LINE**](https://line.me).
 
 LINE を掃除する Xposed Module です。
 
