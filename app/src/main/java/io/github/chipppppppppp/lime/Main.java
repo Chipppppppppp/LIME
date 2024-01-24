@@ -34,7 +34,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
         boolean deleteVoom = prefs.getBoolean("delete_voom", true);
         boolean deleteWallet = prefs.getBoolean("delete_wallet", true);
         boolean distributeEvenly = prefs.getBoolean("distribute_evenly", true);
-        boolean deleteIconLabels = prefs.getBoolean("delete_icon_labels", false);
+        boolean deleteIconLabels = prefs.getBoolean("delete_icon_labels", true);
         boolean deleteAds = prefs.getBoolean("delete_ads", true);
         boolean deleteRecommendation = prefs.getBoolean("delete_recommendation", true);
         boolean redirectWebView = prefs.getBoolean("redirect_webview", true);
@@ -230,7 +230,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
         XModuleResources xModuleResources = XModuleResources.createInstance(MODULE_PATH, resparam.res);
         XSharedPreferences prefs = new XSharedPreferences("io.github.chipppppppppp.lime", "settings");
         prefs.reload();
-        boolean deleteIconLabels = prefs.getBoolean("delete_icon_labels", false);
+        boolean deleteIconLabels = prefs.getBoolean("delete_icon_labels", true);
 
         if (deleteIconLabels) {
             resparam.res.setReplacement(PACKAGE, "dimen", "main_bnb_button_height", xModuleResources.fwd(R.dimen.main_bnb_button_height));
