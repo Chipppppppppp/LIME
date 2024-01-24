@@ -42,6 +42,14 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
 
         Class hookTarget;
 
+        hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.activity.chathistory.square.SquareChatHistoryInitialFetchTrackingLog");
+        XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                param.thisObject = null;
+            }
+        });
+
         if (deleteVoom || deleteWallet) {
             hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.activity.main.MainActivity");
             XposedHelpers.findAndHookMethod(hookTarget, "onResume", new XC_MethodHook() {
