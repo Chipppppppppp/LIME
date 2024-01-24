@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.support.customtabs.CustomTabsIntent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.webkit.WebView;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -146,15 +147,29 @@ public class Main implements IXposedHookLoadPackage {
         }
 
         if (deleteRecommendation) {
-            hookTarget = lparam.classLoader.loadClass("android.widget.LinearLayout");
-            XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
-                int recommendationResId = -1;
+            hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.activity.homev2.view.HomeFragment");
+            XposedBridge.hookAllMethods(hookTarget, "onViewCreated", new XC_MethodHook() {
                 @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    View view = (View) param.thisObject;
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    ViewGroup view = (ViewGroup) param.args[0];
                     Context context = view.getContext();
-                    if (recommendationResId == -1) recommendationResId = context.getResources().getIdentifier("home_tab_contents_recommendation_placement", "id", context.getPackageName());
-                    if (view.getId() == recommendationResId) view.setVisibility(View.GONE);
+                    int recyclerViewResId = context.getResources().getIdentifier("home_tab_recycler_view", "id", context.getPackageName());
+                    int recommendationResId = context.getResources().getIdentifier("home_tab_contents_recommendation_placement", "id", context.getPackageName());
+                    ViewGroup recyclerView = view.findViewById(recyclerViewResId);
+                    recyclerView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+                        @Override
+                        public void onScrollChanged() {
+                            for (int i = 0; i < recyclerView.getChildCount(); i++) {
+                                View child = recyclerView.getChildAt(i);
+                                if (child.getId() == recommendationResId) {
+                                    child.setVisibility(View.GONE);
+                                    ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
+                                    layoutParams.height = 0;
+                                    child.setLayoutParams(layoutParams);
+                                }
+                            }
+                        }
+                    });
                 }
             });
         }
