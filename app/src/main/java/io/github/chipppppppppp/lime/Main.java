@@ -3,7 +3,6 @@ package io.github.chipppppppppp.lime;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.XModuleResources;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.support.customtabs.CustomTabsIntent;
@@ -22,6 +21,7 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import android.content.res.XModuleResources;
 
 public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
     public String MODULE_PATH;
@@ -154,7 +154,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             }
         }
 
-        if (deleteRecommendation) {
+        if (deleteRecommendation || deleteAds) {
             hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.activity.homev2.view.HomeFragment");
             XposedBridge.hookAllMethods(hookTarget, "onViewCreated", new XC_MethodHook() {
                 @Override
@@ -163,17 +163,31 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                     Context context = view.getContext();
                     int recyclerViewResId = context.getResources().getIdentifier("home_tab_recycler_view", "id", context.getPackageName());
                     int recommendationResId = context.getResources().getIdentifier("home_tab_contents_recommendation_placement", "id", context.getPackageName());
+                    int staticNotificationResId = context.getResources().getIdentifier("notification_hub_row_static_view_group", "id", context.getPackageName());
+                    int rollingNotificationResId = context.getResources().getIdentifier("notification_hub_row_rolling_view_group", "id", context.getPackageName());
                     ViewGroup recyclerView = view.findViewById(recyclerViewResId);
                     recyclerView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
                         @Override
                         public void onScrollChanged() {
-                            for (int i = 0; i < recyclerView.getChildCount(); i++) {
+                            for (int i = 0; i < recyclerView.getChildCount(); ++i) {
                                 View child = recyclerView.getChildAt(i);
-                                if (child.getId() == recommendationResId) {
+                                if (deleteRecommendation && child.getId() == recommendationResId) {
                                     child.setVisibility(View.GONE);
                                     ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
                                     layoutParams.height = 0;
                                     child.setLayoutParams(layoutParams);
+                                } else if (deleteAds && child instanceof ViewGroup) {
+                                    ViewGroup childGroup = (ViewGroup) child;
+                                    for (int j = 0; j < childGroup.getChildCount(); ++j) {
+                                        int id = childGroup.getChildAt(j).getId();
+                                        if (id == staticNotificationResId || id == rollingNotificationResId) {
+                                            child.setVisibility(View.GONE);
+                                            ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
+                                            layoutParams.height = 0;
+                                            child.setLayoutParams(layoutParams);
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         }
