@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.webkit.WebView;
 
+import java.util.Arrays;
+
 import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
@@ -27,6 +29,11 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
     public String MODULE_PATH;
     public final String PACKAGE = "jp.naver.line.android";
+
+    // from @string/notification_button_mute
+    public final String[] MUTE_CHAT_TITLES = { "Mute chat", "كتم المحادثة", "Lautlos", "Silenciar",
+        "Désactiver", "Matikan", "Chat off", "通知をオフ", "알림 끄기", "Bisukan", "Silenc.", "Chat mudo",
+        "Выкл. звук", "ปิดแจ้งเตือน", "Sesi kapat", "Tắt tiếng", "静音聊天", "關閉通知" };
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lparam) throws Throwable {
         if (!lparam.packageName.equals(PACKAGE)) return;
 
@@ -237,7 +244,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     Notification.Action a = (Notification.Action) param.args[0];
-                    if (a.title.equals("通知をオフ")) {
+                    if (Arrays.asList(MUTE_CHAT_TITLES).contains(a.title)) {
                         param.setResult(param.thisObject);
                     }
                 }
