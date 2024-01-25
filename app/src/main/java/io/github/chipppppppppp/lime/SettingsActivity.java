@@ -23,6 +23,7 @@ public class SettingsActivity extends Activity {
         Switch switchDeleteRecommendation = findViewById(R.id.switch_delete_recommendation);
         Switch switchRedirectWebView = findViewById(R.id.switch_redirect_webview);
         Switch switchOpenInBrowser = findViewById(R.id.switch_open_in_browser);
+        Switch switchDeleteReplyMute = findViewById(R.id.switch_delete_reply_mute);
 
         try {
             SharedPreferences prefs;
@@ -35,6 +36,7 @@ public class SettingsActivity extends Activity {
             switchDeleteRecommendation.setChecked(prefs.getBoolean("delete_recommendation", true));
             switchRedirectWebView.setChecked(prefs.getBoolean("redirect_webview", true));
             switchOpenInBrowser.setChecked(prefs.getBoolean("open_in_browser", false));
+            switchDeleteReplyMute.setChecked(prefs.getBoolean("delete_reply_mute", true));
 
             switchDeleteVoom.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 prefs.edit().putBoolean("delete_voom", isChecked).apply();
@@ -71,6 +73,10 @@ public class SettingsActivity extends Activity {
 
             switchOpenInBrowser.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 prefs.edit().putBoolean("open_in_browser", isChecked).apply();
+            });
+
+            switchDeleteReplyMute.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                prefs.edit().putBoolean("delete_reply_mute", isChecked).apply();
             });
         } catch (SecurityException e) {
             showModuleNotEnabledAlert(this);

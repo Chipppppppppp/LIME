@@ -60,4 +60,11 @@
         android:layout_marginTop="20dp"
         android:text="@string/switch_open_in_browser" />
 
+    <Switch
+        android:id="@+id/switch_delete_reply_mute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/switch_delete_reply_mute" />
+
 </LinearLayout>

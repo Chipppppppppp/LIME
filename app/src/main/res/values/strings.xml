@@ -15,6 +15,7 @@
     <string name="switch_delete_recommendation">Delete recommendation</string>
     <string name="switch_redirect_webview">Redirect WebView to the default browser</string>
     <string name="switch_open_in_browser">Open in the browser app</string>
+    <string name="switch_delete_reply_mute">Delete "Mute chat" action from Notifications</string>
     <string name="module_not_enabled_title">Error</string>
     <string name="module_not_enabled_text">Module not enabled!</string>
 </resources>
