@@ -40,6 +40,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
         boolean deleteRecommendation = prefs.getBoolean("delete_recommendation", true);
         boolean redirectWebView = prefs.getBoolean("redirect_webview", true);
         boolean openInBrowser = prefs.getBoolean("open_in_browser", false);
+        boolean deleteReplyMute = prefs.getBoolean("delete_reply_mute", true);
 
         Class hookTarget;
 
@@ -48,17 +49,6 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 param.thisObject = null;
-            }
-        });
-
-
-        XposedHelpers.findAndHookMethod(Notification.Builder.class, "addAction", Notification.Action.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                Notification.Action a = (Notification.Action) param.args[0];
-                if (a.title.equals("通知をオフ")) {
-                    param.setResult(param.thisObject);
-                }
             }
         });
 
@@ -238,6 +228,18 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                         tabsIntent.launchUrl(activity, uri);
                     }
                     activity.finish();
+                }
+            });
+        }
+
+        if (deleteReplyMute) {
+            XposedHelpers.findAndHookMethod(Notification.Builder.class, "addAction", Notification.Action.class, new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    Notification.Action a = (Notification.Action) param.args[0];
+                    if (a.title.equals("通知をオフ")) {
+                        param.setResult(param.thisObject);
+                    }
                 }
             });
         }
