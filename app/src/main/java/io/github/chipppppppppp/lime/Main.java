@@ -1,8 +1,10 @@
 package io.github.chipppppppppp.lime;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.XModuleResources;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.support.customtabs.CustomTabsIntent;
@@ -21,7 +23,6 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import android.content.res.XModuleResources;
 
 public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
     public String MODULE_PATH;
@@ -47,6 +48,17 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 param.thisObject = null;
+            }
+        });
+
+
+        XposedHelpers.findAndHookMethod(Notification.Builder.class, "addAction", Notification.Action.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                Notification.Action a = (Notification.Action) param.args[0];
+                if (a.title.equals("通知をオフ")) {
+                    param.setResult(param.thisObject);
+                }
             }
         });
 
