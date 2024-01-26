@@ -217,7 +217,6 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                     Notification.Action a = (Notification.Action) param.args[0];
                     String muteChatString = app.getString(app.getResources().getIdentifier("notification_button_mute", "string", app.getPackageName()));
                     if (muteChatString.equals(a.title)) {
-                        XposedBridge.log(muteChatString);
                         param.setResult(param.thisObject);
                     }
                 }
