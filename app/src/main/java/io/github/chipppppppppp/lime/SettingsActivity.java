@@ -21,9 +21,9 @@ public class SettingsActivity extends Activity {
         Switch switchDeleteIconLabels = findViewById(R.id.switch_delete_icon_labels);
         Switch switchDeleteAds = findViewById(R.id.switch_delete_ads);
         Switch switchDeleteRecommendation = findViewById(R.id.switch_delete_recommendation);
+        Switch switchDeleteReplyMute = findViewById(R.id.switch_delete_reply_mute);
         Switch switchRedirectWebView = findViewById(R.id.switch_redirect_webview);
         Switch switchOpenInBrowser = findViewById(R.id.switch_open_in_browser);
-        Switch switchDeleteReplyMute = findViewById(R.id.switch_delete_reply_mute);
 
         try {
             SharedPreferences prefs;
@@ -34,9 +34,9 @@ public class SettingsActivity extends Activity {
             switchDeleteIconLabels.setChecked(prefs.getBoolean("delete_icon_labels", true));
             switchDeleteAds.setChecked(prefs.getBoolean("delete_ads", true));
             switchDeleteRecommendation.setChecked(prefs.getBoolean("delete_recommendation", true));
+            switchDeleteReplyMute.setChecked(prefs.getBoolean("delete_reply_mute", true));
             switchRedirectWebView.setChecked(prefs.getBoolean("redirect_webview", true));
             switchOpenInBrowser.setChecked(prefs.getBoolean("open_in_browser", false));
-            switchDeleteReplyMute.setChecked(prefs.getBoolean("delete_reply_mute", true));
 
             switchDeleteVoom.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 prefs.edit().putBoolean("delete_voom", isChecked).apply();
@@ -62,6 +62,10 @@ public class SettingsActivity extends Activity {
                 prefs.edit().putBoolean("delete_recommendation", isChecked).apply();
             });
 
+            switchDeleteReplyMute.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                prefs.edit().putBoolean("delete_reply_mute", isChecked).apply();
+            });
+
             switchRedirectWebView.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 prefs.edit().putBoolean("redirect_webview", isChecked).apply();
                 if (isChecked) switchOpenInBrowser.setEnabled(true);
@@ -73,10 +77,6 @@ public class SettingsActivity extends Activity {
 
             switchOpenInBrowser.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 prefs.edit().putBoolean("open_in_browser", isChecked).apply();
-            });
-
-            switchDeleteReplyMute.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                prefs.edit().putBoolean("delete_reply_mute", isChecked).apply();
             });
         } catch (SecurityException e) {
             showModuleNotEnabledAlert(this);
