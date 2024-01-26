@@ -1,6 +1,8 @@
 package io.github.chipppppppppp.lime;
 
 import android.app.Activity;
+import android.app.AndroidAppHelper;
+import android.app.Application;
 import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
@@ -12,8 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.webkit.WebView;
-
-import java.util.Arrays;
 
 import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -30,10 +30,6 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
     public String MODULE_PATH;
     public final String PACKAGE = "jp.naver.line.android";
 
-    // from @string/notification_button_mute
-    public final String[] MUTE_CHAT_TITLES = { "Mute chat", "كتم المحادثة", "Lautlos", "Silenciar",
-        "Désactiver", "Matikan", "Chat off", "通知をオフ", "알림 끄기", "Bisukan", "Silenc.", "Chat mudo",
-        "Выкл. звук", "ปิดแจ้งเตือน", "Sesi kapat", "Tắt tiếng", "静音聊天", "關閉通知" };
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lparam) throws Throwable {
         if (!lparam.packageName.equals(PACKAGE)) return;
 
@@ -243,8 +239,11 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             XposedHelpers.findAndHookMethod(Notification.Builder.class, "addAction", Notification.Action.class, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    Application app = AndroidAppHelper.currentApplication();
                     Notification.Action a = (Notification.Action) param.args[0];
-                    if (Arrays.asList(MUTE_CHAT_TITLES).contains(a.title)) {
+                    String muteChatString = app.getString(app.getResources().getIdentifier("notification_button_mute", "string", app.getPackageName()));
+                    if (muteChatString.equals(a.title)) {
+                        XposedBridge.log(muteChatString);
                         param.setResult(param.thisObject);
                     }
                 }
