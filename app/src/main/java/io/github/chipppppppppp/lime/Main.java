@@ -41,9 +41,9 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
         boolean deleteIconLabels = prefs.getBoolean("delete_icon_labels", true);
         boolean deleteAds = prefs.getBoolean("delete_ads", true);
         boolean deleteRecommendation = prefs.getBoolean("delete_recommendation", true);
+        boolean deleteReplyMute = prefs.getBoolean("delete_reply_mute", true);
         boolean redirectWebView = prefs.getBoolean("redirect_webview", true);
         boolean openInBrowser = prefs.getBoolean("open_in_browser", false);
-        boolean deleteReplyMute = prefs.getBoolean("delete_reply_mute", true);
 
         Class hookTarget;
 
@@ -209,6 +209,21 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             });
         }
 
+        if (deleteReplyMute) {
+            XposedHelpers.findAndHookMethod(Notification.Builder.class, "addAction", Notification.Action.class, new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    Application app = AndroidAppHelper.currentApplication();
+                    Notification.Action a = (Notification.Action) param.args[0];
+                    String muteChatString = app.getString(app.getResources().getIdentifier("notification_button_mute", "string", app.getPackageName()));
+                    if (muteChatString.equals(a.title)) {
+                        XposedBridge.log(muteChatString);
+                        param.setResult(param.thisObject);
+                    }
+                }
+            });
+        }
+
         if (redirectWebView) {
             hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.activity.iab.InAppBrowserActivity");
             XposedBridge.hookAllMethods(hookTarget, "onResume", new XC_MethodHook() {
@@ -231,21 +246,6 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                         tabsIntent.launchUrl(activity, uri);
                     }
                     activity.finish();
-                }
-            });
-        }
-
-        if (deleteReplyMute) {
-            XposedHelpers.findAndHookMethod(Notification.Builder.class, "addAction", Notification.Action.class, new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    Application app = AndroidAppHelper.currentApplication();
-                    Notification.Action a = (Notification.Action) param.args[0];
-                    String muteChatString = app.getString(app.getResources().getIdentifier("notification_button_mute", "string", app.getPackageName()));
-                    if (muteChatString.equals(a.title)) {
-                        XposedBridge.log(muteChatString);
-                        param.setResult(param.thisObject);
-                    }
                 }
             });
         }
