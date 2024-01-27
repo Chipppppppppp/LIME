@@ -1,17 +1,13 @@
 package io.github.chipppppppppp.lime;
 
 import android.app.Activity;
-import android.app.AndroidAppHelper;
 import android.app.Application;
 import android.app.Notification;
 import android.app.AlertDialog;
-import android.app.Application;
-import android.app.Notification;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.XModuleResources;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.support.customtabs.CustomTabsIntent;
