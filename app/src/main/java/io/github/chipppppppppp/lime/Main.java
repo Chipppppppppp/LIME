@@ -158,7 +158,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                     @Override
                     public void onClick(View view) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                                .setTitle("Options")
+                                .setTitle(moduleContext.getString(R.string.option))
                                 .setCancelable(false);
                         LinearLayout layout = new LinearLayout(context);
                         layout.setLayoutParams(new LinearLayout.LayoutParams(
@@ -189,10 +189,10 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
 
                         builder.setView(layout);
 
-                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        builder.setPositiveButton(moduleContext.getString(R.string.ok), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(context.getApplicationContext(), "You need to restart the app", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context.getApplicationContext(), moduleContext.getString(R.string.need_restart), Toast.LENGTH_SHORT).show();
                             }
                         });
 
