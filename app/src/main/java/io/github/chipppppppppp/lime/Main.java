@@ -104,23 +104,13 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lparam) throws Throwable {
         if (!lparam.packageName.equals(PACKAGE)) return;
 
-        Class hookTarget;
+        XSharedPreferences xPrefs = new XSharedPreferences(PACKAGE, "io.github.chipppppppppp.lime-options");
+        for (int i = 0; i < limeOptions.size; ++i) {
+            LimeOptions.LimeOption option = limeOptions.getByIndex(i);
+            option.checked = xPrefs.getBoolean(option.name, option.checked);
+        }
 
-        hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.LineApplication");
-        XposedBridge.hookAllMethods(hookTarget, "onCreate", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                try {
-                    SharedPreferences prefs = AndroidAppHelper.currentApplication().getSharedPreferences("io.github.chipppppppppp.lime-options", Context.MODE_PRIVATE);
-                    for (int i = 0; i < limeOptions.size; ++i) {
-                        LimeOptions.LimeOption option = limeOptions.getByIndex(i);
-                        option.checked = prefs.getBoolean(option.name, option.checked);
-                    }
-                } catch (Exception e) {
-                    XposedBridge.log(e.toString());
-                }
-            }
-        });
+        Class hookTarget;
 
         hookTarget = lparam.classLoader.loadClass("com.linecorp.line.settings.main.LineUserMainSettingsFragment");
         XposedBridge.hookAllMethods(hookTarget, "onViewCreated", new XC_MethodHook() {
