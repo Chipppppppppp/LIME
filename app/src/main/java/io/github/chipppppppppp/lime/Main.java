@@ -1,10 +1,7 @@
 package io.github.chipppppppppp.lime;
 
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.AndroidAppHelper;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,14 +10,17 @@ import android.graphics.Canvas;
 import android.net.Uri;
 import android.support.customtabs.CustomTabsIntent;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.Switch;
+import android.widget.Toast;
 
+import android.app.AndroidAppHelper;
 import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
@@ -32,9 +32,6 @@ import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import android.content.res.XModuleResources;
-import android.widget.LinearLayout;
-import android.widget.Switch;
-import android.widget.Toast;
 
 public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
     public String MODULE_PATH;
@@ -122,10 +119,11 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             }
         });
 
-        hookTarget = lparam.classLoader.loadClass("com.linecorp.line.settings.base.LineUserSettingItemListFragment");
+        hookTarget = lparam.classLoader.loadClass("com.linecorp.line.settings.main.LineUserMainSettingsFragment");
         XposedBridge.hookAllMethods(hookTarget, "onViewCreated", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                XposedBridge.log(param.thisObject.getClass().getName());
                 ViewGroup viewGroup = ((ViewGroup) param.args[0]);
                 Context context = viewGroup.getContext();
                 Context moduleContext;
@@ -138,7 +136,6 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                     XposedBridge.log(e.toString());
                     return;
                 }
-                XposedBridge.log(AndroidAppHelper.currentApplication().getClass().getName());
 
                 FrameLayout frameLayout = new FrameLayout(context);
                 frameLayout.setLayoutParams(new ViewGroup.LayoutParams(
