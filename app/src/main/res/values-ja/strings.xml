@@ -7,6 +7,9 @@
     <string name="xposed_desc">LINE をクリーンに。</string>
 
     <!-- SettingsActivity -->
+    <string name="option">設定</string>
+    <string name="ok">OK</string>
+    <string name="need_restart">アプリの再起動が必要です</string>
     <string name="switch_delete_voom">VOOM アイコンを削除</string>
     <string name="switch_delete_wallet">ウォレットアイコンを削除</string>
     <string name="switch_distribute_evenly">アイコンを均等に配置</string>
