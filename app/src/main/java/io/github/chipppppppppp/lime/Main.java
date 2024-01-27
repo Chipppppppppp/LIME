@@ -351,7 +351,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                                 ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
                                 layoutParams.height = 0;
                                 child.setLayoutParams(layoutParams);
-                            } else if (limeOptions.deleteRecommendation.checked && child instanceof ViewGroup) {
+                            } else if (limeOptions.deleteAds.checked && child instanceof ViewGroup) {
                                 ViewGroup childGroup = (ViewGroup) child;
                                 for (int j = 0; j < childGroup.getChildCount(); ++j) {
                                     int id = childGroup.getChildAt(j).getId();
