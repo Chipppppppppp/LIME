@@ -12,8 +12,8 @@
     <string name="need_restart">アプリの再起動が必要です</string>
     <string name="switch_delete_voom">VOOM アイコンを削除</string>
     <string name="switch_delete_wallet">ウォレットアイコンを削除</string>
-    <string name="switch_distribute_evenly">アイコンを均等に配置</string>
-    <string name="switch_delete_icon_labels">アイコンのラベルを削除</string>
+    <string name="switch_distribute_evenly">ボトムバーのアイコンを均等に配置</string>
+    <string name="switch_delete_icon_labels">ボトムバーのアイコンのラベルを削除</string>
     <string name="switch_delete_ads">広告を削除</string>
     <string name="switch_delete_recommendation">おすすめを削除</string>
     <string name="switch_delete_reply_mute">通知から \"通知をオフ\" アクションを削除</string>
