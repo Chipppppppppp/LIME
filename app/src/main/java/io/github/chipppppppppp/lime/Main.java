@@ -5,6 +5,8 @@ import android.app.AndroidAppHelper;
 import android.app.Application;
 import android.app.Notification;
 import android.app.AlertDialog;
+import android.app.Application;
+import android.app.Notification;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,6 +26,8 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import android.app.AndroidAppHelper;
+import android.content.res.XModuleResources;
 import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
@@ -34,7 +38,6 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import android.content.res.XModuleResources;
 
 public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
     public String MODULE_PATH;
@@ -63,7 +66,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
         public LimeOption redirectWebView = new LimeOption("redirect_webview", R.string.switch_redirect_webview, true);
         public LimeOption openInBrowser = new LimeOption("open_in_browser", R.string.switch_open_in_browser, false);
 
-        public static final int size = 8;
+        public static final int size = 9;
 
         LimeOption getByIndex(int idx) {
             switch (idx) {
@@ -108,8 +111,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 try {
-                    Context appContext = AndroidAppHelper.currentApplication().createPackageContext(PACKAGE, Context.CONTEXT_IGNORE_SECURITY);
-                    SharedPreferences prefs = appContext.getSharedPreferences("io.github.chipppppppppp.lime-options", Context.MODE_PRIVATE);
+                    SharedPreferences prefs = AndroidAppHelper.currentApplication().getSharedPreferences("io.github.chipppppppppp.lime-options", Context.MODE_PRIVATE);
                     for (int i = 0; i < limeOptions.size; ++i) {
                         LimeOptions.LimeOption option = limeOptions.getByIndex(i);
                         option.checked = prefs.getBoolean(option.name, option.checked);
@@ -124,15 +126,13 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
         XposedBridge.hookAllMethods(hookTarget, "onViewCreated", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                XposedBridge.log(param.thisObject.getClass().getName());
                 ViewGroup viewGroup = ((ViewGroup) param.args[0]);
                 Context context = viewGroup.getContext();
                 Context moduleContext;
                 SharedPreferences prefs;
                 try {
                     moduleContext = AndroidAppHelper.currentApplication().createPackageContext("io.github.chipppppppppp.lime", Context.CONTEXT_IGNORE_SECURITY);
-                    Context appContext = AndroidAppHelper.currentApplication().createPackageContext(PACKAGE, Context.CONTEXT_IGNORE_SECURITY);
-                    prefs = appContext.getSharedPreferences("io.github.chipppppppppp.lime-options", Context.MODE_PRIVATE);
+                    prefs = AndroidAppHelper.currentApplication().getSharedPreferences("io.github.chipppppppppp.lime-options", Context.MODE_PRIVATE);
                 } catch (Exception e) {
                     XposedBridge.log(e.toString());
                     return;
@@ -150,7 +150,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                         FrameLayout.LayoutParams.WRAP_CONTENT);
                 layoutParams.gravity = Gravity.TOP | Gravity.END;
                 layoutParams.rightMargin = dpToPx(10, context);
-                layoutParams.topMargin = dpToPx(10, context);
+                layoutParams.topMargin = dpToPx(5, context);
                 button.setLayoutParams(layoutParams);
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -165,6 +165,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                         layout.setOrientation(LinearLayout.VERTICAL);
                         layout.setPadding(dpToPx(20, context), dpToPx(20, context), dpToPx(20, context), dpToPx(20, context));
 
+                        Switch switchRedirectWebView = null;
                         for (int i = 0; i < limeOptions.size; ++i) {
                             LimeOptions.LimeOption option = limeOptions.getByIndex(i);
                             String name = option.name;
@@ -177,11 +178,26 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                             params.topMargin = dpToPx(20, context);
                             switchView.setLayoutParams(params);
 
+                            if (name.equals("redirect_webview")) switchRedirectWebView = switchView;
+                            else if (name.equals("open_in_browser")) {
+                                switchRedirectWebView.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                                    prefs.edit().putBoolean(name, isChecked).apply();
+                                    option.checked = isChecked;
+                                    if (isChecked) {
+                                        switchView.setEnabled(true);
+                                    } else {
+                                        switchView.setChecked(false);
+                                        switchView.setEnabled(false);
+                                    }
+                                });
+                            } else {
+                                switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                                    prefs.edit().putBoolean(name, isChecked).apply();
+                                    option.checked = isChecked;
+                                });
+                            }
+
                             switchView.setChecked(option.checked);
-                            switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                                prefs.edit().putBoolean(name, isChecked).apply();
-                                option.checked = isChecked;
-                            });
                             layout.addView(switchView);
                         }
 
@@ -354,6 +370,19 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             }
         });
 
+        XposedHelpers.findAndHookMethod(Notification.Builder.class, "addAction", Notification.Action.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                if (!limeOptions.deleteReplyMute.checked) return;
+                Application app = AndroidAppHelper.currentApplication();
+                Notification.Action a = (Notification.Action) param.args[0];
+                String muteChatString = app.getString(app.getResources().getIdentifier("notification_button_mute", "string", app.getPackageName()));
+                if (muteChatString.equals(a.title)) {
+                    param.setResult(param.thisObject);
+                }
+            }
+        });
+
         hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.activity.iab.InAppBrowserActivity");
         XposedBridge.hookAllMethods(hookTarget, "onResume", new XC_MethodHook() {
             @Override
@@ -398,9 +427,9 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
     public void handleInitPackageResources(XC_InitPackageResources.InitPackageResourcesParam resparam) throws Throwable {
         if (!resparam.packageName.equals(PACKAGE)) return;
 
-        XModuleResources xModuleResources = XModuleResources.createInstance(MODULE_PATH, resparam.res);
-
         if (limeOptions.deleteIconLabels.checked) {
+            XModuleResources xModuleResources = XModuleResources.createInstance(MODULE_PATH, resparam.res);
+
             resparam.res.setReplacement(PACKAGE, "dimen", "main_bnb_button_height", xModuleResources.fwd(R.dimen.main_bnb_button_height));
             resparam.res.setReplacement(PACKAGE, "dimen", "main_bnb_button_width", xModuleResources.fwd(R.dimen.main_bnb_button_width));
             resparam.res.hookLayout(PACKAGE, "layout", "app_main_bottom_navigation_bar_button", new XC_LayoutInflated() {
