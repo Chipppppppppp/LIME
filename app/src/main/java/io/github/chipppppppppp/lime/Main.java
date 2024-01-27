@@ -178,26 +178,26 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                             params.topMargin = dpToPx(20, context);
                             switchView.setLayoutParams(params);
 
-                            if (name.equals("redirect_webview")) switchRedirectWebView = switchView;
-                            else if (name.equals("open_in_browser")) {
+                            switchView.setChecked(option.checked);
+                            switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                                prefs.edit().putBoolean(name, isChecked).apply();
+                                option.checked = isChecked;
+                            });
+
+                            if (name == "redirect_webview") switchRedirectWebView = switchView;
+                            else if (name == "open_in_browser") {
                                 switchRedirectWebView.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                                    prefs.edit().putBoolean(name, isChecked).apply();
-                                    option.checked = isChecked;
-                                    if (isChecked) {
-                                        switchView.setEnabled(true);
-                                    } else {
+                                    prefs.edit().putBoolean("redirect_webview", isChecked).apply();
+                                    limeOptions.redirectWebView.checked = isChecked;
+                                    if (isChecked) switchView.setEnabled(true);
+                                    else {
                                         switchView.setChecked(false);
                                         switchView.setEnabled(false);
                                     }
                                 });
-                            } else {
-                                switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                                    prefs.edit().putBoolean(name, isChecked).apply();
-                                    option.checked = isChecked;
-                                });
+                                switchView.setEnabled(limeOptions.redirectWebView.checked);
                             }
 
-                            switchView.setChecked(option.checked);
                             layout.addView(switchView);
                         }
 
