@@ -104,17 +104,12 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 try {
                     Context appContext = AndroidAppHelper.currentApplication().createPackageContext(PACKAGE, Context.CONTEXT_IGNORE_SECURITY);
                     SharedPreferences prefs = appContext.getSharedPreferences("io.github.chipppppppppp.lime-options", Context.MODE_PRIVATE);
-                    limeOptions.deleteVoom.checked = prefs.getBoolean("delete_voom", true);
-                    limeOptions.deleteWallet.checked = prefs.getBoolean("delete_wallet", true);
-                    limeOptions.distributeEvenly.checked = prefs.getBoolean("distribute_evenly", true);
-                    limeOptions.deleteIconLabels.checked= prefs.getBoolean("delete_icon_labels", true);
-                    limeOptions.deleteAds.checked = prefs.getBoolean("delete_ads", true);
-                    limeOptions.deleteRecommendation.checked = prefs.getBoolean("delete_recommendation", true);
-                    limeOptions.redirectWebView.checked = prefs.getBoolean("redirect_webview", true);
-                    limeOptions.openInBrowser.checked = prefs.getBoolean("open_in_browser", false);
+                    for (int i = 0; i < limeOptions.size; ++i) {
+                        LimeOptions.LimeOption option = limeOptions.getByIndex(i);
+                        option.checked = prefs.getBoolean(option.name, option.checked);
+                    }
                 } catch (Exception e) {
                     XposedBridge.log(e.toString());
-                    return;
                 }
             }
         });
@@ -169,7 +164,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                             String name = option.name;
 
                             Switch switchView = new Switch(context);
-                            switchView.setText(moduleContext.getString(limeOptions.getByIndex(i).id));
+                            switchView.setText(moduleContext.getString(option.id));
                             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                                     LinearLayout.LayoutParams.WRAP_CONTENT,
                                     LinearLayout.LayoutParams.WRAP_CONTENT);
