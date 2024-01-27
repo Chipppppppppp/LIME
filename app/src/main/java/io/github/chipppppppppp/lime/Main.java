@@ -1,6 +1,9 @@
 package io.github.chipppppppppp.lime;
 
 import android.app.Activity;
+import android.app.AndroidAppHelper;
+import android.app.Application;
+import android.app.Notification;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.app.Notification;
@@ -8,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.XModuleResources;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.support.customtabs.CustomTabsIntent;
@@ -401,6 +405,20 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                     tabsIntent.launchUrl(activity, uri);
                 }
                 activity.finish();
+            }
+        });
+
+        XposedHelpers.findAndHookMethod(Notification.Builder.class, "addAction", Notification.Action.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                if (limeOptions.deleteReplyMute.checked) {
+                    Application app = AndroidAppHelper.currentApplication();
+                    Notification.Action a = (Notification.Action) param.args[0];
+                    String muteChatString = app.getString(app.getResources().getIdentifier("notification_button_mute", "string", app.getPackageName()));
+                    if (muteChatString.equals(a.title)) {
+                        param.setResult(param.thisObject);
+                    }
+                }
             }
         });
     }
