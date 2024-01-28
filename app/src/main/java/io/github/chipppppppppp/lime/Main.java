@@ -138,65 +138,67 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 layoutParams.rightMargin = dpToPx(10, context);
                 layoutParams.topMargin = dpToPx(5, context);
                 button.setLayoutParams(layoutParams);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                        .setTitle(moduleContext.getString(R.string.option))
+                        .setCancelable(false);
+                LinearLayout layout = new LinearLayout(context);
+                layout.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT));
+                layout.setOrientation(LinearLayout.VERTICAL);
+                layout.setPadding(dpToPx(20, context), dpToPx(20, context), dpToPx(20, context), dpToPx(20, context));
+
+                Switch switchRedirectWebView = null;
+                for (int i = 0; i < limeOptions.size; ++i) {
+                    LimeOptions.LimeOption option = limeOptions.getByIndex(i);
+                    String name = option.name;
+
+                    Switch switchView = new Switch(context);
+                    switchView.setText(moduleContext.getString(option.id));
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT);
+                    params.topMargin = dpToPx(20, context);
+                    switchView.setLayoutParams(params);
+
+                    switchView.setChecked(option.checked);
+                    switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                        prefs.edit().putBoolean(name, isChecked).apply();
+                        option.checked = isChecked;
+                    });
+
+                    if (name == "redirect_webview") switchRedirectWebView = switchView;
+                    else if (name == "open_in_browser") {
+                        switchRedirectWebView.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                            prefs.edit().putBoolean("redirect_webview", isChecked).apply();
+                            limeOptions.redirectWebView.checked = isChecked;
+                            if (isChecked) switchView.setEnabled(true);
+                            else {
+                                switchView.setChecked(false);
+                                switchView.setEnabled(false);
+                            }
+                        });
+                        switchView.setEnabled(limeOptions.redirectWebView.checked);
+                    }
+
+                    layout.addView(switchView);
+                }
+
+                builder.setView(layout);
+
+                builder.setPositiveButton(moduleContext.getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(context.getApplicationContext(), moduleContext.getString(R.string.need_restart), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                                .setTitle(moduleContext.getString(R.string.option))
-                                .setCancelable(false);
-                        LinearLayout layout = new LinearLayout(context);
-                        layout.setLayoutParams(new LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.MATCH_PARENT));
-                        layout.setOrientation(LinearLayout.VERTICAL);
-                        layout.setPadding(dpToPx(20, context), dpToPx(20, context), dpToPx(20, context), dpToPx(20, context));
-
-                        Switch switchRedirectWebView = null;
-                        for (int i = 0; i < limeOptions.size; ++i) {
-                            LimeOptions.LimeOption option = limeOptions.getByIndex(i);
-                            String name = option.name;
-
-                            Switch switchView = new Switch(context);
-                            switchView.setText(moduleContext.getString(option.id));
-                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                                    LinearLayout.LayoutParams.WRAP_CONTENT);
-                            params.topMargin = dpToPx(20, context);
-                            switchView.setLayoutParams(params);
-
-                            switchView.setChecked(option.checked);
-                            switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                                prefs.edit().putBoolean(name, isChecked).apply();
-                                option.checked = isChecked;
-                            });
-
-                            if (name == "redirect_webview") switchRedirectWebView = switchView;
-                            else if (name == "open_in_browser") {
-                                switchRedirectWebView.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                                    prefs.edit().putBoolean("redirect_webview", isChecked).apply();
-                                    limeOptions.redirectWebView.checked = isChecked;
-                                    if (isChecked) switchView.setEnabled(true);
-                                    else {
-                                        switchView.setChecked(false);
-                                        switchView.setEnabled(false);
-                                    }
-                                });
-                                switchView.setEnabled(limeOptions.redirectWebView.checked);
-                            }
-
-                            layout.addView(switchView);
-                        }
-
-                        builder.setView(layout);
-
-                        builder.setPositiveButton(moduleContext.getString(R.string.ok), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(context.getApplicationContext(), moduleContext.getString(R.string.need_restart), Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-                        AlertDialog dialog = builder.create();
                         dialog.show();
                     }
                 });
