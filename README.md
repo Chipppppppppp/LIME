@@ -29,11 +29,11 @@ LINE を掃除する Xposed Module です。
 
 ## 機能
 
-![Screenshot_20240128-163625](https://github.com/Chipppppppppp/LIME/assets/78024852/2b08bfdf-df0f-4100-b608-f561b0632c58)
+<img src="assets/78024852/2b08bfdf-df0f-4100-b608-f561b0632c58" width="100px">
 
 設定には以下から飛ぶことができます。
 
-![Screenshot_20240128-155519](https://github.com/Chipppppppppp/LIME/assets/78024852/b386174f-6788-4de8-a037-3087b824e2c0)
+<img src="assets/78024852/b386174f-6788-4de8-a037-3087b824e2c0" width="100px">
 
 ## 問題の報告
 
