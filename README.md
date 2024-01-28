@@ -29,9 +29,11 @@ LINE を掃除する Xposed Module です。
 
 ## 機能
 
-- 画面下部の \[VOOM]・\[ウォレット] アイコンの削除
-- 広告の削除
-- WebView (アプリ内ブラウザ) を規定のブラウザにリダイレクト
+![Screenshot_20240128-163625](https://github.com/Chipppppppppp/LIME/assets/78024852/2b08bfdf-df0f-4100-b608-f561b0632c58)
+
+設定には以下から飛ぶことができます。
+
+![Screenshot_20240128-155519](https://github.com/Chipppppppppp/LIME/assets/78024852/b386174f-6788-4de8-a037-3087b824e2c0)
 
 ## 問題の報告
 
