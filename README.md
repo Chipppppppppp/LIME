@@ -16,8 +16,8 @@ LINE を掃除する Xposed Module です。
 1. [**Magisk**](https://github.com/topjohnwu/Magisk) 及び [**LSPosed**](https://github.com/LSPosed/LSPosed) をインストール
 2. [Releases](https://github.com/Chipppppppppp/LIME/releases/latest) から APK ファイルを DL & インストール
 > [!NOTE]
-> Play プロテクトによりブロックされた場合、<kbd>詳細</kbd>から<kbd>インストールする</kbd>をタップ
-3. LSPosed のモジュールから LIME に移動し、<kbd>モジュールの有効化</kbd>と LINE アプリにチェックを入れる
+> Play プロテクトによりブロックされた場合、<kbd>詳細</kbd> から <kbd>インストールする</kbd> をタップ
+3. LSPosed のモジュールから LIME に移動し、<kbd>モジュールの有効化</kbd> と LINE アプリにチェックを入れる
 
 ### 非 Root 端末
 
@@ -26,6 +26,9 @@ LINE を掃除する Xposed Module です。
 3. [APKMirror](https://www.apkmirror.com/) などから LINE apk を DL
 4. 指示に従って LINE apk に LIME apk をパッチする
 5. パッチされた LINE apk をインストール
+> [!NOTE]
+> Google アカウントでのログインはできないため、<kbd>QRコードでログイン</kbd> または <kbd>電話番号でログイン</kbd> を使う
+> トークのバックアップも Google アカウントでログインできないため、スキップしてバックアップ PIN を入力する
 
 ## 機能
 
