@@ -1,4 +1,4 @@
-# <img src="app/src/main/ic_launcher-playstore.png" width="60px"> LIME: Adkiller for LINE
+　# <img src="app/src/main/ic_launcher-playstore.png" width="60px"> LIME: Adkiller for LINE
 
 [![Latest Release](https://img.shields.io/github/v/release/Chipppppppppp/LIME?label=latest)](https://github.com/Chipppppppppp/LIME/releases/latest)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -20,6 +20,8 @@ LINE を掃除する Xposed Module です。
 3. LSPosed のモジュールから LIME に移動し、<kbd>モジュールの有効化</kbd> と LINE アプリにチェックを入れる
 
 ### 非 Root 端末
+
+※設定ボタンが存在しない場合、再インストールすると直ることがあるようです
 
 1. [**LSPatch**](https://github.com/LSPosed/LSPatch) をインストール
 2. [Releases](https://github.com/Chipppppppppp/LIME/releases/latest) から APK ファイルをDL
