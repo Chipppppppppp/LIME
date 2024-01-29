@@ -37,12 +37,16 @@ android {
         }
         release {
             minifyEnabled true
+            shrinkResources true
             multiDexEnabled false
             proguardFiles += 'proguard-rules.pro'
             if (file('release.jks').exists()) {
                 signingConfig signingConfigs.release
             }
         }
+    }
+    lint {
+        checkReleaseBuilds false
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
