@@ -16,7 +16,7 @@ LINEアプリの<kbd>ホーム</kbd>→<kbd>⚙</kbd>から｢**設定**｣に�
 
 ## インストール
 
-#### Root 端末
+### Root 端末
 
 1. [**Magisk**](https://github.com/topjohnwu/Magisk) 及び [**LSPosed**](https://github.com/LSPosed/LSPosed) をインストール
 2. [Releases](https://github.com/Chipppppppppp/LIME/releases/latest) から APK を DL & インストール
@@ -24,7 +24,7 @@ LINEアプリの<kbd>ホーム</kbd>→<kbd>⚙</kbd>から｢**設定**｣に�
 > Play プロテクトによりブロックされた場合、<kbd>詳細</kbd> から <kbd>インストールする</kbd> をタップ
 3. LSPosed のモジュールから LIME に移動し、<kbd>モジュールの有効化</kbd> と LINE アプリにチェックを入れる
 
-#### 非 Root 端末
+### 非 Root 端末
 
 1. [**LSPatch**](https://github.com/LSPosed/LSPatch) をインストール  
   ※フォークで開発されている [**NPatch**](https://github.com/HSSkyBoy/NPatch) では不具合が発生する可能性があります
@@ -36,7 +36,7 @@ LINEアプリの<kbd>ホーム</kbd>→<kbd>⚙</kbd>から｢**設定**｣に�
   - [LINE 公式](https://line-android-universal-download.line-scdn.net/line-apk-download.html) ※バージョン選択不可
 4. **LSPatch** アプリを開き、<kbd>管理</kbd> → 右下の<kbd>＋</kbd> → <kbd>ストレージからapkを選択</kbd> →  LI**N**E の APK を選択 → <kbd>統合</kbd> → <kbd>モジュールを埋め込む</kbd> → <kbd>ストレージからapkを選択</kbd>→ LI**M**E の APK を選択 → <kbd>パッチを開始</kbd> より、パッチを適用
 
-> [!NOTE]
+> [!TIP]
 > <kbd>ディレクトリの選択</kbd>と出てきた場合は、<kbd>OK</kbd>を押してファイルピッカーを起動し、任意のディレクトリ下にフォルダを作成し、<kbd>このフォルダを使用</kbd> → <kbd>許可</kbd>を押す
 
 5. [**Shizuku**](https://github.com/RikkaApps/Shizuku) を使用している場合は <kbd>インストール</kbd> を押して続行する
