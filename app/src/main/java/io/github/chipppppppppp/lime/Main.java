@@ -19,6 +19,7 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -185,7 +186,9 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                     layout.addView(switchView);
                 }
 
-                builder.setView(layout);
+                ScrollView scrollView = new ScrollView(context);
+                scrollView.addView(layout);
+                builder.setView(scrollView);
 
                 builder.setPositiveButton(moduleContext.getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
