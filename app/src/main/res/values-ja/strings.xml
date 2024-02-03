@@ -19,4 +19,5 @@
     <string name="switch_delete_reply_mute">通知から \"通知をオフ\" アクションを削除</string>
     <string name="switch_redirect_webview">WebView を既定のブラウザにリダイレクト</string>
     <string name="switch_open_in_browser">ブラウザアプリで開く</string>
+    <string name="switch_prevent_mark_as_read">既読をつけない</string>
 </resources>
