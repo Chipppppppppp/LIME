@@ -9,6 +9,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.support.customtabs.CustomTabsIntent;
 import android.view.Gravity;
@@ -18,6 +21,7 @@ import android.view.ViewTreeObserver;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Switch;
@@ -111,6 +115,68 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
         }
 
         Class hookTarget;
+        hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.common.view.header.HeaderV2");
+        XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                Context moduleContext;
+                SharedPreferences prefs;
+                try {
+                    moduleContext = AndroidAppHelper.currentApplication().createPackageContext("io.github.chipppppppppp.lime", Context.CONTEXT_IGNORE_SECURITY);
+                    prefs = AndroidAppHelper.currentApplication().getSharedPreferences("io.github.chipppppppppp.lime-options", Context.MODE_PRIVATE);
+                } catch (Exception e) {
+                    XposedBridge.log(e.toString());
+                    return;
+                }
+
+                ViewGroup viewGroup = (ViewGroup) param.thisObject;
+                Context context = viewGroup.getContext();
+
+                FrameLayout frameLayout = new FrameLayout(context);
+                frameLayout.setLayoutParams(new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+
+                LinearLayout linearLayout = new LinearLayout(context);
+                FrameLayout.LayoutParams frameLayoutParams = new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.WRAP_CONTENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT);
+                frameLayoutParams.gravity = Gravity.CENTER;
+                linearLayout.setLayoutParams(frameLayoutParams);
+                linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+                linearLayout.setPadding(dpToPx(3, context), dpToPx(3, context), dpToPx(3, context), dpToPx(3, context));
+                linearLayout.setGravity(Gravity.CENTER_VERTICAL);
+
+                GradientDrawable gradientDrawable = new GradientDrawable();
+                gradientDrawable.setShape(GradientDrawable.RECTANGLE);
+                gradientDrawable.setColor(Color.WHITE);
+                gradientDrawable.setCornerRadius(dpToPx(6, context));
+                linearLayout.setBackground(gradientDrawable);
+
+                ImageView imageView = new ImageView(context);
+                imageView.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT));
+                imageView.setImageDrawable(moduleContext.getDrawable(R.drawable.incognito_circle));
+
+                Switch switchView = new Switch(context);
+                LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+                switchView.setLayoutParams(linearLayoutParams);
+
+                switchView.setChecked(limeOptions.preventMarkAsRead.checked);
+                switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    limeOptions.preventMarkAsRead.checked = isChecked;
+                    prefs.edit().putBoolean("prevent_mark_as_read", isChecked).apply();
+                });
+
+                linearLayout.addView(imageView);
+                linearLayout.addView(switchView);
+                frameLayout.addView(linearLayout);
+                ((ViewGroup) viewGroup.getChildAt(0)).addView(frameLayout);
+            }
+        });
 
         hookTarget = lparam.classLoader.loadClass("com.linecorp.line.settings.main.LineUserMainSettingsFragment");
         XposedBridge.hookAllMethods(hookTarget, "onViewCreated", new XC_MethodHook() {
@@ -168,12 +234,14 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
 
                     switchView.setChecked(option.checked);
                     switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                        option.checked = isChecked;
                         prefs.edit().putBoolean(name, isChecked).apply();
                     });
 
                     if (name == "redirect_webview") switchRedirectWebView = switchView;
                     else if (name == "open_in_browser") {
                         switchRedirectWebView.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                            limeOptions.redirectWebView.checked = isChecked;
                             prefs.edit().putBoolean("redirect_webview", isChecked).apply();
                             if (isChecked) switchView.setEnabled(true);
                             else {
