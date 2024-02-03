@@ -20,4 +20,5 @@
     <string name="switch_redirect_webview">Redirect WebView to the default browser</string>
     <string name="switch_open_in_browser">Open in the browser app</string>
     <string name="switch_prevent_mark_as_read">Prevent marking as read</string>
+    <string name="switch_delete_prevent_mark_as_read_shortcut">"Delete the shortcut switch for not marking as read in the chat tab</string>
 </resources>
