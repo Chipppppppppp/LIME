@@ -19,4 +19,5 @@
     <string name="switch_delete_reply_mute">Delete \"Mute chat\" action from notifications</string>
     <string name="switch_redirect_webview">Redirect WebView to the default browser</string>
     <string name="switch_open_in_browser">Open in the browser app</string>
+    <string name="switch_prevent_mark_as_read">Prevent marking as read</string>
 </resources>

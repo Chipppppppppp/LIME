@@ -62,8 +62,9 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
         public LimeOption deleteReplyMute = new LimeOption("delete_reply_mute", R.string.switch_delete_reply_mute, true);
         public LimeOption redirectWebView = new LimeOption("redirect_webview", R.string.switch_redirect_webview, true);
         public LimeOption openInBrowser = new LimeOption("open_in_browser", R.string.switch_open_in_browser, false);
+        public LimeOption preventMarkAsRead = new LimeOption("prevent_mark_as_read", R.string.switch_prevent_mark_as_read, false);
 
-        public static final int size = 9;
+        public static final int size = 10;
 
         LimeOption getByIndex(int idx) {
             switch (idx) {
@@ -85,6 +86,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                     return redirectWebView;
                 case 8:
                     return openInBrowser;
+                case 9:
+                    return preventMarkAsRead;
                 default:
                     throw new IllegalArgumentException("Invalid index: " + idx);
             }
@@ -166,14 +169,12 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                     switchView.setChecked(option.checked);
                     switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
                         prefs.edit().putBoolean(name, isChecked).apply();
-                        option.checked = isChecked;
                     });
 
                     if (name == "redirect_webview") switchRedirectWebView = switchView;
                     else if (name == "open_in_browser") {
                         switchRedirectWebView.setOnCheckedChangeListener((buttonView, isChecked) -> {
                             prefs.edit().putBoolean("redirect_webview", isChecked).apply();
-                            limeOptions.redirectWebView.checked = isChecked;
                             if (isChecked) switchView.setEnabled(true);
                             else {
                                 switchView.setChecked(false);
@@ -410,6 +411,14 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                         param.setResult(param.thisObject);
                     }
                 }
+            }
+        });
+
+        hookTarget = lparam.classLoader.loadClass("sj5.go");
+        XposedBridge.hookAllMethods(hookTarget, "write", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                if (limeOptions.preventMarkAsRead.checked) param.setResult(null);
             }
         });
     }
