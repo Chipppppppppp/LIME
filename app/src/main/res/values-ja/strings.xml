@@ -20,5 +20,4 @@
     <string name="switch_redirect_webview">WebView を既定のブラウザにリダイレクト</string>
     <string name="switch_open_in_browser">ブラウザアプリで開く</string>
     <string name="switch_prevent_mark_as_read">既読をつけない</string>
-    <string name="switch_delete_prevent_mark_as_read_shortcut">トークタブの既読をつけないようにするショートカットスイッチを削除</string>
 </resources>
