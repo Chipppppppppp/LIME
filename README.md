@@ -41,12 +41,6 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 
 5. [**Shizuku**](https://github.com/RikkaApps/Shizuku) を使用している場合は <kbd>インストール</kbd> を押して続行する
 
-> [!WARNING]
-> Google アカウントでのログインを行いたい場合は、**ADB** または [Termux](https://termux.dev) 等で **Shizuku** を用いてインストールする必要があります。  
-> ADB: `adb install -i com.android.vending -r LINE-lspatched.apk`  
-> Shizuku (shell): `pm install -i com.android.vending -r LINE-lspatched.apk`  
-> ※内部シェルの場合は、`/data/local/tmp` に APK をコピーしてからインストールしてください
-
 ## 問題の報告
 
 新たなバグや修正方法を見つけた場合は、[報告](https://github.com/Chipppppppppp/LIME/issues/new/choose)をお願いします。
