@@ -24,6 +24,9 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 > Play プロテクトによりブロックされた場合、<kbd>詳細</kbd> から <kbd>インストールする</kbd> をタップ
 3. LSPosed のモジュールから LIME に移動し、<kbd>モジュールの有効化</kbd> と LINE アプリにチェックを入れる
 
+> [!TIP]
+> Google Play や Aurora Store のアプリアップデートを防ぐために、[**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを隠すことをおすすめします。
+
 ### 非 Root 端末
 
 1. [**LSPatch**](https://github.com/LSPosed/LSPatch) をインストール  
