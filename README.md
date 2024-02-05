@@ -29,13 +29,13 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 
 1. [**LSPatch**](https://github.com/LSPosed/LSPatch) をインストール  
   ※フォークで開発されている [**NPatch**](https://github.com/HSSkyBoy/NPatch) では不具合が発生する可能性があります
-2. [Releases](https://github.com/Chipppppppppp/LIME/releases/latest) から LI**M**E の APK を DL
+2. [Releases](https://github.com/Chipppppppppp/LIME/releases/latest) から LI**M**E の APK を DL & インストール
 3. 以下のリストの中から LI**N**E の APK を DL
   - [APKMirror](https://www.apkmirror.com/uploads/?appcategory=line)
   - [APKPure](https://apkpure.net/jp/line-calls-messages/jp.naver.line.android/versions)
   - [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/old-versions/)
   - [LINE 公式](https://line-android-universal-download.line-scdn.net/line-apk-download.html) ※バージョン選択不可
-4. **LSPatch** アプリを開き、<kbd>管理</kbd> → 右下の<kbd>＋</kbd> → <kbd>ストレージからapkを選択</kbd> →  LI**N**E の APK を選択 → <kbd>統合</kbd> → <kbd>モジュールを埋め込む</kbd> → <kbd>ストレージからapkを選択</kbd>→ LI**M**E の APK を選択 → <kbd>パッチを開始</kbd> より、パッチを適用
+4. **LSPatch** アプリを開き、<kbd>管理</kbd> → 右下の<kbd>＋</kbd> → <kbd>ストレージからapkを選択</kbd> →  LI**N**E の APK を選択 → <kbd>統合</kbd> → <kbd>モジュールを埋め込む</kbd> → <kbd>インストールされているアプリを選択</kbd>→ LI**M**E にチェックを入れて <kbd>＋</kbd> → <kbd>パッチを開始</kbd> より、パッチを適用
 
 > [!TIP]
 > <kbd>ディレクトリの選択</kbd>と出てきた場合は、<kbd>OK</kbd>を押してファイルピッカーを起動し、任意のディレクトリ下にフォルダを作成し、<kbd>このフォルダを使用</kbd> → <kbd>許可</kbd>を押す
