@@ -25,7 +25,7 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 3. LSPosed のモジュールから LIME に移動し、<kbd>モジュールの有効化</kbd> と LINE アプリにチェックを入れる
 
 > [!TIP]
-> Google Play や Aurora Store のアプリアップデートを防ぐために、[**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを隠すことをおすすめします。
+> Google Play や Aurora Store の自動アップデートを防ぐために、[**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを隠すことをおすすめします。
 
 ### 非 Root 端末
 
