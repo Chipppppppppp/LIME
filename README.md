@@ -48,7 +48,7 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 
 ## Credit
 - [Rubik](https://fonts.google.com/specimen/Rubik)：ロゴフォントとして使用。
-- [Twemoji](https://github.com/jdecked/twemoji/)：CC-BY 4.0 Graphic Licenceに基いて掲示します。THX sofodesign!
+- [Twemoji](https://github.com/jdecked/twemoji/)：CC-BY 4.0 Graphic Licenceに基いて掲示します。THX Twemoji Team!
 
 ## Star History
 
