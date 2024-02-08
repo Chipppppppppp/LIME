@@ -1,4 +1,4 @@
-# <img src="" width="60px"> LIME: Adkiller for LINE
+# <img src="app/src/main/ic_launcher-playstore.png" width="60px"> LIME: Adkiller for LINE
 
 [![Latest Release](https://img.shields.io/github/v/release/Chipppppppppp/LIME?label=latest)](https://github.com/Chipppppppppp/LIME/releases/latest)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -45,6 +45,10 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 ## 問題の報告
 
 新たなバグや修正方法を見つけた場合は、[報告](https://github.com/Chipppppppppp/LIME/issues/new/choose)をお願いします。
+
+## Credit
+- [Rubik](https://fonts.google.com/specimen/Rubik)：ロゴフォントとして使用。
+- [Twemoji](https://github.com/jdecked/twemoji/)：CC-BY 4.0 Graphic Licenceに基いて掲示します。THX sofodesign!
 
 ## Star History
 
