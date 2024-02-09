@@ -287,7 +287,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             }
         });
 
-        String[] adClassNames = {
+        final String[] adClassNames = {
                 "com.linecorp.line.ladsdk.ui.inventory.album.LadAlbumImageAdView",
                 "com.linecorp.line.ladsdk.ui.inventory.home.LadHomeBigBannerImageAdView",
                 "com.linecorp.line.ladsdk.ui.inventory.home.LadHomeBigBannerVideoAdView",
@@ -295,7 +295,6 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 "com.linecorp.line.ladsdk.ui.inventory.home.LadHomePerformanceAdView",
                 "com.linecorp.line.ladsdk.ui.inventory.home.LadHomeYjBigBannerAdView",
                 "com.linecorp.line.ladsdk.ui.inventory.home.LadHomeYjImageAdView",
-                "com.linecorp.line.ladsdk.ui.inventory.openchat.LadOpenChatHeaderAdView",
                 "com.linecorp.line.ladsdk.ui.inventory.openchat.LadOpenChatImageAdView",
                 "com.linecorp.line.ladsdk.ui.inventory.timeline.post.LadPostAdView",
                 "com.linecorp.line.ladsdk.ui.inventory.wallet.LadWalletBigBannerImageAdView",
@@ -417,7 +416,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             }
         });
 
-        hookTarget = lparam.classLoader.loadClass("sj5.go");
+        hookTarget = lparam.classLoader.loadClass("nl5.jo");
         XposedBridge.hookAllMethods(hookTarget, "write", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
