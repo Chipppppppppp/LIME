@@ -11,7 +11,8 @@
     <string name="ok">OK</string>
     <string name="need_restart">You need to restart the app</string>
     <string name="switch_delete_voom">Delete the VOOM icon</string>
-    <string name="switch_delete_wallet">Delete the Wallet icon</string>
+    <string name="switch_delete_wallet">Delete the wallet icon</string>
+    <string name="switch_delete_news_or_call">Delete the news or call icon</string>
     <string name="switch_distribute_evenly">Distribute the icons on the bottom bar evenly</string>
     <string name="switch_delete_icon_labels">Delete the icon labels on the bottom bar</string>
     <string name="switch_delete_ads">Delete ads</string>
