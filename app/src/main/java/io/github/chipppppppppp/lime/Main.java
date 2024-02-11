@@ -1,5 +1,7 @@
 package io.github.chipppppppppp.lime;
 
+import java.lang.reflect.Method;
+
 import android.app.Activity;
 import android.app.Application;
 import android.app.Notification;
@@ -9,9 +11,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.support.customtabs.CustomTabsIntent;
 import android.view.Gravity;
@@ -21,7 +20,6 @@ import android.view.ViewTreeObserver;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Switch;
@@ -29,9 +27,6 @@ import android.widget.Toast;
 
 import android.app.AndroidAppHelper;
 import android.content.res.XModuleResources;
-
-import java.lang.reflect.Method;
-
 import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
@@ -62,6 +57,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
 
         public LimeOption deleteVoom = new LimeOption("delete_voom", R.string.switch_delete_voom, true);
         public LimeOption deleteWallet = new LimeOption("delete_wallet", R.string.switch_delete_wallet, true);
+        public LimeOption deleteNewsOrCall = new LimeOption("delete_news_or_call", R.string.switch_delete_news_or_call, true);
         public LimeOption distributeEvenly = new LimeOption("distribute_evenly", R.string.switch_distribute_evenly, true);
         public LimeOption deleteIconLabels = new LimeOption("delete_icon_labels", R.string.switch_delete_icon_labels, true);
         public LimeOption deleteAds = new LimeOption("delete_ads", R.string.switch_delete_ads, true);
@@ -71,7 +67,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
         public LimeOption openInBrowser = new LimeOption("open_in_browser", R.string.switch_open_in_browser, false);
         public LimeOption preventMarkAsRead = new LimeOption("prevent_mark_as_read", R.string.switch_prevent_mark_as_read, false);
         public LimeOption preventUnsendMessage = new LimeOption("prevent_unsend_message", R.string.switch_prevent_unsend_message, false);
-        public static final int size = 11;
+        public static final int size = 12;
 
         LimeOption getByIndex(int idx) {
             switch (idx) {
@@ -80,22 +76,24 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 case 1:
                     return deleteWallet;
                 case 2:
-                    return distributeEvenly;
+                    return deleteNewsOrCall;
                 case 3:
-                    return deleteIconLabels;
+                    return distributeEvenly;
                 case 4:
-                    return deleteAds;
+                    return deleteIconLabels;
                 case 5:
-                    return deleteRecommendation;
+                    return deleteAds;
                 case 6:
-                    return deleteReplyMute;
+                    return deleteRecommendation;
                 case 7:
-                    return redirectWebView;
+                    return deleteReplyMute;
                 case 8:
-                    return openInBrowser;
+                    return redirectWebView;
                 case 9:
-                    return preventMarkAsRead;
+                    return openInBrowser;
                 case 10:
+                    return preventMarkAsRead;
+                case 11:
                     return preventUnsendMessage;
                 default:
                     throw new IllegalArgumentException("Invalid index: " + idx);
@@ -240,6 +238,18 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                     if (limeOptions.distributeEvenly.checked) {
                         int walletSpacerResId = activity.getResources().getIdentifier("bnb_wallet_spacer", "id", activity.getPackageName());
                         activity.findViewById(walletSpacerResId).setVisibility(View.GONE);
+                    }
+                }
+                if (limeOptions.deleteNewsOrCall.checked) {
+                    int newsResId = activity.getResources().getIdentifier("bnb_news", "id", activity.getPackageName());
+                    activity.findViewById(newsResId).setVisibility(View.GONE);
+                    int callResId = activity.getResources().getIdentifier("bnb_call", "id", activity.getPackageName());
+                    activity.findViewById(callResId).setVisibility(View.GONE);
+                    if (limeOptions.distributeEvenly.checked) {
+                        int newsSpacerResId = activity.getResources().getIdentifier("bnb_news_spacer", "id", activity.getPackageName());
+                        activity.findViewById(newsSpacerResId).setVisibility(View.GONE);
+                        int callSpacerResId = activity.getResources().getIdentifier("bnb_call_spacer", "id", activity.getPackageName());
+                        activity.findViewById(callSpacerResId).setVisibility(View.GONE);
                     }
                 }
             }
