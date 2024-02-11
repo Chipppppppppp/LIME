@@ -7,10 +7,10 @@
 
 This is an Xposed Module to clean [**LINE**](https://line.me). It suppports **LINE 14.0.2**.
 
-LINE を掃除する Xposed Module です。**LINE 14.0.2** に対応しています。
+LINE を掃除する Xposed Module です。**LINE 14.1.3** に対応しています。
 
 ## 使用方法
-LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣に入り、右上の｢**LIME**｣のボタンより開けます。また、既読をつけないようにするスイッチはトーク画面上部にも存在します。
+LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣に入り、右上の｢**LIME**｣のボタンより開けます。
 
 <a href="#"><img src="https://github.com/Chipppppppppp/LIME/assets/78024852/8bdb25b6-e3be-49a7-adfc-0e2e925cdb03" width="400px" alt="Sample screenshot"></a>
 
