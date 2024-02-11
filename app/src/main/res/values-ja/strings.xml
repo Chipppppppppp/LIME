@@ -20,4 +20,5 @@
     <string name="switch_redirect_webview">WebView を既定のブラウザにリダイレクト</string>
     <string name="switch_open_in_browser">ブラウザアプリで開く</string>
     <string name="switch_prevent_mark_as_read">既読をつけない</string>
+    <string name="switch_prevent_unsend_message">送信取り消しを拒否</string>
 </resources>
