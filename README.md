@@ -12,7 +12,7 @@ LINE を掃除する Xposed Module です。**LINE 14.1.3** に対応してい�
 ## 使用方法
 LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣に入り、右上の｢**LIME**｣のボタンより開けます。
 
-<a href="#"><img src="https://github.com/Chipppppppppp/LIME/assets/78024852/8bdb25b6-e3be-49a7-adfc-0e2e925cdb03" width="400px" alt="Sample screenshot"></a>
+<a href="#"><img src="https://github.com/Chipppppppppp/LIME/assets/78024852/5fbb4819-d14f-4f07-93d4-44b172bcf137" width="400px" alt="Sample screenshot"></a>
 
 ## インストール
 
