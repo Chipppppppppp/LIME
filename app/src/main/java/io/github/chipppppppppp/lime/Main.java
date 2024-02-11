@@ -29,6 +29,9 @@ import android.widget.Toast;
 
 import android.app.AndroidAppHelper;
 import android.content.res.XModuleResources;
+
+import java.lang.reflect.Method;
+
 import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
@@ -67,7 +70,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
         public LimeOption redirectWebView = new LimeOption("redirect_webview", R.string.switch_redirect_webview, true);
         public LimeOption openInBrowser = new LimeOption("open_in_browser", R.string.switch_open_in_browser, false);
         public LimeOption preventMarkAsRead = new LimeOption("prevent_mark_as_read", R.string.switch_prevent_mark_as_read, false);
-        public static final int size = 10;
+        public LimeOption preventUnsendMessage = new LimeOption("prevent_unsend_message", R.string.switch_prevent_unsend_message, false);
+        public static final int size = 11;
 
         LimeOption getByIndex(int idx) {
             switch (idx) {
@@ -91,6 +95,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                     return openInBrowser;
                 case 9:
                     return preventMarkAsRead;
+                case 10:
+                    return preventUnsendMessage;
                 default:
                     throw new IllegalArgumentException("Invalid index: " + idx);
             }
@@ -421,6 +427,24 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 if (limeOptions.preventMarkAsRead.checked) param.setResult(null);
+            }
+        });
+
+        hookTarget = lparam.classLoader.loadClass("nl5.kd");
+        final Method valueOf = hookTarget.getMethod("valueOf", String.class);
+        final Object dummy = valueOf.invoke(null, "DUMMY");
+        final Object notifiedDestroyMessage = valueOf.invoke(null, "NOTIFIED_DESTROY_MESSAGE");
+        XposedHelpers.findAndHookMethod(hookTarget, "a", int.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                if (limeOptions.preventUnsendMessage.checked && param.getResult() == notifiedDestroyMessage) param.setResult(dummy);
+            }
+        });
+        hookTarget = lparam.classLoader.loadClass("kk5.b");
+        XposedHelpers.findAndHookMethod(hookTarget, "u", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                if (limeOptions.preventUnsendMessage.checked && param.getResult().equals("UNSENT")) param.setResult("");
             }
         });
     }
