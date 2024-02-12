@@ -34,7 +34,6 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
   - [APKMirror](https://www.apkmirror.com/uploads/?appcategory=line)
   - [APKPure](https://apkpure.net/jp/line-calls-messages/jp.naver.line.android/versions)
   - [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/old-versions/)
-  - [LINE 公式](https://line-android-universal-download.line-scdn.net/line-apk-download.html) ※バージョン選択不可
 4. **LSPatch** アプリを開き、<kbd>管理</kbd> → 右下の<kbd>＋</kbd> → <kbd>ストレージからapkを選択</kbd> →  LI**N**E の APK を選択 → <kbd>統合</kbd> → <kbd>モジュールを埋め込む</kbd> → <kbd>インストールされているアプリを選択</kbd>→ LI**M**E にチェックを入れて <kbd>＋</kbd> → <kbd>パッチを開始</kbd> より、パッチを適用
 
 > [!TIP]
