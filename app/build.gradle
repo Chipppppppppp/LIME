@@ -7,7 +7,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        minSdk 24
+        minSdk 26
         //noinspection OldTargetApi
         targetSdk 33
         versionCode 6
