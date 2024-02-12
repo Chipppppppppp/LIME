@@ -5,7 +5,7 @@
 
 ## 概要
 
-This is an Xposed Module to clean [**LINE**](https://line.me). It suppports **LINE 14.0.2**.
+This is an Xposed Module to clean [**LINE**](https://line.me). It suppports **LINE 14.1.3**.
 
 LINE を掃除する Xposed Module です。**LINE 14.1.3** に対応しています。
 
