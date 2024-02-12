@@ -175,14 +175,12 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
 
                     switchView.setChecked(option.checked);
                     switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                        option.checked = isChecked;
                         prefs.edit().putBoolean(name, isChecked).apply();
                     });
 
                     if (name == "redirect_webview") switchRedirectWebView = switchView;
                     else if (name == "open_in_browser") {
                         switchRedirectWebView.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                            limeOptions.redirectWebView.checked = isChecked;
                             prefs.edit().putBoolean("redirect_webview", isChecked).apply();
                             if (isChecked) switchView.setEnabled(true);
                             else {
