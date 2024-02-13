@@ -45,7 +45,7 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 5. [**Shizuku**](https://github.com/RikkaApps/Shizuku) を使用している場合は <kbd>インストール</kbd> を押して続行する
 
 > [!TIP]
-> LINE を既にインストールしている場合はアンインストールが必要
+> LINE を既にインストールしている場合は一旦アンインストールする
 
 ## 問題の報告
 
