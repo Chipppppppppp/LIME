@@ -19,16 +19,13 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 ### Root 端末
 
 1. [**Magisk**](https://github.com/topjohnwu/Magisk) 及び [**LSPosed**](https://github.com/LSPosed/LSPosed) をインストール
-2. LINE 14.1.3 をインストールしていない場合、適宜アップデート・ダウングレードを行う
+2. LINE 14.1.3 をインストールしていない場合、適宜アップデート・再インストールを行う
+
 > [!TIP]
-> LINE 14.1.3 の APK は以下のいずれかからダウンロード可能
-> [APKMirror](https://www.apkmirror.com/uploads/?appcategory=line)
-> [APKPure](https://apkpure.net/jp/line-calls-messages/jp.naver.line.android/versions)
-> [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/old-versions/)
+> LINE 14.1.3 の APK は以下のいずれかからダウンロード可能：[APKMirror](https://www.apkmirror.com/uploads/?appcategory=line), [APKPure](https://apkpure.net/jp/line-calls-messages/jp.naver.line.android/versions), [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/old-versions/)
+
 4. Google Play や Aurora Store の自動アップデートを防ぐために、[**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを隠す
 5. [Releases](https://github.com/Chipppppppppp/LIME/releases/latest) から APK をダウンロード & インストール
-> [!TIP]
-> Play プロテクトによりブロックされた場合、<kbd>詳細</kbd> から <kbd>インストールする</kbd> をタップ
 3. LSPosed のモジュールから LIME に移動し、<kbd>モジュールの有効化</kbd> と LINE アプリにチェックを入れる
 
 ### 非 Root 端末
@@ -36,7 +33,7 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 1. [**LSPatch**](https://github.com/LSPosed/LSPatch) をインストール  
   ※フォークで開発されている [**NPatch**](https://github.com/HSSkyBoy/NPatch) では不具合が発生する可能性があります
 2. [Releases](https://github.com/Chipppppppppp/LIME/releases/latest) から LI**M**E の APK をダウンロード & インストール
-3. 以下のいずれかから LI**N**E 14.1.3 の APK を DL
+4. 以下のいずれかから LI**N**E 14.1.3 の APK を DL
   - [APKMirror](https://www.apkmirror.com/uploads/?appcategory=line)
   - [APKPure](https://apkpure.net/jp/line-calls-messages/jp.naver.line.android/versions)
   - [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/old-versions/)
@@ -46,6 +43,9 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 > <kbd>ディレクトリの選択</kbd>と出てきた場合は、<kbd>OK</kbd>を押してファイルピッカーを起動し、任意のディレクトリ下にフォルダを作成し、<kbd>このフォルダを使用</kbd> → <kbd>許可</kbd>を押す
 
 5. [**Shizuku**](https://github.com/RikkaApps/Shizuku) を使用している場合は <kbd>インストール</kbd> を押して続行する
+
+> [!TIP]
+> LINE を既にインストールしている場合はアンインストールが必要
 
 ## 問題の報告
 
