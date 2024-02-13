@@ -33,7 +33,7 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 1. [**LSPatch**](https://github.com/LSPosed/LSPatch) をインストール  
   ※フォークで開発されている [**NPatch**](https://github.com/HSSkyBoy/NPatch) では不具合が発生する可能性があります
 2. [Releases](https://github.com/Chipppppppppp/LIME/releases/latest) から LI**M**E の APK をダウンロード & インストール
-4. 以下のいずれかから LI**N**E 14.1.3 の APK を DL
+4. 以下のいずれかから LI**N**E 14.1.3 の APK をダウンロード
   - [APKMirror](https://www.apkmirror.com/uploads/?appcategory=line)
   - [APKPure](https://apkpure.net/jp/line-calls-messages/jp.naver.line.android/versions)
   - [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/old-versions/)
