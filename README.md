@@ -22,7 +22,7 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 2. LINE 14.1.3 をインストールしていない場合、適宜アップデート・再インストールを行う
 
 > [!TIP]
-> LINE 14.1.3 の APK は以下のいずれかからダウンロード可能：[APKMirror](https://www.apkmirror.com/uploads/?appcategory=line), [APKPure](https://apkpure.net/jp/line-calls-messages/jp.naver.line.android/versions), [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/old-versions/)
+> LINE 14.1.3 の APK は次のいずれかからダウンロード可能：[APKMirror](https://www.apkmirror.com/uploads/?appcategory=line), [APKPure](https://apkpure.net/jp/line-calls-messages/jp.naver.line.android/versions), [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/old-versions/)
 
 4. Google Play や Aurora Store の自動アップデートを防ぐために、[**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを隠す
 5. [Releases](https://github.com/Chipppppppppp/LIME/releases/latest) から APK をダウンロード & インストール
