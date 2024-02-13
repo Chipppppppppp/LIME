@@ -19,18 +19,24 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 ### Root 端末
 
 1. [**Magisk**](https://github.com/topjohnwu/Magisk) 及び [**LSPosed**](https://github.com/LSPosed/LSPosed) をインストール
-2. [Releases](https://github.com/Chipppppppppp/LIME/releases/latest) から APK を DL & インストール
+2. LINE 14.1.3 をインストールしていない場合、適宜アップデート・ダウングレードを行う
+> [!TIP]
+> LINE 14.1.3 の APK は以下のいずれかからダウンロード可能
+> [APKMirror](https://www.apkmirror.com/uploads/?appcategory=line)
+> [APKPure](https://apkpure.net/jp/line-calls-messages/jp.naver.line.android/versions)
+> [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/old-versions/)
+4. Google Play や Aurora Store の自動アップデートを防ぐために、[**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを隠す
+5. [Releases](https://github.com/Chipppppppppp/LIME/releases/latest) から APK をダウンロード & インストール
 > [!TIP]
 > Play プロテクトによりブロックされた場合、<kbd>詳細</kbd> から <kbd>インストールする</kbd> をタップ
 3. LSPosed のモジュールから LIME に移動し、<kbd>モジュールの有効化</kbd> と LINE アプリにチェックを入れる
-4. Google Play や Aurora Store の自動アップデートを防ぐために、[**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを隠す
 
 ### 非 Root 端末
 
 1. [**LSPatch**](https://github.com/LSPosed/LSPatch) をインストール  
   ※フォークで開発されている [**NPatch**](https://github.com/HSSkyBoy/NPatch) では不具合が発生する可能性があります
-2. [Releases](https://github.com/Chipppppppppp/LIME/releases/latest) から LI**M**E の APK を DL & インストール
-3. 以下のリストの中から LI**N**E の APK を DL
+2. [Releases](https://github.com/Chipppppppppp/LIME/releases/latest) から LI**M**E の APK をダウンロード & インストール
+3. 以下のいずれかから LI**N**E 14.1.3 の APK を DL
   - [APKMirror](https://www.apkmirror.com/uploads/?appcategory=line)
   - [APKPure](https://apkpure.net/jp/line-calls-messages/jp.naver.line.android/versions)
   - [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/old-versions/)
