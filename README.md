@@ -19,7 +19,7 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 ### Root 端末
 
 1. [**Magisk**](https://github.com/topjohnwu/Magisk) 及び [**LSPosed**](https://github.com/LSPosed/LSPosed) をインストール
-2. LINE 14.1.3 をインストールしていない場合、適宜アップデート・再インストールを行う
+2. LINE 14.1.3 をインストールしていない場合、ストアアプリでアップデートするか LINE をアンインストールして再度 LINE 14.1.3 の APK をインストールする
 
 > [!TIP]
 > LINE 14.1.3 の APK は次のいずれかからダウンロード可能：[APKMirror](https://www.apkmirror.com/uploads/?appcategory=line), [APKPure](https://apkpure.net/jp/line-calls-messages/jp.naver.line.android/versions), [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/old-versions/)
