@@ -36,7 +36,7 @@ LINE 14.1.3
 - [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.1.3-apk)
 
 LIME 1.5
-- [Release](https://github.com/Chipppppppppp/LIME/releases/download/v1.5/LIME-v1.5.apk)
+- [Release](https://github.com/Chipppppppppp/LIME/releases/download/v1.5/LIME-v1.5.apk) (直リンク)
 
 LI**N**E: Root 取得済み端末の場合はインストールしてください。  
 LI**M**E: Root 取得の有無問わずインストールしてください。
@@ -44,7 +44,7 @@ LI**M**E: Root 取得の有無問わずインストールしてください。
 ### Root 端末 (Magisk)
 
 1. [**LSPosed**](https://github.com/LSPosed/LSPosed) をインストール
-2. Google Play や [Aurora Store](https://auroraoss.com) の自動アップデートを防ぐために、[**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを隠す
+2. Google Playストア や [Aurora Store](https://auroraoss.com) からの自動アップデートを防ぐために、[**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを隠す
 3. LSPosed のモジュールから LIME に移動し、<kbd>モジュールの有効化</kbd> と LINE アプリにチェックを入れる
 
 ### 非 Root 端末
