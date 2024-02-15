@@ -117,7 +117,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             option.checked = xPrefs.getBoolean(option.name, option.checked);
         }
 
-        Class hookTarget;
+        Class<?> hookTarget;
 
         hookTarget = lparam.classLoader.loadClass("com.linecorp.line.settings.main.LineUserMainSettingsFragment");
         XposedBridge.hookAllMethods(hookTarget, "onViewCreated", new XC_MethodHook() {
