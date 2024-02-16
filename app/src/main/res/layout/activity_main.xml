@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp" >
+
+        <Switch
+            android:id="@+id/switch_delete_voom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/switch_delete_voom" />
+
+        <Switch
+            android:id="@+id/switch_delete_wallet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/switch_delete_wallet" />
+
+        <Switch
+            android:id="@+id/switch_delete_news_or_call"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/switch_delete_news_or_call" />
+
+        <Switch
+            android:id="@+id/switch_distribute_evenly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/switch_distribute_evenly" />
+
+        <Switch
+            android:id="@+id/switch_delete_icon_labels"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/switch_delete_icon_labels" />
+
+        <Switch
+            android:id="@+id/switch_delete_ads"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/switch_delete_ads" />
+
+        <Switch
+            android:id="@+id/switch_delete_recommendation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/switch_delete_recommendation" />
+
+        <Switch
+            android:id="@+id/switch_delete_reply_mute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/switch_delete_reply_mute" />
+
+        <Switch
+            android:id="@+id/switch_redirect_webview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/switch_redirect_webview" />
+
+        <Switch
+            android:id="@+id/switch_open_in_browser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/switch_open_in_browser" />
+
+        <Switch
+            android:id="@+id/switch_prevent_mark_as_read"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/switch_prevent_mark_as_read" />
+
+        <Switch
+            android:id="@+id/switch_prevent_unsend_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/switch_prevent_unsend_message" />
+
+    </LinearLayout>
+
+</ScrollView>

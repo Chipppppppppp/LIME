@@ -7,9 +7,9 @@
     <string name="xposed_desc">LINE をクリーンに。</string>
 
     <!-- SettingsActivity -->
-    <string name="option">設定</string>
-    <string name="ok">OK</string>
+    <string name="options_title">設定</string>
     <string name="need_restart">アプリの再起動が必要です</string>
+    <string name="switch_unembed_options">設定を LINE に埋め込まない</string>
     <string name="switch_delete_voom">VOOM アイコンを削除</string>
     <string name="switch_delete_wallet">ウォレットアイコンを削除</string>
     <string name="switch_delete_news_or_call">ニュースまたは通話アイコンを削除</string>

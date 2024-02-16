@@ -7,9 +7,9 @@
     <string name="xposed_desc">Clean LINE.</string>
 
     <!-- SettingsActivity -->
-    <string name="option">Options</string>
-    <string name="ok">OK</string>
+    <string name="options_title">Options</string>
     <string name="need_restart">You need to restart the app</string>
+    <string name="switch_unembed_options">Do not embed options in LINE</string>
     <string name="switch_delete_voom">Delete the VOOM icon</string>
     <string name="switch_delete_wallet">Delete the wallet icon</string>
     <string name="switch_delete_news_or_call">Delete the news or call icon</string>
