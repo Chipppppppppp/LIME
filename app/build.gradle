@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace 'io.github.chipppppppppp.lime'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         minSdk 26
@@ -55,7 +55,7 @@ android {
 }
 
 dependencies {
-    // noinspection GradleCompatible
+    //noinspection GradleCompatible
     implementation 'com.android.support:customtabs:27.0.1'
     compileOnly 'de.robv.android.xposed:api:82'
     compileOnly 'de.robv.android.xposed:api:82:sources'
