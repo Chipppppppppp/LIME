@@ -12,6 +12,7 @@ import android.widget.Switch;
 public class MainActivity extends Activity {
     public LimeOptions limeOptions = new LimeOptions();
 
+    @Deprecated
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
