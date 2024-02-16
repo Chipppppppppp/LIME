@@ -55,12 +55,8 @@ android {
 }
 
 dependencies {
-    // noinspection GradleCompatible
+    //noinspection GradleCompatible
     implementation 'com.android.support:customtabs:27.0.1'
     compileOnly 'de.robv.android.xposed:api:82'
     compileOnly 'de.robv.android.xposed:api:82:sources'
-}
-
-tasks.withType(JavaCompile) {
-    options.compilerArgs += "-Xlint:deprecation"
 }
