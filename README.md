@@ -5,6 +5,10 @@
 
 ## 概要
 
+<!--
+README に直接対応バージョンを書く場合は、インストール章のリリースタグやAPKダウンロードサイトのURLを固定してください。
+-->
+
 This is an Xposed Module to clean [**LINE**](https://line.me). It suppports **LINE 14.1.3**.
 
 LINE を掃除する Xposed Module です。**LINE 14.1.3** に対応しています。
@@ -16,35 +20,54 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 
 ## インストール
 
-### Root 端末
+初めに、以下のサイトの中から、**LINE 14.1.3** と **LIME 1.5** のAPKをダウンロードしてください｡
 
-1. [**Magisk**](https://github.com/topjohnwu/Magisk) 及び [**LSPosed**](https://github.com/LSPosed/LSPosed) をインストール
-2. [Releases](https://github.com/Chipppppppppp/LIME/releases/latest) から APK を DL & インストール
-> [!TIP]
-> Play プロテクトによりブロックされた場合、<kbd>詳細</kbd> から <kbd>インストールする</kbd> をタップ
+> [!IMPORTANT]
+> 分割APK は使用しないでください
+
+<!-- バージョンリスト
+- [APKMirror](https://www.apkmirror.com/uploads/?appcategory=line)
+- [APKPure](https://apkpure.net/jp/line-calls-messages/jp.naver.line.android/versions)
+- [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/old-versions/)
+-->
+LINE 14.1.3
+- [APKMirror](https://www.apkmirror.com/apk/line-corporation/line/line-14-1-3-release/line-calls-messages-14-1-3-2-android-apk-download/)
+- [APKPure](https://d.apkpure.net/b/APK/jp.naver.line.android?versionCode=140130350&nc=arm64-v8a%2Carmeabi-v7a&sv=26) (直リンク)
+- [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.1.3-apk)
+
+LIME 1.5
+- [Release](https://github.com/Chipppppppppp/LIME/releases/download/v1.5/LIME-v1.5.apk) (直リンク)
+
+LI**N**E: Root 取得済み端末の場合はインストールしてください。  
+LI**M**E: Root 取得の有無問わずインストールしてください。
+
+### Root 端末 (Magisk)
+
+1. [**LSPosed**](https://github.com/LSPosed/LSPosed) をインストール
+2. Google Playストア や [Aurora Store](https://auroraoss.com) からの自動アップデートを防ぐために、[**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを隠す
 3. LSPosed のモジュールから LIME に移動し、<kbd>モジュールの有効化</kbd> と LINE アプリにチェックを入れる
-4. Google Play や Aurora Store の自動アップデートを防ぐために、[**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを隠す
 
 ### 非 Root 端末
 
 1. [**LSPatch**](https://github.com/LSPosed/LSPatch) をインストール  
   ※フォークで開発されている [**NPatch**](https://github.com/HSSkyBoy/NPatch) では不具合が発生する可能性があります
-2. [Releases](https://github.com/Chipppppppppp/LIME/releases/latest) から LI**M**E の APK を DL & インストール
-3. 以下のリストの中から LI**N**E の APK を DL
-  - [APKMirror](https://www.apkmirror.com/uploads/?appcategory=line)
-  - [APKPure](https://apkpure.net/jp/line-calls-messages/jp.naver.line.android/versions)
-  - [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/old-versions/)
-  - [LINE 公式](https://line-android-universal-download.line-scdn.net/line-apk-download.html) ※バージョン選択不可
-4. **LSPatch** アプリを開き、<kbd>管理</kbd> → 右下の<kbd>＋</kbd> → <kbd>ストレージからapkを選択</kbd> →  LI**N**E の APK を選択 → <kbd>統合</kbd> → <kbd>モジュールを埋め込む</kbd> → <kbd>インストールされているアプリを選択</kbd>→ LI**M**E にチェックを入れて <kbd>＋</kbd> → <kbd>パッチを開始</kbd> より、パッチを適用
+2. **LSPatch** アプリを開き、<kbd>管理</kbd> → 右下の<kbd>＋</kbd> → <kbd>ストレージからapkを選択</kbd> →  先程ダウンロードした LI**N**E の APK を選択 → <kbd>統合</kbd> → <kbd>モジュールを埋め込む</kbd> → <kbd>インストールされているアプリを選択</kbd>→ LI**M**E にチェックを入れて <kbd>＋</kbd> → <kbd>パッチを開始</kbd> より、パッチを適用
 
 > [!TIP]
 > <kbd>ディレクトリの選択</kbd>と出てきた場合は、<kbd>OK</kbd>を押してファイルピッカーを起動し、任意のディレクトリ下にフォルダを作成し、<kbd>このフォルダを使用</kbd> → <kbd>許可</kbd>を押す
 
-5. [**Shizuku**](https://github.com/RikkaApps/Shizuku) を使用している場合は <kbd>インストール</kbd> を押して続行する
+3. [**Shizuku**](https://github.com/RikkaApps/Shizuku) を使用している場合は <kbd>インストール</kbd> を押して続行する  
+  使用していない場合は、ファイルエクスプローラー等の別のアプリからインストールする
+
+> [!IMPORTANT]
+> 既にPlay ストアからインストールした LINE アプリがインストールされている場合は、署名が競合するため、最初にアンインストールを行ってください。
 
 ## 問題の報告
 
 新たなバグや修正方法を見つけた場合は、[報告](https://github.com/Chipppppppppp/LIME/issues/new/choose)をお願いします。
+
+> [!NOTE]
+> 日本語が解る場合は日本語で記述してください。
 
 ## Star History
 
