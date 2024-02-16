@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.net.Uri;
@@ -40,80 +41,23 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
     public String MODULE_PATH;
-    public final String PACKAGE = "jp.naver.line.android";
-
-    public class LimeOptions {
-        public class LimeOption {
-            String name;
-            public int id;
-            public boolean checked;
-
-            private LimeOption(String name, int id, boolean checked) {
-                this.name = name;
-                this.id = id;
-                this.checked = checked;
-            }
-        }
-
-        public LimeOption deleteVoom = new LimeOption("delete_voom", R.string.switch_delete_voom, true);
-        public LimeOption deleteWallet = new LimeOption("delete_wallet", R.string.switch_delete_wallet, true);
-        public LimeOption deleteNewsOrCall = new LimeOption("delete_news_or_call", R.string.switch_delete_news_or_call, true);
-        public LimeOption distributeEvenly = new LimeOption("distribute_evenly", R.string.switch_distribute_evenly, true);
-        public LimeOption deleteIconLabels = new LimeOption("delete_icon_labels", R.string.switch_delete_icon_labels, true);
-        public LimeOption deleteAds = new LimeOption("delete_ads", R.string.switch_delete_ads, true);
-        public LimeOption deleteRecommendation = new LimeOption("delete_recommendation", R.string.switch_delete_recommendation, true);
-        public LimeOption deleteReplyMute = new LimeOption("delete_reply_mute", R.string.switch_delete_reply_mute, true);
-        public LimeOption redirectWebView = new LimeOption("redirect_webview", R.string.switch_redirect_webview, true);
-        public LimeOption openInBrowser = new LimeOption("open_in_browser", R.string.switch_open_in_browser, false);
-        public LimeOption preventMarkAsRead = new LimeOption("prevent_mark_as_read", R.string.switch_prevent_mark_as_read, false);
-        public LimeOption preventUnsendMessage = new LimeOption("prevent_unsend_message", R.string.switch_prevent_unsend_message, false);
-        public static final int size = 12;
-
-        LimeOption getByIndex(int idx) {
-            switch (idx) {
-                case 0:
-                    return deleteVoom;
-                case 1:
-                    return deleteWallet;
-                case 2:
-                    return deleteNewsOrCall;
-                case 3:
-                    return distributeEvenly;
-                case 4:
-                    return deleteIconLabels;
-                case 5:
-                    return deleteAds;
-                case 6:
-                    return deleteRecommendation;
-                case 7:
-                    return deleteReplyMute;
-                case 8:
-                    return redirectWebView;
-                case 9:
-                    return openInBrowser;
-                case 10:
-                    return preventMarkAsRead;
-                case 11:
-                    return preventUnsendMessage;
-                default:
-                    throw new IllegalArgumentException("Invalid index: " + idx);
-            }
-        }
-    }
+    public static final String PACKAGE = "jp.naver.line.android";
+    public static final String MODULE = "io.github.chipppppppppp.lime";
 
     public LimeOptions limeOptions = new LimeOptions();
-
-    private int dpToPx(int dp, Context context) {
-        float density = context.getResources().getDisplayMetrics().density;
-        return Math.round((float) dp * density);
-    }
 
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lparam) throws Throwable {
         if (!lparam.packageName.equals(PACKAGE)) return;
 
-        XSharedPreferences xPrefs = new XSharedPreferences(PACKAGE, "io.github.chipppppppppp.lime-options");
+        final XSharedPreferences xModulePrefs = new XSharedPreferences(MODULE, "options");
+        XSharedPreferences xPrefs;
+        if (xModulePrefs.getBoolean("unembed_options", false)) {
+            xPrefs = xModulePrefs;
+        } else {
+            xPrefs = new XSharedPreferences(PACKAGE, MODULE + "-options");
+        }
         for (int i = 0; i < limeOptions.size; ++i) {
-            LimeOptions.LimeOption option = limeOptions.getByIndex(i);
+            LimeOptions.Option option = limeOptions.getByIndex(i);
             option.checked = xPrefs.getBoolean(option.name, option.checked);
         }
 
@@ -125,13 +69,24 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 ViewGroup viewGroup = ((ViewGroup) param.args[0]);
                 Context context = viewGroup.getContext();
-                Context moduleContext;
+
+                Method method = AssetManager.class.getDeclaredMethod("addAssetPath", String.class);
+                method.setAccessible(true);
+                method.invoke(context.getResources().getAssets(), MODULE_PATH);
+
                 SharedPreferences prefs;
                 try {
-                    moduleContext = AndroidAppHelper.currentApplication().createPackageContext("io.github.chipppppppppp.lime", Context.CONTEXT_IGNORE_SECURITY);
-                    prefs = AndroidAppHelper.currentApplication().getSharedPreferences("io.github.chipppppppppp.lime-options", Context.MODE_PRIVATE);
+                    prefs = AndroidAppHelper.currentApplication().getSharedPreferences(MODULE + "-options", Context.MODE_PRIVATE);
                 } catch (Exception e) {
                     XposedBridge.log(e.toString());
+                    return;
+                }
+
+                if (xModulePrefs.getBoolean("unembed_options", false)) {
+                    for (int i = 0; i < limeOptions.size; ++i) {
+                        LimeOptions.Option option = limeOptions.getByIndex(i);
+                        prefs.edit().putBoolean(option.name, xModulePrefs.getBoolean(option.name, option.checked));
+                    }
                     return;
                 }
 
@@ -146,31 +101,32 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                         FrameLayout.LayoutParams.WRAP_CONTENT,
                         FrameLayout.LayoutParams.WRAP_CONTENT);
                 layoutParams.gravity = Gravity.TOP | Gravity.END;
-                layoutParams.rightMargin = dpToPx(10, context);
-                layoutParams.topMargin = dpToPx(5, context);
+                layoutParams.rightMargin = Utils.dpToPx(10, context);
+                layoutParams.topMargin = Utils.dpToPx(5, context);
                 button.setLayoutParams(layoutParams);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                        .setTitle(moduleContext.getString(R.string.option))
+                        .setTitle(context.getString(R.string.options_title))
                         .setCancelable(false);
+
                 LinearLayout layout = new LinearLayout(context);
                 layout.setLayoutParams(new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.MATCH_PARENT));
                 layout.setOrientation(LinearLayout.VERTICAL);
-                layout.setPadding(dpToPx(20, context), dpToPx(20, context), dpToPx(20, context), dpToPx(20, context));
+                layout.setPadding(Utils.dpToPx(20, context), Utils.dpToPx(20, context), Utils.dpToPx(20, context), Utils.dpToPx(20, context));
 
                 Switch switchRedirectWebView = null;
                 for (int i = 0; i < limeOptions.size; ++i) {
-                    LimeOptions.LimeOption option = limeOptions.getByIndex(i);
-                    String name = option.name;
+                    LimeOptions.Option option = limeOptions.getByIndex(i);
+                    final String name = option.name;
 
                     Switch switchView = new Switch(context);
-                    switchView.setText(moduleContext.getString(option.id));
+                    switchView.setText(context.getString(option.id));
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.WRAP_CONTENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT);
-                    params.topMargin = dpToPx(20, context);
+                    params.topMargin = Utils.dpToPx(20, context);
                     switchView.setLayoutParams(params);
 
                     switchView.setChecked(option.checked);
@@ -198,10 +154,10 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 scrollView.addView(layout);
                 builder.setView(scrollView);
 
-                builder.setPositiveButton(moduleContext.getString(R.string.ok), new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(context.getString(R.string.dialog_positive), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(context.getApplicationContext(), moduleContext.getString(R.string.need_restart), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context.getApplicationContext(), context.getString(R.string.need_restart), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -432,7 +388,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             }
         });
 
-        hookTarget = lparam.classLoader.loadClass("nl5.jo");
+        hookTarget = lparam.classLoader.loadClass("tn5.go");
         XposedBridge.hookAllMethods(hookTarget, "write", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -440,7 +396,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             }
         });
 
-        hookTarget = lparam.classLoader.loadClass("nl5.kd");
+        hookTarget = lparam.classLoader.loadClass("tn5.id");
         final Method valueOf = hookTarget.getMethod("valueOf", String.class);
         final Object dummy = valueOf.invoke(null, "DUMMY");
         final Object notifiedDestroyMessage = valueOf.invoke(null, "NOTIFIED_DESTROY_MESSAGE");
@@ -450,7 +406,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 if (limeOptions.preventUnsendMessage.checked && param.getResult() == notifiedDestroyMessage) param.setResult(dummy);
             }
         });
-        hookTarget = lparam.classLoader.loadClass("kk5.b");
+        hookTarget = lparam.classLoader.loadClass("om5.c");
         XposedHelpers.findAndHookMethod(hookTarget, "u", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
