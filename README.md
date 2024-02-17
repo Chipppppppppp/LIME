@@ -34,7 +34,7 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 
 ## インストール
 
-初めに、以下のサイトの中から、**LINE 14.2.0** と **LIME 1.5** のAPKをダウンロードしてください｡
+初めに、以下のサイトの中から、**LINE 14.2.0** と **LIME 1.6** のAPKをダウンロードしてください｡
 
 > [!IMPORTANT]
 > 分割APK は使用しないでください
@@ -46,11 +46,11 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 -->
 LINE 14.2.0
 - [APKMirror](https://www.apkmirror.com/apk/line-corporation/line/line-14-2-0-release/line-calls-messages-14-2-0-2-android-apk-download/)
-- [APKPure](https://d.apkpure.net/b/APK/jp.naver.line.android?versionCode=140200233&nc=arm64-v8a%2Carmeabi-v7a&sv=26) (直リンク
+- [APKPure](https://d.apkpure.net/b/APK/jp.naver.line.android?versionCode=140200233&nc=arm64-v8a%2Carmeabi-v7a&sv=26) (直リンク)
 - [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.2.0-apk)
 
-LIME 1.5
-- [Release](https://github.com/Chipppppppppp/LIME/releases/download/v1.5/LIME-v1.5.apk) (直リンク)
+LIME 1.6
+- [Release](https://github.com/Chipppppppppp/LIME/releases/download/v1.6/LIME-v1.6.apk) (直リンク)
 
 ### Root 端末 (Magisk)
 
