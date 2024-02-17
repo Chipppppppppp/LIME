@@ -9,9 +9,9 @@
 README に直接対応バージョンを書く場合は、インストール章のリリースタグやAPKダウンロードサイトのURLを固定してください。
 -->
 
-This is an Xposed Module to clean [**LINE**](https://line.me). It suppports **LINE 14.1.3**.
+This is an Xposed Module to clean [**LINE**](https://line.me). It suppports **LINE 14.2.0**.
 
-LINE を掃除する Xposed Module です。**LINE 14.1.3** に対応しています。
+LINE を掃除する Xposed Module です。**LINE 14.2.0** に対応しています。
 
 ## 使用方法
 LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣に入り、右上の｢**LIME**｣のボタンより開けます。
@@ -24,7 +24,7 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 
 ## インストール
 
-初めに、以下のサイトの中から、**LINE 14.1.3** と **LIME 1.5** のAPKをダウンロードしてください｡
+初めに、以下のサイトの中から、**LINE 14.2.0** と **LIME 1.5** のAPKをダウンロードしてください｡
 
 > [!IMPORTANT]
 > 分割APK は使用しないでください
