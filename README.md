@@ -20,6 +20,8 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 
 また、トーク画面右上のメニューからスイッチをオンにすると**未読のまま閲覧**できます。(このスイッチは設定で削除可能です）
 
+※返信すると未読が解除されてしまうのでご注意ください
+
 <a href="#"><img src="https://github.com/Chipppppppppp/LIME/assets/78024852/bd391a83-b041-4282-9eec-fe71b3b19aa0" width="400px" alt="Sample screenshot"></a>
 
 ## インストール
