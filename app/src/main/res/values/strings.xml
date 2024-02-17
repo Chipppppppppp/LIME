@@ -20,6 +20,7 @@
     <string name="switch_delete_reply_mute">Delete \"Mute chat\" action from notifications</string>
     <string name="switch_redirect_webview">Redirect WebView to the default browser</string>
     <string name="switch_open_in_browser">Open in the browser app</string>
-    <string name="switch_prevent_mark_as_read">Prevent marking as read</string>
+    <string name="switch_prevent_mark_as_read">Always prevent marking as read</string>
     <string name="switch_prevent_unsend_message">Prevent messages from unsending</string>
+    <string name="switch_delete_keep_unread">Delete the \"Keep unread\" switch from the menu in the top right corner of the chat tab</string>
 </resources>
