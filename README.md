@@ -16,13 +16,21 @@ LINE を掃除する Xposed Module です。**LINE 14.2.0** に対応してい�
 ## 使用方法
 LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣に入り、右上の｢**LIME**｣のボタンより開けます。
 
+<details><summary>画像を閲覧</summary>
+
 <a href="#"><img src="https://github.com/Chipppppppppp/LIME/assets/78024852/2f344ce7-1329-4564-b500-1dd79e586ea9" width="400px" alt="Sample screenshot"></a>
+
+</details>
 
 また、トーク画面右上のメニューからスイッチをオンにすると**未読のまま閲覧**できます。(このスイッチは設定で削除可能です）
 
 ※返信すると未読が解除されてしまうのでご注意ください
 
+<details><summary>画像を閲覧</summary>
+
 <a href="#"><img src="https://github.com/Chipppppppppp/LIME/assets/78024852/bd391a83-b041-4282-9eec-fe71b3b19aa0" width="400px" alt="Sample screenshot"></a>
+
+</details>
 
 ## インストール
 
