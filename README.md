@@ -61,6 +61,8 @@ LIME 1.6.0
 
 ### 非 Root 端末
 
+※非 Root では二週間以内のトークバックアップにまだ対応していません。
+
 1. [**LSPatch**](https://github.com/LSPosed/LSPatch) をインストール  
   ※フォークで開発されている [**NPatch**](https://github.com/HSSkyBoy/NPatch) では不具合が発生する可能性があります
 2. LI**M**E アプリをインストール
