@@ -6,7 +6,9 @@
     <!-- Xposed API -->
     <string name="xposed_desc">LINE をクリーンに。</string>
 
-    <!-- SettingsActivity -->
+    <!-- Options -->
+    <string name="module_not_enabled_title">エラー</string>
+    <string name="module_not_enabled_text">モジュールが有効化されていません！</string>
     <string name="options_title">設定</string>
     <string name="need_restart">アプリの再起動が必要です</string>
     <string name="switch_unembed_options">設定を LINE に埋め込まない</string>

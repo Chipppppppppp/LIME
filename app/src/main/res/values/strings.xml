@@ -6,7 +6,9 @@
     <!-- Xposed API -->
     <string name="xposed_desc">Clean LINE.</string>
 
-    <!-- SettingsActivity -->
+    <!-- Options -->
+    <string name="module_not_enabled_title">Error</string>
+    <string name="module_not_enabled_text">Module not enabled!</string>
     <string name="options_title">Options</string>
     <string name="need_restart">You need to restart the app</string>
     <string name="switch_unembed_options">Do not embed options in LINE</string>

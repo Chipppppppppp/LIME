@@ -447,7 +447,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             });
 
             hookTarget = lparam.classLoader.loadClass("bd1.d$d");
-            XposedBridge.hookAllMethods(hookTarget, "run", new XC_MethodHook() {
+            XposedHelpers.findAndHookMethod(hookTarget, "run", new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     if (keepUnread) param.setResult(null);

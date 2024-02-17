@@ -1,6 +1,8 @@
 package io.github.chipppppppppp.lime;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -17,7 +19,13 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SharedPreferences prefs = getSharedPreferences("options", MODE_WORLD_READABLE);
+        SharedPreferences prefs;
+        try {
+            prefs = getSharedPreferences("options", MODE_WORLD_READABLE);
+        } catch (SecurityException e) {
+            showModuleNotEnabledAlert();
+            return;
+        }
 
         for (int i = 0; i < limeOptions.size; ++i) {
             LimeOptions.Option option = limeOptions.getByIndex(i);
@@ -100,5 +108,19 @@ public class MainActivity extends Activity {
 
         ViewGroup rootView = findViewById(android.R.id.content);
         rootView.addView(scrollView);
+    }
+
+    private void showModuleNotEnabledAlert() {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.module_not_enabled_title))
+                .setMessage(getString(R.string.module_not_enabled_text))
+                .setPositiveButton(getString(R.string.dialog_positive), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finishAndRemoveTask();
+                    }
+                })
+                .setCancelable(false)
+                .show();
     }
 }
