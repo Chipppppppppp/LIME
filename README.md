@@ -36,10 +36,10 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 - [APKPure](https://apkpure.net/jp/line-calls-messages/jp.naver.line.android/versions)
 - [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/old-versions/)
 -->
-LINE 14.1.3
-- [APKMirror](https://www.apkmirror.com/apk/line-corporation/line/line-14-1-3-release/line-calls-messages-14-1-3-2-android-apk-download/)
-- [APKPure](https://d.apkpure.net/b/APK/jp.naver.line.android?versionCode=140130350&nc=arm64-v8a%2Carmeabi-v7a&sv=26) (直リンク)
-- [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.1.3-apk)
+LINE 14.2.0
+- [APKMirror](https://www.apkmirror.com/apk/line-corporation/line/line-14-2-0-release/line-calls-messages-14-2-0-2-android-apk-download/)
+- [APKPure](https://d.apkpure.net/b/APK/jp.naver.line.android?version=latest) (直リンク
+- [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.2.0-apk)
 
 LIME 1.5
 - [Release](https://github.com/Chipppppppppp/LIME/releases/download/v1.5/LIME-v1.5.apk) (直リンク)
@@ -47,15 +47,16 @@ LIME 1.5
 ### Root 端末 (Magisk)
 
 1. [**LSPosed**](https://github.com/LSPosed/LSPosed) をインストール
-2. Google Playストア や [Aurora Store](https://auroraoss.com) からの自動アップデートを防ぐために、[**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを隠す
-3. LI**N**E アプリと LI**M**E アプリを両方ともインストール
+2. LI**N**E アプリと LI**M**E アプリを両方ともインストール
+3. Google Playストア や [Aurora Store](https://auroraoss.com) からの自動アップデートを防ぐために、[**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを隠す
 4. LSPosed のモジュールから LIME に移動し、<kbd>モジュールの有効化</kbd> と LINE アプリにチェックを入れる
 
 ### 非 Root 端末
 
 1. [**LSPatch**](https://github.com/LSPosed/LSPatch) をインストール  
   ※フォークで開発されている [**NPatch**](https://github.com/HSSkyBoy/NPatch) では不具合が発生する可能性があります
-2. **LSPatch** アプリを開き、<kbd>管理</kbd> → 右下の<kbd>＋</kbd> → <kbd>ストレージからapkを選択</kbd> →  先程ダウンロードした LI**N**E の APK を選択 → <kbd>統合</kbd> → <kbd>モジュールを埋め込む</kbd> → <kbd>インストールされているアプリを選択</kbd>→ LI**M**E にチェックを入れて <kbd>＋</kbd> → <kbd>パッチを開始</kbd> より、パッチを適用
+2. LI**M**E アプリをインストール
+3. **LSPatch** アプリを開き、<kbd>管理</kbd> → 右下の<kbd>＋</kbd> → <kbd>ストレージからapkを選択</kbd> →  先程ダウンロードした LI**N**E の APK を選択 → <kbd>統合</kbd> → <kbd>モジュールを埋め込む</kbd> → <kbd>インストールされているアプリを選択</kbd>→ LI**M**E にチェックを入れて <kbd>＋</kbd> → <kbd>パッチを開始</kbd> より、パッチを適用
 
 > [!TIP]
 > <kbd>ディレクトリの選択</kbd>と出てきた場合は、<kbd>OK</kbd>を押してファイルピッカーを起動し、任意のディレクトリ下にフォルダを作成し、<kbd>このフォルダを使用</kbd> → <kbd>許可</kbd>を押す
