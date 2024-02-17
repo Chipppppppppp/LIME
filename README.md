@@ -16,7 +16,11 @@ LINE を掃除する Xposed Module です。**LINE 14.1.3** に対応してい�
 ## 使用方法
 LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣に入り、右上の｢**LIME**｣のボタンより開けます。
 
-<a href="#"><img src="https://github.com/Chipppppppppp/LIME/assets/78024852/5fbb4819-d14f-4f07-93d4-44b172bcf137" width="400px" alt="Sample screenshot"></a>
+<a href="#"><img src="https://github.com/Chipppppppppp/LIME/assets/78024852/2f344ce7-1329-4564-b500-1dd79e586ea9" width="400px" alt="Sample screenshot"></a>
+
+また、トーク画面右上のメニューからスイッチをオンにすると**未読のまま閲覧**できます。(このスイッチは設定で削除可能です）
+
+<a href="#"><img src="https://github.com/Chipppppppppp/LIME/assets/78024852/bd391a83-b041-4282-9eec-fe71b3b19aa0" width="400px" alt="Sample screenshot"></a>
 
 ## インストール
 
@@ -38,14 +42,12 @@ LINE 14.1.3
 LIME 1.5
 - [Release](https://github.com/Chipppppppppp/LIME/releases/download/v1.5/LIME-v1.5.apk) (直リンク)
 
-LI**N**E: Root 取得済み端末の場合はインストールしてください。  
-LI**M**E: Root 取得の有無問わずインストールしてください。
-
 ### Root 端末 (Magisk)
 
 1. [**LSPosed**](https://github.com/LSPosed/LSPosed) をインストール
 2. Google Playストア や [Aurora Store](https://auroraoss.com) からの自動アップデートを防ぐために、[**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを隠す
-3. LSPosed のモジュールから LIME に移動し、<kbd>モジュールの有効化</kbd> と LINE アプリにチェックを入れる
+3. LI**N**E アプリと LI**M**E アプリを両方ともインストール
+4. LSPosed のモジュールから LIME に移動し、<kbd>モジュールの有効化</kbd> と LINE アプリにチェックを入れる
 
 ### 非 Root 端末
 
