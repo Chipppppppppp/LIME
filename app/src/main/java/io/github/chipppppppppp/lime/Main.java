@@ -417,40 +417,43 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             }
         });
 
-        hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.common.view.listview.PopupListView");
-        XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                ViewGroup viewGroup = (ViewGroup) param.thisObject;
-                Context context = viewGroup.getContext();
+        if (!limeOptions.deleteKeepUnread.checked) {
+            hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.common.view.listview.PopupListView");
+            XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    ViewGroup viewGroup = (ViewGroup) param.thisObject;
+                    Context context = viewGroup.getContext();
 
-                RelativeLayout layout = new RelativeLayout(context);
-                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                layout.setLayoutParams(layoutParams);
+                    RelativeLayout layout = new RelativeLayout(context);
+                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                    layout.setLayoutParams(layoutParams);
 
-                Switch switchView = new Switch(context);
-                RelativeLayout.LayoutParams switchParams = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                switchParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+                    Switch switchView = new Switch(context);
+                    RelativeLayout.LayoutParams switchParams = new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    switchParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 
-                switchView.setChecked(false);
-                switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                    keepUnread = isChecked;
-                });
+                    switchView.setChecked(false);
+                    switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                        keepUnread = isChecked;
+                    });
 
-                layout.addView(switchView, switchParams);
+                    layout.addView(switchView, switchParams);
 
-                ((ListView) viewGroup.getChildAt(0)).addFooterView(layout);
-            }
-        });
-        hookTarget = lparam.classLoader.loadClass("bd1.d$d");
-        XposedBridge.hookAllMethods(hookTarget, "run", new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                if (keepUnread) param.setResult(null);
-            }
-        });
+                    ((ListView) viewGroup.getChildAt(0)).addFooterView(layout);
+                }
+            });
+
+            hookTarget = lparam.classLoader.loadClass("bd1.d$d");
+            XposedBridge.hookAllMethods(hookTarget, "run", new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    if (keepUnread) param.setResult(null);
+                }
+            });
+        }
     }
 
     @Override

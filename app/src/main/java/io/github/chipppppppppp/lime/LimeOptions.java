@@ -25,7 +25,8 @@ public class LimeOptions {
     public Option openInBrowser = new Option("open_in_browser", R.string.switch_open_in_browser, false);
     public Option preventMarkAsRead = new Option("prevent_mark_as_read", R.string.switch_prevent_mark_as_read, false);
     public Option preventUnsendMessage = new Option("prevent_unsend_message", R.string.switch_prevent_unsend_message, false);
-    public static final int size = 12;
+    public Option deleteKeepUnread = new Option("delete_keep_unread", R.string.switch_delete_keep_unread, false);
+    public static final int size = 13;
 
     public Option getByIndex(int idx) {
         switch (idx) {
@@ -53,6 +54,8 @@ public class LimeOptions {
                 return preventMarkAsRead;
             case 11:
                 return preventUnsendMessage;
+            case 12:
+                return deleteKeepUnread;
             default:
                 throw new IllegalArgumentException("Invalid index: " + idx);
         }
