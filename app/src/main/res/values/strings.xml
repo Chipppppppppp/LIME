@@ -1,7 +1,7 @@
 <resources>
     <string translatable="false" name="app_name">LIME</string>
     <!-- General -->
-    <string name="dialog_positive" translatable="false">OK</string>
+    <string name="dialog_positive">OK</string>
 
     <!-- Xposed API -->
     <string name="xposed_desc">Clean LINE.</string>
