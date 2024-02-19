@@ -89,9 +89,9 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 ViewGroup viewGroup = ((ViewGroup) param.args[0]);
                 Context context = viewGroup.getContext();
 
-                Method method = AssetManager.class.getDeclaredMethod("addAssetPath", String.class);
-                method.setAccessible(true);
-                method.invoke(context.getResources().getAssets(), MODULE_PATH);
+                Method mAddAddAssertPath = AssetManager.class.getDeclaredMethod("addAssetPath", String.class);
+                mAddAddAssertPath.setAccessible(true);
+                mAddAddAssertPath.invoke(context.getResources().getAssets(), MODULE_PATH);
 
                 SharedPreferences prefs = AndroidAppHelper.currentApplication().getSharedPreferences(MODULE + "-options", Context.MODE_PRIVATE);
 
@@ -165,7 +165,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 scrollView.addView(layout);
                 builder.setView(scrollView);
 
-                builder.setPositiveButton(context.getString(R.string.dialog_positive), new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(context.getString(R.string.positive), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(context.getApplicationContext(), context.getString(R.string.restarting), Toast.LENGTH_SHORT).show();
