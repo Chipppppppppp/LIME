@@ -27,8 +27,7 @@ public class MainActivity extends Activity {
             return;
         }
 
-        for (int i = 0; i < limeOptions.size; ++i) {
-            LimeOptions.Option option = limeOptions.getByIndex(i);
+        for (LimeOptions.Option option : limeOptions.options) {
             option.checked = prefs.getBoolean(option.name, option.checked);
         }
 
@@ -64,8 +63,7 @@ public class MainActivity extends Activity {
         }
 
         Switch switchRedirectWebView = null;
-        for (int i = 0; i < limeOptions.size; ++i) {
-            LimeOptions.Option option = limeOptions.getByIndex(i);
+        for (LimeOptions.Option option : limeOptions.options) {
             final String name = option.name;
 
             Switch switchView = new Switch(this);
