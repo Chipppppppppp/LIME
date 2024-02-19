@@ -24,23 +24,23 @@ public class LimeOptions {
     public Option redirectWebView = new Option("redirect_webview", R.string.switch_redirect_webview, true);
     public Option openInBrowser = new Option("open_in_browser", R.string.switch_open_in_browser, false);
     public Option preventMarkAsRead = new Option("prevent_mark_as_read", R.string.switch_prevent_mark_as_read, false);
-    public Option sendMuteMessage = new Option("mute_message", R.string.switch_send_mute_message, false);
     public Option preventUnsendMessage = new Option("prevent_unsend_message", R.string.switch_prevent_unsend_message, false);
+    public Option sendMuteMessage = new Option("mute_message", R.string.switch_send_mute_message, false);
     public Option deleteKeepUnread = new Option("delete_keep_unread", R.string.switch_delete_keep_unread, false);
     public Option[] options = {
-        deleteVoom,
-        deleteWallet,
-        deleteNewsOrCall,
-        distributeEvenly,
-        deleteIconLabels,
-        deleteAds,
-        deleteRecommendation,
-        deleteReplyMute,
-        redirectWebView,
-        openInBrowser,
-        preventMarkAsRead,
-        sendMuteMessage,
-        preventUnsendMessage,
-        deleteKeepUnread,
+            deleteVoom,
+            deleteWallet,
+            deleteNewsOrCall,
+            distributeEvenly,
+            deleteIconLabels,
+            deleteAds,
+            deleteRecommendation,
+            deleteReplyMute,
+            redirectWebView,
+            openInBrowser,
+            preventMarkAsRead,
+            preventUnsendMessage,
+            sendMuteMessage,
+            deleteKeepUnread,
     };
 }
