@@ -24,40 +24,23 @@ public class LimeOptions {
     public Option redirectWebView = new Option("redirect_webview", R.string.switch_redirect_webview, true);
     public Option openInBrowser = new Option("open_in_browser", R.string.switch_open_in_browser, false);
     public Option preventMarkAsRead = new Option("prevent_mark_as_read", R.string.switch_prevent_mark_as_read, false);
+    public Option sendMuteMessage = new Option("mute_message", R.string.switch_send_mute_message, false);
     public Option preventUnsendMessage = new Option("prevent_unsend_message", R.string.switch_prevent_unsend_message, false);
     public Option deleteKeepUnread = new Option("delete_keep_unread", R.string.switch_delete_keep_unread, false);
-    public static final int size = 13;
-
-    public Option getByIndex(int idx) {
-        switch (idx) {
-            case 0:
-                return deleteVoom;
-            case 1:
-                return deleteWallet;
-            case 2:
-                return deleteNewsOrCall;
-            case 3:
-                return distributeEvenly;
-            case 4:
-                return deleteIconLabels;
-            case 5:
-                return deleteAds;
-            case 6:
-                return deleteRecommendation;
-            case 7:
-                return deleteReplyMute;
-            case 8:
-                return redirectWebView;
-            case 9:
-                return openInBrowser;
-            case 10:
-                return preventMarkAsRead;
-            case 11:
-                return preventUnsendMessage;
-            case 12:
-                return deleteKeepUnread;
-            default:
-                throw new IllegalArgumentException("Invalid index: " + idx);
-        }
-    }
+    public Option[] options = {
+        deleteVoom,
+        deleteWallet,
+        deleteNewsOrCall,
+        distributeEvenly,
+        deleteIconLabels,
+        deleteAds,
+        deleteRecommendation,
+        deleteReplyMute,
+        redirectWebView,
+        openInBrowser,
+        preventMarkAsRead,
+        sendMuteMessage,
+        preventUnsendMessage,
+        deleteKeepUnread,
+    };
 }

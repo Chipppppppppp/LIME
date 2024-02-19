@@ -47,6 +47,22 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
     public static final String PACKAGE = "jp.naver.line.android";
     public static final String MODULE = "io.github.chipppppppppp.lime";
 
+    public static final String[] adClassNames = {
+            "com.linecorp.line.ladsdk.ui.inventory.album.LadAlbumImageAdView",
+            "com.linecorp.line.ladsdk.ui.inventory.home.LadHomeBigBannerImageAdView",
+            "com.linecorp.line.ladsdk.ui.inventory.home.LadHomeBigBannerVideoAdView",
+            "com.linecorp.line.ladsdk.ui.inventory.home.LadHomeImageAdView",
+            "com.linecorp.line.ladsdk.ui.inventory.home.LadHomePerformanceAdView",
+            "com.linecorp.line.ladsdk.ui.inventory.home.LadHomeYjBigBannerAdView",
+            "com.linecorp.line.ladsdk.ui.inventory.home.LadHomeYjImageAdView",
+            "com.linecorp.line.ladsdk.ui.inventory.openchat.LadOpenChatImageAdView",
+            "com.linecorp.line.ladsdk.ui.inventory.timeline.post.LadPostAdView",
+            "com.linecorp.line.ladsdk.ui.inventory.wallet.LadWalletBigBannerImageAdView",
+            "com.linecorp.line.ladsdk.ui.inventory.wallet.LadWalletBigBannerVideoAdView",
+            "com.linecorp.square.v2.view.ad.common.SquareCommonHeaderGoogleBannerAdView",
+            "com.linecorp.square.v2.view.ad.common.SquareCommonHeaderGoogleNativeAdView",
+    };
+
     public LimeOptions limeOptions = new LimeOptions();
     public boolean keepUnread = false;
 
@@ -60,8 +76,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
         } else {
             xPrefs = new XSharedPreferences(PACKAGE, MODULE + "-options");
         }
-        for (int i = 0; i < limeOptions.size; ++i) {
-            LimeOptions.Option option = limeOptions.getByIndex(i);
+        for (LimeOptions.Option option : limeOptions.options) {
             option.checked = xPrefs.getBoolean(option.name, option.checked);
         }
 
@@ -87,8 +102,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 }
 
                 if (xModulePrefs.getBoolean("unembed_options", false)) {
-                    for (int i = 0; i < limeOptions.size; ++i) {
-                        LimeOptions.Option option = limeOptions.getByIndex(i);
+                    for (LimeOptions.Option option : limeOptions.options) {
                         prefs.edit().putBoolean(option.name, xModulePrefs.getBoolean(option.name, option.checked));
                     }
                     return;
@@ -121,8 +135,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 layout.setPadding(Utils.dpToPx(20, context), Utils.dpToPx(20, context), Utils.dpToPx(20, context), Utils.dpToPx(20, context));
 
                 Switch switchRedirectWebView = null;
-                for (int i = 0; i < limeOptions.size; ++i) {
-                    LimeOptions.Option option = limeOptions.getByIndex(i);
+                for (LimeOptions.Option option : limeOptions.options) {
                     final String name = option.name;
 
                     Switch switchView = new Switch(context);
@@ -265,21 +278,6 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             }
         });
 
-        final String[] adClassNames = {
-                "com.linecorp.line.ladsdk.ui.inventory.album.LadAlbumImageAdView",
-                "com.linecorp.line.ladsdk.ui.inventory.home.LadHomeBigBannerImageAdView",
-                "com.linecorp.line.ladsdk.ui.inventory.home.LadHomeBigBannerVideoAdView",
-                "com.linecorp.line.ladsdk.ui.inventory.home.LadHomeImageAdView",
-                "com.linecorp.line.ladsdk.ui.inventory.home.LadHomePerformanceAdView",
-                "com.linecorp.line.ladsdk.ui.inventory.home.LadHomeYjBigBannerAdView",
-                "com.linecorp.line.ladsdk.ui.inventory.home.LadHomeYjImageAdView",
-                "com.linecorp.line.ladsdk.ui.inventory.openchat.LadOpenChatImageAdView",
-                "com.linecorp.line.ladsdk.ui.inventory.timeline.post.LadPostAdView",
-                "com.linecorp.line.ladsdk.ui.inventory.wallet.LadWalletBigBannerImageAdView",
-                "com.linecorp.line.ladsdk.ui.inventory.wallet.LadWalletBigBannerVideoAdView",
-                "com.linecorp.square.v2.view.ad.common.SquareCommonHeaderGoogleBannerAdView",
-                "com.linecorp.square.v2.view.ad.common.SquareCommonHeaderGoogleNativeAdView",
-        };
         for (String adClassName : adClassNames) {
             hookTarget = lparam.classLoader.loadClass(adClassName);
             XposedBridge.hookAllMethods(hookTarget, "onAttachedToWindow", new XC_MethodHook() {
@@ -412,6 +410,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 if (limeOptions.preventUnsendMessage.checked && param.getResult() == notifiedDestroyMessage) param.setResult(dummy);
             }
         });
+
         hookTarget = lparam.classLoader.loadClass("om5.c");
         XposedHelpers.findAndHookMethod(hookTarget, "u", new XC_MethodHook() {
             @Override
@@ -420,13 +419,13 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             }
         });
 
-         XposedHelpers.findAndHookMethod("dj5.b", lparam.classLoader, "H", "og5.f", new XC_MethodHook() {
+        hookTarget = lparam.classLoader.loadClass("dj5.b");
+         XposedHelpers.findAndHookMethod(hookTarget, "H", "og5.f", new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-
-
-                    if (limeOptions.silentlymode.checked)
+                    if (limeOptions.sendMuteMessage.checked) {
                         param.args[0] = Enum.valueOf((Class<Enum>) param.args[0].getClass(), "TO_BE_SENT_SILENTLY");
+                    }
                 }
             });
             
