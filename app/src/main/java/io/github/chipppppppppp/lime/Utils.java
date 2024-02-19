@@ -11,8 +11,5 @@ public class Utils {
     }
     public static void hideView(View view) {
         view.setVisibility(View.GONE);
-        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-        layoutParams.height = 0;
-        view.setLayoutParams(layoutParams);
     }
 }
