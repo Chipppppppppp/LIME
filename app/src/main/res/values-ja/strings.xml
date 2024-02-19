@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- General -->
-    <string name="dialog_positive">OK</string>
+    <string name="positive">OK</string>
 
     <!-- Xposed API -->
     <string name="xposed_desc">LINE をクリーンに。</string>

@@ -112,7 +112,7 @@ public class MainActivity extends Activity {
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.module_not_enabled_title))
                 .setMessage(getString(R.string.module_not_enabled_text))
-                .setPositiveButton(getString(R.string.dialog_positive), new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.positive), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finishAndRemoveTask();
