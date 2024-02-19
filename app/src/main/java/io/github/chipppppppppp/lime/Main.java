@@ -13,6 +13,7 @@ import android.content.res.AssetManager;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.net.Uri;
+import android.os.Process;
 import android.support.customtabs.CustomTabsIntent;
 import android.view.Gravity;
 import android.view.View;
@@ -160,7 +161,9 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 builder.setPositiveButton(context.getString(R.string.dialog_positive), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(context.getApplicationContext(), context.getString(R.string.need_restart), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context.getApplicationContext(), context.getString(R.string.restarting), Toast.LENGTH_SHORT).show();
+                        Process.killProcess(Process.myPid());
+                        context.startActivity(new Intent().setClassName("jp.naver.line.android", "jp.naver.line.android.activity.SplashActivity"));
                     }
                 });
 
