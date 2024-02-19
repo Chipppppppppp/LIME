@@ -420,6 +420,17 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             }
         });
 
+         XposedHelpers.findAndHookMethod("dj5.b", lparam.classLoader, "H", "og5.f", new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+
+
+                    if (limeOptions.silentlymode.checked)
+                        param.args[0] = Enum.valueOf((Class<Enum>) param.args[0].getClass(), "TO_BE_SENT_SILENTLY");
+                }
+            });
+            
+
         if (!limeOptions.deleteKeepUnread.checked) {
             hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.common.view.listview.PopupListView");
             XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
