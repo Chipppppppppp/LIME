@@ -230,74 +230,58 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             }
         });
 
-        hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.activity.main.bottomnavigationbar.BottomNavigationBarTextView");
-        XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                if (limeOptions.deleteIconLabels.checked) ((View) param.thisObject).setVisibility(View.GONE);
-            }
-        });
-
-        hookTarget = lparam.classLoader.loadClass("com.linecorp.line.admolin.smartch.v2.view.SmartChannelViewLayout");
-        XposedHelpers.findAndHookMethod(hookTarget, "dispatchDraw", Canvas.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                if (limeOptions.deleteAds.checked) ((View) ((View) param.thisObject).getParent()).setVisibility(View.GONE);
-            }
-        });
-
-        hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.common.view.lifecycle.LadAdView");
-        XposedHelpers.findAndHookMethod(hookTarget, "onAttachedToWindow", new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                if (limeOptions.deleteAds.checked) {
-                    View view = (View) param.thisObject;
-                    view.setVisibility(View.GONE);
-                    ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-                    layoutParams.height = 0;
-                    view.setLayoutParams(layoutParams);
-
-                    view = (View) ((View) param.thisObject).getParent();
-                    view.setVisibility(View.GONE);
-                    layoutParams = view.getLayoutParams();
-                    layoutParams.height = 0;
-                    view.setLayoutParams(layoutParams);
-
-                    view = (View) ((View) param.thisObject).getParent().getParent();
-                    view.setVisibility(View.GONE);
-                    layoutParams = view.getLayoutParams();
-                    layoutParams.height = 0;
-                    view.setLayoutParams(layoutParams);
-
-                    view = (View) ((View) param.thisObject).getParent().getParent().getParent();
-                    view.setVisibility(View.GONE);
-                    layoutParams = view.getLayoutParams();
-                    layoutParams.height = 0;
-                    view.setLayoutParams(layoutParams);
+        if (limeOptions.deleteIconLabels.checked) {
+            hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.activity.main.bottomnavigationbar.BottomNavigationBarTextView");
+            XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    Utils.hideView((View) param.thisObject);
                 }
-            }
-        });
+            });
+        }
 
-        for (String adClassName : adClassNames) {
-            hookTarget = lparam.classLoader.loadClass(adClassName);
-            XposedBridge.hookAllMethods(hookTarget, "onAttachedToWindow", new XC_MethodHook() {
+        if (limeOptions.deleteAds.checked) {
+            hookTarget = lparam.classLoader.loadClass("com.linecorp.line.admolin.smartch.v2.view.SmartChannelViewLayout");
+            XposedHelpers.findAndHookMethod(hookTarget, "dispatchDraw", Canvas.class, new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    Utils.hideView((View) ((View) param.thisObject).getParent());
+                }
+            });
+
+            hookTarget = lparam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.common.view.lifecycle.LadAdView");
+            XposedHelpers.findAndHookMethod(hookTarget, "onAttachedToWindow", new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     if (limeOptions.deleteAds.checked) {
                         View view = (View) param.thisObject;
-                        view.setVisibility(View.GONE);
-                        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-                        layoutParams.height = 0;
-                        view.setLayoutParams(layoutParams);
+                        Utils.hideView(view);
 
-                        view = (View) ((View) param.thisObject).getParent();
-                        view.setVisibility(View.GONE);
-                        layoutParams = view.getLayoutParams();
-                        layoutParams.height = 0;
-                        view.setLayoutParams(layoutParams);
+                        view = (View) view.getParent();
+                        Utils.hideView(view);
+
+                        view = (View) view.getParent();
+                        Utils.hideView(view);
+
+                        view = (View) view.getParent();
+                        Utils.hideView(view);
                     }
                 }
             });
+
+            for (String adClassName : adClassNames) {
+                hookTarget = lparam.classLoader.loadClass(adClassName);
+                XposedBridge.hookAllMethods(hookTarget, "onAttachedToWindow", new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        View view = (View) param.thisObject;
+                        Utils.hideView(view);
+
+                        view = (View) view.getParent();
+                        Utils.hideView(view);
+                    }
+                });
+            }
         }
 
         hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.activity.homev2.view.HomeFragment");
@@ -306,10 +290,12 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 ViewGroup view = (ViewGroup) param.args[0];
                 Context context = view.getContext();
+
                 int recyclerViewResId = context.getResources().getIdentifier("home_tab_recycler_view", "id", context.getPackageName());
                 int recommendationResId = context.getResources().getIdentifier("home_tab_contents_recommendation_placement", "id", context.getPackageName());
                 int staticNotificationResId = context.getResources().getIdentifier("notification_hub_row_static_view_group", "id", context.getPackageName());
                 int rollingNotificationResId = context.getResources().getIdentifier("notification_hub_row_rolling_view_group", "id", context.getPackageName());
+
                 ViewGroup recyclerView = view.findViewById(recyclerViewResId);
                 recyclerView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
                     @Override
@@ -340,48 +326,10 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             }
         });
 
-        XposedHelpers.findAndHookMethod(Notification.Builder.class, "addAction", Notification.Action.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                if (!limeOptions.deleteReplyMute.checked) return;
-                Application app = AndroidAppHelper.currentApplication();
-                Notification.Action a = (Notification.Action) param.args[0];
-                String muteChatString = app.getString(app.getResources().getIdentifier("notification_button_mute", "string", app.getPackageName()));
-                if (muteChatString.equals(a.title)) {
-                    param.setResult(param.thisObject);
-                }
-            }
-        });
-
-        hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.activity.iab.InAppBrowserActivity");
-        XposedBridge.hookAllMethods(hookTarget, "onResume", new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                if (!limeOptions.redirectWebView.checked) return;
-                Activity activity = (Activity) param.thisObject;
-                int webViewResId = activity.getResources().getIdentifier("iab_webview", "id", activity.getPackageName());
-                WebView webView = (WebView) activity.findViewById(webViewResId);
-                webView.setVisibility(View.GONE);
-                webView.stopLoading();
-                Uri uri = Uri.parse(webView.getUrl());
-                if (limeOptions.openInBrowser.checked) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(uri);
-                    activity.startActivity(intent);
-                } else {
-                    CustomTabsIntent tabsIntent = new CustomTabsIntent.Builder()
-                            .setShowTitle(true)
-                            .build();
-                    tabsIntent.launchUrl(activity, uri);
-                }
-                activity.finish();
-            }
-        });
-
-        XposedHelpers.findAndHookMethod(Notification.Builder.class, "addAction", Notification.Action.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                if (limeOptions.deleteReplyMute.checked) {
+        if (limeOptions.deleteReplyMute.checked) {
+            XposedHelpers.findAndHookMethod(Notification.Builder.class, "addAction", Notification.Action.class, new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     Application app = AndroidAppHelper.currentApplication();
                     Notification.Action a = (Notification.Action) param.args[0];
                     String muteChatString = app.getString(app.getResources().getIdentifier("notification_button_mute", "string", app.getPackageName()));
@@ -389,45 +337,87 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                         param.setResult(param.thisObject);
                     }
                 }
-            }
-        });
+            });
+        }
 
-        hookTarget = lparam.classLoader.loadClass("tn5.go");
-        XposedBridge.hookAllMethods(hookTarget, "write", new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                if (limeOptions.preventMarkAsRead.checked) param.setResult(null);
-            }
-        });
-
-        hookTarget = lparam.classLoader.loadClass("tn5.id");
-        final Method valueOf = hookTarget.getMethod("valueOf", String.class);
-        final Object dummy = valueOf.invoke(null, "DUMMY");
-        final Object notifiedDestroyMessage = valueOf.invoke(null, "NOTIFIED_DESTROY_MESSAGE");
-        XposedHelpers.findAndHookMethod(hookTarget, "a", int.class, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                if (limeOptions.preventUnsendMessage.checked && param.getResult() == notifiedDestroyMessage) param.setResult(dummy);
-            }
-        });
-
-        hookTarget = lparam.classLoader.loadClass("om5.c");
-        XposedHelpers.findAndHookMethod(hookTarget, "u", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                if (limeOptions.preventUnsendMessage.checked && param.getResult().equals("UNSENT")) param.setResult("");
-            }
-        });
-
-        hookTarget = lparam.classLoader.loadClass("dj5.b");
-         XposedHelpers.findAndHookMethod(hookTarget, "H", "og5.f", new XC_MethodHook() {
+        if (limeOptions.redirectWebView.checked) {
+            hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.activity.iab.InAppBrowserActivity");
+            XposedBridge.hookAllMethods(hookTarget, "onResume", new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    if (limeOptions.sendMuteMessage.checked) {
-                        param.args[0] = Enum.valueOf((Class<Enum>) param.args[0].getClass(), "TO_BE_SENT_SILENTLY");
+                    Activity activity = (Activity) param.thisObject;
+                    int webViewResId = activity.getResources().getIdentifier("iab_webview", "id", activity.getPackageName());
+                    WebView webView = (WebView) activity.findViewById(webViewResId);
+                    webView.setVisibility(View.GONE);
+                    webView.stopLoading();
+                    Uri uri = Uri.parse(webView.getUrl());
+                    if (limeOptions.openInBrowser.checked) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(uri);
+                        activity.startActivity(intent);
+                    } else {
+                        CustomTabsIntent tabsIntent = new CustomTabsIntent.Builder()
+                                .setShowTitle(true)
+                                .build();
+                        tabsIntent.launchUrl(activity, uri);
                     }
+                    activity.finish();
                 }
             });
+        }
+
+        if (limeOptions.deleteReplyMute.checked) {
+            XposedHelpers.findAndHookMethod(Notification.Builder.class, "addAction", Notification.Action.class, new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    Application app = AndroidAppHelper.currentApplication();
+                    Notification.Action a = (Notification.Action) param.args[0];
+                    String muteChatString = app.getString(app.getResources().getIdentifier("notification_button_mute", "string", app.getPackageName()));
+                    if (muteChatString.equals(a.title)) param.setResult(param.thisObject);
+                }
+            });
+        }
+
+        if (limeOptions.preventMarkAsRead.checked) {
+            hookTarget = lparam.classLoader.loadClass("tn5.go");
+            XposedBridge.hookAllMethods(hookTarget, "write", new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    param.setResult(null);
+                }
+            });
+        }
+
+        if (limeOptions.preventUnsendMessage.checked) {
+            hookTarget = lparam.classLoader.loadClass("tn5.id");
+            final Method valueOf = hookTarget.getMethod("valueOf", String.class);
+            final Object dummy = valueOf.invoke(null, "DUMMY");
+            final Object notifiedDestroyMessage = valueOf.invoke(null, "NOTIFIED_DESTROY_MESSAGE");
+            XposedHelpers.findAndHookMethod(hookTarget, "a", int.class, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    if (param.getResult() == notifiedDestroyMessage) param.setResult(dummy);
+                }
+            });
+
+            hookTarget = lparam.classLoader.loadClass("om5.c");
+            XposedHelpers.findAndHookMethod(hookTarget, "u", new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    if (param.getResult().equals("UNSENT")) param.setResult("");
+                }
+            });
+        }
+
+        if (limeOptions.sendMuteMessage.checked) {
+            hookTarget = lparam.classLoader.loadClass("dj5.b");
+            XposedHelpers.findAndHookMethod(hookTarget, "H", "og5.f", new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    param.args[0] = Enum.valueOf((Class<Enum>) param.args[0].getClass(), "TO_BE_SENT_SILENTLY");
+                }
+            });
+        }
             
 
         if (!limeOptions.deleteKeepUnread.checked) {
