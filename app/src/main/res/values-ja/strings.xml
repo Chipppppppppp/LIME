@@ -11,7 +11,7 @@
     <string name="module_not_enabled_text">モジュールが有効化されていません！</string>
     <string name="options_title">設定</string>
     <string name="restarting">アプリを再起動しています...</string>
-    <string name="switch_unembed_options">設定を LINE に埋め込まない</string>
+    <string name="switch_unembed_options">設定を LINE に埋め込まない (変更すると設定は初期化されます)</string>
     <string name="switch_delete_voom">VOOM アイコンを削除</string>
     <string name="switch_delete_wallet">ウォレットアイコンを削除</string>
     <string name="switch_delete_news_or_call">ニュースまたは通話アイコンを削除</string>
