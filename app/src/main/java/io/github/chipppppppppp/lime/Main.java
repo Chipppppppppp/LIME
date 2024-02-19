@@ -93,13 +93,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 method.setAccessible(true);
                 method.invoke(context.getResources().getAssets(), MODULE_PATH);
 
-                SharedPreferences prefs;
-                try {
-                    prefs = AndroidAppHelper.currentApplication().getSharedPreferences(MODULE + "-options", Context.MODE_PRIVATE);
-                } catch (Exception e) {
-                    XposedBridge.log(e.toString());
-                    return;
-                }
+                SharedPreferences prefs = AndroidAppHelper.currentApplication().getSharedPreferences(MODULE + "-options", Context.MODE_PRIVATE);
 
                 if (xModulePrefs.getBoolean("unembed_options", false)) {
                     for (LimeOptions.Option option : limeOptions.options) {
@@ -176,7 +170,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(context.getApplicationContext(), context.getString(R.string.restarting), Toast.LENGTH_SHORT).show();
                         Process.killProcess(Process.myPid());
-                        context.startActivity(new Intent().setClassName("jp.naver.line.android", "jp.naver.line.android.activity.SplashActivity"));
+                        context.startActivity(new Intent().setClassName(PACKAGE, "jp.naver.line.android.activity.SplashActivity"));
                     }
                 });
 
