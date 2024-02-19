@@ -1,7 +1,7 @@
 <resources>
     <string translatable="false" name="app_name">LIME</string>
     <!-- General -->
-    <string name="dialog_positive">OK</string>
+    <string name="dialog_positive" translatable="false">OK</string>
 
     <!-- Xposed API -->
     <string name="xposed_desc">Clean LINE.</string>
@@ -10,7 +10,7 @@
     <string name="module_not_enabled_title">Error</string>
     <string name="module_not_enabled_text">Module not enabled!</string>
     <string name="options_title">Options</string>
-    <string name="need_restart">You need to restart the app</string>
+    <string name="restarting">Restarting now...</string>
     <string name="switch_unembed_options">Do not embed options in LINE</string>
     <string name="switch_delete_voom">Delete the VOOM icon</string>
     <string name="switch_delete_wallet">Delete the wallet icon</string>
