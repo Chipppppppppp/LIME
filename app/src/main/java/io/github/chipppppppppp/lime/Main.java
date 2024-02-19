@@ -160,8 +160,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 builder.setPositiveButton(context.getString(R.string.dialog_positive), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        finishAndRemoveTask();
-                        startActivity(new Intent().setClassName("jp.naver.line.android", "jp.naver.line.android.activity.SplashActivity"));
+                        context.finishAndRemoveTask();
+                        context.startActivity(new Intent().setClassName("jp.naver.line.android", "jp.naver.line.android.activity.SplashActivity"));
                         //Toast.makeText(context.getApplicationContext(), context.getString(R.string.need_restart), Toast.LENGTH_SHORT).show();
                     }
                 });
