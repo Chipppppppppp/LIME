@@ -14,6 +14,7 @@ import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Process;
+import android.support.annotation.NonNull;
 import android.support.customtabs.CustomTabsIntent;
 import android.view.Gravity;
 import android.view.View;
@@ -66,7 +67,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
     public LimeOptions limeOptions = new LimeOptions();
     public boolean keepUnread = false;
 
-    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lparam) throws Throwable {
+    public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam lparam) throws Throwable {
         if (!lparam.packageName.equals(PACKAGE)) return;
 
         final XSharedPreferences xModulePrefs = new XSharedPreferences(MODULE, "options");
@@ -457,7 +458,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
     }
 
     @Override
-    public void handleInitPackageResources(XC_InitPackageResources.InitPackageResourcesParam resparam) throws Throwable {
+    public void handleInitPackageResources(@NonNull XC_InitPackageResources.InitPackageResourcesParam resparam) throws Throwable {
         if (!resparam.packageName.equals(PACKAGE)) return;
 
         if (limeOptions.deleteIconLabels.checked) {
@@ -475,7 +476,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
     }
 
     @Override
-    public void initZygote(StartupParam startupParam) throws Throwable {
+    public void initZygote(@NonNull StartupParam startupParam) throws Throwable {
         MODULE_PATH = startupParam.modulePath;
     }
 }
