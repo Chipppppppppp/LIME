@@ -9,7 +9,7 @@
 README に直接対応バージョンを書く場合は、インストール章のリリースタグやAPKダウンロードサイトのURLを固定してください。
 -->
 
-This is an Xposed Module to clean [**LINE**](https://line.me). It suppports **LINE 14.2.0**.
+This is an Xposed Module to clean [**LINE**](https://line.me). It supports **LINE 14.2.0**.
 
 LINE を掃除する Xposed Module です。**LINE 14.2.0** に対応しています。
 
