@@ -119,7 +119,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                         ViewGroup.LayoutParams.MATCH_PARENT));
 
                 Switch switchView = new Switch(activity);
-                switchView.setText(activity.getString(R.string.switch_spoof_android_id));
+                switchView.setText(R.string.switch_spoof_android_id);
                 FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                         FrameLayout.LayoutParams.WRAP_CONTENT,
                         FrameLayout.LayoutParams.WRAP_CONTENT);
@@ -127,7 +127,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 switchView.setLayoutParams(layoutParams);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity)
-                        .setTitle(activity.getString(R.string.options_title))
+                        .setTitle(R.string.options_title)
                         .setCancelable(false);
 
                 TextView textView = new TextView(activity);
@@ -135,7 +135,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 textView.setPadding(Utils.dpToPx(20, activity), Utils.dpToPx(20, activity), Utils.dpToPx(20, activity), Utils.dpToPx(20, activity));
                 builder.setView(textView);
 
-                builder.setPositiveButton(activity.getString(R.string.positive), new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(R.string.positive, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(activity.getApplicationContext(), activity.getString(R.string.restarting), Toast.LENGTH_SHORT).show();
@@ -172,7 +172,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                     mAddAddAssertPath.setAccessible(true);
                     mAddAddAssertPath.invoke(context.getResources().getAssets(), MODULE_PATH);
 
-                    SharedPreferences prefs = AndroidAppHelper.currentApplication().getSharedPreferences(MODULE + "-options", Context.MODE_PRIVATE);
+                    SharedPreferences prefs = context.getSharedPreferences(MODULE + "-options", Context.MODE_PRIVATE);
 
                     FrameLayout frameLayout = new FrameLayout(context);
                     frameLayout.setLayoutParams(new ViewGroup.LayoutParams(
@@ -190,7 +190,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                     button.setLayoutParams(layoutParams);
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                            .setTitle(context.getString(R.string.options_title))
+                            .setTitle(R.string.options_title)
                             .setCancelable(false);
 
                     LinearLayout layout = new LinearLayout(context);
@@ -205,7 +205,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                         final String name = option.name;
 
                         Switch switchView = new Switch(context);
-                        switchView.setText(context.getString(option.id));
+                        switchView.setText(option.id);
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                                 LinearLayout.LayoutParams.WRAP_CONTENT,
                                 LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -237,7 +237,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                     scrollView.addView(layout);
                     builder.setView(scrollView);
 
-                    builder.setPositiveButton(context.getString(R.string.positive), new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton(R.string.positive, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             boolean optionChanged = false;
