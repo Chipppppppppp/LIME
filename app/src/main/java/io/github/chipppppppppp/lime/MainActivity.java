@@ -51,11 +51,9 @@ public class MainActivity extends Activity {
             switchUnembedOptions.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 prefs.edit().putBoolean("unembed_options", isChecked).apply();
                 if (isChecked) {
-                    for (int i = 1; i < layout.getChildCount(); ++i)
-                        layout.getChildAt(i).setVisibility(View.VISIBLE);
+                    for (int i = 1; i < layout.getChildCount(); ++i) layout.getChildAt(i).setVisibility(View.VISIBLE);
                 } else {
-                    for (int i = 1; i < layout.getChildCount(); ++i)
-                        layout.getChildAt(i).setVisibility(View.GONE);
+                    for (int i = 1; i < layout.getChildCount(); ++i) layout.getChildAt(i).setVisibility(View.GONE);
                 }
             });
 
