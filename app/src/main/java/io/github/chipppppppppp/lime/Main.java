@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.app.Notification;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Process;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.customtabs.CustomTabsIntent;
 import android.view.Gravity;
@@ -28,6 +30,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import android.app.AndroidAppHelper;
@@ -71,17 +74,91 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
         if (!lparam.packageName.equals(PACKAGE)) return;
 
         final XSharedPreferences xModulePrefs = new XSharedPreferences(MODULE, "options");
+        final XSharedPreferences xPackagePrefs = new XSharedPreferences(PACKAGE, MODULE + "-options");
         XSharedPreferences xPrefs;
         if (xModulePrefs.getBoolean("unembed_options", false)) {
             xPrefs = xModulePrefs;
         } else {
-            xPrefs = new XSharedPreferences(PACKAGE, MODULE + "-options");
+            xPrefs = xPackagePrefs;
         }
         for (LimeOptions.Option option : limeOptions.options) {
             option.checked = xPrefs.getBoolean(option.name, option.checked);
         }
 
         Class<?> hookTarget;
+
+        if (xPackagePrefs.getBoolean("spoof_android_id", false)) {
+            XposedHelpers.findAndHookMethod(Settings.Secure.class, "getString", ContentResolver.class, String.class, new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    if (param.args[1].toString().equals(Settings.Secure.ANDROID_ID)) {
+                        param.setResult("0000000000000000");
+                    }
+                }
+            });
+        }
+
+        hookTarget = lparam.classLoader.loadClass("com.linecorp.registration.ui.RegistrationActivity");
+        XposedBridge.hookAllMethods(hookTarget, "onCreate", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                Activity activity = (Activity) param.thisObject;
+
+
+                ViewGroup viewGroup = (ViewGroup) ((ViewGroup) activity.findViewById(2131427495)).getChildAt(1);
+
+                Method mAddAddAssertPath = AssetManager.class.getDeclaredMethod("addAssetPath", String.class);
+                mAddAddAssertPath.setAccessible(true);
+                mAddAddAssertPath.invoke(activity.getResources().getAssets(), MODULE_PATH);
+
+                SharedPreferences prefs = activity.getSharedPreferences(MODULE + "-options", Context.MODE_PRIVATE);
+
+                FrameLayout frameLayout = new FrameLayout(activity);
+                frameLayout.setLayoutParams(new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+
+                Switch switchView = new Switch(activity);
+                switchView.setText(activity.getString(R.string.switch_spoof_android_id));
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.WRAP_CONTENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams.gravity = Gravity.CENTER;
+                switchView.setLayoutParams(layoutParams);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity)
+                        .setTitle(activity.getString(R.string.options_title))
+                        .setCancelable(false);
+
+                TextView textView = new TextView(activity);
+                textView.setText(R.string.spoof_android_id_risk);
+                textView.setPadding(Utils.dpToPx(20, activity), Utils.dpToPx(20, activity), Utils.dpToPx(20, activity), Utils.dpToPx(20, activity));
+                builder.setView(textView);
+
+                builder.setPositiveButton(activity.getString(R.string.positive), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(activity.getApplicationContext(), activity.getString(R.string.restarting), Toast.LENGTH_SHORT).show();
+                        activity.finish();
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+
+                switchView.setChecked(prefs.getBoolean("spoof_android_id", false));
+                switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    prefs.edit().putBoolean("spoof_android_id", isChecked).apply();
+                    if (isChecked) dialog.show();
+                    else {
+                        Toast.makeText(activity.getApplicationContext(), activity.getString(R.string.restarting), Toast.LENGTH_SHORT).show();
+                        activity.finish();
+                    }
+                });
+
+                frameLayout.addView(switchView);
+                viewGroup.addView(frameLayout);
+            }
+        });
 
         if (!xModulePrefs.getBoolean("unembed_options", false)) {
             hookTarget = lparam.classLoader.loadClass("com.linecorp.line.settings.main.LineUserMainSettingsFragment");
