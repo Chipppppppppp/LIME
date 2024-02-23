@@ -2,7 +2,6 @@ package io.github.chipppppppppp.lime;
 
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
 
 public class Utils {
     public static int dpToPx(int dp, Context context) {
