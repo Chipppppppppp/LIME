@@ -105,7 +105,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 Activity activity = (Activity) param.thisObject;
 
 
-                ViewGroup viewGroup = (ViewGroup) ((ViewGroup) activity.findViewById(2131427495)).getChildAt(1);
+                ViewGroup viewGroup = (ViewGroup) ((ViewGroup) activity.findViewById(activity.getResources().getIdentifier("action_bar_root", "id", activity.getPackageName()))).getChildAt(1);
 
                 Method mAddAddAssertPath = AssetManager.class.getDeclaredMethod("addAssetPath", String.class);
                 mAddAddAssertPath.setAccessible(true);
@@ -123,7 +123,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                         FrameLayout.LayoutParams.WRAP_CONTENT,
                         FrameLayout.LayoutParams.WRAP_CONTENT);
-                layoutParams.gravity = Gravity.CENTER;
+                layoutParams.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
                 switchView.setLayoutParams(layoutParams);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity)
