@@ -11,6 +11,8 @@
     <string name="module_not_enabled_text">モジュールが有効化されていません！</string>
     <string name="options_title">設定</string>
     <string name="restarting">アプリを再起動しています...</string>
+    <string name="switch_spoof_android_id">複数デバイスログイン (Android ID を偽装)</string>
+    <string name="spoof_android_id_risk">Android ID の偽装は自己責任です</string>
     <string name="switch_unembed_options">設定を LINE に埋め込まない (設定は同期されません)</string>
     <string name="switch_delete_voom">VOOM アイコンを削除</string>
     <string name="switch_delete_wallet">ウォレットアイコンを削除</string>
