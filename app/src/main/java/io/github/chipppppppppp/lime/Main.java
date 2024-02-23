@@ -124,6 +124,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                         FrameLayout.LayoutParams.WRAP_CONTENT,
                         FrameLayout.LayoutParams.WRAP_CONTENT);
                 layoutParams.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+                layoutParams.topMargin = Utils.dpToPx(20, activity);
                 switchView.setLayoutParams(layoutParams);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity)
