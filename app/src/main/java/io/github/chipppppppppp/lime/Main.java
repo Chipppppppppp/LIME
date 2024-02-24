@@ -338,9 +338,6 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
 
                         view = (View) view.getParent();
                         Utils.hideView(view);
-
-                        view = (View) view.getParent();
-                        Utils.hideView(view);
                     }
                 }
             });
