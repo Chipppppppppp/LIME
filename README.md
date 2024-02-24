@@ -78,7 +78,7 @@ LIME 1.6.0
 
 ## 複数デバイスログイン
 
-Root 化している場合、複数デバイスログインが可能です。また、[WSA-Script](https://github.com/YT-Advanced/WSA-Script) を使用して Windows 上の Android で複数デバイスログインをすることで、Windows での複数デバイスログインも可能です。
+Root 化している場合、複数デバイスログインが可能です。また、[WSA-Script](https://github.com/YT-Advanced/WSA-Script) を使用して Windows 上の Android で同様の操作を行うことで、Windows での複数デバイスログインも可能です。
 
 手順：
 
