@@ -34,10 +34,10 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 
 ## インストール
 
-初めに、以下のサイトの中から、**LINE 14.2.0** と **LIME 1.6.0** のAPKをダウンロードしてください｡
+初めに、以下のサイトの中から、**LINE 14.2.0** と **LIME 1.6.0** の APK をダウンロードしてください｡
 
 > [!IMPORTANT]
-> 分割APK は使用しないでください
+> 分割 APK は使用しないでください
 
 <!-- バージョンリスト
 - [APKMirror](https://www.apkmirror.com/uploads/?appcategory=line)
@@ -61,11 +61,11 @@ LIME 1.6.0
 
 ### 非 Root 端末
 
-※非 Root では二週間以内のトークバックアップにまだ対応していません。
+※非 Root では二週間より前のトークバックアップにまだ対応していません。
 
 1. [**LSPatch**](https://github.com/LSPosed/LSPatch) をインストール  
   ※フォークで開発されている [**NPatch**](https://github.com/HSSkyBoy/NPatch) では不具合が発生する可能性があります
-2. **LSPatch** アプリを開き、<kbd>管理</kbd> → 右下の<kbd>＋</kbd> → <kbd>ストレージからapkを選択</kbd> →  先程ダウンロードした LI**N**E の APK を選択 → <kbd>統合</kbd> → <kbd>モジュールを埋め込む</kbd> → <kbd>インストールされているアプリを選択</kbd>→ LI**M**E にチェックを入れて <kbd>＋</kbd> → <kbd>パッチを開始</kbd> より、パッチを適用
+2. **LSPatch** アプリを開き、<kbd>管理</kbd> → 右下の<kbd>＋</kbd> → <kbd>ストレージからapkを選択</kbd> →  先程ダウンロードした LI**N**E の APK を選択 → <kbd>統合</kbd> → <kbd>モジュールを埋め込む</kbd> → <kbd>インストールされているアプリを選択</kbd> → LI**M**E にチェックを入れて <kbd>＋</kbd> → <kbd>パッチを開始</kbd> より、パッチを適用
 
 > [!TIP]
 > <kbd>ディレクトリの選択</kbd>と出てきた場合は、<kbd>OK</kbd>を押してファイルピッカーを起動し、任意のディレクトリ下にフォルダを作成し、<kbd>このフォルダを使用</kbd> → <kbd>許可</kbd>を押す
@@ -76,12 +76,26 @@ LIME 1.6.0
 > [!IMPORTANT]
 > 既にPlay ストアからインストールした LINE アプリがインストールされている場合は、署名が競合するため、最初にアンインストールを行ってください。
 
+## 複数デバイスログイン
+
+両方のデバイスを Root 化している場合、複数デバイスログインが可能です。また、[WSA-Script](https://github.com/YT-Advanced/WSA-Script) を使用して Windows 上の Android で同様の操作を行うことで、Windows での複数デバイスログインも可能です。
+
+手順：
+
+1. LINE と LIME をインストールする
+1. LINE ログイン画面で、「複数デバイスログイン (Android ID を偽装)」にチェックを入れてログイン
+2. ログイン後、[Swift Backup](https://play.google.com/store/apps/details?id=org.swiftapps.swiftbackup) を利用して LINE アプリをバックアップ (詳しくは[こちら](https://blog.hogehoge.com/2022/01/android-swift-backup.html))
+3. SwiftBackup のバックアップフォルダをもう一つの端末に移し、バックアップした LINE をインストール (詳しくは[こちら](https://blog.hogehoge.com/2022/05/SwiftBackup2.html))
+4. もう一つの端末に LIME をインストールする
+
+※https://jesuscorona.hatenablog.com/entry/2019/02/10/010920 にあるように、メッセージの同期などに遅れが生じます。
+
 ## 問題の報告
 
 新たなバグや修正方法を見つけた場合は、[報告](https://github.com/Chipppppppppp/LIME/issues/new/choose)をお願いします。
 
 > [!NOTE]
-> 日本語が解る場合は日本語で記述してください。
+> 日本語がわかる場合は日本語で記述してください。
 
 ## Star History
 
