@@ -14,6 +14,7 @@ import android.content.res.AssetManager;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.Process;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -98,6 +99,27 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             });
         }
 
+        if (xPackagePrefs.getBoolean("android_secondary", false)) {
+            hookTarget = lparam.classLoader.loadClass("com.linecorp.registration.ui.fragment.WelcomeFragment");
+            XposedHelpers.findAndHookMethod(hookTarget, "onViewCreated", android.view.View.class, android.os.Bundle.class, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    Object k = param.thisObject.getClass().getDeclaredField("k").get(param.thisObject);
+                    Object c = k.getClass().getDeclaredField("c").get(k);
+                    View secondaryLogin = (View) c.getClass().getDeclaredField("c").get(c);
+                    secondaryLogin.setVisibility(View.VISIBLE);
+                }
+            });
+
+            hookTarget = lparam.classLoader.loadClass("cj1.b$c");
+            XposedHelpers.findAndHookMethod(hookTarget, "b", new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    param.setResult("ANDROIDSECONDARY");
+                }
+            });
+        }
+
         hookTarget = lparam.classLoader.loadClass("com.linecorp.registration.ui.RegistrationActivity");
         XposedBridge.hookAllMethods(hookTarget, "onCreate", new XC_MethodHook() {
             @Override
@@ -118,14 +140,17 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT));
 
-                Switch switchView = new Switch(activity);
-                switchView.setText(R.string.switch_spoof_android_id);
+                LinearLayout linearLayout = new LinearLayout(activity);
                 FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                         FrameLayout.LayoutParams.WRAP_CONTENT,
                         FrameLayout.LayoutParams.WRAP_CONTENT);
                 layoutParams.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
                 layoutParams.topMargin = Utils.dpToPx(60, activity);
-                switchView.setLayoutParams(layoutParams);
+                linearLayout.setLayoutParams(layoutParams);
+                linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+                Switch switchSpoofAndroidId = new Switch(activity);
+                switchSpoofAndroidId.setText(R.string.switch_spoof_android_id);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity)
                         .setTitle(R.string.options_title)
@@ -146,8 +171,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
 
                 AlertDialog dialog = builder.create();
 
-                switchView.setChecked(prefs.getBoolean("spoof_android_id", false));
-                switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                switchSpoofAndroidId.setChecked(prefs.getBoolean("spoof_android_id", false));
+                switchSpoofAndroidId.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     prefs.edit().putBoolean("spoof_android_id", isChecked).apply();
                     if (isChecked) dialog.show();
                     else {
@@ -156,7 +181,18 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                     }
                 });
 
-                frameLayout.addView(switchView);
+                Switch switchAndroidSecondary = new Switch(activity);
+                switchAndroidSecondary.setText(R.string.switch_android_secondary);
+                switchAndroidSecondary.setChecked(prefs.getBoolean("android_secondary", false));
+                switchAndroidSecondary.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    prefs.edit().putBoolean("android_secondary", isChecked).apply();
+                    Toast.makeText(activity.getApplicationContext(), activity.getString(R.string.restarting), Toast.LENGTH_SHORT).show();
+                    activity.finish();
+                });
+
+                linearLayout.addView(switchSpoofAndroidId);
+                linearLayout.addView(switchAndroidSecondary);
+                frameLayout.addView(linearLayout);
                 viewGroup.addView(frameLayout);
             }
         });
@@ -530,6 +566,14 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 }
             });
         }
+
+        hookTarget = lparam.classLoader.loadClass("tn5.kd$a");
+        XposedBridge.hookAllMethods(hookTarget, "b", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                XposedBridge.log(param.args[1].toString());
+            }
+        });
     }
 
     @Override
