@@ -566,14 +566,6 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 }
             });
         }
-
-        hookTarget = lparam.classLoader.loadClass("tn5.kd$a");
-        XposedBridge.hookAllMethods(hookTarget, "b", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                XposedBridge.log(param.args[1].toString());
-            }
-        });
     }
 
     @Override
