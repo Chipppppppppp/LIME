@@ -88,6 +88,8 @@ LIME 1.6.0
 3. SwiftBackup のバックアップフォルダをもう一つの端末に移し、バックアップした LINE をインストール (詳しくは[こちら](https://blog.hogehoge.com/2022/05/SwiftBackup2.html))
 4. もう一つの端末に LIME をインストールする
 
+※https://jesuscorona.hatenablog.com/entry/2019/02/10/010920 にあるように、メッセージの同期などに遅れが生じます。
+
 ## 問題の報告
 
 新たなバグや修正方法を見つけた場合は、[報告](https://github.com/Chipppppppppp/LIME/issues/new/choose)をお願いします。
