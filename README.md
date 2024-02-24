@@ -37,7 +37,7 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 初めに、以下のサイトの中から、**LINE 14.2.0** と **LIME 1.6.0** のAPKをダウンロードしてください｡
 
 > [!IMPORTANT]
-> 分割APK は使用しないでください
+> 分割 APK は使用しないでください
 
 <!-- バージョンリスト
 - [APKMirror](https://www.apkmirror.com/uploads/?appcategory=line)
@@ -75,6 +75,18 @@ LIME 1.6.0
 
 > [!IMPORTANT]
 > 既にPlay ストアからインストールした LINE アプリがインストールされている場合は、署名が競合するため、最初にアンインストールを行ってください。
+
+## 複数デバイスログイン
+
+Root 化している場合、複数デバイスログインが可能です。また、[WSA-Script](https://github.com/YT-Advanced/WSA-Script) を使用して Windows 上の Android で複数デバイスログインをすることで、Windows での複数デバイスログインも可能です。
+
+手順：
+
+1. LINE と LIME をインストールする
+1. LINE ログイン画面で、「複数デバイスログイン (Android ID を偽装)」にチェックを入れてログイン
+2. ログイン後、[Swift Backup](https://play.google.com/store/apps/details?id=org.swiftapps.swiftbackup) を利用して LINE アプリをバックアップ (詳しくは[こちら](https://blog.hogehoge.com/2022/01/android-swift-backup.html))
+3. SwiftBackup のバックアップフォルダをもう一つの端末に移し、バックアップした LINE をインストール (詳しくは[こちら](https://blog.hogehoge.com/2022/05/SwiftBackup2.html))
+4. もう一つの端末に LIME をインストールする
 
 ## 問題の報告
 
