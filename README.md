@@ -50,7 +50,7 @@ LINE 14.2.0
 - [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/)
 
 LIME 1.7.0
-- [Release](https://github.com/Chipppppppppp/LIME/releases/download/v1.7.0/LIME-v1.7.0apk) (直リンク)
+- [Release](https://github.com/Chipppppppppp/LIME/releases/)
 
 ### Root 端末 (Magisk)
 
