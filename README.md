@@ -45,9 +45,9 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 - [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/old-versions/)
 -->
 LINE 14.2.0
-- [APKMirror](https://www.apkmirror.com/apk/line-corporation/line/line-14-2-0-release/line-calls-messages-14-2-0-2-android-apk-download/)
-- [APKPure](https://d.apkpure.net/b/APK/jp.naver.line.android?versionCode=140200233&nc=arm64-v8a%2Carmeabi-v7a&sv=26) (直リンク)
-- [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.2.0-apk)
+- [APKMirror](https://www.apkmirror.com/apk/line-corporation/line/)
+- [APKPure](https://apkpure.net/jp/line-calls-messages/jp.naver.line.android)
+- [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/)
 
 LIME 1.7.0
 - [Release](https://github.com/Chipppppppppp/LIME/releases/download/v1.7.0/LIME-v1.7.0apk) (直リンク)
