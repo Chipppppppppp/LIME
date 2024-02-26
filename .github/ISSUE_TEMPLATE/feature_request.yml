@@ -3,6 +3,18 @@ description: 新しい機能や改善点などの提案
 labels: [enhancement]
 title: "[Feature Request] タイトルを入力"
 body:
+  - type: markdown
+    attributes:
+      value: |
+        レポートありがとうございます｡
+
+        このIssueを送信する前に、  
+        **具体的** かつ **正しい日本語** を使い、  
+        レポートに関係無い**無駄な内容は省いて**、  
+        **結論が解り易い** 文章にしてください。
+
+        また、本サービスは日本語が解る事が前提ですので、日本語が解らない場合を除いて、日本語でレポートを書いてください。  
+        Please answer in English only **if you do not understand Japanese**.
   - type: textarea
     attributes:
       label: 提案内容
