@@ -48,7 +48,7 @@ LI**M**E
 
 1. [**LSPosed**](https://github.com/LSPosed/LSPosed) をインストール
 2. LI**N**E アプリと LI**M**E アプリを両方ともインストール
-3. Google Playストア や [Aurora Store](https://auroraoss.com) からの自動アップデートを防ぐために、[**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを隠す
+3. Google Play ストア や [Aurora Store](https://auroraoss.com) からの自動アップデートを防ぐために、[**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを隠す
 4. LSPosed のモジュールから LIME に移動し、<kbd>モジュールの有効化</kbd> と LINE アプリにチェックを入れる
 
 ### 非 Root 端末
@@ -77,7 +77,7 @@ LI**M**E
 1. LINE と LIME をインストールする
 1. LINE ログイン画面で、「複数デバイスログイン (Android ID を偽装)」にチェックを入れてログイン
 2. ログイン後、[Swift Backup](https://play.google.com/store/apps/details?id=org.swiftapps.swiftbackup) を利用して LINE アプリをバックアップ (詳しくは[こちら](https://blog.hogehoge.com/2022/01/android-swift-backup.html))
-3. SwiftBackup のバックアップフォルダをもう一つの端末に移し、バックアップした LINE をインストール (詳しくは[こちら](https://blog.hogehoge.com/2022/05/SwiftBackup2.html))
+3. Swift Backup のバックアップフォルダをもう一つの端末に移し、バックアップした LINE をインストール (詳しくは[こちら](https://blog.hogehoge.com/2022/05/SwiftBackup2.html))
 4. もう一つの端末に LIME をインストールする
 
 ※<https://jesuscorona.hatenablog.com/entry/2019/02/10/010920> にあるように、メッセージの同期などに遅れが生じます。
