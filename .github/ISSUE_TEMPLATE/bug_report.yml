@@ -3,6 +3,18 @@ description: バグや開発側が想定していない動作などの報告
 labels: [bug]
 title: "[Bug] タイトルを入力"
 body:
+  - type: markdown
+    attributes:
+      value: |
+        レポートありがとうございます｡
+
+        このIssueを送信する前に、  
+        **具体的** かつ **正しい日本語** を使い、  
+        レポートに関係無い**無駄な内容は省いて**、  
+        **結論が解り易い** 文章にしてください。
+
+        また、本サービスは日本語が解る事が前提ですので、日本語が解らない場合を除いて、日本語でレポートを書いてください。  
+        Please answer in English only **if you do not understand Japanese**.
   - type: textarea
     attributes:
       label: 内容の詳細
@@ -18,12 +30,12 @@ body:
   - type: input
     attributes:
       label: モジュールのバージョン
-      placeholder: "1.0"
+      placeholder: 1.7.0
     validations:
       required: true
   - type: input
     attributes:
       label: LINEアプリのバージョン
-      placeholder: 14.0.1
+      placeholder: 14.2.0
     validations:
       required: true
