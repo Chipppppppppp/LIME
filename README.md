@@ -5,13 +5,9 @@
 
 ## 概要
 
-<!--
-README に直接対応バージョンを書く場合は、インストール章のリリースタグやAPKダウンロードサイトのURLを固定してください。
--->
+This is an Xposed Module to clean [**LINE**](https://line.me).
 
-This is an Xposed Module to clean [**LINE**](https://line.me). It supports **LINE 14.2.0**.
-
-LINE を掃除する Xposed Module です。**LINE 14.2.0** に対応しています。
+LINE を掃除する Xposed Module です。
 
 ## 使用方法
 LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣に入り、右上の｢**LIME**｣のボタンより開けます。
@@ -34,23 +30,19 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 
 ## インストール
 
-初めに、以下のサイトの中から、**LINE 14.2.0** と **LIME 1.7.0** の APK をダウンロードしてください｡
+初めに、以下のサイトの中から、  
+**LINE 14.2.0** と **LIME 1.7.0** の APK をダウンロードしてください｡
 
 > [!IMPORTANT]
 > 分割 APK は使用しないでください
 
-<!-- バージョンリスト
+LI**N**E
 - [APKMirror](https://www.apkmirror.com/uploads/?appcategory=line)
 - [APKPure](https://apkpure.net/jp/line-calls-messages/jp.naver.line.android/versions)
 - [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/old-versions/)
--->
-LINE 14.2.0
-- [APKMirror](https://www.apkmirror.com/apk/line-corporation/line/)
-- [APKPure](https://apkpure.net/jp/line-calls-messages/jp.naver.line.android)
-- [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/)
 
-LIME 1.7.0
-- [Release](https://github.com/Chipppppppppp/LIME/releases/)
+LI**M**E
+- [Release](https://github.com/Chipppppppppp/LIME/releases/latest)
 
 ### Root 端末 (Magisk)
 
@@ -88,7 +80,7 @@ LIME 1.7.0
 3. SwiftBackup のバックアップフォルダをもう一つの端末に移し、バックアップした LINE をインストール (詳しくは[こちら](https://blog.hogehoge.com/2022/05/SwiftBackup2.html))
 4. もう一つの端末に LIME をインストールする
 
-※https://jesuscorona.hatenablog.com/entry/2019/02/10/010920 にあるように、メッセージの同期などに遅れが生じます。
+※<https://jesuscorona.hatenablog.com/entry/2019/02/10/010920> にあるように、メッセージの同期などに遅れが生じます。
 
 ## 問題の報告
 
