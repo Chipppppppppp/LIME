@@ -121,14 +121,12 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             });
         }
 
-        hookTarget = lparam.classLoader.loadClass("com.linecorp.registration.ui.RegistrationActivity");
-        XposedBridge.hookAllMethods(hookTarget, "onCreate", new XC_MethodHook() {
+        hookTarget = lparam.classLoader.loadClass("com.linecorp.registration.ui.fragment.WelcomeFragment");
+        XposedBridge.hookAllMethods(hookTarget, "onViewCreated", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                Activity activity = (Activity) param.thisObject;
-
-
-                ViewGroup viewGroup = (ViewGroup) ((ViewGroup) activity.findViewById(activity.getResources().getIdentifier("action_bar_root", "id", activity.getPackageName()))).getChildAt(1);
+                ViewGroup viewGroup = (ViewGroup) ((ViewGroup) param.args[0]).getChildAt(0);
+                Activity activity = (Activity) viewGroup.getContext();
 
                 Method mAddAddAssertPath = AssetManager.class.getDeclaredMethod("addAssetPath", String.class);
                 mAddAddAssertPath.setAccessible(true);
