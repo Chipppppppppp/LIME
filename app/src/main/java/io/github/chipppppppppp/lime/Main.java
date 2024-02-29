@@ -68,15 +68,17 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             "com.linecorp.square.v2.view.ad.common.SquareCommonHeaderGoogleNativeAdView",
     };
 
+    XSharedPreferences xModulePrefs;
+    XSharedPreferences xPackagePrefs;
+    XSharedPreferences xPrefs;
     public LimeOptions limeOptions = new LimeOptions();
     public boolean keepUnread = false;
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam lparam) throws Throwable {
         if (!lparam.packageName.equals(PACKAGE)) return;
 
-        final XSharedPreferences xModulePrefs = new XSharedPreferences(MODULE, "options");
-        final XSharedPreferences xPackagePrefs = new XSharedPreferences(PACKAGE, MODULE + "-options");
-        XSharedPreferences xPrefs;
+        xModulePrefs = new XSharedPreferences(MODULE, "options");
+        xPackagePrefs = new XSharedPreferences(PACKAGE, MODULE + "-options");
         if (xModulePrefs.getBoolean("unembed_options", false)) {
             xPrefs = xModulePrefs;
         } else {
