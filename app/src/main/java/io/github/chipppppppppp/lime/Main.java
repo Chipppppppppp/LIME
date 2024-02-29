@@ -14,7 +14,6 @@ import android.content.res.AssetManager;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.net.Uri;
-import android.os.Handler;
 import android.os.Process;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
