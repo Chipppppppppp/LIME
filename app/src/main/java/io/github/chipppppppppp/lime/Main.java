@@ -406,6 +406,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 int recommendationResId = context.getResources().getIdentifier("home_tab_contents_recommendation_placement", "id", context.getPackageName());
                 int staticNotificationResId = context.getResources().getIdentifier("notification_hub_row_static_view_group", "id", context.getPackageName());
                 int rollingNotificationResId = context.getResources().getIdentifier("notification_hub_row_rolling_view_group", "id", context.getPackageName());
+                int hotdealcontentrecyclerview = context.getResources().getIdentifier("hot_deal_content_recycler_view", "id", context.getPackageName());
 
                 ViewGroup recyclerView = view.findViewById(recyclerViewResId);
                 recyclerView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
