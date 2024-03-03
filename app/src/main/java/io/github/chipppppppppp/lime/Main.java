@@ -432,6 +432,19 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                                     }
                                 }
                             }
+                            if (limeOptions.deleteHotDealContent.checked && child instanceof ViewGroup childGroup) {
+                                ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
+                                for (int j = 0; j < childGroup.getChildCount(); ++j) {
+                                    int id = childGroup.getChildAt(j).getId();
+                                    if (id == hotdealcontentrecyclerviewid  ) {
+                                        child.setVisibility(View.GONE);
+                                        layoutParams.height = 0;
+                                        child.setLayoutParams(layoutParams);
+
+                                    }
+
+                                }
+                            }
                         }
                     }
                 });
