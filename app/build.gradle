@@ -12,6 +12,7 @@ android {
         targetSdk 33
         versionCode 9
         versionName "1.8.0"
+        proguardFiles += 'proguard-rules.pro'
     }
 
     signingConfigs {
@@ -32,16 +33,16 @@ android {
         debug {
             minifyEnabled false
             multiDexEnabled false
-            proguardFiles += 'proguard-rules.pro'
             signingConfig signingConfigs.android
         }
         release {
             minifyEnabled true
             shrinkResources true
             multiDexEnabled false
-            proguardFiles += 'proguard-rules.pro'
             if (file('release.jks').exists()) {
                 signingConfig signingConfigs.release
+            } else {
+                signingConfig signingConfigs.android
             }
         }
     }
