@@ -577,6 +577,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
         }
 
         if (limeOptions.blockTracking.checked) {
+            hookTarget = lparam.classLoader.loadClass("org.apache.thrift.n");
             XposedBridge.hookAllMethods(hookTarget, "b", new XC_MethodHook() {
                 private static final Set<String> requests = new HashSet<>(Arrays.asList(
                         "getBanners",
