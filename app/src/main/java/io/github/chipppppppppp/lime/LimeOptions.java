@@ -27,6 +27,9 @@ public class LimeOptions {
     public Option preventUnsendMessage = new Option("prevent_unsend_message", R.string.switch_prevent_unsend_message, false);
     public Option sendMuteMessage = new Option("mute_message", R.string.switch_send_mute_message, false);
     public Option deleteKeepUnread = new Option("delete_keep_unread", R.string.switch_delete_keep_unread, false);
+    public Option blockTracking = new Option("block_tracking", R.string.switch_block_tracking, false);
+    public Option unlockThemes = new Option("unlock_themes", R.string.switch_unlock_themes, false);
+
     public Option[] options = {
             deleteVoom,
             deleteWallet,
@@ -42,5 +45,7 @@ public class LimeOptions {
             preventUnsendMessage,
             sendMuteMessage,
             deleteKeepUnread,
+            blockTracking,
+            unlockThemes
     };
 }
