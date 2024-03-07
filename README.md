@@ -53,7 +53,7 @@ LI**M**E
 
 ### 非 Root 端末
 
-※非 Root では二週間より前のトークバックアップにまだ対応していません。
+※非 Root 端末では､ Googleアカウント(ドライブ)を使用したトーク履歴の復元には対応していません。また、発/着信音が鳴らない可能性が有ります。
 
 1. [**LSPatch**](https://github.com/LSPosed/LSPatch) をインストール  
   ※フォークで開発されている [**NPatch**](https://github.com/HSSkyBoy/NPatch) では不具合が発生する可能性があります

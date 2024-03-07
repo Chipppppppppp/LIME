@@ -29,4 +29,5 @@
     <string name="switch_send_mute_message">Always send mute messages</string>
     <string name="switch_prevent_unsend_message">Prevent messages from unsending</string>
     <string name="switch_delete_keep_unread">Delete the \"Keep unread\" switch from the menu in the top right corner of the chat tab</string>
+    <string name="switch_delete_hotdeal">The home tab has been removed from the function that notifies you of great deals at prices exclusive to LYP Premium members.</string>
 </resources>
