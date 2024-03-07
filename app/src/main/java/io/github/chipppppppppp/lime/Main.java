@@ -1,6 +1,10 @@
 package io.github.chipppppppppp.lime;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import android.app.Activity;
 import android.app.Application;
@@ -488,24 +492,30 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
         }
 
         if (limeOptions.preventMarkAsRead.checked) {
-            hookTarget = lparam.classLoader.loadClass("tn5.go");
-            XposedBridge.hookAllMethods(hookTarget, "write", new XC_MethodHook() {
+            hookTarget = lparam.classLoader.loadClass("org.apache.thrift.n");
+            XposedBridge.hookAllMethods(hookTarget, "b", new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    param.setResult(null);
+                    if (param.args[0].toString().equals("sendChatChecked")) {
+                        param.setResult(null);
+                    }
                 }
             });
         }
 
         if (limeOptions.preventUnsendMessage.checked) {
             hookTarget = lparam.classLoader.loadClass("tn5.id");
-            final Method valueOf = hookTarget.getMethod("valueOf", String.class);
-            final Object dummy = valueOf.invoke(null, "DUMMY");
-            final Object notifiedDestroyMessage = valueOf.invoke(null, "NOTIFIED_DESTROY_MESSAGE");
-            XposedHelpers.findAndHookMethod(hookTarget, "a", int.class, new XC_MethodHook() {
+            final Object dummy = Enum.valueOf((Class<Enum>) hookTarget, "DUMMY");
+            final Object notifiedDestroyMessage = Enum.valueOf((Class<Enum>) hookTarget, "NOTIFIED_DESTROY_MESSAGE");
+
+            hookTarget = lparam.classLoader.loadClass("tn5.jd");
+            XposedBridge.hookAllMethods(hookTarget, "read", new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    if (param.getResult() == notifiedDestroyMessage) param.setResult(dummy);
+                    Field type = param.thisObject.getClass().getDeclaredField("d");
+                    if (type.get(param.thisObject) == notifiedDestroyMessage) {
+                        type.set(param.thisObject, dummy);
+                    }
                 }
             });
 
@@ -562,6 +572,53 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     if (keepUnread) param.setResult(null);
+                }
+            });
+        }
+
+        if (limeOptions.blockTracking.checked) {
+            XposedBridge.hookAllMethods(hookTarget, "b", new XC_MethodHook() {
+                private static final Set<String> requests = new HashSet<>(Arrays.asList(
+                        "getBanners",
+                        "getHomeFlexContent",
+                        "getPrefetchableBanners",
+                        "pushRecvReports",
+                        "reportDeviceState",
+                        "reportLocation",
+                        "reportNetworkStatus"
+                ));
+
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    if (requests.contains(param.args[0].toString())) {
+                        param.setResult(null);
+                    }
+                }
+            });
+        }
+
+        if (limeOptions.unlockThemes.checked) {
+            hookTarget = lparam.classLoader.loadClass("sn5.d2");
+            XposedBridge.hookAllMethods(hookTarget, "read", new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    param.thisObject.getClass().getDeclaredField("r").set(param.thisObject, true);
+                }
+            });
+
+            hookTarget = lparam.classLoader.loadClass("gf4.a2");
+            XposedBridge.hookAllMethods(hookTarget, "read", new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    param.thisObject.getClass().getDeclaredField("a").set(param.thisObject, null);
+                }
+            });
+
+            hookTarget = lparam.classLoader.loadClass("sn5.q2");
+            XposedBridge.hookAllMethods(hookTarget, "read", new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    param.thisObject.getClass().getDeclaredField("a").set(param.thisObject, true);
                 }
             });
         }
