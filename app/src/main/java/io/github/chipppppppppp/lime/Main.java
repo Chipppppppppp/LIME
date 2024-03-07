@@ -403,7 +403,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 int recommendationResId = context.getResources().getIdentifier("home_tab_contents_recommendation_placement", "id", context.getPackageName());
                 int staticNotificationResId = context.getResources().getIdentifier("notification_hub_row_static_view_group", "id", context.getPackageName());
                 int rollingNotificationResId = context.getResources().getIdentifier("notification_hub_row_rolling_view_group", "id", context.getPackageName());
-                int hotDealContentRecyclerviewResId = context.getResources().getIdentifier("hot_deal_content_recycler_view", "id", context.getPackageName());
+                int hotDealContentResId = context.getResources().getIdentifier("hot_deal_content_recycler_view", "id", context.getPackageName());
 
                 ViewGroup recyclerView = view.findViewById(recyclerViewResId);
                 recyclerView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
@@ -412,7 +412,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                         for (int i = 0; i < recyclerView.getChildCount(); ++i) {
                             View child = recyclerView.getChildAt(i);
                             if (limeOptions.deleteRecommendation.checked && child.getId() == recommendationResId) {
-                                child.setVisibility(View.GONE);
+                                Utils.hideView(child);
                                 ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
                                 layoutParams.height = 0;
                                 child.setLayoutParams(layoutParams);
@@ -420,8 +420,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                                 ViewGroup childGroup = (ViewGroup) child;
                                 for (int j = 0; j < childGroup.getChildCount(); ++j) {
                                     int id = childGroup.getChildAt(j).getId();
-                                    if (id == staticNotificationResId || id == rollingNotificationResId || id == hotDealContentRecyclerviewResId) {
-                                        child.setVisibility(View.GONE);
+                                    if (id == staticNotificationResId || id == rollingNotificationResId || id == hotDealContentResId) {
+                                        Utils.hideView(child);
                                         ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
                                         layoutParams.height = 0;
                                         child.setLayoutParams(layoutParams);
