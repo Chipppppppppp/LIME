@@ -527,7 +527,6 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 }
             });
         }
-            
 
         if (!limeOptions.deleteKeepUnread.checked) {
             hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.common.view.listview.PopupListView");
