@@ -403,11 +403,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 int recommendationResId = context.getResources().getIdentifier("home_tab_contents_recommendation_placement", "id", context.getPackageName());
                 int staticNotificationResId = context.getResources().getIdentifier("notification_hub_row_static_view_group", "id", context.getPackageName());
                 int rollingNotificationResId = context.getResources().getIdentifier("notification_hub_row_rolling_view_group", "id", context.getPackageName());
-<<<<<<< HEAD
-                int hotDealContentRecyclerview = context.getResources().getIdentifier("hot_deal_content_recycler_view", "id", context.getPackageName());
-=======
-                int hotDealContentRecyclerViewResId = context.getResources().getIdentifier("hot_deal_content_recycler_view", "id", context.getPackageName());
->>>>>>> 8e819b5886f6677397294a48cea6b0b96ebd4f61
+                int hotDealContentRecyclerviewResId = context.getResources().getIdentifier("hot_deal_content_recycler_view", "id", context.getPackageName());
 
                 ViewGroup recyclerView = view.findViewById(recyclerViewResId);
                 recyclerView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
@@ -424,7 +420,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                                 ViewGroup childGroup = (ViewGroup) child;
                                 for (int j = 0; j < childGroup.getChildCount(); ++j) {
                                     int id = childGroup.getChildAt(j).getId();
-                                    if (id == staticNotificationResId || id == rollingNotificationResId || id == hotDealContentRecyclerview) {
+                                    if (id == staticNotificationResId || id == rollingNotificationResId || id == hotDealContentRecyclerviewResId) {
                                         child.setVisibility(View.GONE);
                                         ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
                                         layoutParams.height = 0;
