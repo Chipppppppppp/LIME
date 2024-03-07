@@ -403,7 +403,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 int recommendationResId = context.getResources().getIdentifier("home_tab_contents_recommendation_placement", "id", context.getPackageName());
                 int staticNotificationResId = context.getResources().getIdentifier("notification_hub_row_static_view_group", "id", context.getPackageName());
                 int rollingNotificationResId = context.getResources().getIdentifier("notification_hub_row_rolling_view_group", "id", context.getPackageName());
-                int hotdealcontentrecyclerview = context.getResources().getIdentifier("hot_deal_content_recycler_view", "id", context.getPackageName());
+                int hotDealContentRecyclerview = context.getResources().getIdentifier("hot_deal_content_recycler_view", "id", context.getPackageName());
 
                 ViewGroup recyclerView = view.findViewById(recyclerViewResId);
                 recyclerView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
@@ -420,26 +420,13 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                                 ViewGroup childGroup = (ViewGroup) child;
                                 for (int j = 0; j < childGroup.getChildCount(); ++j) {
                                     int id = childGroup.getChildAt(j).getId();
-                                    if (id == staticNotificationResId || id == rollingNotificationResId) {
+                                    if (id == staticNotificationResId || id == rollingNotificationResId || id == hotDealContentRecyclerview) {
                                         child.setVisibility(View.GONE);
                                         ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
                                         layoutParams.height = 0;
                                         child.setLayoutParams(layoutParams);
                                         break;
                                     }
-                                }
-                            }
-                            if (limeOptions.deleteHotDealContent.checked && child instanceof ViewGroup childGroup) {
-                                ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
-                                for (int j = 0; j < childGroup.getChildCount(); ++j) {
-                                    int id = childGroup.getChildAt(j).getId();
-                                    if (id == hotdealcontentrecyclerviewid  ) {
-                                        child.setVisibility(View.GONE);
-                                        layoutParams.height = 0;
-                                        child.setLayoutParams(layoutParams);
-
-                                    }
-
                                 }
                             }
                         }

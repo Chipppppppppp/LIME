@@ -27,7 +27,6 @@ public class LimeOptions {
     public Option preventUnsendMessage = new Option("prevent_unsend_message", R.string.switch_prevent_unsend_message, false);
     public Option sendMuteMessage = new Option("mute_message", R.string.switch_send_mute_message, false);
     public Option deleteKeepUnread = new Option("delete_keep_unread", R.string.switch_delete_keep_unread, false);
-    public Option deleteHotDealContent = new Option("delete_hot_deal_content",R.string.switch_delete_hotdeal,false);
     public Option[] options = {
             deleteVoom,
             deleteWallet,
@@ -36,7 +35,6 @@ public class LimeOptions {
             deleteIconLabels,
             deleteAds,
             deleteRecommendation,
-            deleteHotDealContent,
             deleteReplyMute,
             redirectWebView,
             openInBrowser,
