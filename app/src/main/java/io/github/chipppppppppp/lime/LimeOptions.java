@@ -29,6 +29,7 @@ public class LimeOptions {
     public Option deleteKeepUnread = new Option("delete_keep_unread", R.string.switch_delete_keep_unread, false);
     public Option blockTracking = new Option("block_tracking", R.string.switch_block_tracking, false);
     public Option unlockThemes = new Option("unlock_themes", R.string.switch_unlock_themes, false);
+    public Option outputCommunication = new Option("output_communication", R.string.switch_output_communication, false);
 
     public Option[] options = {
             deleteVoom,
@@ -46,6 +47,7 @@ public class LimeOptions {
             sendMuteMessage,
             deleteKeepUnread,
             blockTracking,
-            unlockThemes
+            unlockThemes,
+            outputCommunication
     };
 }

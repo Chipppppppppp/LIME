@@ -31,4 +31,5 @@
     <string name="switch_delete_keep_unread">Delete the \"Keep unread\" switch from the menu in the top right corner of the chat tab</string>
     <string name="switch_block_tracking">Block tracking communications (beta)</string>
     <string name="switch_unlock_themes">Unlock themes (at your own risk)</string>
+    <string name="switch_output_communication">Output communication contents to log (for developers)</string>
 </resources>
