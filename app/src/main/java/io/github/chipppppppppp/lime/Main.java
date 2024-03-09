@@ -356,6 +356,17 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
         }
 
         if (limeOptions.deleteAds.checked) {
+            hookTarget = lparam.classLoader.loadClass("org.apache.thrift.n");
+            XposedBridge.hookAllMethods(hookTarget, "b", new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    String request = param.args[0].toString();
+                    if (request.equals("getBanners") || request.equals("getPrefetchableBanners")) {
+                        param.setResult(null);
+                    }
+                }
+            });
+
             hookTarget = lparam.classLoader.loadClass("com.linecorp.line.admolin.smartch.v2.view.SmartChannelViewLayout");
             XposedHelpers.findAndHookMethod(hookTarget, "dispatchDraw", Canvas.class, new XC_MethodHook() {
                 @Override
@@ -603,9 +614,6 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             hookTarget = lparam.classLoader.loadClass("org.apache.thrift.n");
             XposedBridge.hookAllMethods(hookTarget, "b", new XC_MethodHook() {
                 private static final Set<String> requests = new HashSet<>(Arrays.asList(
-                        "getBanners",
-                        "getHomeFlexContent",
-                        "getPrefetchableBanners",
                         "noop",
                         "pushRecvReports",
                         "reportDeviceState",
