@@ -606,6 +606,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                         "getBanners",
                         "getHomeFlexContent",
                         "getPrefetchableBanners",
+                        "noop",
                         "pushRecvReports",
                         "reportDeviceState",
                         "reportLocation",
