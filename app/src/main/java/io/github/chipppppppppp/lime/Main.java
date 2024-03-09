@@ -394,6 +394,29 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                     }
                 });
             }
+
+            hookTarget = lparam.classLoader.loadClass("h54.k");
+            XposedHelpers.findAndHookMethod(hookTarget, "onPageFinished", WebView.class, String.class, new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    WebView webView = (WebView) param.args[0];
+                    webView.evaluateJavascript("(() => {\n" +
+                            "    const observer = new MutationObserver(mutations => {\n" +
+                            "        mutations.forEach(mutation => {\n" +
+                            "            mutation.addedNodes.forEach(node => {\n" +
+                            "                if (!node.getElementsByClassName) return;\n" +
+                            "                for (let ad of node.getElementsByClassName('ad_wrap')) ad.remove();\n" +
+                            "            });\n" +
+                            "        });\n" +
+                            "    });\n" +
+                            "    const config = {\n" +
+                            "        childList: true,\n" +
+                            "        subtree: true\n" +
+                            "    };\n" +
+                            "    observer.observe(document.body, config);\n" +
+                            "})();", null);
+                }
+            });
         }
 
         hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.activity.homev2.view.HomeFragment");
