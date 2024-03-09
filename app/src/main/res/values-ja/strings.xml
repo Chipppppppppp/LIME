@@ -31,4 +31,5 @@
     <string name="switch_delete_keep_unread">トーク画面右上のメニューにある「未読のまま閲覧」スイッチを削除</string>
     <string name="switch_block_tracking">トラッキング通信をブロック (ベータ)</string>
     <string name="switch_unlock_themes">着せ替えをアンロック (自己責任です)</string>
+    <string name="switch_output_communication">通信内容をログに出力 (開発者用)</string>
 </resources>

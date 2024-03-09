@@ -655,6 +655,22 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 }
             });
         }
+
+        if (limeOptions.outputCommunication.checked) {
+            hookTarget = lparam.classLoader.loadClass("org.apache.thrift.n");
+            XposedBridge.hookAllMethods(hookTarget, "a", new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    XposedBridge.log(param.args[0].toString() + ": " + param.args[1].toString());
+                }
+            });
+            XposedBridge.hookAllMethods(hookTarget, "b", new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    XposedBridge.log(param.args[0].toString() + ": " + param.args[1].toString());
+                }
+            });
+        }
     }
 
     @Override
