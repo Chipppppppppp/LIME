@@ -645,7 +645,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 }
             });
 
-            hookTarget = lparam.classLoader.loadClass("aq5.q2");
+            hookTarget = lparam.classLoader.loadClass("qp5.q2");
             XposedBridge.hookAllMethods(hookTarget, "read", new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
