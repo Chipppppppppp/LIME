@@ -96,7 +96,7 @@ jobs:
           path: app/build/outputs/apk/debug/app-debug.apk
 
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: github.event.inputs.release == 'true'
         with:
           tag_name: ${{ env.version }}
