@@ -656,7 +656,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             hookTarget = lparam.classLoader.loadClass("nc2.j");
             XposedBridge.hookAllMethods(hookTarget, "write", new XC_MethodHook() {
                 @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     Field keyName = param.thisObject.getClass().getDeclaredField("a");
                     if (keyName.get(param.thisObject).toString().equals("theme.currentid")) keyName.set(param.thisObject, null);
                 }
@@ -673,7 +673,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             });
             XposedBridge.hookAllMethods(hookTarget, "b", new XC_MethodHook() {
                 @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     XposedBridge.log(param.args[0].toString() + ": " + param.args[1].toString());
                 }
             });
