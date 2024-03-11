@@ -652,6 +652,15 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                     param.thisObject.getClass().getDeclaredField("a").set(param.thisObject, true);
                 }
             });
+
+            hookTarget = lparam.classLoader.loadClass("nc2.j");
+            XposedBridge.hookAllMethods(hookTarget, "write", new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    Field keyName = param.thisObject.getClass().getDeclaredField("a");
+                    if (keyName.get(param.thisObject).toString().equals("theme.currentid")) keyName.set(param.thisObject, null);
+                }
+            });
         }
 
         if (limeOptions.outputCommunication.checked) {
