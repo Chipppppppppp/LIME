@@ -115,7 +115,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                     secondaryLogin.setVisibility(View.VISIBLE);
                 }
             });
-//ここ再確認お願いします
+
             hookTarget = lparam.classLoader.loadClass("ak1.c$c");
             XposedHelpers.findAndHookMethod(hookTarget, "b", new XC_MethodHook() {
                 @Override
@@ -561,7 +561,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
 
         if (limeOptions.sendMuteMessage.checked) {
             hookTarget = lparam.classLoader.loadClass("cl5.b");
-            XposedHelpers.findAndHookMethod(hookTarget, "H", "og5.f", new XC_MethodHook() {
+            XposedBridge.hookAllMethods(hookTarget, "H", new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     param.args[0] = Enum.valueOf((Class<Enum>) param.args[0].getClass(), "TO_BE_SENT_SILENTLY");
@@ -598,8 +598,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                     ((ListView) viewGroup.getChildAt(0)).addFooterView(layout);
                 }
             });
-//再確認お願いします
-            hookTarget = lparam.classLoader.loadClass("wc.d$d");
+
+            hookTarget = lparam.classLoader.loadClass("wd1.e$d");
             XposedHelpers.findAndHookMethod(hookTarget, "run", new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
