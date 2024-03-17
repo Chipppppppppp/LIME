@@ -81,7 +81,7 @@ PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制
 
 #### 手順
 
-1. LINE と LIME をインストールする
+1. もう一つの端末で、LINE と LIME をインストールする
 2. LINE ログイン画面で、「PC (DESKTOPWIN) に偽装」にチェックを入れる
 3. 設定 > アプリ > LINE より、LINE アプリの設定画面から「強制停止」と「ストレージとキャッシュ」の「キャッシュを削除」をタップ
 4. LINE アプリを開き、「Log in as secondary device」からログインする
