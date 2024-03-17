@@ -74,17 +74,17 @@ LI**M**E
 
 ### 1. PC としてログインする
 
-PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制ログアウトされますが、機能が制限された PC 版 LINE を Android 版 LINE に移すことができます。
+PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制ログアウトされますが、使えない機能がある PC 版 LINE を Android 版 LINE に移すことができます。
 
 - メリット：メッセージの同期に問題がない、非 Root でも可能
 - デメリット：3 端末以上でログインできない、サービスアイコンが表示されない
 
 #### 手順
 
-1. もう一つの端末で、LINE と LIME をインストールする
+1. もう一つの端末に、LINE と LIME をインストールする
 2. LINE ログイン画面で、「PC (DESKTOPWIN) に偽装」にチェックを入れる
 3. 設定 > アプリ > LINE より、LINE アプリの設定画面から「強制停止」と「ストレージとキャッシュ」の「キャッシュを削除」をタップ
-4. LINE アプリを開き、「Log in as secondary device」からログインする
+4. LINE アプリを再度開き、「Log in as secondary device」をタップしてログインする
 5. ログイン後、LINE の設定から「トークのバックアップ・復元」をタップし、2 週間より前のトークを復元する
 
 ### 2. Android ID を偽装する
@@ -99,9 +99,10 @@ PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制
 1. LINE と LIME をインストールする
 2. LINE ログイン画面で、「複数デバイスログイン (Android ID を偽装)」にチェックを入れる
 3. 設定 > アプリ > LINE より、LINE アプリの設定画面から「強制停止」と「ストレージとキャッシュ」の「キャッシュを削除」をタップ
-4. ログイン後、[Swift Backup](https://play.google.com/store/apps/details?id=org.swiftapps.swiftbackup) を利用して LINE アプリをバックアップ (詳しくは[こちら](https://blog.hogehoge.com/2022/01/android-swift-backup.html))
-5. Swift Backup のバックアップフォルダをもう一つの端末に移し、バックアップした LINE をインストール (詳しくは[こちら](https://blog.hogehoge.com/2022/05/SwiftBackup2.html))
-6. バックアップをインストールした端末で、LINE アプリを**開かず**に先に LIME をインストールする
+4. LINE アプリを再度開き、ログインする
+5. ログイン後、[Swift Backup](https://play.google.com/store/apps/details?id=org.swiftapps.swiftbackup) を利用して LINE アプリをバックアップ (詳しくは[こちら](https://blog.hogehoge.com/2022/01/android-swift-backup.html))
+6. Swift Backup のバックアップフォルダをもう一つの端末に移し、バックアップした LINE をインストール (詳しくは[こちら](https://blog.hogehoge.com/2022/05/SwiftBackup2.html))
+7. バックアップをインストールした端末で、LINE アプリを**開かず**に先に LIME をインストールする
 
 ## 問題の報告
 
