@@ -70,17 +70,38 @@ LI**M**E
 
 ## 複数デバイスログイン
 
-両方のデバイスを Root 化している場合、複数デバイスログインが可能です。また、[WSA-Script](https://github.com/YT-Advanced/WSA-Script) を使用して Windows 上の Android で同様の操作を行うことで、Windows での複数デバイスログインも可能です。
+複数デバイスログインには二つの方法が用意されています。どちらの方法でも、[WSA-Script](https://github.com/YT-Advanced/WSA-Script) を使用して Windows 上の Android で同様の操作を行うことで、Windows での複数デバイスログインが可能です。
+
+### 1. PC 版としてログインする
+
+PC (Windows) 版に偽装します。これにより Windows 版 LINE は強制ログアウトされますが、機能が制限された Windows 版 LINE を Android 版 LINE に移すことができます。
+
+メリット：メッセージの同期に問題がない、非 Root でも可能
+デメリット：3 端末以上でログイン不可、サービスアイコンが表示されない
 
 手順：
 
 1. LINE と LIME をインストールする
-1. LINE ログイン画面で、「複数デバイスログイン (Android ID を偽装)」にチェックを入れてログイン
-2. ログイン後、[Swift Backup](https://play.google.com/store/apps/details?id=org.swiftapps.swiftbackup) を利用して LINE アプリをバックアップ (詳しくは[こちら](https://blog.hogehoge.com/2022/01/android-swift-backup.html))
-3. Swift Backup のバックアップフォルダをもう一つの端末に移し、バックアップした LINE をインストール (詳しくは[こちら](https://blog.hogehoge.com/2022/05/SwiftBackup2.html))
-4. もう一つの端末に LIME をインストールする
+2. LINE ログイン画面で、「PC (DESKTOPWIN) に偽装」にチェックを入れる
+3. 設定 > アプリ > LINE より、LINE アプリの設定画面から「強制停止」と「ストレージとキャッシュ」の「キャッシュを削除」をタップ
+4. LINE アプリを開き、「Log in as secondary device」からログインする
+5. ログイン後、LINE の設定から「トークのバックアップ・復元」をタップし、2 週間より前のトークを復元する
 
-※<https://jesuscorona.hatenablog.com/entry/2019/02/10/010920> にあるように、メッセージの同期などに遅れが生じます。
+### 2. Android ID を偽装する
+
+この方法は**両方のデバイスを Root 化している**場合のみ可能です。<https://jesuscorona.hatenablog.com/entry/2019/02/10/010920> にあるように、メッセージの同期などに若干の遅れが生じることに注意が必要です。
+
+メリット：3 端末以上でもログイン可能、すべてのサービスを使用可能
+デメリット：メッセージの同期に遅れが生じる、Root 限定
+
+手順：
+
+1. LINE と LIME をインストールする
+2. LINE ログイン画面で、「複数デバイスログイン (Android ID を偽装)」にチェックを入れる
+3. 設定 > アプリ > LINE より、LINE アプリの設定画面から「強制停止」と「ストレージとキャッシュ」の「キャッシュを削除」をタップ
+4. ログイン後、[Swift Backup](https://play.google.com/store/apps/details?id=org.swiftapps.swiftbackup) を利用して LINE アプリをバックアップ (詳しくは[こちら](https://blog.hogehoge.com/2022/01/android-swift-backup.html))
+5. Swift Backup のバックアップフォルダをもう一つの端末に移し、バックアップした LINE をインストール (詳しくは[こちら](https://blog.hogehoge.com/2022/05/SwiftBackup2.html))
+6. バックアップをインストールした端末で、LINE アプリを**開かずに**先に LIME をインストールする
 
 ## 問題の報告
 
