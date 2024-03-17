@@ -11,9 +11,10 @@
     <string name="module_not_enabled_text">Module not enabled!</string>
     <string name="options_title">Options</string>
     <string name="restarting">Restarting now...</string>
+    <string name="need_refresh">Forced stop and cache clearing are required</string>
     <string name="switch_spoof_android_id">Spoof Android ID</string>
     <string name="spoof_android_id_risk">Spoofing Android ID is at your own risk</string>
-    <string name="switch_android_secondary">Spoof as ANDROIDSECONDARY (does not work)</string>
+    <string name="switch_android_secondary">Spoof as a PC (DESKTOPWIN)</string>
     <string name="switch_unembed_options">Do not embed options in LINE (options will not be synchronized)</string>
     <string name="switch_delete_voom">Delete the VOOM icon</string>
     <string name="switch_delete_wallet">Delete the wallet icon</string>
