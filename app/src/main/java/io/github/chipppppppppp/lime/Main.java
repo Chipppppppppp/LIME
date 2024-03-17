@@ -120,7 +120,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             XposedHelpers.findAndHookMethod(hookTarget, "b", new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    param.setResult("ANDROIDSECONDARY");
+                    param.setResult("DESKTOPWIN");
                 }
             });
         }
@@ -167,7 +167,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 builder.setPositiveButton(R.string.positive, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(activity.getApplicationContext(), activity.getString(R.string.restarting), Toast.LENGTH_SHORT).show();
+                        prefs.edit().putBoolean("spoof_android_id", true).apply();
+                        Toast.makeText(activity.getApplicationContext(), activity.getString(R.string.need_refresh), Toast.LENGTH_SHORT).show();
                         activity.finish();
                     }
                 });
@@ -176,10 +177,10 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
 
                 switchSpoofAndroidId.setChecked(prefs.getBoolean("spoof_android_id", false));
                 switchSpoofAndroidId.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                    prefs.edit().putBoolean("spoof_android_id", isChecked).apply();
                     if (isChecked) dialog.show();
                     else {
-                        Toast.makeText(activity.getApplicationContext(), activity.getString(R.string.restarting), Toast.LENGTH_SHORT).show();
+                        prefs.edit().putBoolean("spoof_android_id", false).apply();
+                        Toast.makeText(activity.getApplicationContext(), activity.getString(R.string.need_refresh), Toast.LENGTH_SHORT).show();
                         activity.finish();
                     }
                 });
@@ -189,7 +190,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 switchAndroidSecondary.setChecked(prefs.getBoolean("android_secondary", false));
                 switchAndroidSecondary.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     prefs.edit().putBoolean("android_secondary", isChecked).apply();
-                    Toast.makeText(activity.getApplicationContext(), activity.getString(R.string.restarting), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity.getApplicationContext(), activity.getString(R.string.need_refresh), Toast.LENGTH_SHORT).show();
                     activity.finish();
                 });
 
