@@ -77,11 +77,11 @@ LI**M**E
 PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制ログアウトされますが、使えない機能がある PC 版 LINE を Android 版 LINE に移すことができます。
 
 - メリット：メッセージの同期に問題がない、非 Root でも可能
-- デメリット：3 端末以上でログインできない、サービスアイコンが表示されない
+- デメリット：3 端末以上でログインできない、2 端末目でサービスアイコンが表示されない
 
 #### 手順
 
-1. もう一つの端末に、LINE と LIME をインストールする
+1. もう一つの端末に LINE と LIME をインストールする
 2. LINE ログイン画面で、「PC (DESKTOPWIN) に偽装」にチェックを入れる
 3. 設定 > アプリ > LINE より、LINE アプリの設定画面から「強制停止」と「ストレージとキャッシュ」の「キャッシュを削除」をタップ
 4. LINE アプリを再度開き、「Log in as secondary device」をタップしてログインする
@@ -102,7 +102,7 @@ PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制
 4. LINE アプリを再度開き、ログインする
 5. ログイン後、[Swift Backup](https://play.google.com/store/apps/details?id=org.swiftapps.swiftbackup) を利用して LINE アプリをバックアップ (詳しくは[こちら](https://blog.hogehoge.com/2022/01/android-swift-backup.html))
 6. Swift Backup のバックアップフォルダをもう一つの端末に移し、バックアップした LINE をインストール (詳しくは[こちら](https://blog.hogehoge.com/2022/05/SwiftBackup2.html))
-7. バックアップをインストールした端末で、LINE アプリを**開かず**に先に LIME をインストールする
+7. LINE アプリを**開かず**に先に LIME をインストールする
 
 ## 問題の報告
 
