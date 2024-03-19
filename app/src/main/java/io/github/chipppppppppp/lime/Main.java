@@ -631,41 +631,6 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             });
         }
 
-        if (limeOptions.unlockThemes.checked) {
-            hookTarget = lparam.classLoader.loadClass("qp5.d2");
-            XposedBridge.hookAllMethods(hookTarget, "read", new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    param.thisObject.getClass().getDeclaredField("r").set(param.thisObject, true);
-                }
-            });
-
-            hookTarget = lparam.classLoader.loadClass("ih4.a2");
-            XposedBridge.hookAllMethods(hookTarget, "read", new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    param.thisObject.getClass().getDeclaredField("a").set(param.thisObject, null);
-                }
-            });
-
-            hookTarget = lparam.classLoader.loadClass("qp5.q2");
-            XposedBridge.hookAllMethods(hookTarget, "read", new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    param.thisObject.getClass().getDeclaredField("a").set(param.thisObject, true);
-                }
-            });
-
-            hookTarget = lparam.classLoader.loadClass("nc2.j");
-            XposedBridge.hookAllMethods(hookTarget, "write", new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    Field keyName = param.thisObject.getClass().getDeclaredField("a");
-                    if (keyName.get(param.thisObject).toString().equals("theme.currentid")) keyName.set(param.thisObject, null);
-                }
-            });
-        }
-
         if (limeOptions.outputCommunication.checked) {
             hookTarget = lparam.classLoader.loadClass("org.apache.thrift.n");
             XposedBridge.hookAllMethods(hookTarget, "a", new XC_MethodHook() {
