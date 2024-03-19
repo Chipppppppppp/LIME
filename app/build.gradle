@@ -10,7 +10,7 @@ android {
         minSdk 26
         //noinspection OldTargetApi
         targetSdk 33
-        versionCode 9
+        versionCode 10
         versionName "1.8.0"
         proguardFiles += 'proguard-rules.pro'
     }
