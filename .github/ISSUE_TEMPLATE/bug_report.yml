@@ -30,12 +30,12 @@ body:
   - type: input
     attributes:
       label: モジュールのバージョン
-      placeholder: 1.7.0
+      placeholder: 1.8.0
     validations:
       required: true
   - type: input
     attributes:
       label: LINEアプリのバージョン
-      placeholder: 14.2.0
+      placeholder: 14.3.2
     validations:
       required: true
