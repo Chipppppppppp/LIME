@@ -76,7 +76,7 @@ LI**M**E
 
 PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制ログアウトされますが、使えない機能がある PC 版 LINE を Android 版 LINE に移すことができます。
 
-※片方のデバイスが iOS の場合、https://github.com/Chipppppppppp/LIME/issues/88 のような問題が発生する可能性があります
+※片方のデバイスが iOS の場合、Letter Sealing がうまくいかずメッセージを受信できない場合があるので、[この方法](https://github.com/Chipppppppppp/LIME/issues/88#issuecomment-2012001059) に従って Letter Sealing ガチャを行ってください。(キーはだれかとのチャットの右上のメニュー > <kbd>設定</kbd> > <kbd>暗号化キー</kbd> から確認できます。)
 
 - メリット：メッセージの同期に問題がない、LIME は片方の端末に入れるだけで良い、非 Root でも可能
 - デメリット：3 端末以上でログインできない、2 端末目でサービスアイコンが表示されない
@@ -85,7 +85,7 @@ PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制
 
 1. もう一つの端末に LINE と LIME をインストールする
 2. LINE ログイン画面で、「PC (DESKTOPWIN) に偽装」にチェックを入れる
-3. 設定 > アプリ > LINE より、LINE アプリの設定画面から「強制停止」と「ストレージとキャッシュ」の「キャッシュを削除」をタップ
+3. <kbd>設定</kbd> > <kbd>アプリ</kbd> > <kbd>LINE</kbd> より、LINE アプリの設定画面から「強制停止」と「ストレージとキャッシュ」の「キャッシュを削除」をタップ
 4. LINE アプリを再度開き、「Log in as secondary device」をタップしてログインする
 5. ログイン後、LINE の設定から「トークのバックアップ・復元」をタップし、2 週間より前のトークを復元する
 
@@ -100,7 +100,7 @@ PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制
 
 1. LINE と LIME をインストールする
 2. LINE ログイン画面で、「複数デバイスログイン (Android ID を偽装)」にチェックを入れる
-3. 設定 > アプリ > LINE より、LINE アプリの設定画面から「強制停止」と「ストレージとキャッシュ」の「キャッシュを削除」をタップ
+3. <kbd>設定</kbd> > <kbd>アプリ</kbd> > <kbd>LINE</kbd> より、LINE アプリの設定画面から「強制停止」と「ストレージとキャッシュ」の「キャッシュを削除」をタップ
 4. LINE アプリを再度開き、ログインする
 5. ログイン後、[Swift Backup](https://play.google.com/store/apps/details?id=org.swiftapps.swiftbackup) を利用して LINE アプリをバックアップ (詳しくは[こちら](https://blog.hogehoge.com/2022/01/android-swift-backup.html))
 6. Swift Backup のバックアップフォルダをもう一つの端末に移し、バックアップした LINE をインストール (詳しくは[こちら](https://blog.hogehoge.com/2022/05/SwiftBackup2.html))
