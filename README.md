@@ -10,7 +10,7 @@ This is an Xposed Module to clean [**LINE**](https://line.me).
 LINE を掃除する Xposed Module です。
 
 ## 使用方法
-LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣に入り、右上の｢**LIME**｣のボタンより開けます。
+LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に入り、右上の｢**LIME**｣のボタンより開けます。
 
 <details><summary>画像を閲覧</summary>
 
@@ -18,7 +18,7 @@ LINEアプリの <kbd>ホーム</kbd> → <kbd>⚙</kbd> から｢**設定**｣�
 
 </details>
 
-また、トーク画面右上のメニューからスイッチをオンにすると**未読のまま閲覧**できます。(このスイッチは設定で削除可能です）
+また、トーク画面右上の <kbd>⁝</kbd> からスイッチをオンにすると**未読のまま閲覧**できます。(このスイッチは設定で削除可能です）
 
 ※返信すると未読が解除されてしまうのでご注意ください
 
@@ -57,10 +57,10 @@ LI**M**E
 
 1. [**LSPatch**](https://github.com/LSPosed/LSPatch) をインストール  
   ※フォークで開発されている [**NPatch**](https://github.com/HSSkyBoy/NPatch) では不具合が発生する可能性があります
-2. **LSPatch** アプリを開き、<kbd>管理</kbd> → 右下の<kbd>＋</kbd> → <kbd>ストレージからapkを選択</kbd> →  先程ダウンロードした LI**N**E の APK を選択 → <kbd>統合</kbd> → <kbd>モジュールを埋め込む</kbd> → <kbd>インストールされているアプリを選択</kbd> → LI**M**E にチェックを入れて <kbd>＋</kbd> → <kbd>パッチを開始</kbd> より、パッチを適用
+2. **LSPatch** アプリを開き、<kbd>管理</kbd> > 右下の<kbd>＋</kbd> > <kbd>ストレージからapkを選択</kbd> >  先程ダウンロードした LI**N**E の APK を選択 > <kbd>統合</kbd> → <kbd>モジュールを埋め込む</kbd> > <kbd>インストールされているアプリを選択</kbd> > LI**M**E にチェックを入れて <kbd>＋</kbd> > <kbd>パッチを開始</kbd> より、パッチを適用
 
 > [!TIP]
-> <kbd>ディレクトリの選択</kbd>と出てきた場合は、<kbd>OK</kbd>を押してファイルピッカーを起動し、任意のディレクトリ下にフォルダを作成し、<kbd>このフォルダを使用</kbd> → <kbd>許可</kbd>を押す
+> <kbd>ディレクトリの選択</kbd>と出てきた場合は、<kbd>OK</kbd> を押してファイルピッカーを起動し、任意のディレクトリ下にフォルダを作成し、<kbd>このフォルダを使用</kbd> > <kbd>許可</kbd>を押す
 
 3. [**Shizuku**](https://github.com/RikkaApps/Shizuku) を使用している場合は <kbd>インストール</kbd> を押して続行する  
   使用していない場合は、ファイルエクスプローラー等の別のアプリからインストールする
@@ -76,7 +76,7 @@ LI**M**E
 
 PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制ログアウトされますが、使えない機能がある PC 版 LINE を Android 版 LINE に移すことができます。
 
-※片方のデバイスが iOS の場合、Letter Sealing がうまくいかずメッセージを受信できない場合があるので、[この方法](https://github.com/Chipppppppppp/LIME/issues/88#issuecomment-2012001059) に従って Letter Sealing ガチャを行ってください。(キーはだれかとのチャットの右上のメニュー > <kbd>設定</kbd> > <kbd>暗号化キー</kbd> から確認できます。)
+※片方のデバイスが iOS の場合、Letter Sealing がうまくいかずメッセージを受信できない場合があるので、[この方法](https://github.com/Chipppppppppp/LIME/issues/88#issuecomment-2012001059) に従って Letter Sealing ガチャを行ってください。(キーはだれかとのチャットの右上の <kbd>☰</kbd> > <kbd>設定</kbd> > <kbd>暗号化キー</kbd> から確認できます。)
 
 - メリット：メッセージの同期に問題がない、LIME は片方の端末に入れるだけで良い、非 Root でも可能
 - デメリット：3 端末以上でログインできない、2 端末目でサービスアイコンが表示されない
