@@ -1,7 +1,7 @@
 name: 不具合の報告
 description: バグや開発側が想定していない動作などの報告
 labels: [bug]
-title: "[Bug] タイトルを入力"
+title: "[Bug]: "
 body:
   - type: markdown
     attributes:
@@ -14,7 +14,12 @@ body:
         **結論が解り易い** 文章にしてください。
 
         また、本サービスは日本語が解る事が前提ですので、日本語が解らない場合を除いて、日本語でレポートを書いてください。  
-        Please answer in English only **if you do not understand Japanese**.
+        Please answer in English only **if you DO NOT understand Japanese**.
+  - type: checkboxes
+    attributes:
+      label: LSPatch 使用の有無
+      options:
+        - label: 私は LSPatch を使用している状態での報告を行います
   - type: textarea
     attributes:
       label: 内容の詳細
@@ -27,27 +32,30 @@ body:
       placeholder: 可能な限り具体的に記述してください
     validations:
       required: true
-  - type: textarea
+  - type: dropdown
     attributes:
-      label: 有効にしている設定
-      placeholder: LIMEで有効にしている設定を記述してください
-    validations:
-      required: true
-  - type: input
+      label: 有効にしている LIME の設定
+      multiple: true
+      options:
+        - VOOM アイコンを削除
+        - ウォレットアイコンを削除
+        - ニュースまたは通話アイコンを削除
+        - ボトムバーのアイコンを均等に配置
+        - ボトムバーのアイコンのラベルを削除
+        - 広告を削除
+        - おすすめを削除
+        - 通知から "通知オフ" アクションを削除
+        - WebView を規定のブラウザにリダイレクト
+        - ブラウザアプリで開く
+        - 常に既読をつけない
+        - 送信取り消しを拒否
+        - 常にミュートメッセージとして送信
+        - トーク画面右上のメニューにある「未読のまま閲覧」のスイッチを削除
+        - トラッキング通信をブロック (ベータ)
+        - 通信内容をログに出力 (開発者用)
+  - type: checkboxes
     attributes:
-      label: LS Patch or Root
-      placeholder: LsPach or root
-    validations:
-      required: true
-  - type: input
-    attributes:
-      label: モジュールのバージョン
-      placeholder: 1.8.0
-    validations:
-      required: true
-  - type: input
-    attributes:
-      label: LINEアプリのバージョン
-      placeholder: 14.3.2
-    validations:
-      required: true
+      label: バージョンの確認
+      options:
+        - label: 私は最新版の LIME を使用しており、それに適合するバージョンの LINE アプリを使用しています
+          required: true
