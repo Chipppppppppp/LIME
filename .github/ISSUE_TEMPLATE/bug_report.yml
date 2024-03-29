@@ -37,6 +37,7 @@ body:
       label: 有効にしている LIME の設定
       multiple: true
       options:
+        - >PC (DESKTOPWIN) に偽装
         - VOOM アイコンを削除
         - ウォレットアイコンを削除
         - ニュースまたは通話アイコンを削除
