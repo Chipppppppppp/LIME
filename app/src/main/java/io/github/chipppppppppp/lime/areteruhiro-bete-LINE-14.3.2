@@ -1,0 +1,29 @@
+//チャットルームの吹き出しを透過させる
+
+
+        hookTarget = lparam.classLoader.loadClass("tr0.a");
+        XposedBridge.hookAllMethods(hookTarget, "a", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+
+                param.setResult(null);
+
+            }
+        });
+
+        XposedBridge.hookAllMethods(hookTarget, "b", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+
+                param.setResult(null);
+
+            }
+        });
+        XposedBridge.hookAllMethods(hookTarget, "c", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+
+                param.setResult(null);
+
+            }
+        });
