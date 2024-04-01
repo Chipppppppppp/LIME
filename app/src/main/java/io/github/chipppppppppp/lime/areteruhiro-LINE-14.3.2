@@ -14,4 +14,278 @@
 
 
 
-//
+//メッセージ取り消しを確認
+
+      hookTarget = lparam.classLoader.loadClass("jp.naver.line.android.common.view.listview.PopupListView");
+        XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                ViewGroup viewGroup = (ViewGroup) param.thisObject;
+                Context context = viewGroup.getContext();
+
+                RelativeLayout layout = new RelativeLayout(context);
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                layout.setLayoutParams(layoutParams);
+
+                // 新しいボタンの作成
+                Button button = new Button(context);
+                RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                buttonParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM); // ボタンをレイアウトの下部に配置
+
+                button.setText("新しいボタン"); // ボタンに表示されるテキストを設定
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // ボタンがクリックされたときの処理
+                        try {
+                            // ファイルの内容を取得してポップアップダイアログで表示する
+                            String command = "su -c cat /storage/emulated/0/Download/Test.txt";
+                            Process process = Runtime.getRuntime().exec(command);
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                            StringBuilder output = new StringBuilder();
+                            String line;
+                            while ((line = reader.readLine()) != null) {
+                                output.append(line).append("\n");
+                            }
+                            reader.close();
+                            process.waitFor();
+
+                            // ポップアップダイアログでファイルの内容を表示する
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                            builder.setTitle("ファイルの内容")
+                                    .setMessage(output.toString())
+                                    .setPositiveButton("OK", null)
+                                    .create()
+                                    .show();
+                        } catch (IOException | InterruptedException e) {
+                            e.printStackTrace();
+                            Toast.makeText(context, "ファイルの読み取りに失敗しました", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                layout.addView(button, buttonParams);
+
+                ((ListView) viewGroup.getChildAt(0)).addFooterView(layout);
+            }
+        });
+
+
+
+
+        hookTarget = lparam.classLoader.loadClass("org.apache.thrift.n");
+        XposedBridge.hookAllMethods(hookTarget, "a", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                String paramValue = param.args[1].toString();
+
+// DUMMY を含む場合のみログを表示
+                if (paramValue.contains("type:DUMMY,")) {
+                    // param1 と param2 の値を取得
+                    String[] parts = paramValue.split(",");
+                    String serverId = null;
+                    String talkId = null;
+                    for (String part : parts) {
+                        if (part.trim().startsWith("param1:")) {
+                            talkId  = part.trim().substring("param1:".length());
+
+                        } else if (part.trim().startsWith("param2:")) {
+                            serverId = part.trim().substring("param2:".length());
+                        }
+                    }
+
+                    // 保存したserverIdとtalkIdを使用してcontentを取得して編集する
+                    String content = getContentFromServerId(serverId);
+                    String image_check = image_check(serverId);
+                    String gruop_name = get_group_name(talkId);
+                    String talk_name = talk_name(talkId);
+
+
+                    List<String> pastValues = new ArrayList<>();
+
+                    if (content != null && (gruop_name != null || talk_name != null)) {
+                        String A = (gruop_name != null ? gruop_name : "") + (talk_name != null ? talk_name : "") + ":" + content + image_check;
+
+// ログに残すファイルを指定
+
+                        String filePath = "/storage/emulated/0/Download/Test.txt";
+
+// pastValues リストの内容を改行区切りでファイルに書き込むコマンド
+                        String command = "su -c echo \"" + String.join("\n", A) + "\" >> " + filePath;
+
+                        try {
+
+                            Process process = Runtime.getRuntime().exec(command);
+                            process.waitFor();
+                            XposedBridge.log("削除されたメッセージ: " + A);
+                        } catch (IOException | InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+
+
+                }
+            }
+
+        });
+
+
+
+    }
+
+    // ファイルからテキストを読み取るメソッド
+// ファイルからテキストを読み取るメソッド
+    private void readTextFromFile(Context context) {
+        // ファイルのパスを指定
+        String filePath = "/storage/emulated/0/Download/Test.txt";
+        File file = new File(filePath);
+        StringBuilder text = new StringBuilder();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
+            }
+            br.close();
+            // テキストを表示する
+            Toast.makeText(context, "ファイルから読み取ったテキスト:\n" + text.toString(), Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // エラーが発生した場合にメッセージを表示する
+            Toast.makeText(context, "ファイルの読み取り中にエラーが発生しました", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    int retryCount = 2;
+    int retryInterval = 100;
+    private String getContentFromServerId(String serverId) {
+        String content = null;
+
+        for (int i = 0; i < retryCount; i++) {
+            try {
+                String command = "su -c sqlite3 /data_mirror/data_ce/null/0/jp.naver.line.android/databases/naver_line " +
+                        "\"SELECT content FROM chat_history WHERE server_id='" + serverId + "';\"";
+                content = executeSQLite3Command(command);
+
+                if (content != null) {
+                    break;
+                }
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }try {Thread.sleep(retryInterval);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return content;
+    }
+    private String get_group_name(String talkId) {
+        String gruop_name = null;
+
+
+        for (int i = 0; i < retryCount; i++) {
+            try {
+                String command = "su -c sqlite3 /data_mirror/data_ce/null/0/jp.naver.line.android/databases/naver_line " +
+                        "\"SELECT name FROM groups WHERE id='" + talkId + "';\"";
+                gruop_name = executeSQLite3Command(command);
+
+                if (gruop_name != null) {
+                    break;
+                }
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+
+
+            try {
+                Thread.sleep(retryInterval);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+
+            }}
+        return gruop_name;
+    }
+    private String talk_name(String talkId) {
+        String talk_name = null;
+
+
+        for (int i = 0; i < retryCount; i++) {
+            try {
+                String command = "su -c sqlite3 /data_mirror/data_ce/null/0/jp.naver.line.android/databases/naver_line " +
+                        "\"SELECT name FROM contacts WHERE m_id='" + talkId + "';\"";
+                talk_name = executeSQLite3Command(command);
+
+                if (talk_name != null) {
+                    break;
+                }
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+
+
+            try {
+                Thread.sleep(retryInterval);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return talk_name;
+    }
+
+
+    private String image_check(String serverId) {
+        String image_check = null;
+
+        for (int i = 0; i < retryCount; i++) {
+            try {
+                String command = "su -c sqlite3 /data_mirror/data_ce/null/0/jp.naver.line.android/databases/naver_line " +
+                        "\"SELECT attachement_image FROM chat_history WHERE server_id='" + serverId + "';\"";
+                image_check = executeSQLite3Command(command);
+                if ("1".equals(image_check)) {
+                    image_check = "画像が削除されました";
+                    break;
+                }
+                if ("0".equals(image_check)) {
+                    image_check = " ";
+                    break;
+                }
+
+
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                Thread.sleep(retryInterval);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return  image_check;
+    }
+
+
+    // SQLite3コマンドを実行する
+    private String executeSQLite3Command(String command) throws IOException, InterruptedException {
+        try {
+            java.lang.Process process = getRuntime().exec(command);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            StringBuilder contentBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                contentBuilder.append(line);
+            }
+            process.waitFor();
+            return contentBuilder.toString();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
