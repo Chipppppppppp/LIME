@@ -630,6 +630,18 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                 }
             });
         }
+           hookTarget = lparam.classLoader.loadClass("com.linecorp.line.chateffect.impl.player.ContinuousEffectPlayer$a");
+
+
+
+        XposedBridge.hookAllMethods(hookTarget, "a", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+
+                param.setResult(null);
+
+            }
+        });
 
         if (limeOptions.outputCommunication.checked) {
             hookTarget = lparam.classLoader.loadClass("org.apache.thrift.n");
