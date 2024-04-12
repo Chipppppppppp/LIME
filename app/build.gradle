@@ -30,23 +30,24 @@ android {
             keyPassword System.getenv('KEY_PASSWORD')
         }
     }
+
     buildTypes {
-        debug {
-            minifyEnabled false
+        configureEach {
             signingConfig signingConfigs.android
         }
         release {
             minifyEnabled true
             shrinkResources true
-            signingConfig signingConfigs.android
             if (file('release.jks').exists()) {
                 signingConfig signingConfigs.release
             }
         }
     }
+
     lint {
         checkReleaseBuilds false
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
