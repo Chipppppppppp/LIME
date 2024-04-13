@@ -53,6 +53,8 @@ body:
         - トーク画面右上のメニューにある「未読のまま閲覧」のスイッチを削除
         - トラッキング通信をブロック (ベータ)
         - 通信内容をログに出力 (開発者用)
+        - PC (DESKTOPWIN) に偽装
+        - Android ID を偽装
   - type: checkboxes
     attributes:
       label: バージョンの確認
