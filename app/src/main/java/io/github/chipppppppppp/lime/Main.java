@@ -416,10 +416,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                             "    const observer = new MutationObserver(mutations => {\n" +
                             "        mutations.forEach(mutation => {\n" +
                             "            mutation.addedNodes.forEach(node => {\n" +
-                            "                if (!node.getElementsByClassName) return;\n" +
-                            "                for (let ad of node.getElementsByClassName('ad_wrap')) ad.remove();\n" +
-                            "                for (let ad of node.getElementsByClassName('lc__ad_root')) ad.parentElement.parentElement.parentElement.remove();\n" +
-                            "                for (let ad of document.getElementsByClassName(\"lc__ad_element\")) ad.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.remove();\n" +
+                            "                if (!node.querySelectorAll) return;\n" +
+                            "                node.querySelectorAll('.ad_wrap, .lc__ad_root, .lc__ad_element').forEach(ad => ad.remove());\n" +
                             "            });\n" +
                             "        });\n" +
                             "    });\n" +
