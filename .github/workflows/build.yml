@@ -8,6 +8,7 @@ on:
       - 'gradle/**'
       - '*.gradle'
       - '*.properties'
+  pull_request:
   workflow_dispatch:
     inputs:
       release:
@@ -39,6 +40,7 @@ jobs:
           path: |
             ~/.gradle/caches/
             ~/.gradle/wrapper/
+            ./.gradle/
           key: ${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
 
       - name: Set environments
@@ -50,7 +52,7 @@ jobs:
           } >> $GITHUB_ENV
 
       - name: Check tag exists
-        uses: mukunku/tag-exists-action@v1.5.0
+        uses: mukunku/tag-exists-action@v1.6.0
         if: github.event.inputs.release == 'true'
         id: check-tag
         with: 
@@ -59,25 +61,25 @@ jobs:
       - name: Release check
         if: github.event.inputs.release == 'true'
         run: |
-          if [[ "${{ secrets.STORE_FILE }}" == "" ]]; then
-            echo -e "\nERROR!\nリリースするには､ 署名鍵を設定する必要があります｡\n"
-            echo "STORE_FILE: JKS形式の署名鍵をBase64でエンコードした文字列"
-            echo "STORE_PASSWORD: キーストアのパスワード"
-            echo "KEY_ALIAS: 署名のエイリアス"
-            echo "KEY_PASSWORD: 署名のパスワード"
+          if [ "${{ secrets.STORE_FILE }}" == "" ]; then
+            echo -e "\nERROR!\nTo release, you need to set up a signing key! \n"
+            echo "STORE_FILE: A Base64 encoded string of the signing key in JKS format"
+            echo "STORE_PASSWORD: Key store password"
+            echo "KEY_ALIAS: Key alias"
+            echo "KEY_PASSWORD: Key password"
             echo ""
             exit 1
           fi
-          if [[ "${{ steps.check-tag.outputs.exists }}" == "true" ]]; then
-            echo -e "\nERROR!\n既に同じタグが存在します｡\n"
-            echo "build.gradle の versionName を変更してください"
+          if [ "${{ steps.check-tag.outputs.exists }}" == "true" ]; then
+            echo -e "\nERROR!\nThe same tag already exists!\n"
+            echo "Please change versionName in build.gradle"
             echo ""
             exit 1
           fi
 
       - name: Build with Gradle
         run: |
-          if [[ "${{ inputs.release }}" == "true" ]]; then
+          if [ "${{ inputs.release }}" == "true" ]; then
             echo "${{ secrets.STORE_FILE }}" | base64 -d > app/release.jks
             export STORE_PASSWORD="${{ secrets.STORE_PASSWORD }}"
             export KEY_ALIAS="${{ secrets.KEY_ALIAS }}"
