@@ -1,1 +1,2 @@
 -keep class io.github.chipppppppppp.lime.Main
+-ignorewarnings
