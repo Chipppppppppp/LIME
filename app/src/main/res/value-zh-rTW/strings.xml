@@ -1,5 +1,4 @@
 <resources>
-    <string translatable="false" name="app_name">LIME</string>
     <!-- General -->
     <string name="positive">確定</string>
 
