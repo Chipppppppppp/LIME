@@ -579,24 +579,49 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                     ViewGroup viewGroup = (ViewGroup) param.thisObject;
                     Context context = viewGroup.getContext();
 
-                    RelativeLayout layout = new RelativeLayout(context);
-                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                            RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                    layout.setLayoutParams(layoutParams);
+                    RelativeLayout container = new RelativeLayout(context);
+                    RelativeLayout.LayoutParams containerParams = new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    container.setLayoutParams(containerParams);
+
+                    GradientDrawable background = new GradientDrawable();
+                    background.setShape(GradientDrawable.RECTANGLE);
+                    background.setColor(Color.parseColor("#06C755"));
+                    background.setCornerRadii(new float[]{100, 100, 80, 30, 100, 100, 80, 30});
+
+                    container.setBackground(background);
+
+                    Locale locale = context.getResources().getConfiguration().locale;
+                    String language = locale.getLanguage();
+
+                    TextView label = new TextView(context);
+                    if (language.equals("ja")) {
+                        label.setText("未読のまま閲覧");
+                    } else {
+                        label.setText("Keep unread");
+                    }
+                    label.setTextSize(18);
+                    label.setTextColor(Color.WHITE);
+                    label.setId(View.generateViewId());
+                    RelativeLayout.LayoutParams labelParams = new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    labelParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                    labelParams.setMargins(40, 0, 0, 0);
+                    container.addView(label, labelParams);
 
                     Switch switchView = new Switch(context);
                     RelativeLayout.LayoutParams switchParams = new RelativeLayout.LayoutParams(
                             RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    switchParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-
+                    switchParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    switchParams.setMargins(0, 0, 40, 0);
                     switchView.setChecked(false);
                     switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
                         keepUnread = isChecked;
                     });
 
-                    layout.addView(switchView, switchParams);
+                    container.addView(switchView, switchParams);
 
-                    ((ListView) viewGroup.getChildAt(0)).addFooterView(layout);
+                    ((ListView) viewGroup.getChildAt(0)).addFooterView(container);
                 }
             });
 
