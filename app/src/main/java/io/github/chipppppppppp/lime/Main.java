@@ -17,6 +17,8 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Process;
 import android.provider.Settings;
@@ -579,6 +581,9 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
                     ViewGroup viewGroup = (ViewGroup) param.thisObject;
                     Context context = viewGroup.getContext();
 
+                    Context moduleContext = context.getApplicationContext().createPackageContext(MODULE, Context.CONTEXT_IGNORE_SECURITY);
+                    String textKeepUnread = moduleContext.getResources().getString(R.string.switch_keep_unread);
+
                     RelativeLayout container = new RelativeLayout(context);
                     RelativeLayout.LayoutParams containerParams = new RelativeLayout.LayoutParams(
                             RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -591,15 +596,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
 
                     container.setBackground(background);
 
-                    Locale locale = context.getResources().getConfiguration().locale;
-                    String language = locale.getLanguage();
-
                     TextView label = new TextView(context);
-                    if (language.equals("ja")) {
-                        label.setText("未読のまま閲覧");
-                    } else {
-                        label.setText("Keep unread");
-                    }
+                    label.setText(textKeepUnread);
                     label.setTextSize(18);
                     label.setTextColor(Color.WHITE);
                     label.setId(View.generateViewId());
