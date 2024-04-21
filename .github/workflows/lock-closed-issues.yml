@@ -1,0 +1,15 @@
+name: Lock closed issue
+
+on:
+  issues:
+    types: [closed]
+
+jobs:
+  lock:
+    name: Lock
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+    - name: Lock issue
+      uses: s1204IT/lock-issues@v1.2
