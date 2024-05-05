@@ -31,4 +31,7 @@
     <string name="switch_delete_keep_unread">刪除聊天分頁右上角選單的「保持未讀」開關</string>
     <string name="switch_block_tracking">防止跟蹤通訊（測試版）</string>
     <string name="switch_output_communication">將通訊內容輸出到日誌內（供開發人員使用）</string>
+
+    <!-- Menu -->
+    <string name="switch_keep_unread">保持未讀</string>
 </resources>
