@@ -5,7 +5,6 @@ import android.view.View;
 import android.webkit.WebView;
 
 import io.github.chipppppppppp.lime.LimeOptions;
-import io.github.chipppppppppp.lime.Utils;
 
 public class RemoveAds implements IHook {
     static final String[] adClassNames = {
@@ -26,7 +25,7 @@ public class RemoveAds implements IHook {
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) {
-        if (!limeOptions.deleteAds.checked) return;
+        if (!limeOptions.removeAds.checked) return;
 
         XposedBridge.hookAllMethods(
                 loadPackageParam.classLoader.loadClass("org.apache.thrift.n"),
@@ -60,7 +59,7 @@ public class RemoveAds implements IHook {
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        if (limeOptions.deleteAds.checked) {
+                        if (limeOptions.removeAds.checked) {
                             ((View) ((View) param.thisObject).getParent().getParent()).setVisibility(View.GONE);
                         }
                     }

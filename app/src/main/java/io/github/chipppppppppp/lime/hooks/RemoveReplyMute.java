@@ -8,7 +8,7 @@ import io.github.chipppppppppp.lime.LimeOptions;
 public class RemoveReplyMute implements IHook {
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) {
-        if (!limeOptions.deleteReplyMute.checked) return;
+        if (!limeOptions.removeReplyMute.checked) return;
 
         XposedHelpers.findAndHookMethod(
                 Notification.Builder.class,

@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
 import io.github.chipppppppppp.lime.LimeOptions;
-import io.github.chipppppppppp.lime.Utils;
 
 public class RemoveRecommendation implements IHook {
     @Override
@@ -32,12 +31,12 @@ public class RemoveRecommendation implements IHook {
                             public void onScrollChanged() {
                                 for (int i = 0; i < recyclerView.getChildCount(); ++i) {
                                     View child = recyclerView.getChildAt(i);
-                                    if (limeOptions.deleteRecommendation.checked && child.getId() == recommendationResId) {
+                                    if (limeOptions.removeRecommendation.checked && child.getId() == recommendationResId) {
                                         child.setVisibility(View.GONE);
                                         ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
                                         layoutParams.height = 0;
                                         child.setLayoutParams(layoutParams);
-                                    } else if (limeOptions.deleteAds.checked && child instanceof ViewGroup) {
+                                    } else if (limeOptions.removeAds.checked && child instanceof ViewGroup) {
                                         ViewGroup childGroup = (ViewGroup) child;
                                         for (int j = 0; j < childGroup.getChildCount(); ++j) {
                                             int id = childGroup.getChildAt(j).getId();

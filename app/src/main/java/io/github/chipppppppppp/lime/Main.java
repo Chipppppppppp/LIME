@@ -1,40 +1,6 @@
 package io.github.chipppppppppp.lime;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import android.app.Activity;
-import android.app.Application;
-import android.app.Notification;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.res.AssetManager;
-import android.content.SharedPreferences;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
-import android.os.Process;
 import android.support.annotation.NonNull;
-import android.support.customtabs.CustomTabsIntent;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.webkit.WebView;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.Switch;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import android.app.AndroidAppHelper;
 import android.content.res.XModuleResources;
@@ -116,7 +82,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
 
     @Override
     public void handleInitPackageResources(@NonNull XC_InitPackageResources.InitPackageResourcesParam resparam) throws Throwable {
-        if (!resparam.packageName.equals(PACKAGE) || !limeOptions.deleteIconLabels.checked) return;
+        if (!resparam.packageName.equals(PACKAGE) || !limeOptions.removeIconLabels.checked) return;
 
         XModuleResources xModuleResources = XModuleResources.createInstance(MODULE_PATH, resparam.res);
 

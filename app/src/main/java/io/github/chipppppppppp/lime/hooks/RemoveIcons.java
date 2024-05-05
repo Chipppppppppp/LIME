@@ -15,7 +15,7 @@ public class RemoveIcons implements IHook {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         Activity activity = (Activity) param.thisObject;
-                        if (limeOptions.deleteVoom.checked) {
+                        if (limeOptions.removeVoom.checked) {
                             int timelineResId = activity.getResources().getIdentifier("bnb_timeline", "id", activity.getPackageName());
                             activity.findViewById(timelineResId).setVisibility(View.GONE);
                             if (limeOptions.distributeEvenly.checked) {
@@ -23,7 +23,7 @@ public class RemoveIcons implements IHook {
                                 activity.findViewById(timelineSpacerResId).setVisibility(View.GONE);
                             }
                         }
-                        if (limeOptions.deleteWallet.checked) {
+                        if (limeOptions.removeWallet.checked) {
                             int walletResId = activity.getResources().getIdentifier("bnb_wallet", "id", activity.getPackageName());
                             activity.findViewById(walletResId).setVisibility(View.GONE);
                             if (limeOptions.distributeEvenly.checked) {
@@ -31,7 +31,7 @@ public class RemoveIcons implements IHook {
                                 activity.findViewById(walletSpacerResId).setVisibility(View.GONE);
                             }
                         }
-                        if (limeOptions.deleteNewsOrCall.checked) {
+                        if (limeOptions.removeNewsOrCall.checked) {
                             int newsResId = activity.getResources().getIdentifier("bnb_news", "id", activity.getPackageName());
                             activity.findViewById(newsResId).setVisibility(View.GONE);
                             int callResId = activity.getResources().getIdentifier("bnb_call", "id", activity.getPackageName());

@@ -18,7 +18,7 @@ public class KeepUnread implements IHook {
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) {
-        if (limeOptions.deleteKeepUnread.checked) return;
+        if (limeOptions.removeKeepUnread.checked) return;
 
         XposedBridge.hookAllConstructors(
                 loadPackageParam.classLoader.loadClass("jp.naver.line.android.common.view.listview.PopupListView"),
