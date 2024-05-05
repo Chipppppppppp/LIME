@@ -1,0 +1,22 @@
+name: Lock issue
+
+on:
+  issues:
+    types:
+    - closed
+    - reopened
+
+jobs:
+  lock:
+    name: Lock
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+    - name: Lock issue
+      uses: s1204IT/lock-issues@v1.2
+      if: github.event.issue.state == 'closed'
+      id: locked
+    - name: Unlock issue
+      uses: s1204IT/unlock-issues@v1.2
+      if: steps.locked.outcome != 'success'
