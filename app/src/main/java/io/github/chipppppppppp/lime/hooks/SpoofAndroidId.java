@@ -1,0 +1,29 @@
+package io.github.chipppppppppp.lime.hooks;
+
+import android.content.ContentResolver;
+import android.provider.Settings;
+
+import io.github.chipppppppppp.lime.LimeOptions;
+import io.github.chipppppppppp.lime.Main;
+
+public class SpoofAndroidId implements IHook {
+    @Override
+    public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) {
+        if (!Main.xPackagePrefs.getBoolean("spoof_android_id", false)) return;
+
+        XposedHelpers.findAndHookMethod(
+                Settings.Secure.class,
+                "getString",
+                ContentResolver.class,
+                String.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        if (param.args[1].toString().equals(Settings.Secure.ANDROID_ID)) {
+                            param.setResult("0000000000000000");
+                        }
+                    }
+                }
+        );
+    }
+}

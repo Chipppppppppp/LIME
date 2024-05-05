@@ -8,7 +8,4 @@ public class Utils {
         float density = context.getResources().getDisplayMetrics().density;
         return Math.round((float) dp * density);
     }
-    public static void hideView(View view) {
-        view.setVisibility(View.GONE);
-    }
 }
