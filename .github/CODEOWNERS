@@ -1,15 +1,5 @@
-# GitHub configs
-/.github/** @Chipppppppppp @s1204IT
+* @Chipppppppppp @s1204IT
 
-# Git configs
-/.git* @Chipppppppppp @s1204IT
-
-# Gradle and Documents
-/* @Chipppppppppp @s1204IT
-/gradle/** @Chipppppppppp @s1204IT
-
-# App project
-/app/** @Chipppppppppp @s1204IT
 /app/src/main/java/** @Chipppppppppp
 /app/src/main/res/drawable/* @Chipppppppppp
 /app/src/main/res/mipmap-*/* @Chipppppppppp
