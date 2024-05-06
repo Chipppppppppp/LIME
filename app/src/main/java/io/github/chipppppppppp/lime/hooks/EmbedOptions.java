@@ -85,14 +85,10 @@ public class EmbedOptions implements IHook {
                             switchView.setLayoutParams(params);
 
                             switchView.setChecked(option.checked);
-                            switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                                prefs.edit().putBoolean(name, isChecked).apply();
-                            });
 
-                            if (name == "redirect_webview") switchRedirectWebView = switchView;
-                            else if (name == "open_in_browser") {
+                            if (name.equals("redirect_webview")) switchRedirectWebView = switchView;
+                            else if (name.equals("open_in_browser")) {
                                 switchRedirectWebView.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                                    prefs.edit().putBoolean("redirect_webview", isChecked).apply();
                                     if (isChecked) switchView.setEnabled(true);
                                     else {
                                         switchView.setChecked(false);
@@ -113,9 +109,12 @@ public class EmbedOptions implements IHook {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 boolean optionChanged = false;
-                                for (LimeOptions.Option option : limeOptions.options) {
-                                    if (option.checked != prefs.getBoolean(option.name, option.checked))
+                                for (int i = 0; i < layout.getChildCount(); ++i) {
+                                    Switch switchView = (Switch) layout.getChildAt(i);
+                                    if (limeOptions.options[i].checked != switchView.isChecked()) {
                                         optionChanged = true;
+                                    }
+                                    prefs.edit().putBoolean(limeOptions.options[i].name, switchView.isChecked()).commit();
                                 }
 
                                 if (optionChanged) {
