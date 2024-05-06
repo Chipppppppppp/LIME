@@ -3,11 +3,14 @@ package io.github.chipppppppppp.lime.hooks;
 import android.app.Activity;
 import android.view.View;
 
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
 
 public class RemoveIcons implements IHook {
     @Override
-    public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) {
+    public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         XposedHelpers.findAndHookMethod(
                 loadPackageParam.classLoader.loadClass("jp.naver.line.android.activity.main.MainActivity"),
                 "onResume",

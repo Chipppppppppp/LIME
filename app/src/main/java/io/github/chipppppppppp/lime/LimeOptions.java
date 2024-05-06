@@ -3,7 +3,7 @@ package io.github.chipppppppppp.lime;
 public class LimeOptions {
     public class Option {
         public final String name;
-        int id;
+        public int id;
         public boolean checked;
 
         public Option(String name, int id, boolean checked) {

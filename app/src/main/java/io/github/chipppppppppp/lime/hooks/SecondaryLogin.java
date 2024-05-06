@@ -3,12 +3,16 @@ package io.github.chipppppppppp.lime.hooks;
 import android.os.Bundle;
 import android.view.View;
 
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
+import io.github.chipppppppppp.lime.Main;
 
 public class SecondaryLogin implements IHook {
     @Override
-    public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) {
-        if (!xPackagePrefs.getBoolean("android_secondary", false)) return;
+    public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
+        if (!Main.xPackagePrefs.getBoolean("android_secondary", false)) return;
 
         XposedHelpers.findAndHookMethod(
                 loadPackageParam.classLoader.loadClass("com.linecorp.registration.ui.fragment.WelcomeFragment"),
