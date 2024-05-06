@@ -3,12 +3,15 @@ package io.github.chipppppppppp.lime.hooks;
 import android.content.ContentResolver;
 import android.provider.Settings;
 
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
 import io.github.chipppppppppp.lime.Main;
 
 public class SpoofAndroidId implements IHook {
     @Override
-    public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) {
+    public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (!Main.xPackagePrefs.getBoolean("spoof_android_id", false)) return;
 
         XposedHelpers.findAndHookMethod(

@@ -19,13 +19,17 @@ import android.widget.Toast;
 
 import java.lang.reflect.Method;
 
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
+import io.github.chipppppppppp.lime.Main;
 import io.github.chipppppppppp.lime.R;
 import io.github.chipppppppppp.lime.Utils;
 
 public class EmbedOptions implements IHook {
     @Override
-    public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) {
+    public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (Main.xModulePrefs.getBoolean("unembed_options", false)) return;
         XposedBridge.hookAllMethods(
                 loadPackageParam.classLoader.loadClass("com.linecorp.line.settings.main.LineUserMainSettingsFragment"),
@@ -38,9 +42,9 @@ public class EmbedOptions implements IHook {
 
                         Method mAddAddAssertPath = AssetManager.class.getDeclaredMethod("addAssetPath", String.class);
                         mAddAddAssertPath.setAccessible(true);
-                        mAddAddAssertPath.invoke(context.getResources().getAssets(), MODULE_PATH);
+                        mAddAddAssertPath.invoke(context.getResources().getAssets(), Main.MODULE_PATH);
 
-                        SharedPreferences prefs = context.getSharedPreferences(MODULE + "-options", Context.MODE_PRIVATE);
+                        SharedPreferences prefs = context.getSharedPreferences(Main.MODULE + "-options", Context.MODE_PRIVATE);
 
                         FrameLayout frameLayout = new FrameLayout(context);
                         frameLayout.setLayoutParams(new ViewGroup.LayoutParams(
@@ -117,7 +121,7 @@ public class EmbedOptions implements IHook {
                                 if (optionChanged) {
                                     Toast.makeText(context.getApplicationContext(), context.getString(R.string.restarting), Toast.LENGTH_SHORT).show();
                                     Process.killProcess(Process.myPid());
-                                    context.startActivity(new Intent().setClassName(PACKAGE, "jp.naver.line.android.activity.SplashActivity"));
+                                    context.startActivity(new Intent().setClassName(Main.PACKAGE, "jp.naver.line.android.activity.SplashActivity"));
                                 }
                             }
                         });

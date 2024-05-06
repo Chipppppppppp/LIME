@@ -4,6 +4,10 @@ import android.graphics.Canvas;
 import android.view.View;
 import android.webkit.WebView;
 
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
 
 public class RemoveAds implements IHook {
@@ -24,7 +28,7 @@ public class RemoveAds implements IHook {
     };
 
     @Override
-    public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) {
+    public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (!limeOptions.removeAds.checked) return;
 
         XposedBridge.hookAllMethods(
@@ -48,7 +52,7 @@ public class RemoveAds implements IHook {
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                       ((View) ((View) param.thisObject).getParent()).setVisibility(View.GONE);
+                        ((View) ((View) param.thisObject).getParent()).setVisibility(View.GONE);
                     }
                 }
         );

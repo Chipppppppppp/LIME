@@ -10,14 +10,19 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
+import io.github.chipppppppppp.lime.Main;
 import io.github.chipppppppppp.lime.R;
 
 public class KeepUnread implements IHook {
     static boolean keepUnread = false;
 
     @Override
-    public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) {
+    public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (limeOptions.removeKeepUnread.checked) return;
 
         XposedBridge.hookAllConstructors(
@@ -28,7 +33,7 @@ public class KeepUnread implements IHook {
                         ViewGroup viewGroup = (ViewGroup) param.thisObject;
                         Context context = viewGroup.getContext();
 
-                        Context moduleContext = context.getApplicationContext().createPackageContext(MODULE, Context.CONTEXT_IGNORE_SECURITY);
+                        Context moduleContext = context.getApplicationContext().createPackageContext(Main.MODULE, Context.CONTEXT_IGNORE_SECURITY);
                         String textKeepUnread = moduleContext.getResources().getString(R.string.switch_keep_unread);
 
                         RelativeLayout container = new RelativeLayout(context);

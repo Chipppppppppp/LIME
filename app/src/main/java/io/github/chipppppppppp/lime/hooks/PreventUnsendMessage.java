@@ -2,11 +2,14 @@ package io.github.chipppppppppp.lime.hooks;
 
 import java.lang.reflect.Method;
 
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
 
 public class PreventUnsendMessage implements IHook {
     @Override
-    public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) {
+    public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (!limeOptions.preventUnsendMessage.checked) return;
 
         Class<?> hookTarget = loadPackageParam.classLoader.loadClass("rp5.id");

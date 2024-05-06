@@ -3,6 +3,7 @@ package io.github.chipppppppppp.lime.hooks;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.view.Gravity;
@@ -15,6 +16,9 @@ import android.widget.Toast;
 
 import java.lang.reflect.Method;
 
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
 import io.github.chipppppppppp.lime.Main;
 import io.github.chipppppppppp.lime.R;
@@ -22,7 +26,7 @@ import io.github.chipppppppppp.lime.Utils;
 
 public class AddRegistrationOptions implements IHook {
     @Override
-    public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) {
+    public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         XposedBridge.hookAllMethods(
                 loadPackageParam.classLoader.loadClass("com.linecorp.registration.ui.fragment.WelcomeFragment"),
                 "onViewCreated",
