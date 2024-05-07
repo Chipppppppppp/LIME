@@ -62,8 +62,7 @@ public class EmbedOptions implements IHook {
                         button.setLayoutParams(layoutParams);
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                                .setTitle(R.string.options_title)
-                                .setCancelable(false);
+                                .setTitle(R.string.options_title);
 
                         LinearLayout layout = new LinearLayout(context);
                         layout.setLayoutParams(new LinearLayout.LayoutParams(
@@ -105,7 +104,7 @@ public class EmbedOptions implements IHook {
                         scrollView.addView(layout);
                         builder.setView(scrollView);
 
-                        builder.setPositiveButton(R.string.positive, new DialogInterface.OnClickListener() {
+                        builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 boolean optionChanged = false;
@@ -121,6 +120,18 @@ public class EmbedOptions implements IHook {
                                     Toast.makeText(context.getApplicationContext(), context.getString(R.string.restarting), Toast.LENGTH_SHORT).show();
                                     Process.killProcess(Process.myPid());
                                     context.startActivity(new Intent().setClassName(Main.PACKAGE, "jp.naver.line.android.activity.SplashActivity"));
+                                }
+                            }
+                        });
+
+                        builder.setNegativeButton(R.string.negative_button, null);
+
+                        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialog) {
+                                for (int i = 0; i < layout.getChildCount(); ++i) {
+                                    Switch switchView = (Switch) layout.getChildAt(i);
+                                    switchView.setChecked(limeOptions.options[i].checked);
                                 }
                             }
                         });

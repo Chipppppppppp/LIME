@@ -68,7 +68,7 @@ public class AddRegistrationOptions implements IHook {
                         textView.setPadding(Utils.dpToPx(20, activity), Utils.dpToPx(20, activity), Utils.dpToPx(20, activity), Utils.dpToPx(20, activity));
                         builder.setView(textView);
 
-                        builder.setPositiveButton(R.string.positive, new DialogInterface.OnClickListener() {
+                        builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 prefs.edit().putBoolean("spoof_android_id", true).apply();
