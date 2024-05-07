@@ -1,7 +1,8 @@
 <resources>
     <string translatable="false" name="app_name">LIME</string>
     <!-- General -->
-    <string name="positive">OK</string>
+    <string name="positive_button">OK</string>
+    <string name="negative_button">Cancel</string>
 
     <!-- Xposed API -->
     <string name="xposed_desc">Clean LINE.</string>

@@ -1,6 +1,7 @@
 <resources>
     <!-- General -->
-    <string name="positive">確定</string>
+    <string name="positive_button">確定</string>
+    <string name="negative_button">取消</string>
 
     <!-- Xposed API -->
     <string name="xposed_desc">整潔的 LINE</string>

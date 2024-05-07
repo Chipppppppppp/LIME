@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- General -->
-    <string name="positive">OK</string>
+    <string name="positive_button">OK</string>
+    <string name="negative_button">キャンセル</string>
 
     <!-- Xposed API -->
     <string name="xposed_desc">LINE をクリーンに。</string>
