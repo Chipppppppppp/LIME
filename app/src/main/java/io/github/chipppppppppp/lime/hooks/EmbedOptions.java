@@ -39,12 +39,9 @@ public class EmbedOptions implements IHook {
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         ViewGroup viewGroup = ((ViewGroup) param.args[0]);
                         Context context = viewGroup.getContext();
+                        Utils.addModuleAssetPath(context);
 
-                        Method mAddAddAssertPath = AssetManager.class.getDeclaredMethod("addAssetPath", String.class);
-                        mAddAddAssertPath.setAccessible(true);
-                        mAddAddAssertPath.invoke(context.getResources().getAssets(), Main.MODULE_PATH);
-
-                        SharedPreferences prefs = context.getSharedPreferences(Main.MODULE + "-options", Context.MODE_PRIVATE);
+                        SharedPreferences prefs = context.getSharedPreferences(Constants.MODULE_NAME + "-options", Context.MODE_PRIVATE);
 
                         FrameLayout frameLayout = new FrameLayout(context);
                         frameLayout.setLayoutParams(new ViewGroup.LayoutParams(
@@ -119,7 +116,7 @@ public class EmbedOptions implements IHook {
                                 if (optionChanged) {
                                     Toast.makeText(context.getApplicationContext(), context.getString(R.string.restarting), Toast.LENGTH_SHORT).show();
                                     Process.killProcess(Process.myPid());
-                                    context.startActivity(new Intent().setClassName(Main.PACKAGE, "jp.naver.line.android.activity.SplashActivity"));
+                                    context.startActivity(new Intent().setClassName(Constants.PACKAGE_NAME, "jp.naver.line.android.activity.SplashActivity"));
                                 }
                             }
                         });

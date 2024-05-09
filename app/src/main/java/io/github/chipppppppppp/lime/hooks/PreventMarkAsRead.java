@@ -11,8 +11,8 @@ public class PreventMarkAsRead implements IHook {
         if (!limeOptions.preventMarkAsRead.checked) return;
 
         XposedBridge.hookAllMethods(
-                loadPackageParam.classLoader.loadClass("org.apache.thrift.n"),
-                "b",
+                loadPackageParam.classLoader.loadClass(Constants.REQUEST_HOOK.className),
+                Constants.REQUEST_HOOK.methodName,
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {

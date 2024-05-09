@@ -11,8 +11,8 @@ public class OutputCommunication implements IHook {
         if (!limeOptions.outputCommunication.checked) return;
 
         XposedBridge.hookAllMethods(
-                loadPackageParam.classLoader.loadClass("org.apache.thrift.n"),
-                "a",
+                loadPackageParam.classLoader.loadClass(Constants.RESPONSE_HOOK.className),
+                Constants.RESPONSE_HOOK.className,
                 new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -22,8 +22,8 @@ public class OutputCommunication implements IHook {
         );
 
         XposedBridge.hookAllMethods(
-                loadPackageParam.classLoader.loadClass("org.apache.thrift.n"),
-                "b",
+                loadPackageParam.classLoader.loadClass(Constants.REQUEST_HOOK.className),
+                Constants.REQUEST_HOOK.methodName,
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {

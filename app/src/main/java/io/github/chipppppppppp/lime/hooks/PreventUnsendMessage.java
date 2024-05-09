@@ -12,13 +12,13 @@ public class PreventUnsendMessage implements IHook {
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (!limeOptions.preventUnsendMessage.checked) return;
 
-        Class<?> hookTarget = loadPackageParam.classLoader.loadClass("rp5.id");
+        final Class<?> hookTarget = loadPackageParam.classLoader.loadClass(Constants.COMMUNICATION_ENUM_HOOK.className);
         final Method valueOf = hookTarget.getMethod("valueOf", String.class);
         final Object dummy = valueOf.invoke(null, "DUMMY");
         final Object notifiedDestroyMessage = valueOf.invoke(null, "NOTIFIED_DESTROY_MESSAGE");
         XposedHelpers.findAndHookMethod(
                 hookTarget,
-                "a",
+                Constants.COMMUNICATION_ENUM_HOOK.methodName,
                 int.class,
                 new XC_MethodHook() {
                     @Override
@@ -31,8 +31,8 @@ public class PreventUnsendMessage implements IHook {
         );
 
         XposedHelpers.findAndHookMethod(
-                loadPackageParam.classLoader.loadClass("mo5.c"),
-                "u",
+                loadPackageParam.classLoader.loadClass(Constants.UNSENT_HOOK.className),
+                Constants.UNSENT_HOOK.methodName,
                 new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {

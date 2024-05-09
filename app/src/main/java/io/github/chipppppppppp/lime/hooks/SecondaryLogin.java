@@ -31,8 +31,8 @@ public class SecondaryLogin implements IHook {
         );
 
         XposedHelpers.findAndHookMethod(
-                loadPackageParam.classLoader.loadClass("ak1.c$c"),
-                "b",
+                loadPackageParam.classLoader.loadClass(Constants.USER_AGENT_HOOK.className),
+                Constants.USER_AGENT_HOOK.methodName,
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {

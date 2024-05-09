@@ -11,8 +11,8 @@ public class SendMuteMessage implements IHook {
         if (!limeOptions.sendMuteMessage.checked) return;
 
         XposedBridge.hookAllMethods(
-                loadPackageParam.classLoader.loadClass("cl5.b"),
-                "H",
+                loadPackageParam.classLoader.loadClass(Constants.MUTE_MESSAGE_HOOK.className),
+                Constants.MUTE_MESSAGE_HOOK.methodName,
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
