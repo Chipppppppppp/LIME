@@ -12,6 +12,7 @@ import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.hooks.AddRegistrationOptions;
 import io.github.chipppppppppp.lime.hooks.BlockTracking;
+import io.github.chipppppppppp.lime.hooks.Constants;
 import io.github.chipppppppppp.lime.hooks.EmbedOptions;
 import io.github.chipppppppppp.lime.hooks.IHook;
 import io.github.chipppppppppp.lime.hooks.KeepUnread;
@@ -29,9 +30,7 @@ import io.github.chipppppppppp.lime.hooks.SendMuteMessage;
 import io.github.chipppppppppp.lime.hooks.SpoofAndroidId;
 
 public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
-    public static String MODULE_PATH;
-    public static final String PACKAGE = "jp.naver.line.android";
-    public static final String MODULE = "io.github.chipppppppppp.lime";
+    public static String modulePath;
 
     public static XSharedPreferences xModulePrefs;
     public static XSharedPreferences xPackagePrefs;
@@ -58,10 +57,10 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-        if (!loadPackageParam.packageName.equals(PACKAGE)) return;
+        if (!loadPackageParam.packageName.equals(Constants.PACKAGE_NAME)) return;
 
-        xModulePrefs = new XSharedPreferences(MODULE, "options");
-        xPackagePrefs = new XSharedPreferences(PACKAGE, MODULE + "-options");
+        xModulePrefs = new XSharedPreferences(Constants.MODULE_NAME, "options");
+        xPackagePrefs = new XSharedPreferences(Constants.PACKAGE_NAME, Constants.MODULE_NAME + "-options");
         if (xModulePrefs.getBoolean("unembed_options", false)) {
             xPrefs = xModulePrefs;
         } else {
@@ -78,13 +77,13 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
 
     @Override
     public void handleInitPackageResources(@NonNull XC_InitPackageResources.InitPackageResourcesParam resparam) throws Throwable {
-        if (!resparam.packageName.equals(PACKAGE) || !limeOptions.removeIconLabels.checked) return;
+        if (!resparam.packageName.equals(Constants.PACKAGE_NAME) || !limeOptions.removeIconLabels.checked) return;
 
-        XModuleResources xModuleResources = XModuleResources.createInstance(MODULE_PATH, resparam.res);
+        XModuleResources xModuleResources = XModuleResources.createInstance(modulePath, resparam.res);
 
-        resparam.res.setReplacement(PACKAGE, "dimen", "main_bnb_button_height", xModuleResources.fwd(R.dimen.main_bnb_button_height));
-        resparam.res.setReplacement(PACKAGE, "dimen", "main_bnb_button_width", xModuleResources.fwd(R.dimen.main_bnb_button_width));
-        resparam.res.hookLayout(PACKAGE, "layout", "app_main_bottom_navigation_bar_button", new XC_LayoutInflated() {
+        resparam.res.setReplacement(Constants.PACKAGE_NAME, "dimen", "main_bnb_button_height", xModuleResources.fwd(R.dimen.main_bnb_button_height));
+        resparam.res.setReplacement(Constants.PACKAGE_NAME, "dimen", "main_bnb_button_width", xModuleResources.fwd(R.dimen.main_bnb_button_width));
+        resparam.res.hookLayout(Constants.PACKAGE_NAME, "layout", "app_main_bottom_navigation_bar_button", new XC_LayoutInflated() {
             @Override
             public void handleLayoutInflated(XC_LayoutInflated.LayoutInflatedParam liparam) throws Throwable {
                 liparam.view.setTranslationY(xModuleResources.getDimensionPixelSize(R.dimen.gnav_icon_offset));
@@ -94,6 +93,6 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
 
     @Override
     public void initZygote(@NonNull StartupParam startupParam) throws Throwable {
-        MODULE_PATH = startupParam.modulePath;
+        modulePath = startupParam.modulePath;
     }
 }

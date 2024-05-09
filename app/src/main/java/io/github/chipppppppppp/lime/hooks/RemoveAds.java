@@ -32,8 +32,8 @@ public class RemoveAds implements IHook {
         if (!limeOptions.removeAds.checked) return;
 
         XposedBridge.hookAllMethods(
-                loadPackageParam.classLoader.loadClass("org.apache.thrift.n"),
-                "b",
+                loadPackageParam.classLoader.loadClass(Constants.REQUEST_HOOK.className),
+                Constants.REQUEST_HOOK.methodName,
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -84,8 +84,8 @@ public class RemoveAds implements IHook {
         }
 
         XposedHelpers.findAndHookMethod(
-                loadPackageParam.classLoader.loadClass("k74.k"),
-                "onPageFinished",
+                loadPackageParam.classLoader.loadClass(Constants.WEBVIEW_HOOK.className),
+                Constants.WEBVIEW_HOOK.methodName,
                 WebView.class,
                 String.class,
                 new XC_MethodHook() {

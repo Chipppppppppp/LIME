@@ -15,8 +15,8 @@ public class BlockTracking implements IHook {
         if (!limeOptions.blockTracking.checked) return;
 
         XposedBridge.hookAllMethods(
-                loadPackageParam.classLoader.loadClass("org.apache.thrift.n"),
-                "b",
+                loadPackageParam.classLoader.loadClass(Constants.REQUEST_HOOK.className),
+                Constants.REQUEST_HOOK.methodName,
                 new XC_MethodHook() {
                     static final Set<String> requests = new HashSet<>(Arrays.asList(
                             "noop",

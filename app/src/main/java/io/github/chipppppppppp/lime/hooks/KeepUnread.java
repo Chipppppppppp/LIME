@@ -33,7 +33,7 @@ public class KeepUnread implements IHook {
                         ViewGroup viewGroup = (ViewGroup) param.thisObject;
                         Context context = viewGroup.getContext();
 
-                        Context moduleContext = context.getApplicationContext().createPackageContext(Main.MODULE, Context.CONTEXT_IGNORE_SECURITY);
+                        Context moduleContext = context.getApplicationContext().createPackageContext(Constants.MODULE_NAME, Context.CONTEXT_IGNORE_SECURITY);
                         String textKeepUnread = moduleContext.getResources().getString(R.string.switch_keep_unread);
 
                         RelativeLayout container = new RelativeLayout(context);
@@ -77,8 +77,8 @@ public class KeepUnread implements IHook {
         );
 
         XposedHelpers.findAndHookMethod(
-                loadPackageParam.classLoader.loadClass("wd1.e$d"),
-                "run",
+                loadPackageParam.classLoader.loadClass(Constants.MARK_AS_READ_HOOK.className),
+                Constants.MARK_AS_READ_HOOK.methodName,
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {

@@ -35,12 +35,9 @@ public class AddRegistrationOptions implements IHook {
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         ViewGroup viewGroup = (ViewGroup) ((ViewGroup) param.args[0]).getChildAt(0);
                         Activity activity = (Activity) viewGroup.getContext();
+                        Utils.addModuleAssetPath(activity);
 
-                        Method mAddAddAssertPath = AssetManager.class.getDeclaredMethod("addAssetPath", String.class);
-                        mAddAddAssertPath.setAccessible(true);
-                        mAddAddAssertPath.invoke(activity.getResources().getAssets(), Main.MODULE_PATH);
-
-                        SharedPreferences prefs = activity.getSharedPreferences(Main.MODULE + "-options", Context.MODE_PRIVATE);
+                        SharedPreferences prefs = activity.getSharedPreferences(Constants.MODULE_NAME + "-options", Context.MODE_PRIVATE);
 
                         FrameLayout frameLayout = new FrameLayout(activity);
                         frameLayout.setLayoutParams(new ViewGroup.LayoutParams(
