@@ -21,7 +21,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    permissions: 
+    permissions:
       contents: write
     steps:
 
@@ -34,14 +34,8 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches/
-            ~/.gradle/wrapper/
-            ./.gradle/
-          key: ${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
 
       - name: Set environments
         run: |
@@ -51,12 +45,13 @@ jobs:
             echo "repo=$(echo ${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/})"
           } >> $GITHUB_ENV
 
-      - name: Check tag exists
-        uses: mukunku/tag-exists-action@v1.6.0
+      - name: Get previous version name
+        uses: oprypin/find-latest-tag@v1.1.2
         if: github.event.inputs.release == 'true'
-        id: check-tag
-        with: 
-          tag: "${{ env.version }}"
+        id: previous
+        with:
+          repository: ${{ github.repository }}
+          releases-only: true
 
       - name: Release check
         if: github.event.inputs.release == 'true'
@@ -70,7 +65,7 @@ jobs:
             echo ""
             exit 1
           fi
-          if [ "${{ steps.check-tag.outputs.exists }}" == "true" ]; then
+          if [ "${{ steps.previous.outputs.tag }}" == "${{ env.version }}" ]; then
             echo -e "\nERROR!\nThe same tag already exists!\n"
             echo "Please change versionName in build.gradle"
             echo ""
@@ -84,10 +79,10 @@ jobs:
             export STORE_PASSWORD="${{ secrets.STORE_PASSWORD }}"
             export KEY_ALIAS="${{ secrets.KEY_ALIAS }}"
             export KEY_PASSWORD="${{ secrets.KEY_PASSWORD }}"
-            ./gradlew aR --no-daemon
+            ./gradlew assembleRelease --no-daemon --stacktrace
             cp -f app/build/outputs/apk/release/app-release.apk ${{ env.repo }}-${{ env.version }}.apk
           else
-            ./gradlew asD --no-daemon
+            ./gradlew assembleDebug --no-daemon --stacktrace
           fi
 
       - name: Upload APK
@@ -105,3 +100,10 @@ jobs:
           draft: false
           prerelease: false
           files: ${{ env.repo }}-${{ env.version }}.apk
+          body: |
+            # 更新内容
+            
+            ## 対応するLINEのバージョン
+            
+            ### 差分
+            https://github.com/${{ github.repository }}/compare/${{ steps.previous.outputs.tag }}...${{ env.version }}

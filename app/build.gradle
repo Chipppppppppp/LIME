@@ -63,3 +63,7 @@ dependencies {
     implementation 'com.android.support:customtabs:23.0.0'
     compileOnly 'de.robv.android.xposed:api:82'
 }
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += "-Xlint:deprecation"
+}
