@@ -60,6 +60,6 @@ android {
 
 dependencies {
     //noinspection GradleCompatible
-    implementation 'com.android.support:customtabs:27.0.1'
+    implementation 'com.android.support:customtabs:23.0.0'
     compileOnly 'de.robv.android.xposed:api:82'
 }
