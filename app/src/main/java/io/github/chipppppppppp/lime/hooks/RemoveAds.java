@@ -84,8 +84,8 @@ public class RemoveAds implements IHook {
         }
 
         XposedHelpers.findAndHookMethod(
-                loadPackageParam.classLoader.loadClass(Constants.WEBVIEW_HOOK.className),
-                Constants.WEBVIEW_HOOK.methodName,
+                loadPackageParam.classLoader.loadClass(Constants.WEBVIEW_CLIENT_HOOK.className),
+                Constants.WEBVIEW_CLIENT_HOOK.methodName,
                 WebView.class,
                 String.class,
                 new XC_MethodHook() {
