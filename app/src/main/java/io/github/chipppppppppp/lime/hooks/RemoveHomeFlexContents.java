@@ -10,7 +10,7 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
 
-public class RemoveRecommendation implements IHook {
+public class RemoveHomeFlexContents implements IHook {
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         XposedBridge.hookAllMethods(
@@ -39,11 +39,11 @@ public class RemoveRecommendation implements IHook {
                                         ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
                                         layoutParams.height = 0;
                                         child.setLayoutParams(layoutParams);
-                                    } else if (limeOptions.removeAds.checked && child instanceof ViewGroup) {
+                                    } else if (limeOptions.removePremiumRecommendation.checked && child instanceof ViewGroup) {
                                         ViewGroup childGroup = (ViewGroup) child;
                                         for (int j = 0; j < childGroup.getChildCount(); ++j) {
                                             int id = childGroup.getChildAt(j).getId();
-                                            if (id == staticNotificationResId || id == rollingNotificationResId || id == hotDealContentResId) {
+                                            if (id == staticNotificationResId) {
                                                 child.setVisibility(View.GONE);
                                                 ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
                                                 layoutParams.height = 0;

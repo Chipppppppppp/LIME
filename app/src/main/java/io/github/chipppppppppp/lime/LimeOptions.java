@@ -20,6 +20,7 @@ public class LimeOptions {
     public Option removeIconLabels = new Option("remove_icon_labels", R.string.switch_remove_icon_labels, true);
     public Option removeAds = new Option("remove_ads", R.string.switch_remove_ads, true);
     public Option removeRecommendation = new Option("remove_recommendation", R.string.switch_remove_recommendation, true);
+    public Option removePremiumRecommendation = new Option("remove_premium_recommendation", R.string.switch_remove_premium_recommendation, true);
     public Option removeReplyMute = new Option("remove_reply_mute", R.string.switch_remove_reply_mute, true);
     public Option redirectWebView = new Option("redirect_webview", R.string.switch_redirect_webview, true);
     public Option openInBrowser = new Option("open_in_browser", R.string.switch_open_in_browser, false);
@@ -38,6 +39,7 @@ public class LimeOptions {
             removeIconLabels,
             removeAds,
             removeRecommendation,
+            removePremiumRecommendation,
             removeReplyMute,
             redirectWebView,
             openInBrowser,
