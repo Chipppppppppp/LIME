@@ -23,7 +23,8 @@
     <string name="switch_distribute_evenly">Distribute the icons on the bottom bar evenly</string>
     <string name="switch_remove_icon_labels">Remove the icon labels on the bottom bar</string>
     <string name="switch_remove_ads">Remove ads</string>
-    <string name="switch_remove_recommendation">Remove recommendation</string>
+    <string name="switch_remove_recommendation">Remove recommendations</string>
+    <string name="switch_remove_premium_recommendation">Remove LYP Premium recommendations</string>
     <string name="switch_remove_reply_mute">Remove the \"Mute chat\" action from notifications</string>
     <string name="switch_redirect_webview">Redirect WebView to the default browser</string>
     <string name="switch_open_in_browser">Open in the browser app</string>
