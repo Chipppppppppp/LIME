@@ -12,11 +12,11 @@ public class OutputCommunication implements IHook {
 
         XposedBridge.hookAllMethods(
                 loadPackageParam.classLoader.loadClass(Constants.RESPONSE_HOOK.className),
-                Constants.RESPONSE_HOOK.className,
+                Constants.RESPONSE_HOOK.methodName,
                 new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        XposedBridge.log(param.args[0].toString() + ": " + param.args[1].toString());
+                        XposedBridge.log("Response (" + param.args[0].toString() + "): " + param.args[1].toString());
                     }
                 }
         );
@@ -27,7 +27,7 @@ public class OutputCommunication implements IHook {
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        XposedBridge.log(param.args[0].toString() + ": " + param.args[1].toString());
+                        XposedBridge.log("Request (" + param.args[0].toString() + "): " + param.args[1].toString());
                     }
                 }
         );
