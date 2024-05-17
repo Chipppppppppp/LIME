@@ -21,9 +21,9 @@ import io.github.chipppppppppp.lime.hooks.PreventMarkAsRead;
 import io.github.chipppppppppp.lime.hooks.PreventUnsendMessage;
 import io.github.chipppppppppp.lime.hooks.RedirectWebView;
 import io.github.chipppppppppp.lime.hooks.RemoveAds;
+import io.github.chipppppppppp.lime.hooks.RemoveHomeFlexContents;
 import io.github.chipppppppppp.lime.hooks.RemoveIconLabels;
 import io.github.chipppppppppp.lime.hooks.RemoveIcons;
-import io.github.chipppppppppp.lime.hooks.RemoveHomeFlexContents;
 import io.github.chipppppppppp.lime.hooks.RemoveReplyMute;
 import io.github.chipppppppppp.lime.hooks.SecondaryLogin;
 import io.github.chipppppppppp.lime.hooks.SendMuteMessage;
@@ -77,7 +77,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
 
     @Override
     public void handleInitPackageResources(@NonNull XC_InitPackageResources.InitPackageResourcesParam resparam) throws Throwable {
-        if (!resparam.packageName.equals(Constants.PACKAGE_NAME) || !limeOptions.removeIconLabels.checked) return;
+        if (!resparam.packageName.equals(Constants.PACKAGE_NAME) || !limeOptions.removeIconLabels.checked)
+            return;
 
         XModuleResources xModuleResources = XModuleResources.createInstance(modulePath, resparam.res);
 

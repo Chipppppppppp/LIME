@@ -15,7 +15,6 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
-import io.github.chipppppppppp.lime.Main;
 import io.github.chipppppppppp.lime.R;
 
 public class KeepUnread implements IHook {

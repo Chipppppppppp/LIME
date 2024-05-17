@@ -2,23 +2,14 @@ package io.github.chipppppppppp.lime.hooks;
 
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
 
@@ -52,7 +43,8 @@ public class SendMuteMessage implements IHook {
                         ListView listView = (ListView) param.thisObject;
                         if (listView.getTag() != null) return;
                         Context context = listView.getContext();
-                        if (!(context instanceof ContextWrapper) || !((ContextWrapper) context).getBaseContext().getClass().getName().equals("jp.naver.line.android.activity.chathistory.ChatHistoryActivity")) return;
+                        if (!(context instanceof ContextWrapper) || !((ContextWrapper) context).getBaseContext().getClass().getName().equals("jp.naver.line.android.activity.chathistory.ChatHistoryActivity"))
+                            return;
                         if (listView.getChildCount() == 2) {
                             ViewGroup viewGroup0 = (ViewGroup) listView.getChildAt(0);
                             ViewGroup viewGroup1 = (ViewGroup) listView.getChildAt(1);
