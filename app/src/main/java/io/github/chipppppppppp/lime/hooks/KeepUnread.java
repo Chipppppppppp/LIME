@@ -1,6 +1,7 @@
 package io.github.chipppppppppp.lime.hooks;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.view.View;
@@ -31,6 +32,8 @@ public class KeepUnread implements IHook {
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         ViewGroup viewGroup = (ViewGroup) param.thisObject;
                         Context context = viewGroup.getContext();
+
+                        SharedPreferences prefs = context.getSharedPreferences(Constants.MODULE_NAME + "-options", Context.MODE_PRIVATE);
 
                         Context moduleContext = context.getApplicationContext().createPackageContext(Constants.MODULE_NAME, Context.CONTEXT_IGNORE_SECURITY);
                         String textKeepUnread = moduleContext.getResources().getString(R.string.switch_keep_unread);
@@ -63,9 +66,11 @@ public class KeepUnread implements IHook {
                                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         switchParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                         switchParams.setMargins(0, 0, 40, 0);
-                        switchView.setChecked(false);
+                        keepUnread = prefs.getBoolean("keep_unread", false);
+                        switchView.setChecked(keepUnread);
                         switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
                             keepUnread = isChecked;
+                            prefs.edit().putBoolean("keep_unread", isChecked).apply();
                         });
 
                         container.addView(switchView, switchParams);
