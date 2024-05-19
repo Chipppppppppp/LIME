@@ -8,7 +8,7 @@ import android.view.View;
 import android.webkit.WebView;
 
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
 
@@ -17,7 +17,7 @@ public class RedirectWebView implements IHook {
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (!limeOptions.redirectWebView.checked) return;
 
-        XposedBridge.hookAllMethods(
+        XposedHelpers.findAndHookMethod(
                 loadPackageParam.classLoader.loadClass("jp.naver.line.android.activity.iab.InAppBrowserActivity"),
                 "onResume",
                 new XC_MethodHook() {
