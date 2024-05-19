@@ -53,8 +53,7 @@ public class AddRegistrationOptions implements IHook {
                         switchSpoofAndroidId.setText(R.string.switch_spoof_android_id);
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(activity)
-                                .setTitle(R.string.options_title)
-                                .setCancelable(false);
+                                .setTitle(R.string.options_title);
 
                         TextView textView = new TextView(activity);
                         textView.setText(R.string.spoof_android_id_risk);
@@ -64,9 +63,25 @@ public class AddRegistrationOptions implements IHook {
                         builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                prefs.edit().putBoolean("spoof_android_id", true).apply();
+                                prefs.edit().putBoolean("spoof_android_id", true).commit();
                                 Toast.makeText(activity.getApplicationContext(), activity.getString(R.string.need_refresh), Toast.LENGTH_SHORT).show();
                                 activity.finish();
+                            }
+                        });
+
+                        builder.setNegativeButton(R.string.negative_button, null);
+
+                        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialog) {
+                                switchSpoofAndroidId.setChecked(false);
+                            }
+                        });
+
+                        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialog) {
+                                switchSpoofAndroidId.setChecked(false);
                             }
                         });
 
@@ -75,8 +90,8 @@ public class AddRegistrationOptions implements IHook {
                         switchSpoofAndroidId.setChecked(prefs.getBoolean("spoof_android_id", false));
                         switchSpoofAndroidId.setOnCheckedChangeListener((buttonView, isChecked) -> {
                             if (isChecked) dialog.show();
-                            else {
-                                prefs.edit().putBoolean("spoof_android_id", false).apply();
+                            else if (prefs.getBoolean("spoof_android_id", false)) {
+                                prefs.edit().putBoolean("spoof_android_id", false).commit();
                                 Toast.makeText(activity.getApplicationContext(), activity.getString(R.string.need_refresh), Toast.LENGTH_SHORT).show();
                                 activity.finish();
                             }
