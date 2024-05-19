@@ -25,7 +25,7 @@ import io.github.chipppppppppp.lime.hooks.RemoveHomeFlexContents;
 import io.github.chipppppppppp.lime.hooks.RemoveIconLabels;
 import io.github.chipppppppppp.lime.hooks.RemoveIcons;
 import io.github.chipppppppppp.lime.hooks.RemoveReplyMute;
-import io.github.chipppppppppp.lime.hooks.SecondaryLogin;
+import io.github.chipppppppppp.lime.hooks.SpoofUserAgent;
 import io.github.chipppppppppp.lime.hooks.SendMuteMessage;
 import io.github.chipppppppppp.lime.hooks.SpoofAndroidId;
 
@@ -39,7 +39,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
 
     static final IHook[] hooks = {
             new SpoofAndroidId(),
-            new SecondaryLogin(),
+            new SpoofUserAgent(),
             new AddRegistrationOptions(),
             new EmbedOptions(),
             new RemoveIcons(),
