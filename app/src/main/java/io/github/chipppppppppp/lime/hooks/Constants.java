@@ -14,12 +14,12 @@ public class Constants {
         }
     }
 
-    static final HookTarget USER_AGENT_HOOK = new HookTarget("hY0.c", "h");
-    static final HookTarget WEBVIEW_CLIENT_HOOK = new HookTarget("hy0.k", "onPageFinished");
-    static final HookTarget COMMUNICATION_ENUM_HOOK = new HookTarget("uZ0.a6", "b");
-    static final HookTarget UNSENT_HOOK = new HookTarget("OY0.b", "p");
-    static final HookTarget MUTE_MESSAGE_HOOK = new HookTarget("eX0.b", "H");
-    static final HookTarget MARK_AS_READ_HOOK = new HookTarget("fJ.e$d", "run");
-    static final HookTarget RESPONSE_HOOK = new HookTarget("org.apache.thrift.m", "a");
-    static final HookTarget REQUEST_HOOK = new HookTarget("org.apache.thrift.m", "b");
+    static final HookTarget USER_AGENT_HOOK = new HookTarget("kY0.c", "h");
+    static final HookTarget WEBVIEW_CLIENT_HOOK = new HookTarget("ky0.l", "onPageFinished");
+    static final HookTarget COMMUNICATION_ENUM_HOOK = new HookTarget("vZ0.a6", "b");
+    static final HookTarget UNSENT_HOOK = new HookTarget("RY0.b", "p");
+    static final HookTarget MUTE_MESSAGE_HOOK = new HookTarget("gX0.b", "H");
+    static final HookTarget MARK_AS_READ_HOOK = new HookTarget("PI.e$d", "run");
+    static final HookTarget RESPONSE_HOOK = new HookTarget("org.apache.thrift.l", "a");
+    static final HookTarget REQUEST_HOOK = new HookTarget("org.apache.thrift.l", "b");
 }
