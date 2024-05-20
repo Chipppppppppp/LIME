@@ -15,6 +15,7 @@
     <string name="need_refresh">Forced stop and cache clearing are required</string>
     <string name="switch_spoof_android_id">Spoof Android ID</string>
     <string name="spoof_android_id_risk">Spoofing Android ID is at your own risk</string>
+    <string name="incompatible_version">Some functions are not available due to version incompatibility</string>
     <string name="switch_android_secondary">Disguise as the highest version</string>
     <string name="switch_unembed_options">Do not embed options in LINE (options will not be synchronized)</string>
     <string name="switch_remove_voom">Remove the VOOM icon</string>
@@ -33,6 +34,7 @@
     <string name="switch_prevent_unsend_message">Prevent messages from unsending</string>
     <string name="switch_remove_keep_unread">Remove the \"Keep unread\" switch from the menu in the top right corner of the chat tab</string>
     <string name="switch_block_tracking">Block tracking communications (beta)</string>
+    <string name="switch_stop_version_check">Stop checking LINE version</string>
     <string name="switch_output_communication">Output communication contents to log (for developers)</string>
 
     <!-- Menu -->
