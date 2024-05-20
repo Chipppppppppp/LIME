@@ -14,6 +14,7 @@
     <string name="need_refresh">需要強制停止和清除快取</string>
     <string name="switch_spoof_android_id">欺騙 Android ID</string>
     <string name="spoof_android_id_risk">請自行承擔欺騙 Android ID 的風險</string>
+    <string name="incompatible_version">由于版本不兼容，某些功能不可用。</string>
     <string name="switch_android_secondary">偽裝成最高版本</string>
     <string name="switch_unembed_options">不要將選項崁入 LINE（選項將不會同步）</string>
     <string name="switch_remove_voom">刪除 VOOM 圖示</string>
@@ -32,6 +33,7 @@
     <string name="switch_prevent_unsend_message">防止訊息撤回</string>
     <string name="switch_remove_keep_unread">刪除聊天分頁右上角選單的「保持未讀」開關</string>
     <string name="switch_block_tracking">防止跟蹤通訊（測試版）</string>
+    <string name="switch_stop_version_check">停止检查 LINE 版本</string>
     <string name="switch_output_communication">將通訊內容輸出到日誌內（供開發人員使用）</string>
 
     <!-- Menu -->

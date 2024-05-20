@@ -15,6 +15,7 @@
     <string name="need_refresh">強制停止とキャッシュの削除が必要です</string>
     <string name="switch_spoof_android_id">Android ID を偽装</string>
     <string name="spoof_android_id_risk">Android ID の偽装は自己責任です</string>
+    <string name="incompatible_version">バージョン不適合のため一部機能が利用できません</string>
     <string name="switch_android_secondary">最大バージョンに偽装</string>
     <string name="switch_unembed_options">設定を LINE に埋め込まない (設定は同期されません)</string>
     <string name="switch_remove_voom">VOOM アイコンを削除</string>
@@ -33,6 +34,7 @@
     <string name="switch_prevent_unsend_message">送信取り消しを拒否</string>
     <string name="switch_remove_keep_unread">トーク画面右上のメニューにある「未読のまま閲覧」スイッチを削除</string>
     <string name="switch_block_tracking">トラッキング通信をブロック (ベータ)</string>
+    <string name="switch_stop_version_check">LINE バージョンの確認を停止</string>
     <string name="switch_output_communication">通信内容をログに出力 (開発者用)</string>
 
     <!-- Menu -->

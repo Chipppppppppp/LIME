@@ -12,6 +12,7 @@ import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.hooks.AddRegistrationOptions;
 import io.github.chipppppppppp.lime.hooks.BlockTracking;
+import io.github.chipppppppppp.lime.hooks.CheckHookTargetVersion;
 import io.github.chipppppppppp.lime.hooks.Constants;
 import io.github.chipppppppppp.lime.hooks.EmbedOptions;
 import io.github.chipppppppppp.lime.hooks.IHook;
@@ -38,6 +39,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
     public static LimeOptions limeOptions = new LimeOptions();
 
     static final IHook[] hooks = {
+            new CheckHookTargetVersion(),
             new SpoofAndroidId(),
             new SpoofUserAgent(),
             new AddRegistrationOptions(),
