@@ -70,9 +70,9 @@ LI**M**E
 
 ## 複数デバイスログイン
 
-複数デバイスログインには1つの方法が用意されています。どちらの方法でも、[WSA-Script](https://github.com/YT-Advanced/WSA-Script) を使用して Windows 上の Android で同様の操作を行うことで、Windows での複数デバイスログインが可能です。
+[WSA-Script](https://github.com/YT-Advanced/WSA-Script) を使用して Windows 上の Android で同様の操作を行うことで、Windows での複数デバイスログインも可能です。
 
-~~1. PC としてログインする~~　現在この方法は機能していません　利用した場合、＊一時的にアカウントのご利用が停止されるおそれがあります
+~~1. PC としてログインする~~　現在この方法は機能していません。
 
 ~~PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制ログアウトされますが、使えない機能がある PC 版 LINE を Android 版 LINE に移すことができます。~~
 
