@@ -70,24 +70,24 @@ LI**M**E
 
 ## 複数デバイスログイン
 
-複数デバイスログインには二つの方法が用意されています。どちらの方法でも、[WSA-Script](https://github.com/YT-Advanced/WSA-Script) を使用して Windows 上の Android で同様の操作を行うことで、Windows での複数デバイスログインが可能です。
+複数デバイスログインには1つの方法が用意されています。どちらの方法でも、[WSA-Script](https://github.com/YT-Advanced/WSA-Script) を使用して Windows 上の Android で同様の操作を行うことで、Windows での複数デバイスログインが可能です。
 
-### 1. PC としてログインする
+~~1. PC としてログインする~~　現在この方法は機能していません　利用した場合、＊一時的にアカウントのご利用が停止されるおそれがあります
 
-PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制ログアウトされますが、使えない機能がある PC 版 LINE を Android 版 LINE に移すことができます。
+~~PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制ログアウトされますが、使えない機能がある PC 版 LINE を Android 版 LINE に移すことができます。~~
 
-※片方のデバイスが iOS の場合、Letter Sealing がうまくいかずメッセージを受信できない場合があるので、[この方法](https://github.com/Chipppppppppp/LIME/issues/88#issuecomment-2012001059) に従って Letter Sealing ガチャを行ってください。(キーはだれかとのチャットの右上の <kbd>☰</kbd> > <kbd>設定</kbd> > <kbd>暗号化キー</kbd> から確認できます。)
+~~※片方のデバイスが iOS の場合、Letter Sealing がうまくいかずメッセージを受信できない場合があるので、[この方法](https://github.com/Chipppppppppp/LIME/issues/88#issuecomment-2012001059) に従って Letter Sealing ガチャを行ってください。(キーはだれかとのチャットの右上の <kbd>☰</kbd> > <kbd>設定</kbd> > <kbd>暗号化キー</kbd> から確認できます。)~~
 
-- メリット：メッセージの同期に問題がない、LIME は片方の端末に入れるだけで良い、非 Root でも可能
-- デメリット：3 端末以上でログインできない、2 端末目でサービスアイコンが表示されない
+~~- メリット：メッセージの同期に問題がない、LIME は片方の端末に入れるだけで良い、非 Root でも可能~~
+~~- デメリット：3 端末以上でログインできない、2 端末目でサービスアイコンが表示されない~~
 
-#### 手順
+~~#### 手順~~
 
-1. もう一つの端末に LINE と LIME をインストールする
-2. LINE ログイン画面で、「PC (DESKTOPWIN) に偽装」にチェックを入れる
-3. <kbd>設定</kbd> > <kbd>アプリ</kbd> > <kbd>LINE</kbd> より、LINE アプリの設定画面から「強制停止」と「ストレージとキャッシュ」の「キャッシュを削除」をタップ
-4. LINE アプリを再度開き、「Log in as secondary device」をタップしてログインする
-5. ログイン後、LINE の設定から「トークのバックアップ・復元」をタップし、2 週間より前のトークを復元する
+~~1. もう一つの端末に LINE と LIME をインストールする~~
+~~2. LINE ログイン画面で、「PC (DESKTOPWIN) に偽装」にチェックを入れる~~
+~~3. <kbd>設定</kbd> > <kbd>アプリ</kbd> > <kbd>LINE</kbd> より、LINE アプリの設定画面から「強制停止」と「ストレージとキャッシュ」の「キャッシュを削除」をタップ~~
+~~4. LINE アプリを再度開き、「Log in as secondary device」をタップしてログインする~~
+~~5. ログイン後、LINE の設定から「トークのバックアップ・復元」をタップし、2 週間より前のトークを復元する~~
 
 ### 2. Android ID を偽装する
 
