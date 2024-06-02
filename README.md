@@ -31,7 +31,7 @@ LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に
 ## インストール
 
 初めに、以下のサイトの中から、  
-**LINE 14.3.2** と **LIME 1.8.0** の APK をダウンロードしてください｡
+**LINE 14.3.2** と **LIME 1.8.1** の APK をダウンロードしてください｡
 
 > [!IMPORTANT]
 > 分割 APK は使用しないでください
@@ -48,12 +48,19 @@ LI**M**E
 
 1. [**LSPosed**](https://github.com/LSPosed/LSPosed) をインストール
 2. LI**N**E アプリと LI**M**E アプリを両方ともインストール
-3. Google Play ストア や [Aurora Store](https://auroraoss.com) からの自動アップデートを防ぐために、[**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを隠す
+3. Google Playストアの自動アップデートを防ぐために、[**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを隠す  
+   [Aurora Store](https://auroraoss.com) の場合はブラックリストを使用
 4. LSPosed のモジュールから LIME に移動し、<kbd>モジュールの有効化</kbd> と LINE アプリにチェックを入れる
 
 ### 非 Root 端末
 
-※非 Root 端末では､ Googleアカウント(ドライブ)を使用したトーク履歴の復元には対応していません。また、発/着信音が鳴らない可能性が有ります。
+> [!WARNING]
+> 非 root 端末では､ 以下の問題があります  
+> - Google アカウント(ドライブ)を使用したトーク履歴の復元  
+> - 発/着信音が鳴らない  
+> - 着信が入るとクラッシュ  
+> - コインの購入が不可  
+> - LINE Pay の一部の機能が使用不可  
 
 1. [**LSPatch**](https://github.com/LSPosed/LSPatch) をインストール  
   ※フォークで開発されている [**NPatch**](https://github.com/HSSkyBoy/NPatch) では不具合が発生する可能性があります
@@ -66,32 +73,39 @@ LI**M**E
   使用していない場合は、ファイルエクスプローラー等の別のアプリからインストールする
 
 > [!IMPORTANT]
-> 既にPlay ストアからインストールした LINE アプリがインストールされている場合は、署名が競合するため、最初にアンインストールを行ってください。
+> 既に Playストア からインストールした LINE アプリがインストールされている場合は、署名が競合するため、最初にアンインストールを行ってください。
 
 ## 複数デバイスログイン
 
-[WSA-Script](https://github.com/YT-Advanced/WSA-Script) を使用して Windows 上の Android で同様の操作を行うことで、Windows での複数デバイスログインも可能です。
+[**MagiskOnWSA**Local](https://github.com/LSPosed/MagiskOnWSALocal) や [WSA-Script](https://github.com/YT-Advanced/WSA-Script) 等の改造版 [**WSA**](https://learn.microsoft.com/ja-jp/windows/android/wsa/) を使用して Windows 上の Android で同様の操作を行うことで、Windows での複数デバイスログインも可能です。
 
-~~1. PC としてログインする~~　現在この方法は機能していません。
+### 1. PC としてログインする
+> [!WARNING]
+> この方法は現在利用できません
 
-~~PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制ログアウトされますが、使えない機能がある PC 版 LINE を Android 版 LINE に移すことができます。~~
+<details><summary>方法を確認</summary>
 
-~~※片方のデバイスが iOS の場合、Letter Sealing がうまくいかずメッセージを受信できない場合があるので、[この方法](https://github.com/Chipppppppppp/LIME/issues/88#issuecomment-2012001059) に従って Letter Sealing ガチャを行ってください。(キーはだれかとのチャットの右上の <kbd>☰</kbd> > <kbd>設定</kbd> > <kbd>暗号化キー</kbd> から確認できます。)~~
+PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制ログアウトされますが、使えない機能がある PC 版 LINE を Android 版 LINE に移すことができます。
 
-~~- メリット：メッセージの同期に問題がない、LIME は片方の端末に入れるだけで良い、非 Root でも可能~~
-~~- デメリット：3 端末以上でログインできない、2 端末目でサービスアイコンが表示されない~~
+※片方のデバイスが iOS の場合、Letter Sealing がうまくいかずメッセージを受信できない場合があるので、[この方法](https://github.com/Chipppppppppp/LIME/issues/88#issuecomment-2012001059) に従って Letter Sealing ガチャを行ってください。(キーはだれかとのチャットの右上の <kbd>☰</kbd> > <kbd>設定</kbd> > <kbd>暗号化キー</kbd> から確認できます。)
 
-~~#### 手順~~
+- メリット：メッセージの同期に問題がない、LIME は片方の端末に入れるだけで良い、非 Root でも可能
+- デメリット：3 端末以上でログインできない、2 端末目でサービスアイコンが表示されない
 
-~~1. もう一つの端末に LINE と LIME をインストールする~~
-~~2. LINE ログイン画面で、「PC (DESKTOPWIN) に偽装」にチェックを入れる~~
-~~3. <kbd>設定</kbd> > <kbd>アプリ</kbd> > <kbd>LINE</kbd> より、LINE アプリの設定画面から「強制停止」と「ストレージとキャッシュ」の「キャッシュを削除」をタップ~~
-~~4. LINE アプリを再度開き、「Log in as secondary device」をタップしてログインする~~
-~~5. ログイン後、LINE の設定から「トークのバックアップ・復元」をタップし、2 週間より前のトークを復元する~~
+#### 手順
+
+1. もう一つの端末に LINE と LIME をインストールする
+2. LINE ログイン画面で、「PC (DESKTOPWIN) に偽装」にチェックを入れる
+3. <kbd>設定</kbd> > <kbd>アプリ</kbd> > <kbd>LINE</kbd> より、LINE アプリの設定画面から「強制停止」と「ストレージとキャッシュ」の「キャッシュを削除」をタップ
+4. LINE アプリを再度開き、「Log in as secondary device」をタップしてログインする
+5. ログイン後、LINE の設定から「トークのバックアップ・復元」をタップし、2 週間より前のトークを復元する
+
+</details>
 
 ### 2. Android ID を偽装する
 
-この方法は**両方のデバイスを Root 化している**場合のみ可能です。<https://jesuscorona.hatenablog.com/entry/2019/02/10/010920> にあるように、メッセージの同期などに若干の遅れが生じることに注意が必要です。
+この方法は**両方のデバイスを Root 化している**場合のみ可能です。  
+<https://jesuscorona.hatenablog.com/entry/2019/02/10/010920> にあるように、メッセージの同期などに若干の遅れが生じることに注意が必要です。
 
 - メリット：3 端末以上でもログイン可能、すべてのサービスを使用可能
 - デメリット：メッセージの同期に遅れが生じる、Root 限定
