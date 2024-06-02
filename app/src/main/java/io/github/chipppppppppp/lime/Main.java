@@ -12,6 +12,7 @@ import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.hooks.AddRegistrationOptions;
 import io.github.chipppppppppp.lime.hooks.BlockTracking;
+import io.github.chipppppppppp.lime.hooks.ChangeCommunication;
 import io.github.chipppppppppp.lime.hooks.CheckHookTargetVersion;
 import io.github.chipppppppppp.lime.hooks.Constants;
 import io.github.chipppppppppp.lime.hooks.EmbedOptions;
@@ -55,6 +56,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new SendMuteMessage(),
             new KeepUnread(),
             new BlockTracking(),
+            new ChangeCommunication(),
             new OutputCommunication()
     };
 

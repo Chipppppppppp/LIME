@@ -4,12 +4,19 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Switch;
+
+import de.robv.android.xposed.XposedBridge;
 
 public class MainActivity extends Activity {
     public LimeOptions limeOptions = new LimeOptions();
@@ -95,12 +102,46 @@ public class MainActivity extends Activity {
             layout.addView(switchView);
         }
 
+        EditText editText = new EditText(this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.topMargin = Utils.dpToPx(20, this);
+        editText.setLayoutParams(params);
+        editText.setTypeface(Typeface.MONOSPACE);
+        editText.setInputType(android.text.InputType.TYPE_CLASS_TEXT |
+                android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE |
+                android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS |
+                android.text.InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE);
+        editText.setVerticalScrollBarEnabled(true);
+        editText.setMovementMethod(new ScrollingMovementMethod());
+        editText.setText(prefs.getString("custom_js", ""));
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                prefs.edit().putString("custom_js", s.toString()).apply();
+            }
+        });
+
+        layout.addView(editText);
+
         if (switchUnembedOptions.isChecked()) {
             for (int i = 1; i < layout.getChildCount(); ++i)
                 layout.getChildAt(i).setVisibility(View.VISIBLE);
+            editText.setVisibility(View.VISIBLE);
         } else {
             for (int i = 1; i < layout.getChildCount(); ++i)
                 layout.getChildAt(i).setVisibility(View.GONE);
+            editText.setVisibility(View.GONE);
         }
 
         ScrollView scrollView = new ScrollView(this);
