@@ -11,23 +11,23 @@ public class OutputCommunication implements IHook {
         if (!limeOptions.outputCommunication.checked) return;
 
         XposedBridge.hookAllMethods(
-                loadPackageParam.classLoader.loadClass(Constants.RESPONSE_HOOK.className),
-                Constants.RESPONSE_HOOK.methodName,
-                new XC_MethodHook() {
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        XposedBridge.log("Response (" + param.args[0].toString() + "): " + param.args[1].toString());
-                    }
-                }
-        );
-
-        XposedBridge.hookAllMethods(
                 loadPackageParam.classLoader.loadClass(Constants.REQUEST_HOOK.className),
                 Constants.REQUEST_HOOK.methodName,
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        XposedBridge.log("Request (" + param.args[0].toString() + "): " + param.args[1].toString());
+                        XposedBridge.log(new Communication(Communication.Type.REQUEST, param.args[0].toString(), param.args[1]).toString());
+                    }
+                }
+        );
+
+        XposedBridge.hookAllMethods(
+                loadPackageParam.classLoader.loadClass(Constants.RESPONSE_HOOK.className),
+                Constants.RESPONSE_HOOK.methodName,
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        XposedBridge.log(new Communication(Communication.Type.RESPONSE, param.args[0].toString(), param.args[1]).toString());
                     }
                 }
         );

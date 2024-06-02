@@ -5,16 +5,31 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Process;
+import android.text.method.ScrollingMovementMethod;
+import android.util.Base64;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.ValueCallback;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -76,7 +91,6 @@ public class EmbedOptions implements IHook {
                                     LinearLayout.LayoutParams.WRAP_CONTENT);
                             params.topMargin = Utils.dpToPx(20, context);
                             switchView.setLayoutParams(params);
-
                             switchView.setChecked(option.checked);
 
                             if (name.equals("redirect_webview")) switchRedirectWebView = switchView;
@@ -94,6 +108,23 @@ public class EmbedOptions implements IHook {
                             layout.addView(switchView);
                         }
 
+                        EditText editText = new EditText(context);
+                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT);
+                        params.topMargin = Utils.dpToPx(20, context);
+                        editText.setLayoutParams(params);
+                        editText.setTypeface(Typeface.MONOSPACE);
+                        editText.setInputType(android.text.InputType.TYPE_CLASS_TEXT |
+                                android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE |
+                                android.text.InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS |
+                                android.text.InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE);
+                        editText.setVerticalScrollBarEnabled(true);
+                        editText.setMovementMethod(new ScrollingMovementMethod());
+                        editText.setText(prefs.getString("custom_js", ""));
+
+                        layout.addView(editText);
+
                         ScrollView scrollView = new ScrollView(context);
                         scrollView.addView(layout);
                         builder.setView(scrollView);
@@ -102,12 +133,17 @@ public class EmbedOptions implements IHook {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 boolean optionChanged = false;
-                                for (int i = 0; i < layout.getChildCount(); ++i) {
+                                for (int i = 0; i < limeOptions.options.length; ++i) {
                                     Switch switchView = (Switch) layout.getChildAt(i);
                                     if (limeOptions.options[i].checked != switchView.isChecked()) {
                                         optionChanged = true;
                                     }
                                     prefs.edit().putBoolean(limeOptions.options[i].name, switchView.isChecked()).commit();
+                                }
+                                String code = editText.getText().toString();
+                                if (!prefs.getString("custom_js", "").equals(code)) {
+                                    optionChanged = true;
+                                    prefs.edit().putString("custom_js", code).commit();
                                 }
 
                                 if (optionChanged) {
@@ -123,10 +159,11 @@ public class EmbedOptions implements IHook {
                         builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                             @Override
                             public void onDismiss(DialogInterface dialog) {
-                                for (int i = 0; i < layout.getChildCount(); ++i) {
+                                for (int i = 0; i < limeOptions.options.length; ++i) {
                                     Switch switchView = (Switch) layout.getChildAt(i);
                                     switchView.setChecked(limeOptions.options[i].checked);
                                 }
+                                editText.setText(prefs.getString("custom_js", ""));
                             }
                         });
 

@@ -20,6 +20,6 @@ public class Constants {
     static final HookTarget UNSENT_HOOK = new HookTarget("RY0.b", "p");
     static final HookTarget MUTE_MESSAGE_HOOK = new HookTarget("gX0.b", "H");
     static final HookTarget MARK_AS_READ_HOOK = new HookTarget("PI.e$d", "run");
-    static final HookTarget RESPONSE_HOOK = new HookTarget("org.apache.thrift.l", "a");
     static final HookTarget REQUEST_HOOK = new HookTarget("org.apache.thrift.l", "b");
+    static final HookTarget RESPONSE_HOOK = new HookTarget("org.apache.thrift.l", "a");
 }

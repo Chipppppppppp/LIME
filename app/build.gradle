@@ -16,7 +16,7 @@ android {
         versionName "1.8.1"
         multiDexEnabled false
         proguardFiles += 'proguard-rules.pro'
-        buildConfigField 'String', 'HOOK_TARGET_VERSION', '"14.6.1"'
+        buildConfigField 'String', 'HOOK_TARGET_VERSION', '"14.7.0"'
     }
 
     signingConfigs {
@@ -65,6 +65,7 @@ dependencies {
     //noinspection GradleCompatible
     implementation 'com.android.support:customtabs:23.0.0'
     compileOnly 'de.robv.android.xposed:api:82'
+    implementation 'org.mozilla:rhino:1.7.15'
 }
 
 tasks.withType(JavaCompile).configureEach {
