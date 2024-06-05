@@ -1,4 +1,4 @@
-name: 不具合の報告
+name: 不具合の報告 (Report bugs)
 description: バグや開発側が想定していない動作などの報告
 labels: [bug]
 title: "[Bug]: "
