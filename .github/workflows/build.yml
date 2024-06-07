@@ -90,6 +90,7 @@ jobs:
       - name: Attest
         uses: actions/attest-build-provenance@v1
         if: github.event.inputs.release != 'true'
+        continue-on-error: true
         with:
           subject-path: app/build/outputs/apk/debug/app-debug.apk
 
