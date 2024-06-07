@@ -12,13 +12,15 @@ import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.hooks.AddRegistrationOptions;
 import io.github.chipppppppppp.lime.hooks.BlockTracking;
-import io.github.chipppppppppp.lime.hooks.ChangeCommunication;
+import io.github.chipppppppppp.lime.hooks.ModifyRequest;
 import io.github.chipppppppppp.lime.hooks.CheckHookTargetVersion;
 import io.github.chipppppppppp.lime.hooks.Constants;
 import io.github.chipppppppppp.lime.hooks.EmbedOptions;
 import io.github.chipppppppppp.lime.hooks.IHook;
 import io.github.chipppppppppp.lime.hooks.KeepUnread;
-import io.github.chipppppppppp.lime.hooks.OutputCommunication;
+import io.github.chipppppppppp.lime.hooks.ModifyResponse;
+import io.github.chipppppppppp.lime.hooks.OutputRequest;
+import io.github.chipppppppppp.lime.hooks.OutputResponse;
 import io.github.chipppppppppp.lime.hooks.PreventMarkAsRead;
 import io.github.chipppppppppp.lime.hooks.PreventUnsendMessage;
 import io.github.chipppppppppp.lime.hooks.RedirectWebView;
@@ -40,6 +42,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
     public static LimeOptions limeOptions = new LimeOptions();
 
     static final IHook[] hooks = {
+            new OutputResponse(),
+            new ModifyRequest(),
             new CheckHookTargetVersion(),
             new SpoofAndroidId(),
             new SpoofUserAgent(),
@@ -56,8 +60,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new SendMuteMessage(),
             new KeepUnread(),
             new BlockTracking(),
-            new ChangeCommunication(),
-            new OutputCommunication()
+            new ModifyResponse(),
+            new OutputRequest()
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Base64;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -115,7 +116,7 @@ public class MainActivity extends Activity {
                 android.text.InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE);
         editText.setVerticalScrollBarEnabled(true);
         editText.setMovementMethod(new ScrollingMovementMethod());
-        editText.setText(prefs.getString("custom_js", ""));
+        editText.setText(prefs.getString("encoded_custom_js", ""));
 
         editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -128,7 +129,7 @@ public class MainActivity extends Activity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                prefs.edit().putString("custom_js", s.toString()).apply();
+                prefs.edit().putString("encoded_custom_js", Base64.encodeToString(s.toString().getBytes(), Base64.NO_WRAP)).apply();
             }
         });
 
