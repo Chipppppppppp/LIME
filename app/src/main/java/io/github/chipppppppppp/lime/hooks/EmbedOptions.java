@@ -121,7 +121,8 @@ public class EmbedOptions implements IHook {
                                 android.text.InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE);
                         editText.setVerticalScrollBarEnabled(true);
                         editText.setMovementMethod(new ScrollingMovementMethod());
-                        editText.setText(prefs.getString("custom_js", ""));
+                        final String script = new String(Base64.decode(prefs.getString("encoded_custom_js", ""), Base64.NO_WRAP));
+                        editText.setText(script);
 
                         layout.addView(editText);
 
@@ -141,9 +142,9 @@ public class EmbedOptions implements IHook {
                                     prefs.edit().putBoolean(limeOptions.options[i].name, switchView.isChecked()).commit();
                                 }
                                 String code = editText.getText().toString();
-                                if (!prefs.getString("custom_js", "").equals(code)) {
+                                if (!code.equals(script)) {
                                     optionChanged = true;
-                                    prefs.edit().putString("custom_js", code).commit();
+                                    prefs.edit().putString("encoded_custom_js", Base64.encodeToString(code.getBytes(), Base64.NO_WRAP)).commit();
                                 }
 
                                 if (optionChanged) {
@@ -163,7 +164,7 @@ public class EmbedOptions implements IHook {
                                     Switch switchView = (Switch) layout.getChildAt(i);
                                     switchView.setChecked(limeOptions.options[i].checked);
                                 }
-                                editText.setText(prefs.getString("custom_js", ""));
+                                editText.setText(script);
                             }
                         });
 

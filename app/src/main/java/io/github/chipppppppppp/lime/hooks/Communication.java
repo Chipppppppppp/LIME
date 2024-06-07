@@ -17,6 +17,6 @@ public class Communication {
 
     @Override
     public String toString() {
-        return type.toString() + " " + name + ": " + value.toString();
+        return type.toString() + ": " + name + ", " + value.toString();
     }
 }
