@@ -5,6 +5,7 @@ public class Communication {
         REQUEST,
         RESPONSE;
     }
+
     public Type type;
     public String name;
     public Object value;
