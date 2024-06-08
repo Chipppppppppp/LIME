@@ -21,13 +21,13 @@ public class ModifyRequest implements IHook {
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        final String script = new String(Base64.decode(Main.xPrefs.getString("encoded_custom_js", ""), Base64.NO_WRAP));
+                        final String script = new String(Base64.decode(Main.xPrefs.getString("encoded_js_modify_request", ""), Base64.NO_WRAP));
                         Context ctx = Context.enter();
                         ctx.setOptimizationLevel(-1);
                         try {
                             Scriptable scope = ctx.initStandardObjects();
-                            Object jsCommunication = Context.javaToJS(new Communication(Communication.Type.REQUEST, param.args[0].toString(), param.args[1]), scope);
-                            ScriptableObject.putProperty(scope, "communication", jsCommunication);
+                            Object jsData = Context.javaToJS(new Communication(Communication.Type.REQUEST, param.args[0].toString(), param.args[1]), scope);
+                            ScriptableObject.putProperty(scope, "data", jsData);
                             ScriptableObject.putProperty(scope, "console", Context.javaToJS(new Console(), scope));
                             ctx.evaluateString(scope, script, "Script", 1, null);
                         } catch (Exception e) {
