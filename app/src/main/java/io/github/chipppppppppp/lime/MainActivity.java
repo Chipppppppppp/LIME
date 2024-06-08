@@ -113,8 +113,6 @@ public class MainActivity extends Activity {
         }
 
         {
-            final String script = new String(Base64.decode(prefs.getString("encoded_js_modify_request", ""), Base64.NO_WRAP));
-
             LinearLayout layoutModifyRequest = new LinearLayout(this);
             layoutModifyRequest.setLayoutParams(new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -136,7 +134,7 @@ public class MainActivity extends Activity {
             editText.setHorizontallyScrolling(true);
             editText.setVerticalScrollBarEnabled(true);
             editText.setHorizontalScrollBarEnabled(true);
-            editText.setText(script);
+            editText.setText(new String(Base64.decode(prefs.getString("encoded_js_modify_request", ""), Base64.NO_WRAP)));
 
             layoutModifyRequest.addView(editText);
 
@@ -193,7 +191,7 @@ public class MainActivity extends Activity {
             builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    prefs.edit().putString("encoded_js_modify_request", Base64.encodeToString(editText.getText().toString().getBytes(), Base64.NO_WRAP)).commit();
+                    prefs.edit().putString("encoded_js_modify_request", Base64.encodeToString(editText.getText().toString().getBytes(), Base64.NO_WRAP)).apply();
                 }
             });
 
@@ -202,7 +200,7 @@ public class MainActivity extends Activity {
             builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
-                    editText.setText(script);
+                    editText.setText(new String(Base64.decode(prefs.getString("encoded_js_modify_request", ""), Base64.NO_WRAP)));
                 }
             });
 
@@ -227,8 +225,6 @@ public class MainActivity extends Activity {
         }
 
         {
-            final String script = new String(Base64.decode(prefs.getString("encoded_js_modify_response", ""), Base64.NO_WRAP));
-
             LinearLayout layoutModifyResponse = new LinearLayout(this);
             layoutModifyResponse.setLayoutParams(new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -250,7 +246,7 @@ public class MainActivity extends Activity {
             editText.setHorizontallyScrolling(true);
             editText.setVerticalScrollBarEnabled(true);
             editText.setHorizontalScrollBarEnabled(true);
-            editText.setText(script);
+            editText.setText(new String(Base64.decode(prefs.getString("encoded_js_modify_response", ""), Base64.NO_WRAP)));
 
             layoutModifyResponse.addView(editText);
 
@@ -307,7 +303,7 @@ public class MainActivity extends Activity {
             builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    prefs.edit().putString("encoded_js_modify_response", Base64.encodeToString(editText.getText().toString().getBytes(), Base64.NO_WRAP)).commit();
+                    prefs.edit().putString("encoded_js_modify_response", Base64.encodeToString(editText.getText().toString().getBytes(), Base64.NO_WRAP)).apply();
                 }
             });
 
@@ -316,7 +312,7 @@ public class MainActivity extends Activity {
             builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
-                    editText.setText(script);
+                    editText.setText(new String(Base64.decode(prefs.getString("encoded_js_modify_response", ""), Base64.NO_WRAP)));
                 }
             });
 
