@@ -10,7 +10,7 @@ This is an Xposed Module to clean [**LINE**](https://line.me).
 LINE を掃除する Xposed Module です。
 
 ## 使用方法
-LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に入り、右上の｢**LIME**｣のボタンより開けます。
+LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に入り、右上の｢**LIME**｣のボタンより開けます。また、Root ユーザーは LI**M**E アプリから設定することも可能です。クローンアプリなどでは LI**M**E 側からしか設定できない場合があるようです。
 
 <details><summary>画像を閲覧</summary>
 
@@ -28,10 +28,68 @@ LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に
 
 </details>
 
+## 機能
+
+- 不要なボトムバーのアイコンの削除
+- ボトムバーのアイコンのラベルの削除
+- 広告・おすすめの削除
+- 通知の「通知をオフ」アクションを削除
+- WebView を既定のブラウザで開く
+- 常に既読をつけない
+- 未読のまま閲覧
+  - トーク画面右上メニューのスイッチから設定できます (スイッチは削除可能)
+- 送信取り消しの拒否
+- 常にミュートメッセージとして送信
+  - 送信時「通常メッセージ」を選択すれば通知されます
+- トラッキング通信のブロック
+  - `noop`, `pushRecvReports`,`reportDeviceState`,`reportLocation`, `reportNetworkStatus` がブロックされます
+- 通信内容をログに出力
+- 通信内容を改変
+  - Rhino で JavaScript を実行し、通信内容を改変できます (後述)
+
+### JavaScript で通信内容を改変する
+
+設定の「リクエストを改変」、「レスポンスを改変」に JavaScript コードを記述することで自由に通信内容を改変できます。
+
+あらかじめ `data` という変数が用意されており、`data` には以下のプロパティが含まれます。
+
+- `type`: `REQUEST` または `RESPONSE` となる `Enum` 型
+- `name`: 通信の名前
+- `value`: 通信内容
+
+また、`console.log` で `XposedBridge` にログを出力できます。エラーが発生した場合もここに出力されます。
+Rhino の仕様、特に **Java 文字列との比較に `equals` を用いる**ことに注意してください。
+
+### 例 1. 年齢確認を突破する
+
+「レスポンスを改変」に以下を記述します。
+
+```javascript
+if (data.name.equals("checkUserAge")) {
+    data.value.a = data.value.getClass().getDeclaredField("a").getType().getEnumConstants()[0];
+    data.value.b = null;
+}
+```
+
+### 例 2. 着せ替え関連の挙動を変更する
+
+「レスポンスを改変」に以下を記述します。
+
+```javascript
+if (data.name.equals("getProductV2")) data.value.a.a.A = true;
+if (data.name.equals("getProductsByAuthor")) {
+    data.value.a.a.forEach(function(i) {
+        i.A = true;
+    });
+}
+if (data.name.equals("validateProduct")) data.value.a.a = true;
+if (data.name.equals("notifyProductEvent")) data.value.a = null;
+```
+
 ## インストール
 
 初めに、以下のサイトの中から、  
-**LINE 14.3.2** と **LIME 1.8.1** の APK をダウンロードしてください｡
+**LINE 14.8.0** と **LIME 1.9.0** の APK をダウンロードしてください｡
 
 > [!IMPORTANT]
 > 分割 APK は使用しないでください
