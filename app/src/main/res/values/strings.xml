@@ -36,6 +36,10 @@
     <string name="switch_block_tracking">Block tracking communications (beta)</string>
     <string name="switch_stop_version_check">Stop checking LINE version</string>
     <string name="switch_output_communication">Output communication contents to log (for developers)</string>
+    <string name="modify_request">Modify requests</string>
+    <string name="modify_response">Modify responses</string>
+    <string name="button_copy">Copy</string>
+    <string name="button_paste">Paste</string>
 
     <!-- Menu -->
     <string name="switch_keep_unread">Keep unread</string>
