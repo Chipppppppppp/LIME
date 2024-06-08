@@ -21,7 +21,7 @@ public class ModifyRequest implements IHook {
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        final String script = new String(Base64.decode(Main.xPrefs.getString("encoded_custom_js", ""), Base64.NO_WRAP));
+                        final String script = new String(Base64.decode(Main.xPrefs.getString("encoded_js_modify_request", ""), Base64.NO_WRAP));
                         Context ctx = Context.enter();
                         ctx.setOptimizationLevel(-1);
                         try {
