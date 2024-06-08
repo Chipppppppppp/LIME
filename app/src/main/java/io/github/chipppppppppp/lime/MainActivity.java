@@ -6,14 +6,10 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Process;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Base64;
 import android.view.View;
@@ -23,10 +19,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Switch;
-import android.widget.Toast;
-
-import de.robv.android.xposed.XposedBridge;
-import io.github.chipppppppppp.lime.hooks.Constants;
 
 public class MainActivity extends Activity {
     public LimeOptions limeOptions = new LimeOptions();
