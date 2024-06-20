@@ -25,6 +25,7 @@
     <string name="switch_remove_ads">刪除廣告</string>
     <string name="switch_remove_recommendation">刪除推薦</string>
     <string name="switch_remove_premium_recommendation">刪除 LYP Premium 推薦</string>
+    <string name="switch_remove_service_labels">移除服務標籤</string>
     <string name="switch_remove_reply_mute">刪除通知的「靜音聊天」操作</string>
     <string name="switch_redirect_webview">將 WebView 重新導向到預設瀏覽器</string>
     <string name="switch_open_in_browser">在瀏覽器應用程式開啟</string>

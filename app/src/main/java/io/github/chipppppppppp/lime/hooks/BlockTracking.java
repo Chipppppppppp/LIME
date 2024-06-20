@@ -20,10 +20,13 @@ public class BlockTracking implements IHook {
                 new XC_MethodHook() {
                     static final Set<String> requests = new HashSet<>(Arrays.asList(
                             "noop",
-                            "pushRecvReports",
+                            "reportAbuseEx",
                             "reportDeviceState",
                             "reportLocation",
-                            "reportNetworkStatus"
+                            "reportNetworkStatus",
+                            "reportProfile",
+                            "reportPushRecvReports",
+                            "reportSetting"
                     ));
 
                     @Override

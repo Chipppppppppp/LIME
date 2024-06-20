@@ -25,7 +25,7 @@ import io.github.chipppppppppp.lime.hooks.PreventMarkAsRead;
 import io.github.chipppppppppp.lime.hooks.PreventUnsendMessage;
 import io.github.chipppppppppp.lime.hooks.RedirectWebView;
 import io.github.chipppppppppp.lime.hooks.RemoveAds;
-import io.github.chipppppppppp.lime.hooks.RemoveHomeFlexContents;
+import io.github.chipppppppppp.lime.hooks.RemoveFlexibleContents;
 import io.github.chipppppppppp.lime.hooks.RemoveIconLabels;
 import io.github.chipppppppppp.lime.hooks.RemoveIcons;
 import io.github.chipppppppppp.lime.hooks.RemoveReplyMute;
@@ -52,7 +52,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new RemoveIcons(),
             new RemoveIconLabels(),
             new RemoveAds(),
-            new RemoveHomeFlexContents(),
+            new RemoveFlexibleContents(),
             new RemoveReplyMute(),
             new RedirectWebView(),
             new PreventMarkAsRead(),
