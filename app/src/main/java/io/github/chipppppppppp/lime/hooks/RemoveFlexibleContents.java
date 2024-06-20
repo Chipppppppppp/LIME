@@ -4,10 +4,6 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
@@ -41,7 +37,7 @@ public class RemoveFlexibleContents implements IHook {
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         View view = (View) param.thisObject;
                         if (limeOptions.removeRecommendation.checked && view.getId() == recommendationResId
-                            || limeOptions.removeServiceLabels.checked && view.getId() == serviceNameResId) {
+                                || limeOptions.removeServiceLabels.checked && view.getId() == serviceNameResId) {
                             ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
                             layoutParams.height = 0;
                             view.setLayoutParams(layoutParams);
