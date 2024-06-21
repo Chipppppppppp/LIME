@@ -1,8 +1,10 @@
 package io.github.chipppppppppp.lime.hooks;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -11,7 +13,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
 
 public class RemoveFlexibleContents implements IHook {
-    int recommendationResId, notificationNameResId, serviceNameResId;
+    int recommendationResId, serviceNameResId, notificationResId;
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
@@ -23,8 +25,8 @@ public class RemoveFlexibleContents implements IHook {
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         Context context = (Context) param.thisObject;
                         recommendationResId = context.getResources().getIdentifier("home_tab_contents_recommendation_placement", "id", context.getPackageName());
-                        notificationNameResId = context.getResources().getIdentifier("notification_hub_item_name", "id", context.getPackageName());
                         serviceNameResId = context.getResources().getIdentifier("home_tab_service_name", "id", context.getPackageName());
+                        notificationResId = context.getResources().getIdentifier("notification_hub_row_rolling_view_group", "id", context.getPackageName());
                     }
                 }
         );
@@ -33,21 +35,18 @@ public class RemoveFlexibleContents implements IHook {
                 View.class,
                 "onAttachedToWindow",
                 new XC_MethodHook() {
+                    View view;
                     @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        View view = (View) param.thisObject;
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        view = (View) param.thisObject;
                         if (limeOptions.removeRecommendation.checked && view.getId() == recommendationResId
                                 || limeOptions.removeServiceLabels.checked && view.getId() == serviceNameResId) {
                             ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
                             layoutParams.height = 0;
                             view.setLayoutParams(layoutParams);
                             view.setVisibility(View.GONE);
-                        } else if (limeOptions.removePremiumRecommendation.checked && view.getId() == notificationNameResId) {
-                            view = (View) view.getParent();
-                            ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-                            layoutParams.height = 0;
-                            view.setLayoutParams(layoutParams);
-                            view.setVisibility(View.GONE);
+                        } else if (view.getId() == notificationResId) {
+                            ((View) view.getParent()).setVisibility(View.GONE);
                         }
                     }
                 }
