@@ -1,10 +1,8 @@
 package io.github.chipppppppppp.lime.hooks;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -36,6 +34,7 @@ public class RemoveFlexibleContents implements IHook {
                 "onAttachedToWindow",
                 new XC_MethodHook() {
                     View view;
+
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         view = (View) param.thisObject;
