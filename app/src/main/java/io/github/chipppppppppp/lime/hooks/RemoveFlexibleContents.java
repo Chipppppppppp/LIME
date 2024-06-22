@@ -20,7 +20,7 @@ public class RemoveFlexibleContents implements IHook {
                 "onResume",
                 new XC_MethodHook() {
                     @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         Context context = (Context) param.thisObject;
                         recommendationResId = context.getResources().getIdentifier("home_tab_contents_recommendation_placement", "id", context.getPackageName());
                         serviceNameResId = context.getResources().getIdentifier("home_tab_service_name", "id", context.getPackageName());
