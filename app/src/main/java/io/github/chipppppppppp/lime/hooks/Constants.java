@@ -16,8 +16,6 @@ public class Constants {
 
     static final HookTarget USER_AGENT_HOOK = new HookTarget("q01.c", "h");
     static final HookTarget WEBVIEW_CLIENT_HOOK = new HookTarget("xA0.k", "onPageFinished");
-    static final HookTarget COMMUNICATION_ENUM_HOOK = new HookTarget("D11.Z5", "b");
-    static final HookTarget UNSENT_HOOK = new HookTarget("h41.a", "p");
     static final HookTarget MUTE_MESSAGE_HOOK = new HookTarget("nZ0.b", "G");
     static final HookTarget MARK_AS_READ_HOOK = new HookTarget("BJ.d$d", "run");
     static final HookTarget REQUEST_HOOK = new HookTarget("org.apache.thrift.l", "b");
