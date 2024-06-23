@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
@@ -37,6 +38,20 @@ public class RemoveAds implements IHook {
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (!limeOptions.removeAds.checked) return;
+
+        XposedBridge.hookAllMethods(
+                loadPackageParam.classLoader.loadClass(Constants.REQUEST_HOOK.className),
+                Constants.REQUEST_HOOK.methodName,
+                new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        String request = param.args[0].toString();
+                        if (request.equals("getBanners") || request.equals("getPrefetchableBanners")) {
+                            param.setResult(null);
+                        }
+                    }
+                }
+        );
 
         XposedHelpers.findAndHookMethod(
                 loadPackageParam.classLoader.loadClass("com.linecorp.line.admolin.smartch.v2.view.SmartChannelViewLayout"),
