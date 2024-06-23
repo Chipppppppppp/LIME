@@ -32,11 +32,8 @@ public class PreventUnsendMessage implements IHook {
                                 if (type.toString().equals("NOTIFIED_DESTROY_MESSAGE")) {
                                     typeField.set(operation, type.getClass().getMethod("valueOf", String.class).invoke(operation, "DUMMY"));
                                 } else if (type.toString().equals("RECEIVE_MESSAGE")) {
-                                    XposedBridge.log("RECEIVE_MESSAGE");
                                     Object message = operation.getClass().getDeclaredField("j").get(operation);
-                                    XposedBridge.log(message.toString());
                                     Map<String, String> contentMetadata = (Map<String, String>) message.getClass().getDeclaredField("k").get(message);
-                                    XposedBridge.log(String.valueOf(contentMetadata));
                                     contentMetadata.remove("UNSENT");
                                 }
                             }
