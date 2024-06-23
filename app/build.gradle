@@ -12,8 +12,8 @@ android {
         minSdk 28
         //noinspection OldTargetApi
         targetSdk 33
-        versionCode 12
-        versionName "1.9.1"
+        versionCode 13
+        versionName "1.9.2"
         multiDexEnabled false
         proguardFiles += 'proguard-rules.pro'
         buildConfigField 'String', 'HOOK_TARGET_VERSION', '"14.9.1"'
@@ -39,8 +39,6 @@ android {
             signingConfig signingConfigs.android
         }
         release {
-            minifyEnabled true
-            shrinkResources true
             if (file('release.jks').exists()) {
                 signingConfig signingConfigs.release
             }
