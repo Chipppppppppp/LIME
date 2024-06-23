@@ -3,11 +3,10 @@ package io.github.chipppppppppp.lime.hooks;
 import android.graphics.Canvas;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.webkit.WebView;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -16,7 +15,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
 
 public class RemoveAds implements IHook {
-    static final Set<String> adClassNames = new HashSet<>(Arrays.asList(
+    static final List<String> adClassNames = List.of(
             "com.google.android.gms.ads.nativead.NativeAdView",
             "com.linecorp.line.ladsdk.ui.inventory.album.LadAlbumImageAdView",
             "com.linecorp.line.ladsdk.ui.inventory.album.LadAlbumVideoAdView",
@@ -27,13 +26,12 @@ public class RemoveAds implements IHook {
             "com.linecorp.line.ladsdk.ui.inventory.home.LadHomePerformanceAdView",
             "com.linecorp.line.ladsdk.ui.inventory.home.LadHomeYjBigBannerAdView",
             "com.linecorp.line.ladsdk.ui.inventory.home.LadHomeYjImageAdView",
-            "com.linecorp.line.ladsdk.ui.inventory.openchat.LadOpenChatImageAdView",
             "com.linecorp.line.ladsdk.ui.inventory.timeline.post.LadPostAdView",
             "com.linecorp.line.ladsdk.ui.inventory.wallet.LadWalletBigBannerImageAdView",
             "com.linecorp.line.ladsdk.ui.inventory.wallet.LadWalletBigBannerVideoAdView",
             "com.linecorp.square.v2.view.ad.common.SquareCommonHeaderGoogleBannerAdView",
             "com.linecorp.square.v2.view.ad.common.SquareCommonHeaderGoogleNativeAdView"
-    ));
+    );
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
@@ -80,22 +78,27 @@ public class RemoveAds implements IHook {
                 }
         );
 
-        XposedHelpers.findAndHookMethod(
-                View.class,
-                "onAttachedToWindow",
-                new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        View view = (View) param.thisObject;
-                        if (adClassNames.contains(view.getClass().getName())) {
-                            ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-                            layoutParams.height = 0;
-                            view.setLayoutParams(layoutParams);
+        for (String adClassName : adClassNames) {
+            XposedBridge.hookAllConstructors(
+                    loadPackageParam.classLoader.loadClass(adClassName),
+                    new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            View view = (View) param.thisObject;
                             view.setVisibility(View.GONE);
+                            view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                @Override
+                                public void onGlobalLayout() {
+                                    if (view.getVisibility() != View.GONE) {
+                                        view.setVisibility(View.GONE);
+                                    }
+                                }
+                            });
+
                         }
                     }
-                }
-        );
+            );
+        }
 
         XposedHelpers.findAndHookMethod(
                 loadPackageParam.classLoader.loadClass(Constants.WEBVIEW_CLIENT_HOOK.className),
