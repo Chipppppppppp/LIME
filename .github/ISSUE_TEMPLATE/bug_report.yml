@@ -15,6 +15,7 @@ body:
 
         また、本サービスは日本語が解る事が前提ですので、日本語が解らない場合を除いて、日本語でレポートを書いてください。  
         Please answer in English only **if you DO NOT understand Japanese**.
+        And **DO NOT try to translate it into Japanese**, but write it in English.
   - type: checkboxes
     attributes:
       label: LSPatch 使用の有無
@@ -45,6 +46,7 @@ body:
         - 広告を削除
         - おすすめを削除
         - LYP プレミアムのおすすめを削除
+        - サービスのラベルを削除
         - 通知から "通知オフ" アクションを削除
         - WebView を規定のブラウザにリダイレクト
         - ブラウザアプリで開く
@@ -52,10 +54,12 @@ body:
         - 送信取り消しを拒否
         - 常にミュートメッセージとして送信
         - トーク画面右上のメニューにある「未読のまま閲覧」のスイッチを削除
-        - トラッキング通信をブロック (ベータ)
+        - トラッキング通信をブロック
         - LINE バージョンの確認を停止
         - 通信内容をログに出力 (開発者用)
         - Android ID を偽装
+        - リクエストを改変
+        - レスポンスを改変
   - type: checkboxes
     attributes:
       label: バージョンの確認

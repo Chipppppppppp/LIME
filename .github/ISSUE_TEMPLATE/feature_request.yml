@@ -15,6 +15,7 @@ body:
 
         また、本サービスは日本語が解る事が前提ですので、日本語が解らない場合を除いて、日本語でレポートを書いてください。  
         Please answer in English only **if you DO NOT understand Japanese**.
+        And **DO NOT try to translate it into Japanese**, but write it in English.
   - type: textarea
     attributes:
       label: 提案内容
