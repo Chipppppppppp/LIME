@@ -34,7 +34,7 @@
     <string name="switch_send_mute_message">總是傳送靜音訊息</string>
     <string name="switch_prevent_unsend_message">防止訊息撤回</string>
     <string name="switch_remove_keep_unread">刪除聊天分頁右上角選單的「保持未讀」開關</string>
-    <string name="switch_block_tracking">防止跟蹤通訊（測試版）</string>
+    <string name="switch_block_tracking">防止跟蹤通訊</string>
     <string name="switch_stop_version_check">停止检查 LINE 版本</string>
     <string name="switch_output_communication">將通訊內容輸出到日誌內（供開發人員使用）</string>
     <string name="modify_request">修改請求</string>

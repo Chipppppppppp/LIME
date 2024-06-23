@@ -35,7 +35,7 @@
     <string name="switch_send_mute_message">Always send mute messages</string>
     <string name="switch_prevent_unsend_message">Prevent messages from unsending</string>
     <string name="switch_remove_keep_unread">Remove the \"Keep unread\" switch from the menu in the top right corner of the chat tab</string>
-    <string name="switch_block_tracking">Block tracking communications (beta)</string>
+    <string name="switch_block_tracking">Block tracking communications</string>
     <string name="switch_stop_version_check">Stop checking LINE version</string>
     <string name="switch_output_communication">Output communication contents to log (for developers)</string>
     <string name="modify_request">Modify requests</string>
