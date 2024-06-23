@@ -36,7 +36,7 @@ public class RemoveFlexibleContents implements IHook {
                     View view;
 
                     @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         view = (View) param.thisObject;
                         if (limeOptions.removeRecommendation.checked && view.getId() == recommendationResId
                                 || limeOptions.removeServiceLabels.checked && view.getId() == serviceNameResId) {
