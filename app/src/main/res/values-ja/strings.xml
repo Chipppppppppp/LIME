@@ -22,6 +22,7 @@
     <string name="switch_remove_wallet">ウォレットアイコンを削除</string>
     <string name="switch_remove_news_or_call">ニュースまたは通話アイコンを削除</string>
     <string name="switch_distribute_evenly">ボトムバーのアイコンを均等に配置</string>
+    <string name="switch_extend_clickable_area">ボトムバーのアイコンの当たり判定を拡張する</string>
     <string name="switch_remove_icon_labels">ボトムバーのアイコンのラベルを削除</string>
     <string name="switch_remove_ads">広告を削除</string>
     <string name="switch_remove_recommendation">おすすめを削除</string>

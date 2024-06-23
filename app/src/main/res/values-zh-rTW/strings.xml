@@ -21,6 +21,7 @@
     <string name="switch_remove_wallet">刪除錢包圖示</string>
     <string name="switch_remove_news_or_call">刪除新聞或通話圖示</string>
     <string name="switch_distribute_evenly">均勻排列底欄的圖示</string>
+    <string name="switch_extend_clickable_area">擴大底欄圖示的可點擊區域</string>
     <string name="switch_remove_icon_labels">刪除底欄的圖示標籤</string>
     <string name="switch_remove_ads">刪除廣告</string>
     <string name="switch_remove_recommendation">刪除推薦</string>

@@ -17,6 +17,7 @@ public class LimeOptions {
     public Option removeWallet = new Option("remove_wallet", R.string.switch_remove_wallet, true);
     public Option removeNewsOrCall = new Option("remove_news_or_call", R.string.switch_remove_news_or_call, true);
     public Option distributeEvenly = new Option("distribute_evenly", R.string.switch_distribute_evenly, true);
+    public Option extendClickableArea = new Option("extend_clickable_area", R.string.switch_extend_clickable_area, true);
     public Option removeIconLabels = new Option("remove_icon_labels", R.string.switch_remove_icon_labels, true);
     public Option removeAds = new Option("remove_ads", R.string.switch_remove_ads, true);
     public Option removeRecommendation = new Option("remove_recommendation", R.string.switch_remove_recommendation, true);
@@ -38,6 +39,7 @@ public class LimeOptions {
             removeWallet,
             removeNewsOrCall,
             distributeEvenly,
+            extendClickableArea,
             removeIconLabels,
             removeAds,
             removeRecommendation,
