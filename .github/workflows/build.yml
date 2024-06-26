@@ -64,14 +64,14 @@ jobs:
 
       - name: Get previous version name
         uses: oprypin/find-latest-tag@v1.1.2
-        if: github.event.inputs.release
+        if: github.event.inputs.release == 'true'
         id: previous
         with:
           repository: ${{ github.repository }}
           releases-only: true
 
       - name: Release check
-        if: github.event.inputs.release
+        if: github.event.inputs.release == 'true'
         run: |
           if [ "${{ secrets.STORE_FILE }}" == "" ]; then
             echo -e "\nERROR!\nTo release, you need to set up a signing key!\n"
@@ -103,7 +103,7 @@ jobs:
           fi
 
       - name: LSPatch
-        if: github.event.inputs.lspatch
+        if: github.event.inputs.lspatch == 'true'
         run: |
           cat << EOF > conf
           https://github.com/LSPosed/LSPatch/releases/download/v0.6/jar-v0.6-398-release.jar
@@ -126,7 +126,7 @@ jobs:
 
       - name: Upload Patched LINE APK
         uses: actions/upload-artifact@v4
-        if: github.event.inputs.lspatch
+        if: github.event.inputs.lspatch == 'true'
         with:
           name: LINE-${{ env.line_ver }}@${{ env.commit }}
           path: line-${{ env.line_ver }}-398-lspatched.apk
@@ -134,7 +134,7 @@ jobs:
 
       - name: Release
         uses: softprops/action-gh-release@v2
-        if: github.event.inputs.release
+        if: github.event.inputs.release == 'true'
         with:
           tag_name: ${{ env.version }}
           draft: false
