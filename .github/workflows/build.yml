@@ -16,6 +16,16 @@ on:
         type: boolean
         required: true
         default: false
+      lspatch:
+        description: 'LSPatch'
+        type: boolean
+        required: true
+        default: false
+      line_ver:
+        type: string
+        description: Original APK version code
+        required: false
+        default: ""
 
 jobs:
   build:
@@ -23,12 +33,25 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      id-token: write
-      attestations: write
     steps:
 
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set environments
+        run: |
+          if [[ -z "${{ inputs.line_ver }}" && "${{ inputs.lspatch }}" == 'true' ]]; then
+            echo -e "\nERROR!\nLINE versionCode is needed!\n"
+            echo "Please enter the versionCode of the corresponding APK."
+            echo ""
+            exit 1
+          fi
+          {
+            echo "version=v$(grep versionName app/build.gradle | awk '{print $2}' | tr -d \")"
+            echo "line_ver=$(grep HOOK_TARGET_VERSION app/build.gradle | awk '{print $4}' | tr -d \'\")"
+            echo "commit=$(echo ${{ github.sha }} | cut -c-7)"
+            echo "repo=$(echo ${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/})"
+          } >> $GITHUB_ENV
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -39,27 +62,19 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Set environments
-        run: |
-          {
-            echo "version=v$(grep versionName app/build.gradle | awk '{print $2}' | tr -d \")"
-            echo "commit=$(echo ${{ github.sha }} | cut -c-7)"
-            echo "repo=$(echo ${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/})"
-          } >> $GITHUB_ENV
-
       - name: Get previous version name
         uses: oprypin/find-latest-tag@v1.1.2
-        if: github.event.inputs.release
+        if: github.event.inputs.release == 'true'
         id: previous
         with:
           repository: ${{ github.repository }}
           releases-only: true
 
       - name: Release check
-        if: github.event.inputs.release
+        if: github.event.inputs.release == 'true'
         run: |
           if [ "${{ secrets.STORE_FILE }}" == "" ]; then
-            echo -e "\nERROR!\nTo release, you need to set up a signing key! \n"
+            echo -e "\nERROR!\nTo release, you need to set up a signing key!\n"
             echo "STORE_FILE: A Base64 encoded string of the signing key in JKS format"
             echo "STORE_PASSWORD: Key store password"
             echo "KEY_ALIAS: Key alias"
@@ -87,23 +102,39 @@ jobs:
             ./gradlew assembleDebug --no-daemon --stacktrace
           fi
 
-      - name: Attest
-        uses: actions/attest-build-provenance@v1
-        if: github.event.inputs.release != 'true'
-        continue-on-error: true
-        with:
-          subject-path: app/build/outputs/apk/debug/app-debug.apk
+      - name: LSPatch
+        if: github.event.inputs.lspatch == 'true'
+        run: |
+          cat << EOF > conf
+          https://github.com/LSPosed/LSPatch/releases/download/v0.6/jar-v0.6-398-release.jar
+            out=lspatch.jar
+          https://d.apkpure.net/b/APK/jp.naver.line.android?versionCode=${{ inputs.line_ver }}&nc=arm64-v8a%2Carmeabi-v7a&sv=28
+            out=line-${{ env.line_ver }}.apk
+          EOF
+          echo "Downloading APK..."
+          aria2c --no-conf -x16 -s16 -R -m0 -V --async-dns=false -iconf
+          echo "Patching LIME..."
+          java -jar lspatch.jar "line-${{ env.line_ver }}.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
 
-      - name: Upload APK
+      - name: Upload Module APK
         uses: actions/upload-artifact@v4
         if: github.event.inputs.release != 'true'
         with:
-          name: ${{ env.repo }}(${{ env.version }}@${{ env.commit }})
+          name: ${{ env.repo }}-${{ env.version }}@${{ env.commit }}
           path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+      - name: Upload Patched LINE APK
+        uses: actions/upload-artifact@v4
+        if: github.event.inputs.lspatch == 'true'
+        with:
+          name: LINE-${{ env.line_ver }}@${{ env.commit }}
+          path: line-${{ env.line_ver }}-398-lspatched.apk
+          if-no-files-found: error
 
       - name: Release
         uses: softprops/action-gh-release@v2
-        if: github.event.inputs.release
+        if: github.event.inputs.release == 'true'
         with:
           tag_name: ${{ env.version }}
           draft: false
@@ -113,6 +144,7 @@ jobs:
             # 更新内容
             
             ## 対応するLINEのバージョン
+            ${{ env.line_ver }}
             
             ### 差分
             https://github.com/${{ github.repository }}/compare/${{ steps.previous.outputs.tag }}...${{ env.version }}

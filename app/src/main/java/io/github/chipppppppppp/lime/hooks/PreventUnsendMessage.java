@@ -18,6 +18,7 @@ public class PreventUnsendMessage implements IHook {
                 loadPackageParam.classLoader.loadClass(Constants.RESPONSE_HOOK.className),
                 Constants.RESPONSE_HOOK.methodName,
                 new XC_MethodHook() {
+                    @SuppressWarnings("unchecked")
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         if (param.args[0].toString().equals("sync")) {
