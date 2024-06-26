@@ -11,13 +11,13 @@ on:
   pull_request:
   workflow_dispatch:
     inputs:
-      lspatch:
-        description: 'LSPatch'
+      release:
+        description: 'Release'
         type: boolean
         required: true
         default: false
-      release:
-        description: 'Release'
+      lspatch:
+        description: 'LSPatch'
         type: boolean
         required: true
         default: false
@@ -33,8 +33,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      id-token: write
-      attestations: write
     steps:
 
       - name: Checkout
@@ -42,7 +40,7 @@ jobs:
 
       - name: Set environments
         run: |
-          if [ -z "${{ inputs.line_ver }}" ] && { [ "${{ inputs.lspatch }}" == 'true' ] || [ "${{ inputs.release }}" == 'true' ]; }; then
+          if [[ -z "${{ inputs.line_ver }}" && "${{ inputs.lspatch }}" == 'true' ]]; then
             echo -e "\nERROR!\nLINE versionCode is needed!\n"
             echo "Please enter the versionCode of the corresponding APK."
             echo ""
@@ -66,14 +64,14 @@ jobs:
 
       - name: Get previous version name
         uses: oprypin/find-latest-tag@v1.1.2
-        if: github.event.inputs.release == 'true'
+        if: github.event.inputs.release
         id: previous
         with:
           repository: ${{ github.repository }}
           releases-only: true
 
       - name: Release check
-        if: github.event.inputs.release == 'true'
+        if: github.event.inputs.release
         run: |
           if [ "${{ secrets.STORE_FILE }}" == "" ]; then
             echo -e "\nERROR!\nTo release, you need to set up a signing key!\n"
@@ -105,7 +103,7 @@ jobs:
           fi
 
       - name: LSPatch
-        if: github.event.inputs.release == 'true' || github.event.inputs.lspatch == 'true'
+        if: github.event.inputs.lspatch
         run: |
           cat << EOF > conf
           https://github.com/LSPosed/LSPatch/releases/download/v0.6/jar-v0.6-398-release.jar
@@ -115,9 +113,8 @@ jobs:
           EOF
           echo "Downloading APK..."
           aria2c --no-conf -x16 -s16 -R -m0 -V --async-dns=false -iconf
-          export PATCH_APK=$([ "${{ inputs.release }}" == "true" ] && echo "${{ env.repo }}-${{ env.version }}.apk" || echo "app/build/outputs/apk/debug/app-debug.apk")
           echo "Patching LIME..."
-          java -jar lspatch.jar "line-${{ env.line_ver }}.apk" -m "$PATCH_APK" -l 2 -v
+          java -jar lspatch.jar "line-${{ env.line_ver }}.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
 
       - name: Upload Module APK
         uses: actions/upload-artifact@v4
@@ -129,7 +126,7 @@ jobs:
 
       - name: Upload Patched LINE APK
         uses: actions/upload-artifact@v4
-        if: github.event.inputs.release != 'true' && github.event.inputs.lspatch == 'true'
+        if: github.event.inputs.lspatch
         with:
           name: LINE-${{ env.line_ver }}@${{ env.commit }}
           path: line-${{ env.line_ver }}-398-lspatched.apk
@@ -137,14 +134,12 @@ jobs:
 
       - name: Release
         uses: softprops/action-gh-release@v2
-        if: github.event.inputs.release == 'true'
+        if: github.event.inputs.release
         with:
           tag_name: ${{ env.version }}
           draft: false
           prerelease: false
-          files: |
-            ${{ env.repo }}-${{ env.version }}.apk
-            line-${{ env.line_ver }}-398-lspatched.apk
+          files: ${{ env.repo }}-${{ env.version }}.apk
           body: |
             # 更新内容
             
