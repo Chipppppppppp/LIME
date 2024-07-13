@@ -16,7 +16,7 @@ android {
         versionName "1.9.2"
         multiDexEnabled false
         proguardFiles += 'proguard-rules.pro'
-        buildConfigField 'String', 'HOOK_TARGET_VERSION', '"14.9.1"'
+        buildConfigField 'String', 'HOOK_TARGET_VERSION', '"140910392"'
     }
 
     signingConfigs {
