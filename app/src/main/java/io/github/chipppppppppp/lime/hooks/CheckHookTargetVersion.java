@@ -20,6 +20,7 @@ public class CheckHookTargetVersion implements IHook {
                 loadPackageParam.classLoader.loadClass("jp.naver.line.android.activity.SplashActivity"),
                 "onCreate",
                 new XC_MethodHook() {
+                    @Deprecated
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         Context context = (Context) param.thisObject;
