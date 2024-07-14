@@ -20,11 +20,12 @@ public class CheckHookTargetVersion implements IHook {
                 loadPackageParam.classLoader.loadClass("jp.naver.line.android.activity.SplashActivity"),
                 "onCreate",
                 new XC_MethodHook() {
+                    @Deprecated
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         Context context = (Context) param.thisObject;
                         PackageManager pm = context.getPackageManager();
-                        if (!BuildConfig.HOOK_TARGET_VERSION.equals(pm.getPackageInfo(loadPackageParam.packageName, 0).versionName)) {
+                        if (!BuildConfig.HOOK_TARGET_VERSION.equals(pm.getPackageInfo(loadPackageParam.packageName, 0).versionCode)) {
                             Utils.addModuleAssetPath(context);
                             Toast.makeText(context.getApplicationContext(), context.getString(R.string.incompatible_version), Toast.LENGTH_SHORT).show();
                         }
