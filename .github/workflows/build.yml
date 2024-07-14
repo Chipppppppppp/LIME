@@ -21,11 +21,6 @@ on:
         type: boolean
         required: true
         default: false
-      line_ver:
-        type: string
-        description: Original APK version code
-        required: false
-        default: ""
 
 jobs:
   build:
@@ -40,18 +35,13 @@ jobs:
 
       - name: Set environments
         run: |
-          if [[ -z "${{ inputs.line_ver }}" && "${{ inputs.lspatch }}" == 'true' ]]; then
-            echo -e "\nERROR!\nLINE versionCode is needed!\n"
-            echo "Please enter the versionCode of the corresponding APK."
-            echo ""
-            exit 1
-          fi
           {
             echo "version=v$(grep versionName app/build.gradle | awk '{print $2}' | tr -d \")"
-            echo "line_ver=$(grep HOOK_TARGET_VERSION app/build.gradle | awk '{print $4}' | tr -d \'\")"
+            echo "line_ver_code=$(grep HOOK_TARGET_VERSION app/build.gradle | awk '{print $4}' | tr -d \'\")"
             echo "commit=$(echo ${{ github.sha }} | cut -c-7)"
             echo "repo=$(echo ${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/})"
           } >> $GITHUB_ENV
+          echo "line_ver=$($(echo ${{ env.line_ver_code }} | cut -c-2).$(echo ${{ env.line_ver_code }} | cut -c3-4).$(echo ${{ env.line_ver_code }} | cut -c5-6) | sed -e 's/.0/./')" >> $GITHUB_ENV
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -108,7 +98,7 @@ jobs:
           cat << EOF > conf
           https://github.com/LSPosed/LSPatch/releases/download/v0.6/jar-v0.6-398-release.jar
             out=lspatch.jar
-          https://d.apkpure.net/b/APK/jp.naver.line.android?versionCode=${{ inputs.line_ver }}&nc=arm64-v8a%2Carmeabi-v7a&sv=28
+          https://d.apkpure.net/b/APK/jp.naver.line.android?versionCode=${{ env.line_ver_code }}&nc=arm64-v8a%2Carmeabi-v7a&sv=28
             out=line-${{ env.line_ver }}.apk
           EOF
           echo "Downloading APK..."
