@@ -41,7 +41,9 @@ jobs:
             echo "commit=$(echo ${{ github.sha }} | cut -c-7)"
             echo "repo=$(echo ${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/})"
           } >> $GITHUB_ENV
-          echo "line_ver=$($(echo ${{ env.line_ver_code }} | cut -c-2).$(echo ${{ env.line_ver_code }} | cut -c3-4).$(echo ${{ env.line_ver_code }} | cut -c5-6) | sed -e 's/.0/./')" >> $GITHUB_ENV
+
+      - name: Set LINE Original Version Name
+        run: echo "line_ver=$($(echo ${{ env.line_ver_code }} | cut -c-2).$(echo ${{ env.line_ver_code }} | cut -c3-4).$(echo ${{ env.line_ver_code }} | cut -c5-6) | sed -e 's/.0/./')" >> $GITHUB_ENV
 
       - name: Setup Java
         uses: actions/setup-java@v4
