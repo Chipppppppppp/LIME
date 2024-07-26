@@ -110,6 +110,16 @@ LI**M**E
 3. [**Shizuku**](https://github.com/RikkaApps/Shizuku) を使用している場合は <kbd>インストール</kbd> を押して続行する  
   使用していない場合は、ファイルエクスプローラー等の別のアプリからインストールする
 
+<details><summary>GitHub Actions を使ってパッチする方法</summary>
+
+1. このリポジトリを [**fork**](https://github.com/Chipppppppppp/LIME/fork) する
+2. フォーク先の **Actions** に移動
+3. 初回のみ同意して、**All workflows** から **Build** を選択
+4. **Run workflow** (プルダウン) をタップし、**LSPatch** にチェックを入れてから、**Run workflow** (緑のボタン) を選択
+5. ビルド完了後、**Artifacts** に **LINE-** から始まるZIPファイルがあるのでそれをダウンロードし、その中のAPKをインストール
+
+</details>
+
 > [!IMPORTANT]
 > 既に Playストア からインストールした LINE アプリがインストールされている場合は、署名が競合するため、最初にアンインストールを行ってください。
 
