@@ -28,8 +28,8 @@ public class Main implements IXposedHookLoadPackage {
 
 
     String directoryPath = "/storage/emulated/0/Download/unsent/";
-    String filePath = directoryPath + "Test.txt";
-    String backupFilePath = directoryPath + "Test2.txt";
+    String filePath = "/storage/emulated/0/Download/unsent/Test.txt";
+    String backupFilePath = "/storage/emulated/0/Download/unsent/Test2.txt";
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lparam) throws Throwable {
@@ -52,7 +52,7 @@ public class Main implements IXposedHookLoadPackage {
 
                         int currentLineCount = getLineCount(filePath);
 
-                        // SharedPreferences から前回の行数を取得
+
 
 
                         int newLines = currentLineCount ;
@@ -84,7 +84,7 @@ public class Main implements IXposedHookLoadPackage {
                                     BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                                     String line;
                                     while ((line = reader.readLine()) != null) {
-                                        output.append(line).append("");
+                                        output.append(line).append("\n"); // 各行の末尾に改行を追加
                                     }
                                     reader.close();
                                     process.waitFor();
@@ -94,16 +94,16 @@ public class Main implements IXposedHookLoadPackage {
                                     builder.setTitle("ファイルの内容")
                                             .setMessage(output.toString())
                                             .setPositiveButton("OK", (dialog, which) -> {
-                                                moveFileContents(filePath, "/storage/emulated/0/Download/Test2.txt");
                                                 // ボタンを削除する
-                                                if (rootView instanceof ViewGroup) {
-                                                    ViewGroup viewGroup = (ViewGroup) rootView;
-                                                    viewGroup.removeView(button);
+                                                if (button.getParent() instanceof ViewGroup) {
+                                                    ViewGroup parent = (ViewGroup) button.getParent();
+                                                    parent.removeView(button);
                                                 }
+                                                moveFileContents(filePath, "/storage/emulated/0/Download/unsent/Test2.txt");
+
                                             })
                                             .create()
                                             .show();
-
 
 
                                 } catch (IOException | InterruptedException e) {
@@ -161,11 +161,12 @@ public class Main implements IXposedHookLoadPackage {
                             if (content != null && (groupName != null || talkName != null) && timeFormatted != null) {
                                 String logEntry = timeFormatted + (groupName != null ? groupName : "") + (talkName != null ? talkName : "") + ":" + content + imageCheck;
 
+                                // ディレクトリを作成
+                                createDirectoryIfNotExists(directoryPath);
                                 // ファイルを作成
                                 createFileIfNotExists(filePath);
                                 createFileIfNotExists(backupFilePath);
-                                // ディレクトリを作成
-                                createDirectoryIfNotExists(directoryPath);
+
 
                                 String command = "su -c echo \"" + String.join("\n", logEntry) + "\" >> " + filePath;
 
@@ -173,6 +174,7 @@ public class Main implements IXposedHookLoadPackage {
                                     Process process = Runtime.getRuntime().exec(command);
                                     process.waitFor();
                                     XposedBridge.log("削除されたメッセージ: " + logEntry);
+
                                 } catch (IOException | InterruptedException e) {
                                     e.printStackTrace();
                                 }
@@ -186,34 +188,63 @@ public class Main implements IXposedHookLoadPackage {
 
         });
     }
+    private void createDirectoryIfNotExists(String directoryPath) {
+        String command = "su -c 'if [ ! -d \"" + directoryPath + "\" ]; then mkdir -p \"" + directoryPath + "\"; fi'";
+
+        try {
+            Process process = Runtime.getRuntime().exec(command);
+
+            // エラー出力を読み取る
+            BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            StringBuilder errorOutput = new StringBuilder();
+            String errorLine;
+            while ((errorLine = errorReader.readLine()) != null) {
+                errorOutput.append(errorLine).append("\n");
+            }
+            errorReader.close();
+
+            // コマンドが終了するまで待つ
+            process.waitFor();
+
+            // エラーログを出力する
+            if (errorOutput.length() > 0) {
+                XposedBridge.log("Error: " + errorOutput.toString());
+            }
+
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void createFileIfNotExists(String filePath) {
-
-        String command = "su -c touch " + filePath;
+        String command = "su -c 'if [ ! -f \"" + filePath + "\" ]; then touch \"" + filePath + "\"; fi'";
 
         try {
             Process process = Runtime.getRuntime().exec(command);
+
+            // エラー出力を読み取る
+            BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            StringBuilder errorOutput = new StringBuilder();
+            String errorLine;
+            while ((errorLine = errorReader.readLine()) != null) {
+                errorOutput.append(errorLine).append("\n");
+            }
+            errorReader.close();
+
+            // コマンドが終了するまで待つ
             process.waitFor();
+
+            // エラーログを出力する
+            if (errorOutput.length() > 0) {
+                XposedBridge.log("Error: " + errorOutput.toString());
+            }
+
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
-
-
-    private void createDirectoryIfNotExists(String directoryPath) {
-
-        String command = "su -c mkdir -p " + directoryPath;
-
-        try {
-            Process process = Runtime.getRuntime().exec(command);
-            process.waitFor();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void moveFileContents(String sourceFilePath, String destinationFilePath) {
-
+        // ファイルの内容を移動するコマンド
         String command = "su -c cat " + sourceFilePath + " >> " + destinationFilePath + " && su -c echo '' > " + sourceFilePath;
 
         try {
