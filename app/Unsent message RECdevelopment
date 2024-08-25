@@ -1,0 +1,300 @@
+
+
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Environment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import de.robv.android.xposed.IXposedHookLoadPackage;
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
+
+public class Main implements IXposedHookLoadPackage {
+    private static final String PREFS_NAME = "MyPrefs";
+    private static final String PREF_LAST_LINE_COUNT = "lastLineCount";
+
+
+    String directoryPath = "/storage/emulated/0/Download/unsent/";
+    String filePath = directoryPath + "Test.txt";
+    String backupFilePath = directoryPath + "Test2.txt";
+
+    @Override
+    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lparam) throws Throwable {
+        if (!lparam.packageName.equals("jp.naver.line.android")) 
+            return;
+
+
+        XposedHelpers.findAndHookMethod("com.linecorp.line.chatlist.view.fragment.ChatListPageFragment",
+                lparam.classLoader, "onCreateView",
+                LayoutInflater.class, ViewGroup.class, android.os.Bundle.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+      
+                        View rootView = (View) param.getResult();
+                        Context context = rootView.getContext();
+
+
+
+                 
+                        int currentLineCount = getLineCount(filePath);
+
+                        // SharedPreferences から前回の行数を取得
+                        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+                        int lastLineCount = prefs.getInt(PREF_LAST_LINE_COUNT, 0);
+
+              
+                        int newLines = currentLineCount - lastLineCount;
+                        // newLines が 0 であればボタンを表示しない
+                        if (newLines == 0) {
+                            return; // ボタンの生成をスキップ
+                        }
+
+                   
+                        Button button = new Button(context);
+                        button.setText(String.valueOf(newLines)); 
+
+                        RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        buttonParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM); 
+                        button.setLayoutParams(buttonParams);
+
+                      
+                        button.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                try {
+                          
+                                    StringBuilder output = new StringBuilder();
+                                    Process process = Runtime.getRuntime().exec("su -c cat " + filePath);
+                                    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                                    String line;
+                                    while ((line = reader.readLine()) != null) {
+                                        output.append(line).append("\n");
+                                    }
+                                    reader.close();
+                                    process.waitFor();
+
+                        
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                    builder.setTitle("ファイルの内容")
+                                            .setMessage(output.toString())
+                                            .setPositiveButton("OK", null)
+                                            .create()
+                                            .show();
+                                    moveFileContents(filePath, "/storage/emulated/0/Download/Test2.txt");
+                                
+                                    SharedPreferences.Editor editor = prefs.edit();
+                                    editor.putInt(PREF_LAST_LINE_COUNT, currentLineCount);
+                                    editor.apply();
+                                } catch (IOException | InterruptedException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(context, "ファイルの読み取りに失敗しました", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
+            
+
+                        if (rootView instanceof ViewGroup) {
+                            ViewGroup viewGroup = (ViewGroup) rootView;
+                            viewGroup.addView(button);
+                        }
+
+                    }
+                });
+
+
+        Class<?> hookTarget = lparam.classLoader.loadClass("org.apache.thrift.l");
+        XposedBridge.hookAllMethods(hookTarget, "a", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                String paramValue = param.args[1].toString();
+
+
+                if (paramValue.contains("type:NOTIFIED_DESTROY_MESSAGE,")) {
+                    // param1 と param2 の値を取得
+                    String[] parts = paramValue.split(",");
+                    String serverId = null;
+                    String talkId = null;
+                    for (String part : parts) {
+                        if (part.trim().startsWith("param1:")) {
+                            talkId = part.trim().substring("param1:".length());
+                        } else if (part.trim().startsWith("param2:")) {
+                            serverId = part.trim().substring("param2:".length());
+                        }
+                    }
+
+
+                    String content = getContentFromServerId(serverId);
+                    String imageCheck = imageCheck(serverId);
+                    String timeEpochStr = message_time(serverId); // エポック時間を取得
+                    String timeFormatted = formatMessageTime(timeEpochStr); // エポック時間をフォーマット
+                    String groupName = getGroupName(talkId);
+                    String talkName = getTalkName(talkId);
+
+                    XposedBridge.log("kojinn: " + timeFormatted + " " + talkId);
+                    XposedBridge.log("group: " + timeFormatted + " " + talkId);
+
+                    if (content != null && (groupName != null || talkName != null) && timeFormatted !=null ) {
+
+                        String logEntry = timeFormatted + (groupName != null ? groupName : "") + (talkName != null ? talkName : "") + ":" + content + imageCheck;
+
+
+                        // ファイルを作成
+                        createFileIfNotExists(filePath);
+                        createFileIfNotExists(backupFilePath);
+                        // ディレクトリを作成
+                        createDirectoryIfNotExists(directoryPath);
+                    
+
+                        String command = "su -c echo \"" + String.join("\n", logEntry) + "\" >> " + filePath;
+
+
+                        try {
+                            Process process = Runtime.getRuntime().exec(command);
+                            process.waitFor();
+                            XposedBridge.log("削除されたメッセージ: " + logEntry);
+
+                        } catch (IOException | InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private void createFileIfNotExists(String filePath) {
+  
+        String command = "su -c touch " + filePath;
+
+        try {
+            Process process = Runtime.getRuntime().exec(command);
+            process.waitFor();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void createDirectoryIfNotExists(String directoryPath) {
+   
+        String command = "su -c mkdir -p " + directoryPath;
+
+        try {
+            Process process = Runtime.getRuntime().exec(command);
+            process.waitFor();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void moveFileContents(String sourceFilePath, String destinationFilePath) {
+
+        String command = "su -c cat " + sourceFilePath + " >> " + destinationFilePath + " && su -c echo '' > " + sourceFilePath;
+
+        try {
+            Process process = Runtime.getRuntime().exec(command);
+            process.waitFor();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private String message_time(String serverId) {
+        return executeSQLite3Command("SELECT created_time FROM chat_history WHERE server_id='" + serverId + "';");
+    }
+
+
+    private String formatMessageTime(String deliveredTimeStr) {
+        try {
+            // delivered_time の値をミリ秒に変換
+            long deliveredTimeMillis = Long.parseLong(deliveredTimeStr.trim());
+
+            // Date オブジェクトに変換
+            Date deliveredDate = new Date(deliveredTimeMillis);
+
+            // 日付と時間のフォーマット
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            return dateFormat.format(deliveredDate);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return "Invalid Time"; 
+        }
+    }
+
+    private String getContentFromServerId(String serverId) {
+        return executeSQLite3Command("SELECT content FROM chat_history WHERE server_id='" + serverId + "';");
+    }
+
+    private String getGroupName(String talkId) {
+        return executeSQLite3Command("SELECT name FROM groups WHERE id='" + talkId + "';");
+    }
+
+    private String getTalkName(String talkId) {
+        return executeSQLite3Command("SELECT chat_name FROM chat WHERE chat_id='" + talkId + "';");
+    }
+
+    private String imageCheck(String serverId) {
+        return executeSQLite3Command("SELECT url FROM chat_history WHERE server_id='" + serverId + "';");
+    }
+
+
+    private int getLineCount(String filePath) {
+        int lineCount = 0;
+        try {
+            Process process = Runtime.getRuntime().exec("su -c wc -l " + filePath);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line = reader.readLine();
+            process.waitFor();
+            if (line != null) {
+                lineCount = Integer.parseInt(line.split(" ")[0]);
+            }
+            reader.close();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return lineCount;
+    }
+
+    private String executeSQLite3Command(String query) {
+        String command = "su -c sqlite3 /data_mirror/data_ce/null/0/jp.naver.line.android/databases/naver_line \"" + query + "\"";
+        StringBuilder output = new StringBuilder();
+        try {
+            Process process = Runtime.getRuntime().exec(command);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+            reader.close();
+            process.waitFor();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return output.toString().trim();
+    }
+}
