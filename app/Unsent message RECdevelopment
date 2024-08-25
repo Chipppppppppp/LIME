@@ -1,4 +1,5 @@
 
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -99,7 +100,7 @@ public class Main implements IXposedHookLoadPackage {
                                                     ViewGroup parent = (ViewGroup) button.getParent();
                                                     parent.removeView(button);
                                                 }
-                                                moveFileContents(filePath, "/storage/emulated/0/Download/unsent/Test2.txt");
+                                                moveFileContentsAndDelete(filePath, "/storage/emulated/0/Download/unsent/Test2.txt");
 
                                             })
                                             .create()
@@ -243,17 +244,27 @@ public class Main implements IXposedHookLoadPackage {
             e.printStackTrace();
         }
     }
-    private void moveFileContents(String sourceFilePath, String destinationFilePath) {
+    private void moveFileContentsAndDelete(String sourceFilePath, String destinationFilePath) {
         // ファイルの内容を移動するコマンド
-        String command = "su -c cat " + sourceFilePath + " >> " + destinationFilePath + " && su -c echo '' > " + sourceFilePath;
+        String moveCommand = "su -c 'cat " + sourceFilePath + " >> " + destinationFilePath + " && echo '' > " + sourceFilePath + "'";
+
+        // ファイルを完全に削除するコマンド
+        String deleteCommand = "su -c rm " + sourceFilePath;
 
         try {
-            Process process = Runtime.getRuntime().exec(command);
-            process.waitFor();
+            // 内容の移動と空にする処理を実行
+            Process moveProcess = Runtime.getRuntime().exec(moveCommand);
+            moveProcess.waitFor();
+
+            // ファイルの削除処理を実行
+            Process deleteProcess = Runtime.getRuntime().exec(deleteCommand);
+            deleteProcess.waitFor();
+
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
+
 
 
     private String message_time(String serverId) {
