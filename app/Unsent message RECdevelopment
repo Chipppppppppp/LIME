@@ -1,9 +1,7 @@
 
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,18 +9,12 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
@@ -41,7 +33,7 @@ public class Main implements IXposedHookLoadPackage {
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lparam) throws Throwable {
-        if (!lparam.packageName.equals("jp.naver.line.android")) 
+        if (!lparam.packageName.equals("jp.naver.line.android"))
             return;
 
 
@@ -51,63 +43,69 @@ public class Main implements IXposedHookLoadPackage {
                 new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-      
+
                         View rootView = (View) param.getResult();
                         Context context = rootView.getContext();
 
 
 
-                 
+
                         int currentLineCount = getLineCount(filePath);
 
                         // SharedPreferences から前回の行数を取得
-                        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-                        int lastLineCount = prefs.getInt(PREF_LAST_LINE_COUNT, 0);
 
-              
-                        int newLines = currentLineCount - lastLineCount;
+
+                        int newLines = currentLineCount ;
                         // newLines が 0 であればボタンを表示しない
-                        if (newLines == 0) {
+                        // newLines が 0 またはマイナスの場合はボタンを削除して終了
+                        if (newLines <= 0) {
+
                             return; // ボタンの生成をスキップ
                         }
 
-                   
+
+
                         Button button = new Button(context);
-                        button.setText(String.valueOf(newLines)); 
+                        button.setText(String.valueOf(newLines));
 
                         RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                        buttonParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM); 
+                        buttonParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                         button.setLayoutParams(buttonParams);
 
-                      
+
                         button.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 try {
-                          
+
                                     StringBuilder output = new StringBuilder();
                                     Process process = Runtime.getRuntime().exec("su -c cat " + filePath);
                                     BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                                     String line;
                                     while ((line = reader.readLine()) != null) {
-                                        output.append(line).append("\n");
+                                        output.append(line).append("");
                                     }
                                     reader.close();
                                     process.waitFor();
 
-                        
+
                                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                                     builder.setTitle("ファイルの内容")
                                             .setMessage(output.toString())
-                                            .setPositiveButton("OK", null)
+                                            .setPositiveButton("OK", (dialog, which) -> {
+                                                moveFileContents(filePath, "/storage/emulated/0/Download/Test2.txt");
+                                                // ボタンを削除する
+                                                if (rootView instanceof ViewGroup) {
+                                                    ViewGroup viewGroup = (ViewGroup) rootView;
+                                                    viewGroup.removeView(button);
+                                                }
+                                            })
                                             .create()
                                             .show();
-                                    moveFileContents(filePath, "/storage/emulated/0/Download/Test2.txt");
-                                
-                                    SharedPreferences.Editor editor = prefs.edit();
-                                    editor.putInt(PREF_LAST_LINE_COUNT, currentLineCount);
-                                    editor.apply();
+
+
+
                                 } catch (IOException | InterruptedException e) {
                                     e.printStackTrace();
                                     Toast.makeText(context, "ファイルの読み取りに失敗しました", Toast.LENGTH_SHORT).show();
@@ -115,7 +113,7 @@ public class Main implements IXposedHookLoadPackage {
                             }
                         });
 
-            
+
 
                         if (rootView instanceof ViewGroup) {
                             ViewGroup viewGroup = (ViewGroup) rootView;
@@ -131,63 +129,66 @@ public class Main implements IXposedHookLoadPackage {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 String paramValue = param.args[1].toString();
-
+                XposedBridge.log("UNSENT: " + paramValue);
 
                 if (paramValue.contains("type:NOTIFIED_DESTROY_MESSAGE,")) {
-                    // param1 と param2 の値を取得
-                    String[] parts = paramValue.split(",");
-                    String serverId = null;
-                    String talkId = null;
-                    for (String part : parts) {
-                        if (part.trim().startsWith("param1:")) {
-                            talkId = part.trim().substring("param1:".length());
-                        } else if (part.trim().startsWith("param2:")) {
-                            serverId = part.trim().substring("param2:".length());
+                    // 分割された操作を処理する
+                    String[] operations = paramValue.split("Operation\\(");
+
+                    for (String operation : operations) {
+                        // param1 と param2 の値を取得
+                        String[] parts = operation.split(",");
+                        String serverId = null;
+                        String talkId = null;
+
+                        for (String part : parts) {
+                            if (part.trim().startsWith("param1:")) {
+                                talkId = part.trim().substring("param1:".length());
+                            } else if (part.trim().startsWith("param2:")) {
+                                serverId = part.trim().substring("param2:".length());
+                            }
                         }
-                    }
 
+                        // serverId と talkId が見つかった場合に処理を続行
+                        if (serverId != null && talkId != null) {
+                            String content = getContentFromServerId(serverId);
+                            String imageCheck = imageCheck(serverId);
+                            String timeEpochStr = message_time(serverId); // エポック時間を取得
+                            String timeFormatted = formatMessageTime(timeEpochStr); // エポック時間をフォーマット
+                            String groupName = getGroupName(talkId);
+                            String talkName = getTalkName(talkId);
 
-                    String content = getContentFromServerId(serverId);
-                    String imageCheck = imageCheck(serverId);
-                    String timeEpochStr = message_time(serverId); // エポック時間を取得
-                    String timeFormatted = formatMessageTime(timeEpochStr); // エポック時間をフォーマット
-                    String groupName = getGroupName(talkId);
-                    String talkName = getTalkName(talkId);
+                            if (content != null && (groupName != null || talkName != null) && timeFormatted != null) {
+                                String logEntry = timeFormatted + (groupName != null ? groupName : "") + (talkName != null ? talkName : "") + ":" + content + imageCheck;
 
-                    XposedBridge.log("kojinn: " + timeFormatted + " " + talkId);
-                    XposedBridge.log("group: " + timeFormatted + " " + talkId);
+                                // ファイルを作成
+                                createFileIfNotExists(filePath);
+                                createFileIfNotExists(backupFilePath);
+                                // ディレクトリを作成
+                                createDirectoryIfNotExists(directoryPath);
 
-                    if (content != null && (groupName != null || talkName != null) && timeFormatted !=null ) {
+                                String command = "su -c echo \"" + String.join("\n", logEntry) + "\" >> " + filePath;
 
-                        String logEntry = timeFormatted + (groupName != null ? groupName : "") + (talkName != null ? talkName : "") + ":" + content + imageCheck;
-
-
-                        // ファイルを作成
-                        createFileIfNotExists(filePath);
-                        createFileIfNotExists(backupFilePath);
-                        // ディレクトリを作成
-                        createDirectoryIfNotExists(directoryPath);
-                    
-
-                        String command = "su -c echo \"" + String.join("\n", logEntry) + "\" >> " + filePath;
-
-
-                        try {
-                            Process process = Runtime.getRuntime().exec(command);
-                            process.waitFor();
-                            XposedBridge.log("削除されたメッセージ: " + logEntry);
-
-                        } catch (IOException | InterruptedException e) {
-                            e.printStackTrace();
+                                try {
+                                    Process process = Runtime.getRuntime().exec(command);
+                                    process.waitFor();
+                                    XposedBridge.log("削除されたメッセージ: " + logEntry);
+                                } catch (IOException | InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
                         }
+
                     }
                 }
             }
+
+
         });
     }
 
     private void createFileIfNotExists(String filePath) {
-  
+
         String command = "su -c touch " + filePath;
 
         try {
@@ -200,7 +201,7 @@ public class Main implements IXposedHookLoadPackage {
 
 
     private void createDirectoryIfNotExists(String directoryPath) {
-   
+
         String command = "su -c mkdir -p " + directoryPath;
 
         try {
@@ -242,7 +243,7 @@ public class Main implements IXposedHookLoadPackage {
             return dateFormat.format(deliveredDate);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            return "Invalid Time"; 
+            return "Invalid Time";
         }
     }
 
@@ -259,7 +260,37 @@ public class Main implements IXposedHookLoadPackage {
     }
 
     private String imageCheck(String serverId) {
-        return executeSQLite3Command("SELECT url FROM chat_history WHERE server_id='" + serverId + "';");
+        String result = executeSQLite3Command("SELECT attachement_image FROM chat_history WHERE server_id='" + serverId + "';");
+
+        try {
+            int value = Integer.parseInt(result.trim());
+            if (value >= 1) {
+                return "画像";
+            } else {
+                return "";  // 条件を満たさない場合は空文字を返す
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return "";  // パースエラーの場合も空文字を返す
+        }
+    }
+
+    private String stktxt(String serverId) {
+        String result = executeSQLite3Command("SELECT attachement_type FROM chat_history WHERE server_id='" + serverId + "';");
+
+        try {
+            int value = Integer.parseInt(result.trim());
+            if (value == 7) {
+                return "スタンプ";
+            } else if (value == 2) {
+                return "動画";
+            } else {
+                return "";
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
 
@@ -288,7 +319,7 @@ public class Main implements IXposedHookLoadPackage {
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
-                output.append(line).append("\n");
+                output.append(line).append("");
             }
             reader.close();
             process.waitFor();
