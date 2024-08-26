@@ -1,13 +1,17 @@
+package io.test.hiro.lime;
 
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -50,6 +54,14 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class Main implements IXposedHookLoadPackage {
     private SQLiteDatabase db;
@@ -58,6 +70,68 @@ public class Main implements IXposedHookLoadPackage {
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lparam) throws Throwable {
         if (!lparam.packageName.equals("jp.naver.line.android"))
             return;
+
+        XposedBridge.hookAllConstructors(
+                lparam.classLoader.loadClass("jp.naver.line.android.common.view.listview.PopupListView"),
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        ViewGroup viewGroup = (ViewGroup) param.thisObject;
+                        Context context = viewGroup.getContext();
+
+                        // Create container for the new button
+                        RelativeLayout container = new RelativeLayout(context);
+                        RelativeLayout.LayoutParams containerParams = new RelativeLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        container.setLayoutParams(containerParams);
+
+
+                        // Create and add a button to open BackUpFile.txt
+                        Button openFileButton = new Button(context);
+                        openFileButton.setText("確認済みのメッセージ");
+                        openFileButton.setTextSize(12);
+                        openFileButton.setTextColor(Color.WHITE);
+                        openFileButton.setId(View.generateViewId());
+                        RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        buttonParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+                        container.addView(openFileButton, buttonParams);
+
+                        // Set up the button click listener to open the file
+                        openFileButton.setOnClickListener(v -> {
+                            File backupFile = new File(context.getFilesDir(), "BackUpFile.txt");
+                            if (backupFile.exists() && backupFile.length() > 0) {
+                                try {
+                                    StringBuilder output = new StringBuilder();
+                                    BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(backupFile)));
+                                    String line;
+                                    while ((line = reader.readLine()) != null) {
+                                        output.append(line).append("\n");
+                                    }
+                                    reader.close();
+
+                                    // Display file content in a dialog
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                    builder.setTitle("ファイルの内容")
+                                            .setMessage(output.toString())
+                                            .setPositiveButton("OK", null)
+                                            .create()
+                                            .show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(context, "ファイルが見つかりませんでした", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Toast.makeText(context, "何もバックアップされていません", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                        // Add the container with the button to the ListView's footer
+                        ((ListView) viewGroup.getChildAt(0)).addFooterView(container);
+                    }
+                }
+        );
+
 
         XposedHelpers.findAndHookMethod("com.linecorp.line.chatlist.view.fragment.ChatListPageFragment",
                 lparam.classLoader, "onCreateView",
@@ -164,7 +238,10 @@ public class Main implements IXposedHookLoadPackage {
                 }
             }
         });
+
     }
+
+
 
     private int countLinesInFile(File file) throws IOException {
         int lineCount = 0;
