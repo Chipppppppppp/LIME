@@ -87,7 +87,7 @@ public class Main implements IXposedHookLoadPackage {
 
                             // ボタンの作成と設定
                             Button button = new Button(context);
-                            button.setText( lineCount); // ボタンの名前に改行数を設定
+                            button.setText(Integer.toString(lineCount)); 
 
                             RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
                                     RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
