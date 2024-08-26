@@ -1,5 +1,31 @@
+package io.test.hiro.lime;
 
+import android.app.AlertDialog;
+import android.app.Application;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import de.robv.android.xposed.IXposedHookLoadPackage;
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -23,19 +49,17 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
+
+
 public class Main implements IXposedHookLoadPackage {
-    private static final String PREFS_NAME = "MyPrefs";
-    private static final String PREF_LAST_LINE_COUNT = "lastLineCount";
-
-
-    String directoryPath = "/storage/emulated/0/Download/unsent/";
-    String filePath = "/storage/emulated/0/Download/unsent/Test.txt";
-    String backupFilePath = "/storage/emulated/0/Download/unsent/Test2.txt";
+    private static final String filePath = "/storage/emulated/0/Download/unsent/Test.txt";
+    private SQLiteDatabase db;
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lparam) throws Throwable {
         if (!lparam.packageName.equals("jp.naver.line.android"))
             return;
+
 
 
         XposedHelpers.findAndHookMethod("com.linecorp.line.chatlist.view.fragment.ChatListPageFragment",
@@ -47,27 +71,8 @@ public class Main implements IXposedHookLoadPackage {
 
                         View rootView = (View) param.getResult();
                         Context context = rootView.getContext();
-
-
-
-
-                        int currentLineCount = getLineCount(filePath);
-
-
-
-
-                        int newLines = currentLineCount ;
-                        // newLines が 0 であればボタンを表示しない
-                        // newLines が 0 またはマイナスの場合はボタンを削除して終了
-                        if (newLines <= 0) {
-
-                            return; // ボタンの生成をスキップ
-                        }
-
-
-
                         Button button = new Button(context);
-                        button.setText(String.valueOf(newLines));
+                        button.setText(String.valueOf("newLines"));
 
                         RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -100,7 +105,7 @@ public class Main implements IXposedHookLoadPackage {
                                                     ViewGroup parent = (ViewGroup) button.getParent();
                                                     parent.removeView(button);
                                                 }
-                                                moveFileContentsAndDelete(filePath, "/storage/emulated/0/Download/unsent/Test2.txt");
+
 
                                             })
                                             .create()
@@ -125,152 +130,108 @@ public class Main implements IXposedHookLoadPackage {
                 });
 
 
-        Class<?> hookTarget = lparam.classLoader.loadClass("org.apache.thrift.l");
-        XposedBridge.hookAllMethods(hookTarget, "a", new XC_MethodHook() {
+        // フック処理の設定
+        XposedBridge.hookAllMethods(Application.class, "onCreate", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                String paramValue = param.args[1].toString();
-                XposedBridge.log("UNSENT: " + paramValue);
+                XposedBridge.log("called " + param.method.getName());
 
-                if (paramValue.contains("type:NOTIFIED_DESTROY_MESSAGE,")) {
-                    // 分割された操作を処理する
-                    String[] operations = paramValue.split("Operation\\(");
+                Application appContext = (Application) param.thisObject;
+                File dbFile = appContext.getDatabasePath("naver_line");
 
-                    for (String operation : operations) {
-                        // param1 と param2 の値を取得
-                        String[] parts = operation.split(",");
-                        String serverId = null;
-                        String talkId = null;
+                if (dbFile.exists()) {
+                    SQLiteDatabase.OpenParams.Builder builder = new SQLiteDatabase.OpenParams.Builder();
+                    builder.addOpenFlags(SQLiteDatabase.OPEN_READWRITE);
+                    SQLiteDatabase.OpenParams params = builder.build();
 
-                        for (String part : parts) {
-                            if (part.trim().startsWith("param1:")) {
-                                talkId = part.trim().substring("param1:".length());
-                            } else if (part.trim().startsWith("param2:")) {
-                                serverId = part.trim().substring("param2:".length());
+                    db = SQLiteDatabase.openDatabase(dbFile, params);
+
+                    hookMessageDeletion(lparam);
+                }
+            }
+        });
+    }
+
+    private void hookMessageDeletion(XC_LoadPackage.LoadPackageParam lparam) {
+        try {
+            Class<?> hookTarget = lparam.classLoader.loadClass("org.apache.thrift.l");
+            XposedBridge.hookAllMethods(hookTarget, "a", new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    String paramValue = param.args[1].toString();
+                    XposedBridge.log("UNSENT: " + paramValue);
+
+                    if (paramValue.contains("type:NOTIFIED_DESTROY_MESSAGE,")) {
+                        // 分割された操作を処理する
+                        String[] operations = paramValue.split("Operation\\(");
+
+                        for (String operation : operations) {
+                            // param1 と param2 の値を取得
+                            String[] parts = operation.split(",");
+                            String serverId = null;
+                            String talkId = null;
+
+                            for (String part : parts) {
+                                if (part.trim().startsWith("param1:")) {
+                                    talkId = part.trim().substring("param1:".length());
+                                } else if (part.trim().startsWith("param2:")) {
+                                    serverId = part.trim().substring("param2:".length());
+                                }
                             }
-                        }
 
-                        // serverId と talkId が見つかった場合に処理を続行
-                        if (serverId != null && talkId != null) {
-                            String content = getContentFromServerId(serverId);
-                            String imageCheck = imageCheck(serverId);
-                            String timeEpochStr = message_time(serverId); // エポック時間を取得
-                            String timeFormatted = formatMessageTime(timeEpochStr); // エポック時間をフォーマット
-                            String groupName = getGroupName(talkId);
-                            String talkName = getTalkName(talkId);
+                            // serverId と talkId が見つかった場合に処理を続行
+                            if (serverId != null && talkId != null) {
+                                String content = queryDatabase("SELECT content FROM chat_history WHERE server_id=?", serverId);
+                                String imageCheck = queryDatabase("SELECT attachement_image FROM chat_history WHERE server_id=?", serverId);
+                                String timeEpochStr = queryDatabase("SELECT created_time FROM chat_history WHERE server_id=?", serverId);
+                                String timeFormatted = formatMessageTime(timeEpochStr); // エポック時間をフォーマット
+                                String groupName = queryDatabase("SELECT name FROM groups WHERE id=?", talkId);
+                                String talkName = queryDatabase("SELECT chat_name FROM chat WHERE chat_id=?", talkId);
+                                String media = queryDatabase("SELECT attachement_type FROM chat_history WHERE server_id=?", serverId);
 
-                            if (content != null && (groupName != null || talkName != null) && timeFormatted != null) {
-                                String logEntry = timeFormatted + (groupName != null ? groupName : "") + (talkName != null ? talkName : "") + ":" + content + imageCheck;
+                                if (content != null && (groupName != null || talkName != null) && timeFormatted != null) {
+                                    String logEntry = timeFormatted + (groupName != null ? groupName : "") + (talkName != null ? talkName : "") + ":" + content
+                                            + (imageCheck != null && imageCheck.equals("1") ? "画像" : "")
+                                            + (media != null && media.equals("7") ? "スタンプ" : (media != null && media.equals("2") ? "動画" : ""));
+                                    
+                                    // ファイルに書き込む処理
+                                    String command = "su -c echo \"" + String.join("\n", logEntry) + "\" >> " + filePath;
 
-                                // ディレクトリを作成
-                                createDirectoryIfNotExists(directoryPath);
-                                // ファイルを作成
-                                createFileIfNotExists(filePath);
-                                createFileIfNotExists(backupFilePath);
-
-
-                                String command = "su -c echo \"" + String.join("\n", logEntry) + "\" >> " + filePath;
-
-                                try {
                                     Process process = Runtime.getRuntime().exec(command);
                                     process.waitFor();
+
                                     XposedBridge.log("削除されたメッセージ: " + logEntry);
 
-                                } catch (IOException | InterruptedException e) {
-                                    e.printStackTrace();
                                 }
                             }
                         }
-
                     }
                 }
-            }
-
-
-        });
-    }
-    private void createDirectoryIfNotExists(String directoryPath) {
-        String command = "su -c 'if [ ! -d \"" + directoryPath + "\" ]; then mkdir -p \"" + directoryPath + "\"; fi'";
-
-        try {
-            Process process = Runtime.getRuntime().exec(command);
-
-            // エラー出力を読み取る
-            BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-            StringBuilder errorOutput = new StringBuilder();
-            String errorLine;
-            while ((errorLine = errorReader.readLine()) != null) {
-                errorOutput.append(errorLine).append("\n");
-            }
-            errorReader.close();
-
-            // コマンドが終了するまで待つ
-            process.waitFor();
-
-            // エラーログを出力する
-            if (errorOutput.length() > 0) {
-                XposedBridge.log("Error: " + errorOutput.toString());
-            }
-
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            });
+        } catch (ClassNotFoundException e) {
+            XposedBridge.log("Class not found: " + e.getMessage());
         }
     }
 
-    private void createFileIfNotExists(String filePath) {
-        String command = "su -c 'if [ ! -f \"" + filePath + "\" ]; then touch \"" + filePath + "\"; fi'";
-
-        try {
-            Process process = Runtime.getRuntime().exec(command);
-
-            // エラー出力を読み取る
-            BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-            StringBuilder errorOutput = new StringBuilder();
-            String errorLine;
-            while ((errorLine = errorReader.readLine()) != null) {
-                errorOutput.append(errorLine).append("\n");
+    private String queryDatabase(String query, String... selectionArgs) {
+        String result = null;
+        if (db != null && db.isOpen()) {
+            Cursor cursor = db.rawQuery(query, selectionArgs);
+            if (cursor.moveToFirst()) {
+                result = cursor.getString(0);
             }
-            errorReader.close();
+            cursor.close();
+        }
+        return result;
+    }
 
-            // コマンドが終了するまで待つ
-            process.waitFor();
 
-            // エラーログを出力する
-            if (errorOutput.length() > 0) {
-                XposedBridge.log("Error: " + errorOutput.toString());
-            }
 
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+    public void closeDatabase() {
+        if (db != null && db.isOpen()) {
+            db.close();
         }
     }
-    private void moveFileContentsAndDelete(String sourceFilePath, String destinationFilePath) {
-        // ファイルの内容を移動するコマンド
-        String moveCommand = "su -c 'cat " + sourceFilePath + " >> " + destinationFilePath + " && echo '' > " + sourceFilePath + "'";
-
-        // ファイルを完全に削除するコマンド
-        String deleteCommand = "su -c rm " + sourceFilePath;
-
-        try {
-            // 内容の移動と空にする処理を実行
-            Process moveProcess = Runtime.getRuntime().exec(moveCommand);
-            moveProcess.waitFor();
-
-            // ファイルの削除処理を実行
-            Process deleteProcess = Runtime.getRuntime().exec(deleteCommand);
-            deleteProcess.waitFor();
-
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-    private String message_time(String serverId) {
-        return executeSQLite3Command("SELECT created_time FROM chat_history WHERE server_id='" + serverId + "';");
-    }
-
 
     private String formatMessageTime(String deliveredTimeStr) {
         try {
@@ -287,87 +248,5 @@ public class Main implements IXposedHookLoadPackage {
             e.printStackTrace();
             return "Invalid Time";
         }
-    }
-
-    private String getContentFromServerId(String serverId) {
-        return executeSQLite3Command("SELECT content FROM chat_history WHERE server_id='" + serverId + "';");
-    }
-
-    private String getGroupName(String talkId) {
-        return executeSQLite3Command("SELECT name FROM groups WHERE id='" + talkId + "';");
-    }
-
-    private String getTalkName(String talkId) {
-        return executeSQLite3Command("SELECT chat_name FROM chat WHERE chat_id='" + talkId + "';");
-    }
-
-    private String imageCheck(String serverId) {
-        String result = executeSQLite3Command("SELECT attachement_image FROM chat_history WHERE server_id='" + serverId + "';");
-
-        try {
-            int value = Integer.parseInt(result.trim());
-            if (value >= 1) {
-                return "画像";
-            } else {
-                return "";  // 条件を満たさない場合は空文字を返す
-            }
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            return "";  // パースエラーの場合も空文字を返す
-        }
-    }
-
-    private String stktxt(String serverId) {
-        String result = executeSQLite3Command("SELECT attachement_type FROM chat_history WHERE server_id='" + serverId + "';");
-
-        try {
-            int value = Integer.parseInt(result.trim());
-            if (value == 7) {
-                return "スタンプ";
-            } else if (value == 2) {
-                return "動画";
-            } else {
-                return "";
-            }
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
-
-
-    private int getLineCount(String filePath) {
-        int lineCount = 0;
-        try {
-            Process process = Runtime.getRuntime().exec("su -c wc -l " + filePath);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line = reader.readLine();
-            process.waitFor();
-            if (line != null) {
-                lineCount = Integer.parseInt(line.split(" ")[0]);
-            }
-            reader.close();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return lineCount;
-    }
-
-    private String executeSQLite3Command(String query) {
-        String command = "su -c sqlite3 /data_mirror/data_ce/null/0/jp.naver.line.android/databases/naver_line \"" + query + "\"";
-        StringBuilder output = new StringBuilder();
-        try {
-            Process process = Runtime.getRuntime().exec(command);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                output.append(line).append("");
-            }
-            reader.close();
-            process.waitFor();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return output.toString().trim();
     }
 }
