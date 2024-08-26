@@ -1,4 +1,4 @@
-package io.test.hiro.lime;
+
 
 import android.app.AlertDialog;
 import android.app.Application;
@@ -15,35 +15,9 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import de.robv.android.xposed.IXposedHookLoadPackage;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
-
-
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-import de.robv.android.xposed.IXposedHookLoadPackage;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -51,13 +25,8 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
+
+import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
@@ -84,7 +53,6 @@ public class Main implements IXposedHookLoadPackage {
                         RelativeLayout.LayoutParams containerParams = new RelativeLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         container.setLayoutParams(containerParams);
-
 
                         // Create and add a button to open BackUpFile.txt
                         Button openFileButton = new Button(context);
@@ -132,81 +100,76 @@ public class Main implements IXposedHookLoadPackage {
                 }
         );
 
-
-        XposedHelpers.findAndHookMethod("com.linecorp.line.chatlist.view.fragment.ChatListPageFragment",
+        XposedHelpers.findAndHookMethod(
+                "com.linecorp.line.chatlist.view.fragment.ChatListPageFragment",
                 lparam.classLoader, "onCreateView",
                 LayoutInflater.class, ViewGroup.class, android.os.Bundle.class,
                 new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-
                         View rootView = (View) param.getResult();
                         Context context = rootView.getContext();
 
-                        // ファイルの存在と内容の確認
+                        // Check the existence and content of the file
                         File originalFile = new File(context.getFilesDir(), "Test.txt");
                         if (originalFile.exists() && originalFile.length() > 0) {
                             int lineCount = countLinesInFile(originalFile);
 
                             if (lineCount > 0) {
                                 Button button = new Button(context);
-                                button.setText(Integer.toString(lineCount)); // ボタンの名前に改行数を設定
-
+                                button.setText(Integer.toString(lineCount)); // Set the number of lines on the button
 
                                 RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
                                         RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                                 buttonParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                                 button.setLayoutParams(buttonParams);
 
-                                button.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        try {
-                                            StringBuilder output = new StringBuilder();
-                                            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(originalFile)));
-                                            String line;
-                                            while ((line = reader.readLine()) != null) {
-                                                output.append(line).append("\n");
-                                            }
-                                            reader.close();
-
-                                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                            builder.setTitle("ファイルの内容")
-                                                    .setMessage(output.toString())
-                                                    .setPositiveButton("OK", (dialog, which) -> {
-                                                        try {
-                                                            // Backup file
-                                                            File backupFile = new File(context.getFilesDir(), "BackUpFile.txt");
-
-                                                            // Write content to backup file
-                                                            BufferedWriter writer = new BufferedWriter(new FileWriter(backupFile, true));
-                                                            writer.write(output.toString());
-                                                            writer.close();
-
-                                                            // Clear original file content
-                                                            BufferedWriter clearWriter = new BufferedWriter(new FileWriter(originalFile));
-                                                            clearWriter.write("");
-                                                            clearWriter.close();
-
-                                                            Toast.makeText(context, "内容がバックアップファイルに移動されました", Toast.LENGTH_SHORT).show();
-                                                        } catch (IOException e) {
-                                                            e.printStackTrace();
-                                                            Toast.makeText(context, "ファイルの移動に失敗しました", Toast.LENGTH_SHORT).show();
-                                                        }
-
-                                                        // ボタンを削除する
-                                                        if (button.getParent() instanceof ViewGroup) {
-                                                            ViewGroup parent = (ViewGroup) button.getParent();
-                                                            parent.removeView(button);
-                                                        }
-                                                    })
-                                                    .create()
-                                                    .show();
-
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                            Toast.makeText(context, "ファイルの読み取りに失敗しました", Toast.LENGTH_SHORT).show();
+                                button.setOnClickListener(v -> {
+                                    try {
+                                        StringBuilder output = new StringBuilder();
+                                        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(originalFile)));
+                                        String line;
+                                        while ((line = reader.readLine()) != null) {
+                                            output.append(line).append("\n");
                                         }
+                                        reader.close();
+
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                        builder.setTitle("ファイルの内容")
+                                                .setMessage(output.toString())
+                                                .setPositiveButton("OK", (dialog, which) -> {
+                                                    try {
+                                                        // Backup file
+                                                        File backupFile = new File(context.getFilesDir(), "BackUpFile.txt");
+
+                                                        // Write content to backup file
+                                                        BufferedWriter writer = new BufferedWriter(new FileWriter(backupFile, true));
+                                                        writer.write(output.toString());
+                                                        writer.close();
+
+                                                        // Clear original file content
+                                                        BufferedWriter clearWriter = new BufferedWriter(new FileWriter(originalFile));
+                                                        clearWriter.write("");
+                                                        clearWriter.close();
+
+                                                        Toast.makeText(context, "内容がバックアップファイルに移動されました", Toast.LENGTH_SHORT).show();
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                        Toast.makeText(context, "ファイルの移動に失敗しました", Toast.LENGTH_SHORT).show();
+                                                    }
+
+                                                    // Remove the button
+                                                    if (button.getParent() instanceof ViewGroup) {
+                                                        ViewGroup parent = (ViewGroup) button.getParent();
+                                                        parent.removeView(button);
+                                                    }
+                                                })
+                                                .create()
+                                                .show();
+
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(context, "ファイルの読み取りに失敗しました", Toast.LENGTH_SHORT).show();
                                     }
                                 });
 
@@ -217,7 +180,8 @@ public class Main implements IXposedHookLoadPackage {
                             }
                         }
                     }
-                });
+                }
+        );
 
         XposedBridge.hookAllMethods(Application.class, "onCreate", new XC_MethodHook() {
             @Override
@@ -238,10 +202,7 @@ public class Main implements IXposedHookLoadPackage {
                 }
             }
         });
-
     }
-
-
 
     private int countLinesInFile(File file) throws IOException {
         int lineCount = 0;
@@ -263,45 +224,7 @@ public class Main implements IXposedHookLoadPackage {
                     XposedBridge.log("UNSENT: " + paramValue);
 
                     if (paramValue.contains("type:NOTIFIED_DESTROY_MESSAGE,")) {
-                        String[] operations = paramValue.split("Operation\\(");
-
-                        for (String operation : operations) {
-                            String[] parts = operation.split(",");
-                            String serverId = null;
-                            String talkId = null;
-
-                            for (String part : parts) {
-                                if (part.trim().startsWith("param1:")) {
-                                    talkId = part.trim().substring("param1:".length());
-                                } else if (part.trim().startsWith("param2:")) {
-                                    serverId = part.trim().substring("param2:".length());
-                                }
-                            }
-
-                            if (serverId != null && talkId != null) {
-                                String content = queryDatabase("SELECT content FROM chat_history WHERE server_id=?", serverId);
-                                String imageCheck = queryDatabase("SELECT attachement_image FROM chat_history WHERE server_id=?", serverId);
-                                String timeEpochStr = queryDatabase("SELECT created_time FROM chat_history WHERE server_id=?", serverId);
-                                String timeFormatted = formatMessageTime(timeEpochStr);
-                                String groupName = queryDatabase("SELECT name FROM groups WHERE id=?", talkId);
-                                String talkName = queryDatabase("SELECT chat_name FROM chat WHERE chat_id=?", talkId);
-                                String media = queryDatabase("SELECT attachement_type FROM chat_history WHERE server_id=?", serverId);
-
-                                if (content != null && (groupName != null || talkName != null) && timeFormatted != null) {
-                                    String logEntry = timeFormatted + (groupName != null ? groupName : "") + (talkName != null ? talkName : "") + ":" + content
-                                            + (imageCheck != null && imageCheck.equals("1") ? "画像" : "")
-                                            + (media != null && media.equals("7") ? "スタンプ" : (media != null && media.equals("2") ? "動画" : ""));
-
-                                    File originalFile = new File(context.getFilesDir(), "Test.txt");
-                                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(originalFile, true))) {
-                                        writer.write(logEntry);
-                                        writer.newLine();
-                                    }
-
-                                    XposedBridge.log("削除されたメッセージ: " + logEntry);
-                                }
-                            }
-                        }
+                        processMessage(paramValue, context);
                     }
                 }
             });
@@ -310,33 +233,108 @@ public class Main implements IXposedHookLoadPackage {
         }
     }
 
-    private String queryDatabase(String query, String... selectionArgs) {
-        String result = null;
-        if (db != null && db.isOpen()) {
-            Cursor cursor = db.rawQuery(query, selectionArgs);
-            if (cursor.moveToFirst()) {
-                result = cursor.getString(0);
+    private void processMessage(String paramValue, Context context) {
+        // Split operations
+        String[] operations = paramValue.split("Operation\\(");
+
+        for (String operation : operations) {
+            if (operation.trim().isEmpty()) continue; // Skip empty operations
+
+            String revision = null;
+            String createdTime = null;
+            String type = null;
+            String from = null;
+            String to = null;
+            String param12 = null;
+            String param22 = null;
+            String operationContent = null;
+            String serverId = null;
+            String talkId = null;
+
+            // Parse parts
+            String[] parts = operation.split(",");
+            for (String part : parts) {
+                part = part.trim(); // Trim extra spaces
+                if (part.startsWith("param1:")) {
+                    talkId = part.substring("param1:".length()).trim();
+                } else if (part.startsWith("param2:")) {
+                    serverId = part.substring("param2:".length()).trim();
+                } else if (part.startsWith("revision:")) {
+                    revision = part.substring("revision:".length()).trim();
+                } else if (part.startsWith("createdTime:")) {
+                    createdTime = part.substring("createdTime:".length()).trim();
+                } else if (part.startsWith("type:")) {
+                    type = part.substring("type:".length()).trim();
+                } else if (part.startsWith("from:")) {
+                    from = part.substring("from:".length()).trim();
+                } else if (part.startsWith("to:")) {
+                    to = part.substring("to:".length()).trim();
+                } else if (part.startsWith("contentMetadata:")) {
+                    param12 = part.substring("contentMetadata:".length()).trim();
+                } else if (part.startsWith("operationContent:")) {
+                    operationContent = part.substring("operationContent:".length()).trim();
+                }
             }
-            cursor.close();
+
+            // Check if type is NOTIFIED_DESTROY_MESSAGE
+            if ("NOTIFIED_DESTROY_MESSAGE".equals(type)) {
+                // Log
+                XposedBridge.log("Operation Revision: " + revision);
+                XposedBridge.log("Created Time: " + createdTime);
+                XposedBridge.log("Type: " + type);
+                XposedBridge.log("From: " + from);
+                XposedBridge.log("To: " + to);
+                XposedBridge.log("param12: " + param12);
+                XposedBridge.log("param22: " + param22);
+                XposedBridge.log("Content Metadata: " + operationContent);
+                XposedBridge.log("------------------------");
+
+                if (serverId != null && talkId != null) {
+                    String content = queryDatabase("SELECT content FROM chat_history WHERE server_id=?", serverId);
+                    String imageCheck = queryDatabase("SELECT attachement_image FROM chat_history WHERE server_id=?", serverId);
+                    String timeEpochStr = queryDatabase("SELECT created_time FROM chat_history WHERE server_id=?", serverId);
+                    String timeFormatted = formatMessageTime(timeEpochStr);
+                    String groupName = queryDatabase("SELECT name FROM groups WHERE id=?", talkId);
+                    String talkName = queryDatabase("SELECT chat_name FROM chat WHERE chat_id=?", talkId);
+                    String media = queryDatabase("SELECT attachement_type FROM chat_history WHERE server_id=?", serverId);
+
+                    if (content != null && (groupName != null || talkName != null) && timeFormatted != null) {
+                        String logEntry = timeFormatted
+                                + (groupName != null ? groupName : "")
+                                + (talkName != null ? talkName : "")
+                                + ":" + content
+                                + (imageCheck != null && imageCheck.equals("1") ? "画像" : "")
+                                + (media != null && media.equals("7") ? "スタンプ" : (media != null && media.equals("2") ? "動画" : ""));
+
+                        File originalFile = new File(context.getFilesDir(), "Test.txt");
+                        try (BufferedWriter writer = new BufferedWriter(new FileWriter(originalFile, true))) {
+                            writer.write(logEntry);
+                            writer.newLine();
+                        } catch (IOException e) {
+                            XposedBridge.log("IOException occurred while writing to file: " + e.getMessage());
+                        }
+
+                        XposedBridge.log("削除されたメッセージ: " + logEntry);
+                    }
+                }
+            }
         }
+    }
+
+    private String queryDatabase(String query, String... selectionArgs) {
+        Cursor cursor = db.rawQuery(query, selectionArgs);
+        String result = null;
+        if (cursor.moveToFirst()) {
+            result = cursor.getString(0);
+        }
+        cursor.close();
         return result;
     }
 
-    public void closeDatabase() {
-        if (db != null && db.isOpen()) {
-            db.close();
-        }
-    }
-
-    private String formatMessageTime(String deliveredTimeStr) {
-        try {
-            long deliveredTimeMillis = Long.parseLong(deliveredTimeStr.trim());
-            Date deliveredDate = new Date(deliveredTimeMillis);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-            return dateFormat.format(deliveredDate);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            return "Invalid Time";
-        }
+    private String formatMessageTime(String timeEpochStr) {
+        if (timeEpochStr == null) return null;
+        long timeEpoch = Long.parseLong(timeEpochStr);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        return sdf.format(new Date(timeEpoch));
     }
 }
