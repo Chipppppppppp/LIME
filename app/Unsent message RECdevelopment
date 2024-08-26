@@ -1,4 +1,4 @@
-
+package io.test.hiro.lime;
 
 import android.app.AlertDialog;
 import android.app.Application;
@@ -6,7 +6,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +33,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class Main implements IXposedHookLoadPackage {
     private SQLiteDatabase db;
-
+    private static final int MAX_RETRIES = 3;
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lparam) throws Throwable {
         if (!lparam.packageName.equals("jp.naver.line.android"))
@@ -47,28 +46,43 @@ public class Main implements IXposedHookLoadPackage {
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         ViewGroup viewGroup = (ViewGroup) param.thisObject;
                         Context context = viewGroup.getContext();
-
-                        // Create container for the new button
                         RelativeLayout container = new RelativeLayout(context);
                         RelativeLayout.LayoutParams containerParams = new RelativeLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         container.setLayoutParams(containerParams);
-
-                        // Create and add a button to open BackUpFile.txt
                         Button openFileButton = new Button(context);
                         openFileButton.setText("確認済みのメッセージ");
                         openFileButton.setTextSize(12);
-                        openFileButton.setTextColor(Color.WHITE);
+                        openFileButton.setTextColor(Color.BLACK);
                         openFileButton.setId(View.generateViewId());
                         RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                        buttonParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+                        buttonParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
                         container.addView(openFileButton, buttonParams);
 
-                        // Set up the button click listener to open the file
+                        // Create and add a button to clear BackUpFile.txt
+                        Button clearFileButton = new Button(context);
+                        clearFileButton.setText("メッセージを削除");
+                        clearFileButton.setTextSize(12);
+                        clearFileButton.setTextColor(Color.RED);
+                        clearFileButton.setId(View.generateViewId());
+                        RelativeLayout.LayoutParams clearButtonParams = new RelativeLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        clearButtonParams.addRule(RelativeLayout.BELOW, openFileButton.getId());
+                        clearButtonParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                        container.addView(clearFileButton, clearButtonParams);
                         openFileButton.setOnClickListener(v -> {
                             File backupFile = new File(context.getFilesDir(), "BackUpFile.txt");
-                            if (backupFile.exists() && backupFile.length() > 0) {
+                            if (!backupFile.exists()) {
+                                try {
+                                    backupFile.createNewFile();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(context, "ファイルを作成できませんでした", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            }
+                            if (backupFile.length() > 0) {
                                 try {
                                     StringBuilder output = new StringBuilder();
                                     BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(backupFile)));
@@ -77,28 +91,51 @@ public class Main implements IXposedHookLoadPackage {
                                         output.append(line).append("\n");
                                     }
                                     reader.close();
-
-                                    // Display file content in a dialog
                                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                    builder.setTitle("ファイルの内容")
+                                    builder.setTitle("バックアップ")
                                             .setMessage(output.toString())
                                             .setPositiveButton("OK", null)
                                             .create()
                                             .show();
                                 } catch (IOException e) {
                                     e.printStackTrace();
-                                    Toast.makeText(context, "ファイルが見つかりませんでした", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, "ファイルが読み取れませんでした", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
                                 Toast.makeText(context, "何もバックアップされていません", Toast.LENGTH_SHORT).show();
                             }
                         });
+                        clearFileButton.setOnClickListener(v -> {
+                            new AlertDialog.Builder(context)
+                                    .setTitle("確認")
+                                    .setMessage("本当に削除しますか？")
+                                    .setPositiveButton("はい", (dialog, which) -> {
+                                        File backupFile = new File(context.getFilesDir(), "BackUpFile.txt");
+                                        if (backupFile.exists()) {
+                                            try {
+                                                BufferedWriter writer = new BufferedWriter(new FileWriter(backupFile));
+                                                writer.write("");
+                                                writer.close();
+                                                Toast.makeText(context, "ファイルの内容が削除されました", Toast.LENGTH_SHORT).show();
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                                Toast.makeText(context, "ファイルの削除に失敗しました", Toast.LENGTH_SHORT).show();
+                                            }
+                                        } else {
+                                            Toast.makeText(context, "ファイルが見つかりません", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .setNegativeButton("いいえ", null)
+                                    .create()
+                                    .show();
+                        });
 
-                        // Add the container with the button to the ListView's footer
+                        // Add the container with the buttons to the ListView's footer
                         ((ListView) viewGroup.getChildAt(0)).addFooterView(container);
                     }
                 }
         );
+
 
         XposedHelpers.findAndHookMethod(
                 "com.linecorp.line.chatlist.view.fragment.ChatListPageFragment",
@@ -112,7 +149,17 @@ public class Main implements IXposedHookLoadPackage {
 
                         // Check the existence and content of the file
                         File originalFile = new File(context.getFilesDir(), "Test.txt");
-                        if (originalFile.exists() && originalFile.length() > 0) {
+                        if (!originalFile.exists()) {
+                            try {
+                                originalFile.createNewFile();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Toast.makeText(context, "ファイルを作成できませんでした", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+
+                        if (originalFile.length() > 0) {
                             int lineCount = countLinesInFile(originalFile);
 
                             if (lineCount > 0) {
@@ -135,7 +182,7 @@ public class Main implements IXposedHookLoadPackage {
                                         reader.close();
 
                                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                        builder.setTitle("ファイルの内容")
+                                        builder.setTitle("削除されたメッセージ")
                                                 .setMessage(output.toString())
                                                 .setPositiveButton("OK", (dialog, which) -> {
                                                     try {
@@ -186,7 +233,7 @@ public class Main implements IXposedHookLoadPackage {
         XposedBridge.hookAllMethods(Application.class, "onCreate", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                XposedBridge.log("called " + param.method.getName());
+
 
                 Application appContext = (Application) param.thisObject;
                 File dbFile = appContext.getDatabasePath("naver_line");
@@ -221,7 +268,6 @@ public class Main implements IXposedHookLoadPackage {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     String paramValue = param.args[1].toString();
-                    XposedBridge.log("UNSENT: " + paramValue);
 
                     if (paramValue.contains("type:NOTIFIED_DESTROY_MESSAGE,")) {
                         processMessage(paramValue, context);
@@ -276,49 +322,58 @@ public class Main implements IXposedHookLoadPackage {
                 }
             }
 
-            // Check if type is NOTIFIED_DESTROY_MESSAGE
-            if ("NOTIFIED_DESTROY_MESSAGE".equals(type)) {
-                // Log
-                XposedBridge.log("Operation Revision: " + revision);
-                XposedBridge.log("Created Time: " + createdTime);
-                XposedBridge.log("Type: " + type);
-                XposedBridge.log("From: " + from);
-                XposedBridge.log("To: " + to);
-                XposedBridge.log("param12: " + param12);
-                XposedBridge.log("param22: " + param22);
-                XposedBridge.log("Content Metadata: " + operationContent);
-                XposedBridge.log("------------------------");
+            if (serverId != null && talkId != null) {
 
-                if (serverId != null && talkId != null) {
-                    String content = queryDatabase("SELECT content FROM chat_history WHERE server_id=?", serverId);
-                    String imageCheck = queryDatabase("SELECT attachement_image FROM chat_history WHERE server_id=?", serverId);
-                    String timeEpochStr = queryDatabase("SELECT created_time FROM chat_history WHERE server_id=?", serverId);
-                    String timeFormatted = formatMessageTime(timeEpochStr);
-                    String groupName = queryDatabase("SELECT name FROM groups WHERE id=?", talkId);
-                    String talkName = queryDatabase("SELECT chat_name FROM chat WHERE chat_id=?", talkId);
-                    String media = queryDatabase("SELECT attachement_type FROM chat_history WHERE server_id=?", serverId);
+                String content = queryDatabase("SELECT content FROM chat_history WHERE server_id=?", serverId);
+                String imageCheck = queryDatabase("SELECT attachement_image FROM chat_history WHERE server_id=?", serverId);
+                String timeEpochStr = queryDatabase("SELECT created_time FROM chat_history WHERE server_id=?", serverId);
+                String timeFormatted = formatMessageTime(timeEpochStr);
+                String groupName = queryDatabase("SELECT name FROM groups WHERE id=?", talkId);
+                String talkName = queryDatabase("SELECT chat_name FROM chat WHERE chat_id=?", talkId);
 
-                    if (content != null && (groupName != null || talkName != null) && timeFormatted != null) {
-                        String logEntry = timeFormatted
-                                + (groupName != null ? groupName : "")
-                                + (talkName != null ? talkName : "")
-                                + ":" + content
-                                + (imageCheck != null && imageCheck.equals("1") ? "画像" : "")
-                                + (media != null && media.equals("7") ? "スタンプ" : (media != null && media.equals("2") ? "動画" : ""));
+                String name = (groupName != null ? groupName : (talkName != null ? talkName : "No Name"));
 
-                        File originalFile = new File(context.getFilesDir(), "Test.txt");
-                        try (BufferedWriter writer = new BufferedWriter(new FileWriter(originalFile, true))) {
-                            writer.write(logEntry);
-                            writer.newLine();
-                        } catch (IOException e) {
-                            XposedBridge.log("IOException occurred while writing to file: " + e.getMessage());
-                        }
+                String media = queryDatabase("SELECT attachement_type FROM chat_history WHERE server_id=?", serverId);
+                String logEntry = (timeFormatted != null ? timeFormatted : "No Time")
+                        + name
+                        + ": " + (content != null ? content : "No Content")
+                        + (imageCheck != null && imageCheck.equals("1") ? " 画像" : "")
+                        + (media != null && media.equals("7") ? " スタンプ" : (media != null && media.equals("2") ? " 動画" : ""));
+                File originalFile = new File(context.getFilesDir(), "Test.txt");
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(originalFile, true))) {
+                    writer.write(logEntry);
+                    writer.newLine();
+                } catch (IOException e) {
+                    XposedBridge.log("IOException occurred while writing to file: " + e.getMessage());
+                }
 
-                        XposedBridge.log("削除されたメッセージ: " + logEntry);
-                    }
+            }
+
+
+        }
+
+    }
+
+    private String queryDatabaseWithRetry(String query, int maxRetries, String... selectionArgs) {
+        int attempt = 0;
+        String result = null;
+
+        while (attempt < maxRetries && result == null) {
+            result = queryDatabase(query, selectionArgs);
+            attempt++;
+
+            // Optionally, you can add a short delay between retries
+            if (result == null && attempt < maxRetries) {
+                try {
+                    Thread.sleep(100); // Delay in milliseconds
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt(); // Restore interrupted status
+                    break;
                 }
             }
         }
+
+        return result;
     }
 
     private String queryDatabase(String query, String... selectionArgs) {
