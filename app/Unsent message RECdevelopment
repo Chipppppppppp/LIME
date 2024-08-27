@@ -1,9 +1,278 @@
- private void processMessage(String paramValue, Context context) {
+
+
+import android.app.AlertDialog;
+import android.app.Application;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import java.io.FileReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import de.robv.android.xposed.IXposedHookLoadPackage;
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
+
+public class Main implements IXposedHookLoadPackage {
+    private SQLiteDatabase db;
+    private static final int MAX_RETRIES = 3;
+    @Override
+    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lparam) throws Throwable {
+        if (!lparam.packageName.equals("jp.naver.line.android"))
+            return;
+        XposedBridge.hookAllConstructors(
+                lparam.classLoader.loadClass("jp.naver.line.android.common.view.listview.PopupListView"),
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        ViewGroup viewGroup = (ViewGroup) param.thisObject;
+                        Context context = viewGroup.getContext();
+                        RelativeLayout container = new RelativeLayout(context);
+                        RelativeLayout.LayoutParams containerParams = new RelativeLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        container.setLayoutParams(containerParams);
+                        Button openFileButton = new Button(context);
+                        openFileButton.setText("確認済みのメッセージ");
+                        openFileButton.setTextSize(12);
+                        openFileButton.setTextColor(Color.BLACK);
+                        openFileButton.setId(View.generateViewId());
+                        RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        buttonParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                        container.addView(openFileButton, buttonParams);
+                        Button clearFileButton = new Button(context);
+                        clearFileButton.setText("メッセージを削除");
+                        clearFileButton.setTextSize(12);
+                        clearFileButton.setTextColor(Color.RED);
+                        clearFileButton.setId(View.generateViewId());
+                        RelativeLayout.LayoutParams clearButtonParams = new RelativeLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        clearButtonParams.addRule(RelativeLayout.BELOW, openFileButton.getId());
+                        clearButtonParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                        container.addView(clearFileButton, clearButtonParams);
+                        openFileButton.setOnClickListener(v -> {
+                            File backupFile = new File(context.getFilesDir(), "BackUpFile.txt");
+                            if (!backupFile.exists()) {
+                                try {
+                                    backupFile.createNewFile();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(context, "ファイルを作成できませんでした", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            }
+                            if (backupFile.length() > 0) {
+                                try {
+                                    StringBuilder output = new StringBuilder();
+                                    BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(backupFile)));
+                                    String line;
+                                    while ((line = reader.readLine()) != null) {
+                                        output.append(line).append("\n");
+                                    }
+                                    reader.close();
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                    builder.setTitle("バックアップ")
+                                            .setMessage(output.toString())
+                                            .setPositiveButton("OK", null)
+                                            .create()
+                                            .show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(context, "ファイルが読み取れませんでした", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Toast.makeText(context, "何もバックアップされていません", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        clearFileButton.setOnClickListener(v -> {
+                            new AlertDialog.Builder(context)
+                                    .setTitle("確認")
+                                    .setMessage("本当に削除しますか？")
+                                    .setPositiveButton("はい", (dialog, which) -> {
+                                        File backupFile = new File(context.getFilesDir(), "BackUpFile.txt");
+                                        if (backupFile.exists()) {
+                                            try {
+                                                BufferedWriter writer = new BufferedWriter(new FileWriter(backupFile));
+                                                writer.write("");
+                                                writer.close();
+                                                Toast.makeText(context, "ファイルの内容が削除されました", Toast.LENGTH_SHORT).show();
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                                Toast.makeText(context, "ファイルの削除に失敗しました", Toast.LENGTH_SHORT).show();
+                                            }
+                                        } else {
+                                            Toast.makeText(context, "ファイルが見つかりません", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .setNegativeButton("いいえ", null)
+                                    .create()
+                                    .show();
+                        });
+
+
+                        ((ListView) viewGroup.getChildAt(0)).addFooterView(container);
+                    }
+                }
+        );
+
+
+        XposedHelpers.findAndHookMethod(
+                "com.linecorp.line.chatlist.view.fragment.ChatListPageFragment",
+                lparam.classLoader, "onCreateView",
+                LayoutInflater.class, ViewGroup.class, android.os.Bundle.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        View rootView = (View) param.getResult();
+                        Context context = rootView.getContext();
+
+
+                        File originalFile = new File(context.getFilesDir(), "Test.txt");
+                        if (!originalFile.exists()) {
+                            try {
+                                originalFile.createNewFile();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Toast.makeText(context, "ファイルを作成できませんでした", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+
+                        if (originalFile.length() > 0) {
+                            int lineCount = countLinesInFile(originalFile);
+
+                            if (lineCount > 0) {
+                                Button button = new Button(context);
+                                button.setText(Integer.toString(lineCount));
+                                RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
+                                        RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                buttonParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                                button.setLayoutParams(buttonParams);
+                                button.setOnClickListener(v -> {
+                                    try {
+                                        StringBuilder output = new StringBuilder();
+                                        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(originalFile)));
+                                        String line;
+                                        while ((line = reader.readLine()) != null) {
+
+                                            if (line.contains("No content") || line.contains("No name")) {
+
+                                                Toast.makeText(context, "正しく取得できませんでした。アプリを再起動してください", Toast.LENGTH_SHORT).show();
+                                                continue;
+                                            }
+                                            output.append(line).append("\n");
+                                        }
+                                        reader.close();
+
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                        builder.setTitle("削除されたメッセージ")
+                                                .setMessage(output.toString())
+                                                .setPositiveButton("OK", (dialog, which) -> {
+                                                    try {
+                                                        File backupFile = new File(context.getFilesDir(), "BackUpFile.txt");
+                                                        BufferedWriter writer = new BufferedWriter(new FileWriter(backupFile, true));
+                                                        writer.write(output.toString());
+                                                        writer.close();
+                                                        BufferedWriter clearWriter = new BufferedWriter(new FileWriter(originalFile));
+                                                        clearWriter.write("");
+                                                        clearWriter.close();
+                                                        Toast.makeText(context, "内容がバックアップファイルに移動されました", Toast.LENGTH_SHORT).show();
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                        Toast.makeText(context, "ファイルの移動に失敗しました", Toast.LENGTH_SHORT).show();
+                                                    }
+
+                                                    if (button.getParent() instanceof ViewGroup) {
+                                                        ViewGroup parent = (ViewGroup) button.getParent();
+                                                        parent.removeView(button);
+                                                    }
+                                                })
+                                                .create()
+                                                .show();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(context, "ファイルの読み取りに失敗しました", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                if (rootView instanceof ViewGroup) {
+                                    ViewGroup viewGroup = (ViewGroup) rootView;
+                                    viewGroup.addView(button);
+                                }
+                            }
+                        }
+                    }
+                }
+        );
+
+        XposedBridge.hookAllMethods(Application.class, "onCreate", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+
+
+                Application appContext = (Application) param.thisObject;
+                File dbFile = appContext.getDatabasePath("naver_line");
+                if (dbFile.exists()) {
+                    SQLiteDatabase.OpenParams.Builder builder = new SQLiteDatabase.OpenParams.Builder();
+                    builder.addOpenFlags(SQLiteDatabase.OPEN_READWRITE);
+                    SQLiteDatabase.OpenParams params = builder.build();
+                    db = SQLiteDatabase.openDatabase(dbFile, params);
+                    hookMessageDeletion(lparam, appContext);
+                    resolveUnresolvedIds(appContext);
+                }
+            }
+        });
+    }
+    private int countLinesInFile(File file) throws IOException {
+        int lineCount = 0;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
+            while (reader.readLine() != null) {
+                lineCount++;
+            }
+        }
+        return lineCount;
+    }
+    private void hookMessageDeletion(XC_LoadPackage.LoadPackageParam lparam, Context context) {
+        try {
+            Class<?> hookTarget = lparam.classLoader.loadClass("org.apache.thrift.l");
+            XposedBridge.hookAllMethods(hookTarget, "a", new XC_MethodHook() {
+
+
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    String paramValue = param.args[1].toString();
+                    if (paramValue.contains("type:NOTIFIED_DESTROY_MESSAGE,")) {
+                        processMessage(paramValue, context);
+                    }
+                }
+            });
+        } catch (ClassNotFoundException e) {
+            XposedBridge.log("Class not found: " + e.getMessage());
+        }
+    }
+    private void processMessage(String paramValue, Context context) {
         String unresolvedFilePath = context.getFilesDir() + "/UnresolvedIds.txt";
- 
+
         String[] operations = paramValue.split("Operation\\(");
         for (String operation : operations) {
-            if (operation.trim().isEmpty()) continue; 
+            if (operation.trim().isEmpty()) continue;
             String revision = null;
             String createdTime = null;
             String type = null;
@@ -14,10 +283,10 @@
             String operationContent = null;
             String serverId = null;
             String talkId = null;
-           
+
             String[] parts = operation.split(",");
             for (String part : parts) {
-                part = part.trim(); 
+                part = part.trim();
                 if (part.startsWith("param1:")) {
                     talkId = part.substring("param1:".length()).trim();
                 } else if (part.startsWith("param2:")) {
@@ -49,7 +318,7 @@
 
                 String name = (groupName != null ? groupName : (talkName != null ? talkName : "No Name"));
 
-             
+
                 if (content == null || name.equals("No Name")) {
                     saveUnresolvedIds(serverId, talkId, unresolvedFilePath);
                 }
@@ -72,3 +341,80 @@
             }
         }
     }
+
+
+    private void saveUnresolvedIds(String serverId, String talkId, String filePath) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+            writer.write("serverId:" + serverId + ",talkId:" + talkId);
+            writer.newLine();
+        } catch (IOException e) {
+            XposedBridge.log("IOException occurred while saving unresolved IDs: " + e.getMessage());
+        }
+    }
+
+    private void resolveUnresolvedIds(Context context) {
+        String unresolvedFilePath = context.getFilesDir() + "/UnresolvedIds.txt";
+        File unresolvedFile = new File(unresolvedFilePath);
+        File testFile = new File(context.getFilesDir(), "Test.txt");
+
+        if (!unresolvedFile.exists()) return;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(unresolvedFile));
+             BufferedWriter testWriter = new BufferedWriter(new FileWriter(testFile, true))) {
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                String serverId = parts[0].split(":")[1];
+                String talkId = parts[1].split(":")[1];
+
+                String content = queryDatabase("SELECT content FROM chat_history WHERE server_id=?", serverId);
+                String imageCheck = queryDatabase("SELECT attachement_image FROM chat_history WHERE server_id=?", serverId);
+                String timeEpochStr = queryDatabase("SELECT created_time FROM chat_history WHERE server_id=?", serverId);
+                String timeFormatted = formatMessageTime(timeEpochStr);
+                String groupName = queryDatabase("SELECT name FROM groups WHERE id=?", talkId);
+                String talkName = queryDatabase("SELECT chat_name FROM chat WHERE chat_id=?", talkId);
+                String name = (groupName != null ? groupName : (talkName != null ? talkName : "No Name"));
+                String media = queryDatabase("SELECT attachement_type FROM chat_history WHERE server_id=?", serverId);
+
+                if (content != null || !name.equals("No Name")) {
+                    String logEntry = (timeFormatted != null ? timeFormatted : "No Time: ")
+                            + name
+                            + ": " + (content != null ? content : "NO get id:" + serverId)
+                            + (imageCheck != null && imageCheck.equals("1") ? " 画像" : "")
+                            + (media != null && media.equals("7") ? " スタンプ" : (media != null && media.equals("2") ? " 動画" : ""));
+
+                    testWriter.write("再取得: " + logEntry);
+                    testWriter.newLine();
+                    XposedBridge.log("Resolved and saved to backup: serverId:" + serverId + content + " talkId:" + talkId);
+                }
+            }
+
+
+            try (BufferedWriter clearWriter = new BufferedWriter(new FileWriter(unresolvedFile))) {
+                clearWriter.write("");
+            }
+
+        } catch (IOException e) {
+            XposedBridge.log("IOException occurred while resolving and saving unresolved IDs: " + e.getMessage());
+        }
+    }
+
+
+
+    private String queryDatabase(String query, String... selectionArgs) {
+        Cursor cursor = db.rawQuery(query, selectionArgs);
+        String result = null;
+        if (cursor.moveToFirst()) {
+            result = cursor.getString(0);
+        }
+        cursor.close();
+        return result;
+    }
+    private String formatMessageTime(String timeEpochStr) {
+        if (timeEpochStr == null) return null;
+        long timeEpoch = Long.parseLong(timeEpochStr);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        return sdf.format(new Date(timeEpoch));
+    }
+}
