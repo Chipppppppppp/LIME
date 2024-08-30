@@ -1,0 +1,722 @@
+package io.test.hiro.lime;
+import java.io.IOException;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.File;
+
+import android.app.AlertDialog;
+import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.FileReader;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import de.robv.android.xposed.IXposedHookLoadPackage;
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
+
+public class Main implements IXposedHookLoadPackage {
+    private SQLiteDatabase db;
+    private static final int MAX_RETRIES = 3;
+    private Context context; // メンバ変数として context を追加
+    @Override
+    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lparam) throws Throwable {
+        if (!lparam.packageName.equals("jp.naver.line.android"))
+            return;
+        XposedBridge.hookAllConstructors(
+                lparam.classLoader.loadClass("jp.naver.line.android.common.view.listview.PopupListView"),
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        ViewGroup viewGroup = (ViewGroup) param.thisObject;
+                        Context context = viewGroup.getContext();
+                        RelativeLayout container = new RelativeLayout(context);
+                        RelativeLayout.LayoutParams containerParams = new RelativeLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        container.setLayoutParams(containerParams);
+                        Button openFileButton = new Button(context);
+                        openFileButton.setText("確認済みのメッセージ");
+                        openFileButton.setTextSize(12);
+                        openFileButton.setTextColor(Color.BLACK);
+                        openFileButton.setId(View.generateViewId());
+                        RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        buttonParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                        container.addView(openFileButton, buttonParams);
+                        Button clearFileButton = new Button(context);
+                        clearFileButton.setText("メッセージを削除");
+                        clearFileButton.setTextSize(12);
+                        clearFileButton.setTextColor(Color.RED);
+                        clearFileButton.setId(View.generateViewId());
+                        RelativeLayout.LayoutParams clearButtonParams = new RelativeLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        clearButtonParams.addRule(RelativeLayout.BELOW, openFileButton.getId());
+                        clearButtonParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                        container.addView(clearFileButton, clearButtonParams);
+                        openFileButton.setOnClickListener(v -> {
+                            File backupFile = new File(context.getFilesDir(), "BackUpFile.txt");
+                            if (!backupFile.exists()) {
+                                try {
+                                    backupFile.createNewFile();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(context, "ファイルを作成できませんでした", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            }
+                            if (backupFile.length() > 0) {
+                                try {
+                                    StringBuilder output = new StringBuilder();
+                                    BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(backupFile)));
+                                    String line;
+                                    while ((line = reader.readLine()) != null) {
+                                        output.append(line).append("\n");
+                                    }
+                                    reader.close();
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                    builder.setTitle("バックアップ")
+                                            .setMessage(output.toString())
+                                            .setPositiveButton("OK", null)
+                                            .create()
+                                            .show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(context, "ファイルが読み取れませんでした", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Toast.makeText(context, "何もバックアップされていません", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        clearFileButton.setOnClickListener(v -> {
+                            new AlertDialog.Builder(context)
+                                    .setTitle("確認")
+                                    .setMessage("本当に削除しますか？")
+                                    .setPositiveButton("はい", (dialog, which) -> {
+                                        File backupFile = new File(context.getFilesDir(), "BackUpFile.txt");
+                                        if (backupFile.exists()) {
+                                            try {
+                                                BufferedWriter writer = new BufferedWriter(new FileWriter(backupFile));
+                                                writer.write("");
+                                                writer.close();
+                                                Toast.makeText(context, "ファイルの内容が削除されました", Toast.LENGTH_SHORT).show();
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                                Toast.makeText(context, "ファイルの削除に失敗しました", Toast.LENGTH_SHORT).show();
+                                            }
+                                        } else {
+                                            Toast.makeText(context, "ファイルが見つかりません", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .setNegativeButton("いいえ", null)
+                                    .create()
+                                    .show();
+                        });
+
+
+                        ((ListView) viewGroup.getChildAt(0)).addFooterView(container);
+                    }
+                }
+        );
+
+
+        XposedHelpers.findAndHookMethod(
+                "com.linecorp.line.chatlist.view.fragment.ChatListPageFragment",
+                lparam.classLoader, "onCreateView",
+                LayoutInflater.class, ViewGroup.class, android.os.Bundle.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        View rootView = (View) param.getResult();
+                        Context context = rootView.getContext();
+
+                        // Test.txt ファイルの処理
+                        File originalFile = new File(context.getFilesDir(), "Test.txt");
+                        if (!originalFile.exists()) {
+                            try {
+                                originalFile.createNewFile();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Toast.makeText(context, "ファイルを作成できませんでした", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+
+                        if (originalFile.length() > 0) {
+                            int lineCount = countLinesInFile(originalFile);
+
+                            if (lineCount > 0) {
+                                Button button = new Button(context);
+                                button.setText(Integer.toString(lineCount));
+                                int buttonId = View.generateViewId();
+                                button.setId(buttonId);  // IDを設定
+                                RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
+                                        RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                buttonParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                                button.setLayoutParams(buttonParams);
+                                button.setOnClickListener(v -> {
+                                    try {
+                                        StringBuilder output = new StringBuilder();
+                                        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(originalFile)));
+                                        String line;
+                                        while ((line = reader.readLine()) != null) {
+                                            if (line.contains("No content") || line.contains("No name")) {
+                                                Toast.makeText(context, "正しく取得できませんでした。アプリを再起動してください", Toast.LENGTH_SHORT).show();
+                                                continue;
+                                            }
+                                            output.append(line).append("\n");
+                                        }
+                                        reader.close();
+
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                        builder.setTitle("削除されたメッセージ")
+                                                .setMessage(output.toString())
+                                                .setPositiveButton("OK", (dialog, which) -> {
+                                                    try {
+                                                        File backupFile = new File(context.getFilesDir(), "BackUpFile.txt");
+                                                        BufferedWriter writer = new BufferedWriter(new FileWriter(backupFile, true));
+                                                        writer.write(output.toString());
+                                                        writer.close();
+                                                        BufferedWriter clearWriter = new BufferedWriter(new FileWriter(originalFile));
+                                                        clearWriter.write("");
+                                                        clearWriter.close();
+                                                        Toast.makeText(context, "内容がバックアップファイルに移動されました", Toast.LENGTH_SHORT).show();
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                        Toast.makeText(context, "ファイルの移動に失敗しました", Toast.LENGTH_SHORT).show();
+                                                    }
+
+                                                    // ボタンの親からボタンを削除
+                                                    if (button.getParent() instanceof ViewGroup) {
+                                                        ViewGroup parent = (ViewGroup) button.getParent();
+                                                        parent.removeView(button);
+                                                    }
+                                                })
+                                                .create()
+                                                .show();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(context, "ファイルの読み取りに失敗しました", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+
+                                if (rootView instanceof ViewGroup) {
+                                    ViewGroup viewGroup = (ViewGroup) rootView;
+                                    viewGroup.addView(button);
+
+                                    View existingButton = viewGroup.findViewById(buttonId);
+                                    if (existingButton != null) {
+
+                                    }
+                                }
+                            }
+                        }
+
+
+                        File noNameLogsFile = new File(context.getFilesDir(), "NoNameLogs.txt");
+                        if (noNameLogsFile.exists() && noNameLogsFile.length() > 0) {
+                            Button nameEntryButton = new Button(context);
+                            nameEntryButton.setText("名前入力");
+                            int nameButtonId = View.generateViewId(); // IDを設定
+                            nameEntryButton.setId(nameButtonId);
+
+                            RelativeLayout.LayoutParams nameButtonParams = new RelativeLayout.LayoutParams(
+                                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+                            nameEntryButton.setLayoutParams(nameButtonParams);
+
+                            nameEntryButton.setOnClickListener(v -> {
+
+                                Map<String, List<String>> talkidGroups = new HashMap<>();
+                                try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(noNameLogsFile)))) {
+                                    String line;
+                                    while ((line = reader.readLine()) != null) {
+
+                                        String[] parts = line.split("::");
+                                        if (parts.length >= 2) {
+                                            String talkid = parts[1].split(":")[0].trim();
+
+                                            if (!talkidGroups.containsKey(talkid)) {
+                                                talkidGroups.put(talkid, new ArrayList<>());
+                                            }
+                                            talkidGroups.get(talkid).add(line);
+                                        }
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(context, "NoNameLogs.txt の読み取りに失敗しました", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                ScrollView scrollView = new ScrollView(context);
+                                LinearLayout layout = new LinearLayout(context);
+                                layout.setOrientation(LinearLayout.VERTICAL);
+                                scrollView.addView(layout);
+
+                                Map<String, EditText> talkidEditTexts = new HashMap<>();
+
+                                for (Map.Entry<String, List<String>> entry : talkidGroups.entrySet()) {
+                                    String talkid = entry.getKey();
+                                    List<String> lines = entry.getValue();
+
+                                    StringBuilder displayText = new StringBuilder("TalkID: " + talkid + "\n");
+
+                                    for (String line : lines) {
+                                        String[] parts = line.split("::");
+                                        if (parts.length >= 2) {
+                                            String timestamp = parts[0].trim();
+                                            String[] talkidAndMessage = parts[1].split(":");
+                                            if (talkidAndMessage.length > 1) {
+                                                String messageContent = talkidAndMessage[1].trim();
+                                                displayText.append("Time: ").append(timestamp).append("\n");
+                                                displayText.append("Message: ").append(messageContent).append("\n\n");
+                                            }
+                                        }
+                                    }
+
+                                    TextView textView = new TextView(context);
+                                    textView.setText(displayText.toString());
+                                    layout.addView(textView);
+
+                                    EditText input = new EditText(context);
+                                    input.setHint("名前を入力してください");
+                                    layout.addView(input);
+
+                                    talkidEditTexts.put(talkid, input);
+                                }
+
+
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                builder.setTitle("名前を入力");
+                                builder.setView(scrollView);
+
+                                builder.setPositiveButton("OK", (dialog, which) -> {
+                                    boolean allFieldsSet = true;
+
+
+                                    for (Map.Entry<String, EditText> entry : talkidEditTexts.entrySet()) {
+                                        String talkid = entry.getKey();
+                                        String enteredName = entry.getValue().getText().toString().trim();
+
+                                        if (!enteredName.isEmpty()) {
+
+                                            saveChatNameUpdate(context, enteredName);
+                                        } else {
+                                            allFieldsSet = false;
+                                        }
+                                    }
+
+                                    if (allFieldsSet) {
+                                        File backupFile = new File(context.getFilesDir(), "NoNameLogs_Backup.txt");
+                                        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(noNameLogsFile)));
+                                             BufferedWriter writer = new BufferedWriter(new FileWriter(backupFile))) {
+
+                                            String line;
+                                            while ((line = reader.readLine()) != null) {
+                                                writer.write(line);
+                                                writer.newLine();
+                                            }
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                            Toast.makeText(context, "バックアップの作成に失敗しました", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+
+                                        if (noNameLogsFile.delete()) {
+                                            Toast.makeText(context, "全ての名前が設定されました。再起動を推奨します。", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(context, "ファイルの削除に失敗しました", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } else {
+                                        Toast.makeText(context, "全てのフィールドに名前を入力してください。", Toast.LENGTH_SHORT).show();
+                                    }
+
+
+                                    if (nameEntryButton.getParent() instanceof ViewGroup) {
+                                        ViewGroup parent = (ViewGroup) nameEntryButton.getParent();
+                                        parent.removeView(nameEntryButton);
+                                    }
+                                });
+
+                                builder.setNegativeButton("キャンセル", (dialog, which) -> dialog.cancel());
+
+                                builder.show();
+                            });
+
+
+
+
+                            if (rootView instanceof ViewGroup) {
+                                ViewGroup viewGroup = (ViewGroup) rootView;
+                                viewGroup.addView(nameEntryButton);
+                            }
+                        }
+                    }
+                }
+        );
+
+
+
+
+
+        XposedBridge.hookAllMethods(Application.class, "onCreate", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                Application appContext = (Application) param.thisObject;
+                File dbFile = appContext.getDatabasePath("naver_line");
+
+                if (dbFile.exists()) {
+                    SQLiteDatabase.OpenParams.Builder builder = new SQLiteDatabase.OpenParams.Builder();
+                    builder.addOpenFlags(SQLiteDatabase.OPEN_READWRITE);
+                    SQLiteDatabase.OpenParams dbParams = builder.build();
+                    db = SQLiteDatabase.openDatabase(dbFile, dbParams);
+
+
+                    hookMessageDeletion(lparam, appContext);
+                    updateChatNamesFromNoNameLogs(appContext);
+                    resolveUnresolvedIds(appContext);
+
+
+
+                }
+            }
+        });
+
+
+    }
+
+
+    private void saveChatNameUpdate(Context context, String name) {
+        File updateFile = new File(context.getFilesDir(), "ChatNameUpdate.txt");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(updateFile, true))) {
+            BufferedReader reader = new BufferedReader(new FileReader(new File(context.getFilesDir(), "NoNameLogs.txt")));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("No Name")) {
+                    String chatId = extractChatId(line);
+                    if (chatId != null) {
+                        writer.write(chatId + ":" + name);
+                        writer.newLine();
+                    }
+                }
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(context, "ファイルの保存に失敗しました", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean allNamesSet(File noNameLogsFile) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(noNameLogsFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("No Name")) {
+                    return false;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    private String extractChatId(String logLine) {
+
+        String regex = "talkId([a-zA-Z0-9]+)";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(logLine);
+
+        if (matcher.find()) {
+            String chatId = matcher.group(1);
+            Log.d("ExtractChatId", "Found chatId: " + chatId);
+            return chatId;
+        }
+
+        Log.d("ExtractChatId", "No chatId found");
+        return null;
+    }
+
+
+    private void updateChatNamesFromNoNameLogs(Context context) {
+        File updateFile = new File(context.getFilesDir(), "ChatNameUpdate.txt");
+
+        if (updateFile.exists()) {
+
+            Map<String, String> chatIdNameMap = new HashMap<>();
+
+            try (BufferedReader reader = new BufferedReader(new FileReader(updateFile))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+
+                    String[] parts = line.split(":", 2);
+                    if (parts.length == 2) {
+                        String chatId = parts[0].trim();
+                        String name = parts[1].trim();
+
+                        chatIdNameMap.put(chatId, name);
+                    }
+                }
+            } catch (IOException e) {
+                XposedBridge.log("IOException occurred while reading ChatNameUpdate.txt: " + e.getMessage());
+            }
+
+
+            for (Map.Entry<String, String> entry : chatIdNameMap.entrySet()) {
+                String chatId = entry.getKey();
+                String name = entry.getValue();
+
+                try {
+                    String updateQuery = "UPDATE chat SET chat_name = ? WHERE chat_id = ?";
+                    db.execSQL(updateQuery, new String[]{name, chatId});
+                } catch (SQLException e) {
+                    XposedBridge.log("SQLException occurred while updating chat_name: " + e.getMessage());
+                }
+            }
+
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(updateFile))) {
+                writer.write("");
+            } catch (IOException e) {
+                XposedBridge.log("IOException occurred while clearing ChatNameUpdate.txt: " + e.getMessage());
+            }
+        }
+    }
+
+
+
+
+
+    private String queryDatabase(String query, String... selectionArgs) {
+        Cursor cursor = db.rawQuery(query, selectionArgs);
+        String result = null;
+        if (cursor.moveToFirst()) {
+            result = cursor.getString(0);
+        }
+        cursor.close();
+        return result;
+    }
+    private int countLinesInFile(File file) throws IOException {
+        int lineCount = 0;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
+            while (reader.readLine() != null) {
+                lineCount++;
+            }
+        }
+        return lineCount;
+    }
+    private void hookMessageDeletion(XC_LoadPackage.LoadPackageParam lparam, Context context) {
+        try {
+            Class<?> hookTarget = lparam.classLoader.loadClass("org.apache.thrift.l");
+            XposedBridge.hookAllMethods(hookTarget, "a", new XC_MethodHook() {
+
+
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    String paramValue = param.args[1].toString();
+                    if (paramValue.contains("type:NOTIFIED_DESTROY_MESSAGE,")) {
+                        processMessage(paramValue, context);
+                    }
+                }
+            });
+        } catch (ClassNotFoundException e) {
+            XposedBridge.log("Class not found: " + e.getMessage());
+        }
+    }
+    private void processMessage(String paramValue, Context context) {
+        String unresolvedFilePath = context.getFilesDir() + "/UnresolvedIds.txt";
+
+        String[] operations = paramValue.split("Operation\\(");
+        for (String operation : operations) {
+            if (operation.trim().isEmpty()) continue;
+            String revision = null;
+            String createdTime = null;
+            String type = null;
+            String from = null;
+            String to = null;
+            String param12 = null;
+            String param22 = null;
+            String operationContent = null;
+            String serverId = null;
+            String talkId = null;
+
+            String[] parts = operation.split(",");
+            for (String part : parts) {
+                part = part.trim();
+                if (part.startsWith("param1:")) {
+                    talkId = part.substring("param1:".length()).trim();
+                } else if (part.startsWith("param2:")) {
+                    serverId = part.substring("param2:".length()).trim();
+                } else if (part.startsWith("revision:")) {
+                    revision = part.substring("revision:".length()).trim();
+                } else if (part.startsWith("createdTime:")) {
+                    createdTime = part.substring("createdTime:".length()).trim();
+                } else if (part.startsWith("type:")) {
+                    type = part.substring("type:".length()).trim();
+                } else if (part.startsWith("from:")) {
+                    from = part.substring("from:".length()).trim();
+                } else if (part.startsWith("to:")) {
+                    to = part.substring("to:".length()).trim();
+                } else if (part.startsWith("contentMetadata:")) {
+                    param12 = part.substring("contentMetadata:".length()).trim();
+                } else if (part.startsWith("operationContent:")) {
+                    operationContent = part.substring("operationContent:".length()).trim();
+                }
+            }
+
+            if (serverId != null && talkId != null) {
+                String content = queryDatabase("SELECT content FROM chat_history WHERE server_id=?", serverId);
+                String imageCheck = queryDatabase("SELECT attachement_image FROM chat_history WHERE server_id=?", serverId);
+                String timeEpochStr = queryDatabase("SELECT created_time FROM chat_history WHERE server_id=?", serverId);
+                String timeFormatted = formatMessageTime(timeEpochStr);
+                String groupName = queryDatabase("SELECT name FROM groups WHERE id=?", talkId);
+                String talkName = queryDatabase("SELECT chat_name FROM chat WHERE chat_id=?", talkId);
+                String media = queryDatabase("SELECT attachement_type FROM chat_history WHERE server_id=?", serverId);
+
+                String name = (groupName != null ? groupName : (talkName != null ? talkName : "No Name" + ":" + ":" + "talkId" + talkId));
+
+                if (content == null && !("0".equals(media))) {
+                    saveUnresolvedIds(serverId, talkId, unresolvedFilePath);
+                }
+                String mediaDescription = "";
+                if (media != null) {
+                    switch (media) {
+                        case "7":
+                            mediaDescription = " スタンプ";
+                            break;
+                        case "1":
+                            mediaDescription = " 画像";
+                            break;
+                        case "2":
+                            mediaDescription = " 動画";
+                            break;
+                        default:
+                            mediaDescription = "";
+                            break;
+                    }
+                }
+                String logEntry = (timeFormatted != null ? timeFormatted : "No Time: ")
+                        + name
+                        + ": "
+                        + ((content != null) ? content : (mediaDescription.isEmpty() ? "No content:" + serverId : ""))
+                        + mediaDescription;
+                File fileToWrite = name.startsWith("No Name")
+                        ? new File(context.getFilesDir(), "NoNameLogs.txt")
+                        : new File(context.getFilesDir(), "Test.txt");
+
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToWrite, true))) {
+                    writer.write(logEntry);
+                    writer.newLine();
+                } catch (IOException e) {
+                    XposedBridge.log("IOException occurred while writing to file: " + e.getMessage());
+                }
+            }
+
+        }
+    }
+
+
+
+
+    private void saveUnresolvedIds(String serverId, String talkId, String filePath) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+            writer.write("serverId:" + serverId + ",talkId:" + talkId);
+            writer.newLine();
+        } catch (IOException e) {
+            XposedBridge.log("IOException occurred while saving unresolved IDs: " + e.getMessage());
+        }
+    }
+
+    private void resolveUnresolvedIds(Context context) {
+        String unresolvedFilePath = context.getFilesDir() + "/UnresolvedIds.txt";
+        File unresolvedFile = new File(unresolvedFilePath);
+        File testFile = new File(context.getFilesDir(), "Test.txt");
+
+        if (!unresolvedFile.exists()) return;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(unresolvedFile));
+             BufferedWriter testWriter = new BufferedWriter(new FileWriter(testFile, true))) {
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                String serverId = parts[0].split(":")[1];
+                String talkId = parts[1].split(":")[1];
+
+                String content = queryDatabase("SELECT content FROM chat_history WHERE server_id=?", serverId);
+                String timeEpochStr = queryDatabase("SELECT created_time FROM chat_history WHERE server_id=?", serverId);
+                String timeFormatted = formatMessageTime(timeEpochStr);
+                String groupName = queryDatabase("SELECT name FROM groups WHERE id=?", talkId);
+                String talkName = queryDatabase("SELECT chat_name FROM chat WHERE chat_id=?", talkId);
+                String name = (groupName != null ? groupName : (talkName != null ? talkName : "No Name"));
+                String media = queryDatabase("SELECT attachement_type FROM chat_history WHERE server_id=?", serverId);
+
+                if (content != null ) {
+                    String logEntry = (timeFormatted != null ? timeFormatted : "No Time: ")
+                            + name
+                            + ": " + (content != null ? content : "NO get id:" + serverId)
+                            + (media != null && media.equals("7") ? " スタンプ" : media != null && media.equals("1") ? " 画像" : (media != null && media.equals("2") ? " 動画" : ""));
+
+                    testWriter.write("再取得: " + logEntry);
+                    testWriter.newLine();
+                    XposedBridge.log("Resolved and saved to backup: serverId:" + serverId + content + " talkId:" + talkId);
+                }
+            }
+
+
+            try (BufferedWriter clearWriter = new BufferedWriter(new FileWriter(unresolvedFile))) {
+                clearWriter.write("");
+            }
+
+        } catch (IOException e) {
+            XposedBridge.log("IOException occurred while resolving and saving unresolved IDs: " + e.getMessage());
+        }
+    }
+
+
+
+
+    private String formatMessageTime(String timeEpochStr) {
+        if (timeEpochStr == null) return null;
+        long timeEpoch = Long.parseLong(timeEpochStr);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        return sdf.format(new Date(timeEpoch));
+    }
+}
