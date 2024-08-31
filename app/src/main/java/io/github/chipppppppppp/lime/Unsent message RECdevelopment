@@ -1,25 +1,18 @@
-package io.test.hiro.lime;
-import java.io.IOException;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.File;
+package io.github.chipppppppppp.lime.hooks;
 
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -27,40 +20,43 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import io.github.chipppppppppp.lime.LimeOptions;
+import io.github.chipppppppppp.lime.Main;
+import io.github.chipppppppppp.lime.R;
 
-public class Main implements IXposedHookLoadPackage {
+public class Unsentrec implements IHook {
     private SQLiteDatabase db;
     private static final int MAX_RETRIES = 3;
     private Context context; // メンバ変数として context を追加
+
     @Override
-    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lparam) throws Throwable {
-        if (!lparam.packageName.equals("jp.naver.line.android"))
-            return;
+    public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
+        if (!Main.xPackagePrefs.getBoolean("unsen_rec", false)) return;
+
         XposedBridge.hookAllConstructors(
-                lparam.classLoader.loadClass("jp.naver.line.android.common.view.listview.PopupListView"),
+                loadPackageParam.classLoader.loadClass("jp.naver.line.android.common.view.listview.PopupListView"),
                 new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -71,7 +67,7 @@ public class Main implements IXposedHookLoadPackage {
                                 RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         container.setLayoutParams(containerParams);
                         Button openFileButton = new Button(context);
-                        openFileButton.setText("確認済みのメッセージ");
+                        openFileButton.setText(context.getResources().getString(R.string.confirm_messages));
                         openFileButton.setTextSize(12);
                         openFileButton.setTextColor(Color.BLACK);
                         openFileButton.setId(View.generateViewId());
@@ -80,7 +76,7 @@ public class Main implements IXposedHookLoadPackage {
                         buttonParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
                         container.addView(openFileButton, buttonParams);
                         Button clearFileButton = new Button(context);
-                        clearFileButton.setText("メッセージを削除");
+                        clearFileButton.setText(context.getResources().getString(R.string.delete_messages));
                         clearFileButton.setTextSize(12);
                         clearFileButton.setTextColor(Color.RED);
                         clearFileButton.setId(View.generateViewId());
@@ -96,7 +92,7 @@ public class Main implements IXposedHookLoadPackage {
                                     backupFile.createNewFile();
                                 } catch (IOException e) {
                                     e.printStackTrace();
-                                    Toast.makeText(context, "ファイルを作成できませんでした", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context,context.getResources().getString(R.string.file_creation_failed), Toast.LENGTH_SHORT).show();
                                     return;
                                 }
                             }
@@ -110,22 +106,22 @@ public class Main implements IXposedHookLoadPackage {
                                     }
                                     reader.close();
                                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                    builder.setTitle("バックアップ")
+                                    builder.setTitle(context.getResources().getString(R.string.backup))
                                             .setMessage(output.toString())
                                             .setPositiveButton("OK", null)
                                             .create()
                                             .show();
                                 } catch (IOException e) {
                                     e.printStackTrace();
-                                    Toast.makeText(context, "ファイルが読み取れませんでした", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, context.getResources().getString(R.string.file_read_failed), Toast.LENGTH_SHORT).show();
                                 }
                             } else {
-                                Toast.makeText(context, "何もバックアップされていません", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, context.getResources().getString(R.string.no_backup_found), Toast.LENGTH_SHORT).show();
                             }
                         });
                         clearFileButton.setOnClickListener(v -> {
                             new AlertDialog.Builder(context)
-                                    .setTitle("確認")
+                                    .setTitle(context.getResources().getString(R.string.check))
                                     .setMessage("本当に削除しますか？")
                                     .setPositiveButton("はい", (dialog, which) -> {
                                         File backupFile = new File(context.getFilesDir(), "BackUpFile.txt");
@@ -418,6 +414,20 @@ public class Main implements IXposedHookLoadPackage {
                 }
             }
         });
+
+        // Hooking b() method
+        XposedHelpers.findAndHookMethod("q01.c", lparam.classLoader, "b", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                String originalResult = (String) param.getResult();
+                String modifiedResult = "Hooked_b: " + originalResult;
+                XposedBridge.log("バージョン: " + originalResult);
+                param.setResult("14.14.1"); // 偽装するバージョン名
+
+            }
+        });
+
+
 
 
     }
@@ -718,5 +728,9 @@ public class Main implements IXposedHookLoadPackage {
         long timeEpoch = Long.parseLong(timeEpochStr);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         return sdf.format(new Date(timeEpoch));
+    }
+
+
+
     }
 }
