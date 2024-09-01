@@ -4,20 +4,14 @@ import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -29,44 +23,35 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
-import io.github.chipppppppppp.lime.Main;
 import io.github.chipppppppppp.lime.R;
 
 public class Unsentrec implements IHook {
-    private SQLiteDatabase db;
-    private static final int MAX_RETRIES = 3;
-    private Context context; // メンバ変数として context を追加
+
 
 
     public static final String Main_file = "UNSENT_REC.txt";
     public static final String Main_backup = "BackUpFile.txt";
-    public static final String Noname_file = "NoNameLogs.txt";
-    public static final String NoNameLogs_Backup = "NoNameLogs_Backup.txt";
 
-    public static final String Update_name_List = "ChatNameUpdate.txt";
-    
-    String unresolvedFilePath = context.getFilesDir() + "/UnresolvedIds.txt";
-    
-    
-    
+
+
+    SQLiteDatabase db1 = null;
+    SQLiteDatabase db2 = null;
+
+
+
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-        if (!Main.xPackagePrefs.getBoolean("unsen_rec", false)) return;
+
+
 
         XposedBridge.hookAllConstructors(
                 loadPackageParam.classLoader.loadClass("jp.naver.line.android.common.view.listview.PopupListView"),
@@ -171,6 +156,7 @@ public class Unsentrec implements IHook {
                 new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+
                         View rootView = (View) param.getResult();
                         Context context = rootView.getContext();
 
@@ -256,152 +242,9 @@ public class Unsentrec implements IHook {
                                 }
                             }
                         }
-
-
-                        File noNameLogsFile = new File(context.getFilesDir(), Noname_file);
-                        if (noNameLogsFile.exists() && noNameLogsFile.length() > 0) {
-                            Button nameEntryButton = new Button(context);
-                            nameEntryButton.setText(context.getResources().getString(R.string.enter_name));
-                            int nameButtonId = View.generateViewId(); // IDを設定
-                            nameEntryButton.setId(nameButtonId);
-
-                            RelativeLayout.LayoutParams nameButtonParams = new RelativeLayout.LayoutParams(
-                                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-                            nameEntryButton.setLayoutParams(nameButtonParams);
-
-                            nameEntryButton.setOnClickListener(v -> {
-
-                                Map<String, List<String>> talkidGroups = new HashMap<>();
-                                try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(noNameLogsFile)))) {
-                                    String line;
-                                    while ((line = reader.readLine()) != null) {
-
-                                        String[] parts = line.split("::");
-                                        if (parts.length >= 2) {
-                                            String talkid = parts[1].split(":")[0].trim();
-
-                                            if (!talkidGroups.containsKey(talkid)) {
-                                                talkidGroups.put(talkid, new ArrayList<>());
-                                            }
-                                            talkidGroups.get(talkid).add(line);
-                                        }
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(context, context.getResources().getString(R.string.read_nonamelogs_failed), Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-
-                                ScrollView scrollView = new ScrollView(context);
-                                LinearLayout layout = new LinearLayout(context);
-                                layout.setOrientation(LinearLayout.VERTICAL);
-                                scrollView.addView(layout);
-
-                                Map<String, EditText> talkidEditTexts = new HashMap<>();
-
-                                for (Map.Entry<String, List<String>> entry : talkidGroups.entrySet()) {
-                                    String talkid = entry.getKey();
-                                    List<String> lines = entry.getValue();
-
-                                    StringBuilder displayText = new StringBuilder("TalkID: " + talkid + "\n");
-
-                                    for (String line : lines) {
-                                        String[] parts = line.split("::");
-                                        if (parts.length >= 2) {
-                                            String timestamp = parts[0].trim();
-                                            String[] talkidAndMessage = parts[1].split(":");
-                                            if (talkidAndMessage.length > 1) {
-                                                String messageContent = talkidAndMessage[1].trim();
-                                                displayText.append("Time: ").append(timestamp).append("\n");
-                                                displayText.append("Message: ").append(messageContent).append("\n\n");
-                                            }
-                                        }
-                                    }
-
-                                    TextView textView = new TextView(context);
-                                    textView.setText(displayText.toString());
-                                    layout.addView(textView);
-
-                                    EditText input = new EditText(context);
-                                    input.setHint(context.getResources().getString(R.string.please_enter_name));
-                                    layout.addView(input);
-
-                                    talkidEditTexts.put(talkid, input);
-                                }
-
-
-
-                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                builder.setTitle(context.getResources().getString(R.string.enter_name));
-                                builder.setView(scrollView);
-
-                                builder.setPositiveButton("OK", (dialog, which) -> {
-                                    boolean allFieldsSet = true;
-
-
-                                    for (Map.Entry<String, EditText> entry : talkidEditTexts.entrySet()) {
-                                        String talkid = entry.getKey();
-                                        String enteredName = entry.getValue().getText().toString().trim();
-
-                                        if (!enteredName.isEmpty()) {
-
-                                            saveChatNameUpdate(context, enteredName);
-                                        } else {
-                                            allFieldsSet = false;
-                                        }
-                                    }
-
-                                    if (allFieldsSet) {
-                                        File backupFile = new File(context.getFilesDir(), NoNameLogs_Backup);
-                                        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(noNameLogsFile)));
-                                             BufferedWriter writer = new BufferedWriter(new FileWriter(backupFile))) {
-
-                                            String line;
-                                            while ((line = reader.readLine()) != null) {
-                                                writer.write(line);
-                                                writer.newLine();
-                                            }
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                            Toast.makeText(context, context.getResources().getString(R.string.backup_creation_failed), Toast.LENGTH_SHORT).show();
-                                            return;
-                                        }
-
-                                        if (noNameLogsFile.delete()) {
-                                            Toast.makeText(context, context.getResources().getString(R.string.all_names_set_restart_suggested), Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            Toast.makeText(context, context.getResources().getString(R.string.file_delete_failed), Toast.LENGTH_SHORT).show();
-                                        }
-                                    } else {
-                                        Toast.makeText(context, context.getResources().getString(R.string.enter_name_for_all_fields), Toast.LENGTH_SHORT).show();
-                                    }
-
-
-                                    if (nameEntryButton.getParent() instanceof ViewGroup) {
-                                        ViewGroup parent = (ViewGroup) nameEntryButton.getParent();
-                                        parent.removeView(nameEntryButton);
-                                    }
-                                });
-
-                                builder.setNegativeButton(context.getResources().getString(R.string.cancel), (dialog, which) -> dialog.cancel());
-
-                                builder.show();
-                            });
-
-
-
-
-                            if (rootView instanceof ViewGroup) {
-                                ViewGroup viewGroup = (ViewGroup) rootView;
-                                viewGroup.addView(nameEntryButton);
-                            }
-                        }
                     }
                 }
         );
-
-
 
 
 
@@ -409,130 +252,39 @@ public class Unsentrec implements IHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 Application appContext = (Application) param.thisObject;
-                File dbFile = appContext.getDatabasePath("naver_line");
 
-                if (dbFile.exists()) {
-                    SQLiteDatabase.OpenParams.Builder builder = new SQLiteDatabase.OpenParams.Builder();
-                    builder.addOpenFlags(SQLiteDatabase.OPEN_READWRITE);
-                    SQLiteDatabase.OpenParams dbParams = builder.build();
-                    db = SQLiteDatabase.openDatabase(dbFile, dbParams);
+                File dbFile1 = appContext.getDatabasePath("naver_line");
+
+                File dbFile2 = appContext.getDatabasePath("contact");
 
 
-                    hookMessageDeletion(loadPackageParam, appContext);
-                    updateChatNamesFromNoNameLogs(appContext);
-                    resolveUnresolvedIds(appContext);
+                if (dbFile1.exists() && dbFile2.exists()) {
 
+                    SQLiteDatabase.OpenParams.Builder builder1 = new SQLiteDatabase.OpenParams.Builder();
+                    builder1.addOpenFlags(SQLiteDatabase.OPEN_READWRITE);
+                    SQLiteDatabase.OpenParams dbParams1 = builder1.build();
 
+                    SQLiteDatabase.OpenParams.Builder builder2 = new SQLiteDatabase.OpenParams.Builder();
+                    builder2.addOpenFlags(SQLiteDatabase.OPEN_READWRITE);
+                    SQLiteDatabase.OpenParams dbParams2 = builder2.build();
+
+                    db1 = SQLiteDatabase.openDatabase(dbFile1, dbParams1);
+                    db2 = SQLiteDatabase.openDatabase(dbFile2, dbParams2);
+
+                    hookMessageDeletion(loadPackageParam, appContext, db1, db2);
+                    resolveUnresolvedIds(loadPackageParam,appContext, db1, db2);
 
                 }
+
             }
         });
-
     }
 
-
-    private void saveChatNameUpdate(Context context, String name) {
-        File updateFile = new File(context.getFilesDir(), Update_name_List);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(updateFile, true))) {
-            BufferedReader reader = new BufferedReader(new FileReader(new File(context.getFilesDir(), Noname_file)));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.contains("No Name")) {
-                    String chatId = extractChatId(line);
-                    if (chatId != null) {
-                        writer.write(chatId + ":" + name);
-                        writer.newLine();
-                    }
-                }
-            }
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(context, context.getResources().getString(R.string.file_delete_failed), Toast.LENGTH_SHORT).show();
+    private String queryDatabase(SQLiteDatabase db, String query, String... selectionArgs) {
+        if (db == null) {
+            XposedBridge.log("Database is not initialized.");
+            return null;
         }
-    }
-
-    private boolean allNamesSet(File noNameLogsFile) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(noNameLogsFile))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.contains("No Name")) {
-                    return false;
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return true;
-    }
-
-    private String extractChatId(String logLine) {
-
-        String regex = "talkId([a-zA-Z0-9]+)";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(logLine);
-
-        if (matcher.find()) {
-            String chatId = matcher.group(1);
-            Log.d("ExtractChatId", "Found chatId: " + chatId);
-            return chatId;
-        }
-
-        Log.d("ExtractChatId", "No chatId found");
-        return null;
-    }
-
-
-    private void updateChatNamesFromNoNameLogs(Context context) {
-        File updateFile = new File(context.getFilesDir(), Update_name_List);
-
-        if (updateFile.exists()) {
-
-            Map<String, String> chatIdNameMap = new HashMap<>();
-
-            try (BufferedReader reader = new BufferedReader(new FileReader(updateFile))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-
-                    String[] parts = line.split(":", 2);
-                    if (parts.length == 2) {
-                        String chatId = parts[0].trim();
-                        String name = parts[1].trim();
-
-                        chatIdNameMap.put(chatId, name);
-                    }
-                }
-            } catch (IOException e) {
-                XposedBridge.log("IOException occurred while reading ChatNameUpdate.txt: " + e.getMessage());
-            }
-
-
-            for (Map.Entry<String, String> entry : chatIdNameMap.entrySet()) {
-                String chatId = entry.getKey();
-                String name = entry.getValue();
-
-                try {
-                    String updateQuery = "UPDATE chat SET chat_name = ? WHERE chat_id = ?";
-                    db.execSQL(updateQuery, new String[]{name, chatId});
-                } catch (SQLException e) {
-                    XposedBridge.log("SQLException occurred while updating chat_name: " + e.getMessage());
-                }
-            }
-
-
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(updateFile))) {
-                writer.write("");
-            } catch (IOException e) {
-                XposedBridge.log("IOException occurred while clearing ChatNameUpdate.txt: " + e.getMessage());
-            }
-        }
-    }
-
-
-
-
-
-    private String queryDatabase(String query, String... selectionArgs) {
         Cursor cursor = db.rawQuery(query, selectionArgs);
         String result = null;
         if (cursor.moveToFirst()) {
@@ -541,6 +293,7 @@ public class Unsentrec implements IHook {
         cursor.close();
         return result;
     }
+
     private int countLinesInFile(File file) throws IOException {
         int lineCount = 0;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
@@ -550,7 +303,7 @@ public class Unsentrec implements IHook {
         }
         return lineCount;
     }
-    private void hookMessageDeletion(XC_LoadPackage.LoadPackageParam lparam, Context context) {
+    private void hookMessageDeletion(XC_LoadPackage.LoadPackageParam lparam, Context context, SQLiteDatabase db1,SQLiteDatabase db2) {
         try {
             Class<?> hookTarget = lparam.classLoader.loadClass("org.apache.thrift.l");
             XposedBridge.hookAllMethods(hookTarget, "a", new XC_MethodHook() {
@@ -560,7 +313,7 @@ public class Unsentrec implements IHook {
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     String paramValue = param.args[1].toString();
                     if (paramValue.contains("type:NOTIFIED_DESTROY_MESSAGE,")) {
-                        processMessage(paramValue, context);
+                        processMessage(paramValue, context, db1, db2);
                     }
                 }
             });
@@ -568,7 +321,8 @@ public class Unsentrec implements IHook {
             XposedBridge.log("Class not found: " + e.getMessage());
         }
     }
-    private void processMessage(String paramValue, Context context) {
+    private void processMessage(String paramValue, Context context, SQLiteDatabase db1, SQLiteDatabase db2) {
+        String unresolvedFilePath = context.getFilesDir() + "/UnresolvedIds.txt";
 
         String[] operations = paramValue.split("Operation\\(");
         for (String operation : operations) {
@@ -609,19 +363,30 @@ public class Unsentrec implements IHook {
             }
 
             if (serverId != null && talkId != null) {
-                String content = queryDatabase("SELECT content FROM chat_history WHERE server_id=?", serverId);
-                String imageCheck = queryDatabase("SELECT attachement_image FROM chat_history WHERE server_id=?", serverId);
-                String timeEpochStr = queryDatabase("SELECT created_time FROM chat_history WHERE server_id=?", serverId);
+                String content = queryDatabase(db1, "SELECT content FROM chat_history WHERE server_id=?", serverId);
+
+
+
+                String imageCheck = queryDatabase(db1, "SELECT attachement_image FROM chat_history WHERE server_id=?", serverId);
+                String timeEpochStr = queryDatabase(db1, "SELECT created_time FROM chat_history WHERE server_id=?", serverId);
                 String timeFormatted = formatMessageTime(timeEpochStr);
-                String groupName = queryDatabase("SELECT name FROM groups WHERE id=?", talkId);
-                String talkName = queryDatabase("SELECT chat_name FROM chat WHERE chat_id=?", talkId);
-                String media = queryDatabase("SELECT attachement_type FROM chat_history WHERE server_id=?", serverId);
+
+
+
+
+                String groupName = queryDatabase(db1, "SELECT name FROM groups WHERE id=?", talkId);
+                String media = queryDatabase(db1,"SELECT attachement_type FROM chat_history WHERE server_id=?", serverId);
+
+
+                // contactデータベースからtalkNameを取得
+                String talkName = queryDatabase(db2, "SELECT profile_name FROM contacts WHERE mid=?", talkId);
 
                 String name = (groupName != null ? groupName : (talkName != null ? talkName : "No Name" + ":" + ":" + "talkId" + talkId));
 
-                if (content == null && !("0".equals(media))) {
+                if (timeEpochStr == null) {
                     saveUnresolvedIds(serverId, talkId, unresolvedFilePath);
                 }
+
                 String mediaDescription = "";
                 if (media != null) {
                     switch (media) {
@@ -632,7 +397,7 @@ public class Unsentrec implements IHook {
                             mediaDescription = context.getResources().getString(R.string.picture);
                             break;
                         case "2":
-                            mediaDescription =context.getResources().getString(R.string.video);
+                            mediaDescription = context.getResources().getString(R.string.video);
                             break;
                         default:
                             mediaDescription = "";
@@ -644,9 +409,9 @@ public class Unsentrec implements IHook {
                         + ": "
                         + ((content != null) ? content : (mediaDescription.isEmpty() ? "No content:" + serverId : ""))
                         + mediaDescription;
-                File fileToWrite = name.startsWith("No Name")
-                        ? new File(context.getFilesDir(), Noname_file)
-                        : new File(context.getFilesDir(), Main_file);
+
+                File fileToWrite = new File(context.getFilesDir(), Main_file);
+
 
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToWrite, true))) {
                     writer.write(logEntry);
@@ -662,8 +427,9 @@ public class Unsentrec implements IHook {
 
 
 
-    private void saveUnresolvedIds(String serverId, String talkId, String filePath) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+
+    private void saveUnresolvedIds(String serverId, String talkId, String unresolvedFilePath) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(unresolvedFilePath, true))) {
             writer.write("serverId:" + serverId + ",talkId:" + talkId);
             writer.newLine();
         } catch (IOException e) {
@@ -671,8 +437,9 @@ public class Unsentrec implements IHook {
         }
     }
 
-    private void resolveUnresolvedIds(Context context) {
-        
+    private void resolveUnresolvedIds(XC_LoadPackage.LoadPackageParam lparam, Context context, SQLiteDatabase db1,SQLiteDatabase db2) {
+        String unresolvedFilePath = context.getFilesDir() + "/UnresolvedIds.txt";
+
         File unresolvedFile = new File(unresolvedFilePath);
         File testFile = new File(context.getFilesDir(), Main_file);
 
@@ -687,24 +454,28 @@ public class Unsentrec implements IHook {
                 String serverId = parts[0].split(":")[1];
                 String talkId = parts[1].split(":")[1];
 
-                String content = queryDatabase("SELECT content FROM chat_history WHERE server_id=?", serverId);
-                String timeEpochStr = queryDatabase("SELECT created_time FROM chat_history WHERE server_id=?", serverId);
+                String content = queryDatabase(db1, "SELECT content FROM chat_history WHERE server_id=?", serverId);
+                String imageCheck = queryDatabase(db1, "SELECT attachement_image FROM chat_history WHERE server_id=?", serverId);
+                String timeEpochStr = queryDatabase(db1, "SELECT created_time FROM chat_history WHERE server_id=?", serverId);
                 String timeFormatted = formatMessageTime(timeEpochStr);
-                String groupName = queryDatabase("SELECT name FROM groups WHERE id=?", talkId);
-                String talkName = queryDatabase("SELECT chat_name FROM chat WHERE chat_id=?", talkId);
-                String name = (groupName != null ? groupName : (talkName != null ? talkName : "No Name"));
-                String media = queryDatabase("SELECT attachement_type FROM chat_history WHERE server_id=?", serverId);
+                String groupName = queryDatabase(db1, "SELECT name FROM groups WHERE id=?", talkId);
+                String media = queryDatabase(db1,"SELECT attachement_type FROM chat_history WHERE server_id=?", serverId);
+                // contactデータベースからtalkNameを取得
+                String talkName = queryDatabase(db2, "SELECT profile_name FROM contacts WHERE mid=?", talkId);
 
-                if (content != null ) {
-                    String logEntry = (timeFormatted != null ? timeFormatted : "No Time: ")
-                            + name
-                            + ": " + (content != null ? content : "NO get id:" + serverId)
-                            + (media != null && media.equals("7") ? context.getResources().getString(R.string.sticker) : media != null && media.equals("1") ? context.getResources().getString(R.string.video) : (media != null && media.equals("2") ? context.getResources().getString(R.string.video) : ""));
+                String name = (groupName != null ? groupName : (talkName != null ? talkName : "No Name" + ":" + ":" + "talkId" + talkId));
 
-                    testWriter.write("reacquisition: " + logEntry);
-                    testWriter.newLine();
-                    XposedBridge.log("Resolved and saved to backup: serverId:" + serverId + content + " talkId:" + talkId);
+                String logEntry = (timeFormatted != null ? timeFormatted : "No Time: ")
+                        + name
+                        + ": " + (content != null ? content : "NO get id:" + serverId)
+                        + (media != null && media.equals("7") ? context.getResources().getString(R.string.sticker) : media != null && media.equals("1") ? context.getResources().getString(R.string.video) : (media != null && media.equals("2") ? context.getResources().getString(R.string.video) : ""));
+                if (timeEpochStr == null) {
+                    saveUnresolvedIds(serverId, talkId, unresolvedFilePath);
                 }
+                testWriter.write("再取得" + logEntry);
+                testWriter.newLine();
+                XposedBridge.log("Resolved and saved to backup: serverId:" + serverId + content + " talkId:" + talkId);
+
             }
 
 
@@ -728,6 +499,5 @@ public class Unsentrec implements IHook {
     }
 
 
-}
-    }
+
 }
