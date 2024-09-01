@@ -113,7 +113,7 @@ public class Unsentrec implements IHook {
                                             .show();
                                 } catch (IOException e) {
                                     e.printStackTrace();
-                                    Toast.makeText(context, context.getResources().getString(R.string.file_read_failed), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, context.getResources().getString(R.string.read_BackUpFile_failed), Toast.LENGTH_SHORT).show();
                                 }
                             } else {
                                 Toast.makeText(context, context.getResources().getString(R.string.no_backup_found), Toast.LENGTH_SHORT).show();
@@ -122,24 +122,24 @@ public class Unsentrec implements IHook {
                         clearFileButton.setOnClickListener(v -> {
                             new AlertDialog.Builder(context)
                                     .setTitle(context.getResources().getString(R.string.check))
-                                    .setMessage("本当に削除しますか？")
-                                    .setPositiveButton("はい", (dialog, which) -> {
+                                    .setMessage(context.getResources().getString(R.string.check))
+                                    .setPositiveButton(context.getResources().getString(R.string.yes), (dialog, which) -> {
                                         File backupFile = new File(context.getFilesDir(), "BackUpFile.txt");
                                         if (backupFile.exists()) {
                                             try {
                                                 BufferedWriter writer = new BufferedWriter(new FileWriter(backupFile));
                                                 writer.write("");
                                                 writer.close();
-                                                Toast.makeText(context, "ファイルの内容が削除されました", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(context, context.getResources().getString(R.string.file_content_deleted), Toast.LENGTH_SHORT).show();
                                             } catch (IOException e) {
                                                 e.printStackTrace();
-                                                Toast.makeText(context, "ファイルの削除に失敗しました", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(context, context.getResources().getString(R.string.file_delete_failed), Toast.LENGTH_SHORT).show();
                                             }
                                         } else {
-                                            Toast.makeText(context, "ファイルが見つかりません", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(context,  context.getResources().getString(R.string.file_not_found), Toast.LENGTH_SHORT).show();
                                         }
                                     })
-                                    .setNegativeButton("いいえ", null)
+                                    .setNegativeButton( context.getResources().getString(R.string.no), null)
                                     .create()
                                     .show();
                         });
@@ -168,7 +168,7 @@ public class Unsentrec implements IHook {
                                 originalFile.createNewFile();
                             } catch (IOException e) {
                                 e.printStackTrace();
-                                Toast.makeText(context, "ファイルを作成できませんでした", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context,  context.getResources().getString(R.string.file_creation_failed), Toast.LENGTH_SHORT).show();
                                 return;
                             }
                         }
@@ -192,7 +192,7 @@ public class Unsentrec implements IHook {
                                         String line;
                                         while ((line = reader.readLine()) != null) {
                                             if (line.contains("No content") || line.contains("No name")) {
-                                                Toast.makeText(context, "正しく取得できませんでした。アプリを再起動してください", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(context,  context.getResources().getString(R.string.no_get_restart_app), Toast.LENGTH_SHORT).show();
                                                 continue;
                                             }
                                             output.append(line).append("\n");
@@ -200,9 +200,9 @@ public class Unsentrec implements IHook {
                                         reader.close();
 
                                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                        builder.setTitle("削除されたメッセージ")
+                                        builder.setTitle(context.getResources().getString(R.string.deleted_messages))
                                                 .setMessage(output.toString())
-                                                .setPositiveButton("OK", (dialog, which) -> {
+                                                .setPositiveButton(context.getResources().getString(R.string.ok), (dialog, which) -> {
                                                     try {
                                                         File backupFile = new File(context.getFilesDir(), "BackUpFile.txt");
                                                         BufferedWriter writer = new BufferedWriter(new FileWriter(backupFile, true));
@@ -211,10 +211,10 @@ public class Unsentrec implements IHook {
                                                         BufferedWriter clearWriter = new BufferedWriter(new FileWriter(originalFile));
                                                         clearWriter.write("");
                                                         clearWriter.close();
-                                                        Toast.makeText(context, "内容がバックアップファイルに移動されました", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(context, context.getResources().getString(R.string.content_moved_to_backup), Toast.LENGTH_SHORT).show();
                                                     } catch (IOException e) {
                                                         e.printStackTrace();
-                                                        Toast.makeText(context, "ファイルの移動に失敗しました", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(context, context.getResources().getString(R.string.file_move_failed), Toast.LENGTH_SHORT).show();
                                                     }
 
                                                     // ボタンの親からボタンを削除
@@ -227,7 +227,7 @@ public class Unsentrec implements IHook {
                                                 .show();
                                     } catch (IOException e) {
                                         e.printStackTrace();
-                                        Toast.makeText(context, "ファイルの読み取りに失敗しました", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, context.getResources().getString(R.string.read_BackUpFile_failed), Toast.LENGTH_SHORT).show();
                                     }
                                 });
 
@@ -248,7 +248,7 @@ public class Unsentrec implements IHook {
                         File noNameLogsFile = new File(context.getFilesDir(), "NoNameLogs.txt");
                         if (noNameLogsFile.exists() && noNameLogsFile.length() > 0) {
                             Button nameEntryButton = new Button(context);
-                            nameEntryButton.setText("名前入力");
+                            nameEntryButton.setText(context.getResources().getString(R.string.enter_name));
                             int nameButtonId = View.generateViewId(); // IDを設定
                             nameEntryButton.setId(nameButtonId);
 
@@ -276,7 +276,7 @@ public class Unsentrec implements IHook {
                                     }
                                 } catch (IOException e) {
                                     e.printStackTrace();
-                                    Toast.makeText(context, "NoNameLogs.txt の読み取りに失敗しました", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, context.getResources().getString(R.string.read_nonamelogs_failed), Toast.LENGTH_SHORT).show();
                                     return;
                                 }
 
@@ -311,7 +311,7 @@ public class Unsentrec implements IHook {
                                     layout.addView(textView);
 
                                     EditText input = new EditText(context);
-                                    input.setHint("名前を入力してください");
+                                    input.setHint(context.getResources().getString(R.string.please_enter_name));
                                     layout.addView(input);
 
                                     talkidEditTexts.put(talkid, input);
@@ -320,7 +320,7 @@ public class Unsentrec implements IHook {
 
 
                                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                builder.setTitle("名前を入力");
+                                builder.setTitle(context.getResources().getString(R.string.enter_name));
                                 builder.setView(scrollView);
 
                                 builder.setPositiveButton("OK", (dialog, which) -> {
@@ -351,17 +351,17 @@ public class Unsentrec implements IHook {
                                             }
                                         } catch (IOException e) {
                                             e.printStackTrace();
-                                            Toast.makeText(context, "バックアップの作成に失敗しました", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(context, context.getResources().getString(R.string.backup_creation_failed), Toast.LENGTH_SHORT).show();
                                             return;
                                         }
 
                                         if (noNameLogsFile.delete()) {
-                                            Toast.makeText(context, "全ての名前が設定されました。再起動を推奨します。", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(context, context.getResources().getString(R.string.all_names_set_restart_suggested), Toast.LENGTH_SHORT).show();
                                         } else {
-                                            Toast.makeText(context, "ファイルの削除に失敗しました", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(context, context.getResources().getString(R.string.file_delete_failed), Toast.LENGTH_SHORT).show();
                                         }
                                     } else {
-                                        Toast.makeText(context, "全てのフィールドに名前を入力してください。", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, context.getResources().getString(R.string.enter_name_for_all_fields), Toast.LENGTH_SHORT).show();
                                     }
 
 
@@ -371,7 +371,7 @@ public class Unsentrec implements IHook {
                                     }
                                 });
 
-                                builder.setNegativeButton("キャンセル", (dialog, which) -> dialog.cancel());
+                                builder.setNegativeButton(context.getResources().getString(R.string.cancel), (dialog, which) -> dialog.cancel());
 
                                 builder.show();
                             });
@@ -415,21 +415,6 @@ public class Unsentrec implements IHook {
             }
         });
 
-        // Hooking b() method
-        XposedHelpers.findAndHookMethod("q01.c", lparam.classLoader, "b", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                String originalResult = (String) param.getResult();
-                String modifiedResult = "Hooked_b: " + originalResult;
-                XposedBridge.log("バージョン: " + originalResult);
-                param.setResult("14.14.1"); // 偽装するバージョン名
-
-            }
-        });
-
-
-
-
     }
 
 
@@ -450,7 +435,7 @@ public class Unsentrec implements IHook {
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(context, "ファイルの保存に失敗しました", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getResources().getString(R.string.file_delete_failed), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -629,13 +614,13 @@ public class Unsentrec implements IHook {
                 if (media != null) {
                     switch (media) {
                         case "7":
-                            mediaDescription = " スタンプ";
+                            mediaDescription = context.getResources().getString(R.string.sticker);
                             break;
                         case "1":
-                            mediaDescription = " 画像";
+                            mediaDescription = context.getResources().getString(R.string.picture);
                             break;
                         case "2":
-                            mediaDescription = " 動画";
+                            mediaDescription =context.getResources().getString(R.string.video);
                             break;
                         default:
                             mediaDescription = "";
@@ -702,9 +687,9 @@ public class Unsentrec implements IHook {
                     String logEntry = (timeFormatted != null ? timeFormatted : "No Time: ")
                             + name
                             + ": " + (content != null ? content : "NO get id:" + serverId)
-                            + (media != null && media.equals("7") ? " スタンプ" : media != null && media.equals("1") ? " 画像" : (media != null && media.equals("2") ? " 動画" : ""));
+                            + (media != null && media.equals("7") ? context.getResources().getString(R.string.sticker) : media != null && media.equals("1") ? context.getResources().getString(R.string.video) : (media != null && media.equals("2") ? context.getResources().getString(R.string.video) : ""));
 
-                    testWriter.write("再取得: " + logEntry);
+                    testWriter.write("reacquisition: " + logEntry);
                     testWriter.newLine();
                     XposedBridge.log("Resolved and saved to backup: serverId:" + serverId + content + " talkId:" + talkId);
                 }
