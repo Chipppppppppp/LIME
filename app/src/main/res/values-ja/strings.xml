@@ -75,16 +75,6 @@
     <string name="no_get_restart_app">正しく取得できませんでした。アプリを再起動してください</string>
     <string name="ok">ok</string>
 
-    <string name="set_id">IDを設定</string>
-
-    <string name="enter_name">名前を入力</string>
-    <string name="please_enter_name">名前を入力してください</string>
-    <string name="enter_name_for_all_fields">全てのフィールドに名前を入力してください。</string>
-    <string name="all_names_set_restart_suggested">全ての名前が設定されました。再起動を推奨します。</string>
-    <string name="name_set_restart_suggested">名前が設定されました。再起動を推奨します。</string>
-
-    <string name="read_nonamelogs_failed">NoNameLogs.txtの読み取りに失敗しました</string>
-
     <string name="yes">はい</string>
     <string name="no">いいえ</string>
     <string name="cancel">キャンセル</string>
