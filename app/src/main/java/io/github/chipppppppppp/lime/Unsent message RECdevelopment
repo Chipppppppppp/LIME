@@ -51,6 +51,19 @@ public class Unsentrec implements IHook {
     private static final int MAX_RETRIES = 3;
     private Context context; // メンバ変数として context を追加
 
+
+    public static final String Main_file = "UNSENT_REC.txt";
+    public static final String Main_backup = "BackUpFile.txt";
+    public static final String Noname_file = "NoNameLogs.txt";
+    public static final String NoNameLogs_Backup = "NoNameLogs_Backup.txt";
+
+    public static final String Update_name_List = "ChatNameUpdate.txt";
+    
+    String unresolvedFilePath = context.getFilesDir() + "/UnresolvedIds.txt";
+    
+    
+    
+
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (!Main.xPackagePrefs.getBoolean("unsen_rec", false)) return;
@@ -86,7 +99,7 @@ public class Unsentrec implements IHook {
                         clearButtonParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
                         container.addView(clearFileButton, clearButtonParams);
                         openFileButton.setOnClickListener(v -> {
-                            File backupFile = new File(context.getFilesDir(), "BackUpFile.txt");
+                            File backupFile = new File(context.getFilesDir(), Main_backup);
                             if (!backupFile.exists()) {
                                 try {
                                     backupFile.createNewFile();
@@ -124,7 +137,7 @@ public class Unsentrec implements IHook {
                                     .setTitle(context.getResources().getString(R.string.check))
                                     .setMessage(context.getResources().getString(R.string.check))
                                     .setPositiveButton(context.getResources().getString(R.string.yes), (dialog, which) -> {
-                                        File backupFile = new File(context.getFilesDir(), "BackUpFile.txt");
+                                        File backupFile = new File(context.getFilesDir(), Main_backup);
                                         if (backupFile.exists()) {
                                             try {
                                                 BufferedWriter writer = new BufferedWriter(new FileWriter(backupFile));
@@ -161,8 +174,8 @@ public class Unsentrec implements IHook {
                         View rootView = (View) param.getResult();
                         Context context = rootView.getContext();
 
-                        // Test.txt ファイルの処理
-                        File originalFile = new File(context.getFilesDir(), "Test.txt");
+
+                        File originalFile = new File(context.getFilesDir(), Main_file);
                         if (!originalFile.exists()) {
                             try {
                                 originalFile.createNewFile();
@@ -204,7 +217,7 @@ public class Unsentrec implements IHook {
                                                 .setMessage(output.toString())
                                                 .setPositiveButton(context.getResources().getString(R.string.ok), (dialog, which) -> {
                                                     try {
-                                                        File backupFile = new File(context.getFilesDir(), "BackUpFile.txt");
+                                                        File backupFile = new File(context.getFilesDir(), Main_backup);
                                                         BufferedWriter writer = new BufferedWriter(new FileWriter(backupFile, true));
                                                         writer.write(output.toString());
                                                         writer.close();
@@ -245,7 +258,7 @@ public class Unsentrec implements IHook {
                         }
 
 
-                        File noNameLogsFile = new File(context.getFilesDir(), "NoNameLogs.txt");
+                        File noNameLogsFile = new File(context.getFilesDir(), Noname_file);
                         if (noNameLogsFile.exists() && noNameLogsFile.length() > 0) {
                             Button nameEntryButton = new Button(context);
                             nameEntryButton.setText(context.getResources().getString(R.string.enter_name));
@@ -340,7 +353,7 @@ public class Unsentrec implements IHook {
                                     }
 
                                     if (allFieldsSet) {
-                                        File backupFile = new File(context.getFilesDir(), "NoNameLogs_Backup.txt");
+                                        File backupFile = new File(context.getFilesDir(), NoNameLogs_Backup);
                                         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(noNameLogsFile)));
                                              BufferedWriter writer = new BufferedWriter(new FileWriter(backupFile))) {
 
@@ -419,9 +432,9 @@ public class Unsentrec implements IHook {
 
 
     private void saveChatNameUpdate(Context context, String name) {
-        File updateFile = new File(context.getFilesDir(), "ChatNameUpdate.txt");
+        File updateFile = new File(context.getFilesDir(), Update_name_List);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(updateFile, true))) {
-            BufferedReader reader = new BufferedReader(new FileReader(new File(context.getFilesDir(), "NoNameLogs.txt")));
+            BufferedReader reader = new BufferedReader(new FileReader(new File(context.getFilesDir(), Noname_file)));
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.contains("No Name")) {
@@ -471,7 +484,7 @@ public class Unsentrec implements IHook {
 
 
     private void updateChatNamesFromNoNameLogs(Context context) {
-        File updateFile = new File(context.getFilesDir(), "ChatNameUpdate.txt");
+        File updateFile = new File(context.getFilesDir(), Update_name_List);
 
         if (updateFile.exists()) {
 
@@ -556,7 +569,6 @@ public class Unsentrec implements IHook {
         }
     }
     private void processMessage(String paramValue, Context context) {
-        String unresolvedFilePath = context.getFilesDir() + "/UnresolvedIds.txt";
 
         String[] operations = paramValue.split("Operation\\(");
         for (String operation : operations) {
@@ -633,8 +645,8 @@ public class Unsentrec implements IHook {
                         + ((content != null) ? content : (mediaDescription.isEmpty() ? "No content:" + serverId : ""))
                         + mediaDescription;
                 File fileToWrite = name.startsWith("No Name")
-                        ? new File(context.getFilesDir(), "NoNameLogs.txt")
-                        : new File(context.getFilesDir(), "Test.txt");
+                        ? new File(context.getFilesDir(), Noname_file)
+                        : new File(context.getFilesDir(), Main_file);
 
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToWrite, true))) {
                     writer.write(logEntry);
@@ -660,9 +672,9 @@ public class Unsentrec implements IHook {
     }
 
     private void resolveUnresolvedIds(Context context) {
-        String unresolvedFilePath = context.getFilesDir() + "/UnresolvedIds.txt";
+        
         File unresolvedFile = new File(unresolvedFilePath);
-        File testFile = new File(context.getFilesDir(), "Test.txt");
+        File testFile = new File(context.getFilesDir(), Main_file);
 
         if (!unresolvedFile.exists()) return;
 
