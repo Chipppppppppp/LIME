@@ -166,7 +166,7 @@ public class Unsentrec implements IHook {
 
         XposedHelpers.findAndHookMethod(
                 "com.linecorp.line.chatlist.view.fragment.ChatListPageFragment",
-                lparam.classLoader, "onCreateView",
+                loadPackageParam.classLoader, "onCreateView",
                 LayoutInflater.class, ViewGroup.class, android.os.Bundle.class,
                 new XC_MethodHook() {
                     @Override
@@ -418,7 +418,7 @@ public class Unsentrec implements IHook {
                     db = SQLiteDatabase.openDatabase(dbFile, dbParams);
 
 
-                    hookMessageDeletion(lparam, appContext);
+                    hookMessageDeletion(loadPackageParam, appContext);
                     updateChatNamesFromNoNameLogs(appContext);
                     resolveUnresolvedIds(appContext);
 
