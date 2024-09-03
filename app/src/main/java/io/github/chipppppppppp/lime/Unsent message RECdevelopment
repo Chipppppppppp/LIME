@@ -64,8 +64,9 @@ public class Unsentrec implements IHook {
                         RelativeLayout.LayoutParams containerParams = new RelativeLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         container.setLayoutParams(containerParams);
+
                         Button openFileButton = new Button(context);
-                        openFileButton.setText(context.getResources().getString(R.string.confirm_messages));
+                        openFileButton.setText(R.string.confirm_messages);
                         openFileButton.setTextSize(12);
                         openFileButton.setTextColor(Color.BLACK);
                         openFileButton.setId(View.generateViewId());
@@ -73,8 +74,9 @@ public class Unsentrec implements IHook {
                                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         buttonParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
                         container.addView(openFileButton, buttonParams);
+
                         Button clearFileButton = new Button(context);
-                        clearFileButton.setText(context.getResources().getString(R.string.delete_messages));
+                        clearFileButton.setText(R.string.delete_messages);
                         clearFileButton.setTextSize(12);
                         clearFileButton.setTextColor(Color.RED);
                         clearFileButton.setId(View.generateViewId());
@@ -83,14 +85,15 @@ public class Unsentrec implements IHook {
                         clearButtonParams.addRule(RelativeLayout.BELOW, openFileButton.getId());
                         clearButtonParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
                         container.addView(clearFileButton, clearButtonParams);
+
                         openFileButton.setOnClickListener(v -> {
-                            File backupFile = new File(context.getFilesDir(), Main_backup);
+                            File backupFile = new File(context.getFilesDir(), MAIN_BACKUP);
                             if (!backupFile.exists()) {
                                 try {
                                     backupFile.createNewFile();
                                 } catch (IOException e) {
                                     e.printStackTrace();
-                                    Toast.makeText(context,context.getResources().getString(R.string.file_creation_failed), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, R.string.file_creation_failed, Toast.LENGTH_SHORT).show();
                                     return;
                                 }
                             }
@@ -104,50 +107,49 @@ public class Unsentrec implements IHook {
                                     }
                                     reader.close();
                                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                    builder.setTitle(context.getResources().getString(R.string.backup))
+                                    builder.setTitle(R.string.backup)
                                             .setMessage(output.toString())
-                                            .setPositiveButton("OK", null)
+                                            .setPositiveButton(R.string.ok, null)
                                             .create()
                                             .show();
                                 } catch (IOException e) {
                                     e.printStackTrace();
-                                    Toast.makeText(context, context.getResources().getString(R.string.read_BackUpFile_failed), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, R.string.read_BackUpFile_failed, Toast.LENGTH_SHORT).show();
                                 }
                             } else {
-                                Toast.makeText(context, context.getResources().getString(R.string.no_backup_found), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_backup_found, Toast.LENGTH_SHORT).show();
                             }
                         });
+
                         clearFileButton.setOnClickListener(v -> {
                             new AlertDialog.Builder(context)
-                                    .setTitle(context.getResources().getString(R.string.check))
-                                    .setMessage(context.getResources().getString(R.string.check))
-                                    .setPositiveButton(context.getResources().getString(R.string.yes), (dialog, which) -> {
-                                        File backupFile = new File(context.getFilesDir(), Main_backup);
+                                    .setTitle(R.string.check)
+                                    .setMessage(R.string.really_delete)
+                                    .setPositiveButton(R.string.yes, (dialog, which) -> {
+                                        File backupFile = new File(context.getFilesDir(), MAIN_BACKUP);
                                         if (backupFile.exists()) {
                                             try {
                                                 BufferedWriter writer = new BufferedWriter(new FileWriter(backupFile));
                                                 writer.write("");
                                                 writer.close();
-                                                Toast.makeText(context, context.getResources().getString(R.string.file_content_deleted), Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(context, R.string.file_content_deleted, Toast.LENGTH_SHORT).show();
                                             } catch (IOException e) {
                                                 e.printStackTrace();
-                                                Toast.makeText(context, context.getResources().getString(R.string.file_delete_failed), Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(context, R.string.file_delete_failed, Toast.LENGTH_SHORT).show();
                                             }
                                         } else {
-                                            Toast.makeText(context,  context.getResources().getString(R.string.file_not_found), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(context, R.string.file_not_found, Toast.LENGTH_SHORT).show();
                                         }
                                     })
-                                    .setNegativeButton( context.getResources().getString(R.string.no), null)
+                                    .setNegativeButton(R.string.no, null)
                                     .create()
                                     .show();
                         });
-
 
                         ((ListView) viewGroup.getChildAt(0)).addFooterView(container);
                     }
                 }
         );
-
 
         XposedHelpers.findAndHookMethod(
                 "com.linecorp.line.chatlist.view.fragment.ChatListPageFragment",
@@ -160,14 +162,13 @@ public class Unsentrec implements IHook {
                         View rootView = (View) param.getResult();
                         Context context = rootView.getContext();
 
-
-                        File originalFile = new File(context.getFilesDir(), Main_file);
+                        File originalFile = new File(context.getFilesDir(), MAIN_FILE);
                         if (!originalFile.exists()) {
                             try {
                                 originalFile.createNewFile();
                             } catch (IOException e) {
                                 e.printStackTrace();
-                                Toast.makeText(context,  context.getResources().getString(R.string.file_creation_failed), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.file_creation_failed, Toast.LENGTH_SHORT).show();
                                 return;
                             }
                         }
@@ -179,7 +180,7 @@ public class Unsentrec implements IHook {
                                 Button button = new Button(context);
                                 button.setText(Integer.toString(lineCount));
                                 int buttonId = View.generateViewId();
-                                button.setId(buttonId);  // IDを設定
+                                button.setId(buttonId);
                                 RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
                                         RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                                 buttonParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -191,7 +192,7 @@ public class Unsentrec implements IHook {
                                         String line;
                                         while ((line = reader.readLine()) != null) {
                                             if (line.contains("No content") || line.contains("No name")) {
-                                                Toast.makeText(context,  context.getResources().getString(R.string.no_get_restart_app), Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(context, R.string.no_get_restart_app, Toast.LENGTH_SHORT).show();
                                                 continue;
                                             }
                                             output.append(line).append("\n");
@@ -199,24 +200,23 @@ public class Unsentrec implements IHook {
                                         reader.close();
 
                                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                        builder.setTitle(context.getResources().getString(R.string.deleted_messages))
+                                        builder.setTitle(R.string.deleted_messages)
                                                 .setMessage(output.toString())
-                                                .setPositiveButton(context.getResources().getString(R.string.ok), (dialog, which) -> {
+                                                .setPositiveButton(R.string.ok, (dialog, which) -> {
                                                     try {
-                                                        File backupFile = new File(context.getFilesDir(), Main_backup);
+                                                        File backupFile = new File(context.getFilesDir(), MAIN_BACKUP);
                                                         BufferedWriter writer = new BufferedWriter(new FileWriter(backupFile, true));
                                                         writer.write(output.toString());
                                                         writer.close();
                                                         BufferedWriter clearWriter = new BufferedWriter(new FileWriter(originalFile));
                                                         clearWriter.write("");
                                                         clearWriter.close();
-                                                        Toast.makeText(context, context.getResources().getString(R.string.content_moved_to_backup), Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(context, R.string.content_moved_to_backup, Toast.LENGTH_SHORT).show();
                                                     } catch (IOException e) {
                                                         e.printStackTrace();
-                                                        Toast.makeText(context, context.getResources().getString(R.string.file_move_failed), Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(context, R.string.file_move_failed, Toast.LENGTH_SHORT).show();
                                                     }
 
-                                                    // ボタンの親からボタンを削除
                                                     if (button.getParent() instanceof ViewGroup) {
                                                         ViewGroup parent = (ViewGroup) button.getParent();
                                                         parent.removeView(button);
@@ -226,10 +226,9 @@ public class Unsentrec implements IHook {
                                                 .show();
                                     } catch (IOException e) {
                                         e.printStackTrace();
-                                        Toast.makeText(context, context.getResources().getString(R.string.read_BackUpFile_failed), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, R.string.read_BackUpFile_failed, Toast.LENGTH_SHORT).show();
                                     }
                                 });
-
 
                                 if (rootView instanceof ViewGroup) {
                                     ViewGroup viewGroup = (ViewGroup) rootView;
@@ -237,7 +236,7 @@ public class Unsentrec implements IHook {
 
                                     View existingButton = viewGroup.findViewById(buttonId);
                                     if (existingButton != null) {
-
+                                        // Button already exists, do nothing
                                     }
                                 }
                             }
@@ -246,258 +245,236 @@ public class Unsentrec implements IHook {
                 }
         );
 
-
-
         XposedBridge.hookAllMethods(Application.class, "onCreate", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 Application appContext = (Application) param.thisObject;
 
+                // "naver_line" データベースファイル
                 File dbFile1 = appContext.getDatabasePath("naver_line");
-
+                // "contact" データベースファイル
                 File dbFile2 = appContext.getDatabasePath("contact");
 
+                SQLiteDatabase db1 = null;
+                SQLiteDatabase db2 = null;
 
-                if (dbFile1.exists() && dbFile2.exists()) {
-
+                // naver_line データベース
+                if (dbFile1.exists()) {
                     SQLiteDatabase.OpenParams.Builder builder1 = new SQLiteDatabase.OpenParams.Builder();
                     builder1.addOpenFlags(SQLiteDatabase.OPEN_READWRITE);
                     SQLiteDatabase.OpenParams dbParams1 = builder1.build();
+                    db1 = SQLiteDatabase.openDatabase(dbFile1, dbParams1);
 
+                    hookMessageDeletion(loadPackageParam, appContext, db1);
+                    resolveUnresolvedIds(appContext, db1);
+                }
+
+                // contact データベース
+                if (dbFile2.exists()) {
                     SQLiteDatabase.OpenParams.Builder builder2 = new SQLiteDatabase.OpenParams.Builder();
                     builder2.addOpenFlags(SQLiteDatabase.OPEN_READWRITE);
                     SQLiteDatabase.OpenParams dbParams2 = builder2.build();
-
-                    db1 = SQLiteDatabase.openDatabase(dbFile1, dbParams1);
                     db2 = SQLiteDatabase.openDatabase(dbFile2, dbParams2);
 
-                    hookMessageDeletion(loadPackageParam, appContext, db1, db2);
-                    resolveUnresolvedIds(loadPackageParam,appContext, db1, db2);
-
+                    // contactデータベースに対する処理をここで追加します
+                    hookMessageDeletion(loadPackageParam, appContext, db2);
+                    resolveUnresolvedIds(appContext, db2);
                 }
-
             }
         });
     }
 
-    private String queryDatabase(SQLiteDatabase db, String query, String... selectionArgs) {
-        if (db == null) {
-            XposedBridge.log("Database is not initialized.");
-            return null;
+        private String queryDatabase (SQLiteDatabase db, String query, String...selectionArgs){
+            Cursor cursor = db.rawQuery(query, selectionArgs);
+            String result = null;
+            if (cursor.moveToFirst()) {
+                result = cursor.getString(0);
+            }
+            cursor.close();
+            return result;
         }
-        Cursor cursor = db.rawQuery(query, selectionArgs);
-        String result = null;
-        if (cursor.moveToFirst()) {
-            result = cursor.getString(0);
-        }
-        cursor.close();
-        return result;
-    }
 
-    private int countLinesInFile(File file) throws IOException {
-        int lineCount = 0;
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
-            while (reader.readLine() != null) {
-                lineCount++;
+        private int countLinesInFile (File file) throws IOException {
+            int lineCount = 0;
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
+                while (reader.readLine() != null) {
+                    lineCount++;
+                }
+            }
+            return lineCount;
+        }
+
+        private void hookMessageDeletion (XC_LoadPackage.LoadPackageParam lparam, Context
+        context, SQLiteDatabase db1){
+            try {
+                Class<?> hookTarget = lparam.classLoader.loadClass("org.apache.thrift.l");
+                XposedBridge.hookAllMethods(hookTarget, "a", new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        String paramValue = param.args[1].toString();
+                        if (paramValue.contains("type:NOTIFIED_DESTROY_MESSAGE,")) {
+                            processMessage(paramValue, context);
+                        }
+                    }
+                });
+            } catch (ClassNotFoundException e) {
+                XposedBridge.log("Class not found: " + e.getMessage());
             }
         }
-        return lineCount;
-    }
-    private void hookMessageDeletion(XC_LoadPackage.LoadPackageParam lparam, Context context, SQLiteDatabase db1,SQLiteDatabase db2) {
-        try {
-            Class<?> hookTarget = lparam.classLoader.loadClass("org.apache.thrift.l");
-            XposedBridge.hookAllMethods(hookTarget, "a", new XC_MethodHook() {
 
+        private void processMessage (String paramValue, Context context){
+            String unresolvedFilePath = context.getFilesDir() + "/UnresolvedIds.txt";
 
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    String paramValue = param.args[1].toString();
-                    if (paramValue.contains("type:NOTIFIED_DESTROY_MESSAGE,")) {
-                        processMessage(paramValue, context, db1, db2);
+            String[] operations = paramValue.split("Operation\\(");
+            for (String operation : operations) {
+                if (operation.trim().isEmpty()) continue;
+                String revision = null;
+                String createdTime = null;
+                String type = null;
+                String from = null;
+                String to = null;
+                String param12 = null;
+                String param22 = null;
+                String operationContent = null;
+                String serverId = null;
+                String talkId = null;
+
+                String[] parts = operation.split(",");
+                for (String part : parts) {
+                    part = part.trim();
+                    if (part.startsWith("param1:")) {
+                        talkId = part.substring("param1:".length()).trim();
+                    } else if (part.startsWith("param2:")) {
+                        serverId = part.substring("param2:".length()).trim();
+                    } else if (part.startsWith("revision:")) {
+                        revision = part.substring("revision:".length()).trim();
+                    } else if (part.startsWith("createdTime:")) {
+                        createdTime = part.substring("createdTime:".length()).trim();
+                    } else if (part.startsWith("type:")) {
+                        type = part.substring("type:".length()).trim();
+                    } else if (part.startsWith("from:")) {
+                        from = part.substring("from:".length()).trim();
+                    } else if (part.startsWith("to:")) {
+                        to = part.substring("to:".length()).trim();
+                    } else if (part.startsWith("contentMetadata:")) {
+                        param12 = part.substring("contentMetadata:".length()).trim();
+                    } else if (part.startsWith("operationContent:")) {
+                        operationContent = part.substring("operationContent:".length()).trim();
                     }
                 }
-            });
-        } catch (ClassNotFoundException e) {
-            XposedBridge.log("Class not found: " + e.getMessage());
-        }
-    }
-    private void processMessage(String paramValue, Context context, SQLiteDatabase db1, SQLiteDatabase db2) {
-        String unresolvedFilePath = context.getFilesDir() + "/UnresolvedIds.txt";
 
-        String[] operations = paramValue.split("Operation\\(");
-        for (String operation : operations) {
-            if (operation.trim().isEmpty()) continue;
-            String revision = null;
-            String createdTime = null;
-            String type = null;
-            String from = null;
-            String to = null;
-            String param12 = null;
-            String param22 = null;
-            String operationContent = null;
-            String serverId = null;
-            String talkId = null;
+                if (serverId != null && talkId != null) {
+                    String content = queryDatabase(db1, "SELECT content FROM chat_history WHERE server_id=?", serverId);
+                    String imageCheck = queryDatabase(db1, "SELECT attachement_image FROM chat_history WHERE server_id=?", serverId);
+                    String timeEpochStr = queryDatabase(db1, "SELECT created_time FROM chat_history WHERE server_id=?", serverId);
+                    String timeFormatted = formatMessageTime(timeEpochStr);
+                    String groupName = queryDatabase(db1, "SELECT name FROM groups WHERE id=?", talkId);
+                    String media = queryDatabase(db1, "SELECT attachement_type FROM chat_history WHERE server_id=?", serverId);
+                    // contactデータベースからtalkNameを取得
+                    String talkName = queryDatabase(db2, "SELECT profile_name FROM contacts WHERE mid=?", talkId);
 
-            String[] parts = operation.split(",");
-            for (String part : parts) {
-                part = part.trim();
-                if (part.startsWith("param1:")) {
-                    talkId = part.substring("param1:".length()).trim();
-                } else if (part.startsWith("param2:")) {
-                    serverId = part.substring("param2:".length()).trim();
-                } else if (part.startsWith("revision:")) {
-                    revision = part.substring("revision:".length()).trim();
-                } else if (part.startsWith("createdTime:")) {
-                    createdTime = part.substring("createdTime:".length()).trim();
-                } else if (part.startsWith("type:")) {
-                    type = part.substring("type:".length()).trim();
-                } else if (part.startsWith("from:")) {
-                    from = part.substring("from:".length()).trim();
-                } else if (part.startsWith("to:")) {
-                    to = part.substring("to:".length()).trim();
-                } else if (part.startsWith("contentMetadata:")) {
-                    param12 = part.substring("contentMetadata:".length()).trim();
-                } else if (part.startsWith("operationContent:")) {
-                    operationContent = part.substring("operationContent:".length()).trim();
-                }
-            }
+                    String name = (groupName != null ? groupName : (talkName != null ? talkName : "No Name" + ":" + ":" + "talkId" + talkId));
 
-            if (serverId != null && talkId != null) {
-                String content = queryDatabase(db1, "SELECT content FROM chat_history WHERE server_id=?", serverId);
+                    if (content == null && !("0".equals("media"))) {
+                        saveUnresolvedIds(serverId, talkId, unresolvedFilePath);
+                    }
+                    String mediaDescription = "";
+                    if (media != null) {
+                        switch (media) {
+                            case "7":
+                                mediaDescription = context.getResources().getString(R.string.sticker);
+                                break;
+                            case "1":
+                                mediaDescription = context.getResources().getString(R.string.picture);
+                                break;
+                            case "2":
+                                mediaDescription = context.getResources().getString(R.string.video);
+                                break;
+                            default:
+                                mediaDescription = "";
+                                break;
+                        }
+                    }
+                    String logEntry = (timeFormatted != null ? timeFormatted : "No Time: ")
+                            + name
+                            + ": "
+                            + ((content != null) ? content : (mediaDescription.isEmpty() ? "No content:" + serverId : ""))
+                            + mediaDescription;
 
+                    File fileToWrite = new File(context.getFilesDir(), "UNSENT_REC.txt");
 
-
-                String imageCheck = queryDatabase(db1, "SELECT attachement_image FROM chat_history WHERE server_id=?", serverId);
-                String timeEpochStr = queryDatabase(db1, "SELECT created_time FROM chat_history WHERE server_id=?", serverId);
-                String timeFormatted = formatMessageTime(timeEpochStr);
-
-
-
-
-                String groupName = queryDatabase(db1, "SELECT name FROM groups WHERE id=?", talkId);
-                String media = queryDatabase(db1,"SELECT attachement_type FROM chat_history WHERE server_id=?", serverId);
-
-
-                // contactデータベースからtalkNameを取得
-                String talkName = queryDatabase(db2, "SELECT profile_name FROM contacts WHERE mid=?", talkId);
-
-                String name = (groupName != null ? groupName : (talkName != null ? talkName : "No Name" + ":" + ":" + "talkId" + talkId));
-
-                if (timeEpochStr == null) {
-                    saveUnresolvedIds(serverId, talkId, unresolvedFilePath);
-                }
-
-                String mediaDescription = "";
-                if (media != null) {
-                    switch (media) {
-                        case "7":
-                            mediaDescription = context.getResources().getString(R.string.sticker);
-                            break;
-                        case "1":
-                            mediaDescription = context.getResources().getString(R.string.picture);
-                            break;
-                        case "2":
-                            mediaDescription = context.getResources().getString(R.string.video);
-                            break;
-                        default:
-                            mediaDescription = "";
-                            break;
+                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToWrite, true))) {
+                        writer.write(logEntry);
+                        writer.newLine();
+                    } catch (IOException e) {
+                        XposedBridge.log("IOException occurred while writing to file: " + e.getMessage());
                     }
                 }
-                String logEntry = (timeFormatted != null ? timeFormatted : "No Time: ")
-                        + name
-                        + ": "
-                        + ((content != null) ? content : (mediaDescription.isEmpty() ? "No content:" + serverId : ""))
-                        + mediaDescription;
+            }
+        }
 
-                File fileToWrite = new File(context.getFilesDir(), Main_file);
+        private void saveUnresolvedIds (String serverId, String talkId, String filePath){
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+                writer.write("serverId:" + serverId + ",talkId:" + talkId);
+                writer.newLine();
+            } catch (IOException e) {
+                XposedBridge.log("IOException occurred while saving unresolved IDs: " + e.getMessage());
+            }
+        }
 
+        private void resolveUnresolvedIds (Context context, SQLiteDatabase db1){
+            String unresolvedFilePath = context.getFilesDir() + "/UnresolvedIds.txt";
 
-                try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToWrite, true))) {
-                    writer.write(logEntry);
-                    writer.newLine();
-                } catch (IOException e) {
-                    XposedBridge.log("IOException occurred while writing to file: " + e.getMessage());
+            File unresolvedFile = new File(unresolvedFilePath);
+            File testFile = new File(context.getFilesDir(), "UNSENT_REC.txt");
+
+            if (!unresolvedFile.exists()) return;
+
+            try (BufferedReader reader = new BufferedReader(new FileReader(unresolvedFile));
+                 BufferedWriter testWriter = new BufferedWriter(new FileWriter(testFile, true))) {
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split(",");
+                    String serverId = parts[0].split(":")[1];
+                    String talkId = parts[1].split(":")[1];
+
+                    String content = queryDatabase(db1, "SELECT content FROM chat_history WHERE server_id=?", serverId);
+                    String imageCheck = queryDatabase(db1, "SELECT attachement_image FROM chat_history WHERE server_id=?", serverId);
+                    String timeEpochStr = queryDatabase(db1, "SELECT created_time FROM chat_history WHERE server_id=?", serverId);
+                    String timeFormatted = formatMessageTime(timeEpochStr);
+                    String groupName = queryDatabase(db1, "SELECT name FROM groups WHERE id=?", talkId);
+                    String media = queryDatabase(db1, "SELECT attachement_type FROM chat_history WHERE server_id=?", serverId);
+                    // contactデータベースからtalkNameを取得
+                    String talkName = queryDatabase(db2, "SELECT profile_name FROM contacts WHERE mid=?", talkId);
+
+                    String name = (groupName != null ? groupName : (talkName != null ? talkName : "No Name" + ":" + ":" + "talkId" + talkId));
+                    if (content != null) {
+                        String logEntry = (timeFormatted != null ? timeFormatted : "No Time: ")
+                                + name
+                                + ": " + (content != null ? content : "NO get id:" + serverId)
+                                + (media != null && media.equals("7") ? context.getResources().getString(R.string.sticker) : media != null && media.equals("1") ? context.getResources().getString(R.string.video) : (media != null && media.equals("2") ? context.getResources().getString(R.string.video) : ""));
+
+                        testWriter.write("reacquisition: " + logEntry);
+                        testWriter.newLine();
+                        XposedBridge.log("Resolved and saved to backup: serverId:" + serverId + content + " talkId:" + talkId);
+                    }
                 }
-            }
 
-        }
-    }
-
-
-
-
-
-    private void saveUnresolvedIds(String serverId, String talkId, String unresolvedFilePath) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(unresolvedFilePath, true))) {
-            writer.write("serverId:" + serverId + ",talkId:" + talkId);
-            writer.newLine();
-        } catch (IOException e) {
-            XposedBridge.log("IOException occurred while saving unresolved IDs: " + e.getMessage());
-        }
-    }
-
-    private void resolveUnresolvedIds(XC_LoadPackage.LoadPackageParam lparam, Context context, SQLiteDatabase db1,SQLiteDatabase db2) {
-        String unresolvedFilePath = context.getFilesDir() + "/UnresolvedIds.txt";
-
-        File unresolvedFile = new File(unresolvedFilePath);
-        File testFile = new File(context.getFilesDir(), Main_file);
-
-        if (!unresolvedFile.exists()) return;
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(unresolvedFile));
-             BufferedWriter testWriter = new BufferedWriter(new FileWriter(testFile, true))) {
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                String serverId = parts[0].split(":")[1];
-                String talkId = parts[1].split(":")[1];
-
-                String content = queryDatabase(db1, "SELECT content FROM chat_history WHERE server_id=?", serverId);
-                String imageCheck = queryDatabase(db1, "SELECT attachement_image FROM chat_history WHERE server_id=?", serverId);
-                String timeEpochStr = queryDatabase(db1, "SELECT created_time FROM chat_history WHERE server_id=?", serverId);
-                String timeFormatted = formatMessageTime(timeEpochStr);
-                String groupName = queryDatabase(db1, "SELECT name FROM groups WHERE id=?", talkId);
-                String media = queryDatabase(db1,"SELECT attachement_type FROM chat_history WHERE server_id=?", serverId);
-                // contactデータベースからtalkNameを取得
-                String talkName = queryDatabase(db2, "SELECT profile_name FROM contacts WHERE mid=?", talkId);
-
-                String name = (groupName != null ? groupName : (talkName != null ? talkName : "No Name" + ":" + ":" + "talkId" + talkId));
-
-                String logEntry = (timeFormatted != null ? timeFormatted : "No Time: ")
-                        + name
-                        + ": " + (content != null ? content : "NO get id:" + serverId)
-                        + (media != null && media.equals("7") ? context.getResources().getString(R.string.sticker) : media != null && media.equals("1") ? context.getResources().getString(R.string.video) : (media != null && media.equals("2") ? context.getResources().getString(R.string.video) : ""));
-                if (timeEpochStr == null) {
-                    saveUnresolvedIds(serverId, talkId, unresolvedFilePath);
+                try (BufferedWriter clearWriter = new BufferedWriter(new FileWriter(unresolvedFile))) {
+                    clearWriter.write("");
                 }
-                testWriter.write("再取得" + logEntry);
-                testWriter.newLine();
-                XposedBridge.log("Resolved and saved to backup: serverId:" + serverId + content + " talkId:" + talkId);
 
+            } catch (IOException e) {
+                XposedBridge.log("IOException occurred while resolving and saving unresolved IDs: " + e.getMessage());
             }
-
-
-            try (BufferedWriter clearWriter = new BufferedWriter(new FileWriter(unresolvedFile))) {
-                clearWriter.write("");
-            }
-
-        } catch (IOException e) {
-            XposedBridge.log("IOException occurred while resolving and saving unresolved IDs: " + e.getMessage());
         }
-    }
 
-
-
-
-    private String formatMessageTime(String timeEpochStr) {
-        if (timeEpochStr == null) return null;
-        long timeEpoch = Long.parseLong(timeEpochStr);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        return sdf.format(new Date(timeEpoch));
-    }
-
-
+        private String formatMessageTime (String timeEpochStr){
+            if (timeEpochStr == null) return null;
+            long timeEpoch = Long.parseLong(timeEpochStr);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            return sdf.format(new Date(timeEpoch));
+        }
 
 }
