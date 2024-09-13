@@ -100,7 +100,9 @@ LI**M**E
 > - Wear OS (スマートウォッチ)での使用不可
 
 1. [**LSPatch**](https://github.com/LSPosed/LSPatch) をインストール  
-  ※フォークで開発されている [**NPatch**](https://github.com/HSSkyBoy/NPatch) では不具合が発生する可能性があります
+  ※フォークで開発されている [**NPatch**](https://github.com/HSSkyBoy/NPatch) では不具合が発生する可能性があります。  
+  また、**LSPosed 公式** の LSPatch を利用してアプリがクラッシュするな場合は、フォークで開発されている [**JingMatrix LSPatch**](https://github.com/JingMatrix/LSPatch/) を利用してパッチを適用すると正常に動作する場合があります。
+
 2. **LSPatch** アプリを開き、<kbd>管理</kbd> > 右下の <kbd>＋</kbd> > <kbd>ストレージからapkを選択</kbd> >  先程ダウンロードした LI**N**E の APK を選択 > <kbd>統合</kbd> → <kbd>モジュールを埋め込む</kbd> > <kbd>インストールされているアプリを選択</kbd> > LI**M**E にチェックを入れて <kbd>＋</kbd> > <kbd>パッチを開始</kbd> より、パッチを適用
 
 ※[この方法](https://github.com/Chipppppppppp/LIME/issues/50#issuecomment-2174842592) を用いればトークの復元が可能なようです。
@@ -123,7 +125,7 @@ LI**M**E
 
 > [!IMPORTANT]
 > 既に Playストア からインストールした LINE アプリがインストールされている場合は、署名が競合するため、最初にアンインストールを行ってください。  
-> また、アンインストールする場合は、必ず <kbd>ホーム</kbd> > <kbd>設定</kbd> > <kbd>アカウント引き継ぎオプション</kbd> > <b><kbd>2段階認証をスキップ</kbd></b> のスイッチを **ON** にした状態でアンインストールを行ってください。
+
 
 ## 複数デバイスログイン
 
