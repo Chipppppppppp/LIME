@@ -49,7 +49,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
@@ -93,13 +93,6 @@ jobs:
           else
             ./gradlew assembleDebug --no-daemon --stacktrace
           fi
-
-      - name: Change Java
-        if: github.event.inputs.lspatch == 'true'
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '11'
 
       - name: LSPatch
         if: github.event.inputs.lspatch == 'true'
