@@ -121,7 +121,7 @@ jobs:
         if: github.event.inputs.lspatch == 'true'
         with:
           name: LINE-${{ env.line_ver }}@${{ env.commit }}
-          path: line-${{ env.line_ver }}-398-lspatched.apk
+          path: line-${{ env.line_ver }}-*-lspatched.apk
           if-no-files-found: error
 
       - name: Release
