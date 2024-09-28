@@ -1,11 +1,13 @@
 package io.github.chipppppppppp.lime.hooks;
 
 import android.app.AlertDialog;
+import android.app.AndroidAppHelper;
 import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +36,7 @@ import io.github.chipppppppppp.lime.LimeOptions;
 import io.github.chipppppppppp.lime.R;
 
 public class Unsentrec implements IHook {
- 
+
 
 
     public static final String Main_file = "UNSENT_REC.txt";
@@ -59,38 +61,52 @@ public class Unsentrec implements IHook {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         ViewGroup viewGroup = (ViewGroup) param.thisObject;
-                        Context context = viewGroup.getContext();
-                        RelativeLayout container = new RelativeLayout(context);
+                        Context appContext = viewGroup.getContext();
+
+                        // モジュールのContextを取得
+                        Context moduleContext = AndroidAppHelper.currentApplication().createPackageContext(
+                                "io.github.chipppppppppp.lime", Context.CONTEXT_IGNORE_SECURITY);
+
+                        RelativeLayout container = new RelativeLayout(appContext);
                         RelativeLayout.LayoutParams containerParams = new RelativeLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         container.setLayoutParams(containerParams);
-                        Button openFileButton = new Button(context);
-                        openFileButton.setText(context.getResources().getString(R.string.confirm_messages));
+
+                        // ボタンを作成してリソースをモジュールから取得
+                        Button openFileButton = new Button(appContext);
+                        openFileButton.setText(moduleContext.getResources().getString(R.string.confirm_messages));  // モジュールのリソースを使う
+                        Log.d("Unsentrec", "confirm_messages ID: " + R.string.confirm_messages);
+
                         openFileButton.setTextSize(12);
                         openFileButton.setTextColor(Color.BLACK);
                         openFileButton.setId(View.generateViewId());
+
                         RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         buttonParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
                         container.addView(openFileButton, buttonParams);
-                        Button clearFileButton = new Button(context);
-                        clearFileButton.setText(context.getResources().getString(R.string.delete_messages));
+
+                        Button clearFileButton = new Button(appContext);
+                        clearFileButton.setText(moduleContext.getResources().getString(R.string.delete_messages));  // モジュールのリソースを使う
                         clearFileButton.setTextSize(12);
                         clearFileButton.setTextColor(Color.RED);
                         clearFileButton.setId(View.generateViewId());
+
                         RelativeLayout.LayoutParams clearButtonParams = new RelativeLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         clearButtonParams.addRule(RelativeLayout.BELOW, openFileButton.getId());
                         clearButtonParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
                         container.addView(clearFileButton, clearButtonParams);
+
+                        // ボタンのクリック処理
                         openFileButton.setOnClickListener(v -> {
-                            File backupFile = new File(context.getFilesDir(), Main_backup);
+                            File backupFile = new File(appContext.getFilesDir(), "Main_backup");
                             if (!backupFile.exists()) {
                                 try {
                                     backupFile.createNewFile();
                                 } catch (IOException e) {
                                     e.printStackTrace();
-                                    Toast.makeText(context,context.getResources().getString(R.string.file_creation_failed), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(appContext, moduleContext.getResources().getString(R.string.file_creation_failed), Toast.LENGTH_SHORT).show();  // モジュールのリソースを使う
                                     return;
                                 }
                             }
@@ -103,50 +119,52 @@ public class Unsentrec implements IHook {
                                         output.append(line).append("\n");
                                     }
                                     reader.close();
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                    builder.setTitle(context.getResources().getString(R.string.backup))
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(appContext);
+                                    builder.setTitle(moduleContext.getResources().getString(R.string.backup))  // モジュールのリソースを使う
                                             .setMessage(output.toString())
                                             .setPositiveButton("OK", null)
                                             .create()
                                             .show();
                                 } catch (IOException e) {
                                     e.printStackTrace();
-                                    Toast.makeText(context, context.getResources().getString(R.string.read_BackUpFile_failed), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(appContext, moduleContext.getResources().getString(R.string.read_BackUpFile_failed), Toast.LENGTH_SHORT).show();  // モジュールのリソースを使う
                                 }
                             } else {
-                                Toast.makeText(context, context.getResources().getString(R.string.no_backup_found), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(appContext, moduleContext.getResources().getString(R.string.no_backup_found), Toast.LENGTH_SHORT).show();  // モジュールのリソースを使う
                             }
                         });
+
                         clearFileButton.setOnClickListener(v -> {
-                            new AlertDialog.Builder(context)
-                                    .setTitle(context.getResources().getString(R.string.check))
-                                    .setMessage(context.getResources().getString(R.string.really_delete))
-                                    .setPositiveButton(context.getResources().getString(R.string.yes), (dialog, which) -> {
-                                        File backupFile = new File(context.getFilesDir(), Main_backup);
+                            new AlertDialog.Builder(appContext)
+                                    .setTitle(moduleContext.getResources().getString(R.string.check))  // モジュールのリソースを使う
+                                    .setMessage(moduleContext.getResources().getString(R.string.really_delete))  // モジュールのリソースを使う
+                                    .setPositiveButton(moduleContext.getResources().getString(R.string.yes), (dialog, which) -> {
+                                        File backupFile = new File(appContext.getFilesDir(), "Main_backup");
                                         if (backupFile.exists()) {
                                             try {
                                                 BufferedWriter writer = new BufferedWriter(new FileWriter(backupFile));
                                                 writer.write("");
                                                 writer.close();
-                                                Toast.makeText(context, context.getResources().getString(R.string.file_content_deleted), Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(appContext, moduleContext.getResources().getString(R.string.file_content_deleted), Toast.LENGTH_SHORT).show();  // モジュールのリソースを使う
                                             } catch (IOException e) {
                                                 e.printStackTrace();
-                                                Toast.makeText(context, context.getResources().getString(R.string.file_delete_failed), Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(appContext, moduleContext.getResources().getString(R.string.file_delete_failed), Toast.LENGTH_SHORT).show();  // モジュールのリソースを使う
                                             }
                                         } else {
-                                            Toast.makeText(context,  context.getResources().getString(R.string.file_not_found), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(appContext, moduleContext.getResources().getString(R.string.file_not_found), Toast.LENGTH_SHORT).show();  // モジュールのリソースを使う
                                         }
                                     })
-                                    .setNegativeButton( context.getResources().getString(R.string.no), null)
+                                    .setNegativeButton(moduleContext.getResources().getString(R.string.no), null)
                                     .create()
                                     .show();
                         });
 
-
+                        // ListViewにフッターとしてコンテナを追加
                         ((ListView) viewGroup.getChildAt(0)).addFooterView(container);
                     }
                 }
         );
+
 
 
         XposedHelpers.findAndHookMethod(
@@ -167,7 +185,7 @@ public class Unsentrec implements IHook {
                                 originalFile.createNewFile();
                             } catch (IOException e) {
                                 e.printStackTrace();
-                                Toast.makeText(context,  context.getResources().getString(R.string.file_creation_failed), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context,  R.string.file_creation_failed, Toast.LENGTH_SHORT).show();
                                 return;
                             }
                         }
@@ -191,7 +209,7 @@ public class Unsentrec implements IHook {
                                         String line;
                                         while ((line = reader.readLine()) != null) {
                                             if (line.contains("No content") || line.contains("No name")) {
-                                                Toast.makeText(context,  context.getResources().getString(R.string.no_get_restart_app), Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(context, R.string.no_get_restart_app, Toast.LENGTH_SHORT).show();
                                                 continue;
                                             }
                                             output.append(line).append("\n");
@@ -199,9 +217,9 @@ public class Unsentrec implements IHook {
                                         reader.close();
 
                                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                        builder.setTitle(context.getResources().getString(R.string.deleted_messages))
+                                        builder.setTitle(R.string.deleted_messages)
                                                 .setMessage(output.toString())
-                                                .setPositiveButton(context.getResources().getString(R.string.ok), (dialog, which) -> {
+                                                .setPositiveButton(R.string.ok, (dialog, which) -> {
                                                     try {
                                                         File backupFile = new File(context.getFilesDir(), Main_backup);
                                                         BufferedWriter writer = new BufferedWriter(new FileWriter(backupFile, true));
@@ -210,10 +228,10 @@ public class Unsentrec implements IHook {
                                                         BufferedWriter clearWriter = new BufferedWriter(new FileWriter(originalFile));
                                                         clearWriter.write("");
                                                         clearWriter.close();
-                                                        Toast.makeText(context, context.getResources().getString(R.string.content_moved_to_backup), Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(context, R.string.content_moved_to_backup, Toast.LENGTH_SHORT).show();
                                                     } catch (IOException e) {
                                                         e.printStackTrace();
-                                                        Toast.makeText(context, context.getResources().getString(R.string.file_move_failed), Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(context, R.string.file_move_failed, Toast.LENGTH_SHORT).show();
                                                     }
 
                                                     // ボタンの親からボタンを削除
@@ -226,7 +244,7 @@ public class Unsentrec implements IHook {
                                                 .show();
                                     } catch (IOException e) {
                                         e.printStackTrace();
-                                        Toast.makeText(context, context.getResources().getString(R.string.read_BackUpFile_failed), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, R.string.read_BackUpFile_failed, Toast.LENGTH_SHORT).show();
                                     }
                                 });
 
@@ -242,8 +260,8 @@ public class Unsentrec implements IHook {
                                 }
                             }
                         }
-                        }
                     }
+                }
         );
 
 
@@ -252,14 +270,14 @@ public class Unsentrec implements IHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 Application appContext = (Application) param.thisObject;
-                
+
                 File dbFile1 = appContext.getDatabasePath("naver_line");
-                
+
                 File dbFile2 = appContext.getDatabasePath("contact");
 
-              
+
                 if (dbFile1.exists() && dbFile2.exists()) {
-                
+
                     SQLiteDatabase.OpenParams.Builder builder1 = new SQLiteDatabase.OpenParams.Builder();
                     builder1.addOpenFlags(SQLiteDatabase.OPEN_READWRITE);
                     SQLiteDatabase.OpenParams dbParams1 = builder1.build();
@@ -267,10 +285,10 @@ public class Unsentrec implements IHook {
                     SQLiteDatabase.OpenParams.Builder builder2 = new SQLiteDatabase.OpenParams.Builder();
                     builder2.addOpenFlags(SQLiteDatabase.OPEN_READWRITE);
                     SQLiteDatabase.OpenParams dbParams2 = builder2.build();
-                    
+
                     db1 = SQLiteDatabase.openDatabase(dbFile1, dbParams1);
                     db2 = SQLiteDatabase.openDatabase(dbFile2, dbParams2);
-                    
+
                     hookMessageDeletion(loadPackageParam, appContext, db1, db2);
                     resolveUnresolvedIds(appContext, db1, db2);
                 }
@@ -304,7 +322,7 @@ public class Unsentrec implements IHook {
     }
     private void hookMessageDeletion(XC_LoadPackage.LoadPackageParam lparam, Context context, SQLiteDatabase db1,SQLiteDatabase db2) {
         try {
-            Class<?> hookTarget = lparam.classLoader.loadClass("org.apache.thrift.l");
+            Class<?> hookTarget = lparam.classLoader.loadClass("org.apache.thrift.k");
             XposedBridge.hookAllMethods(hookTarget, "a", new XC_MethodHook() {
 
 
@@ -380,18 +398,19 @@ public class Unsentrec implements IHook {
                 if (media != null) {
                     switch (media) {
                         case "7":
-                            mediaDescription = context.getResources().getString(R.string.sticker);
+                            mediaDescription = context.getString(R.string.sticker);
                             break;
                         case "1":
-                            mediaDescription = context.getResources().getString(R.string.picture);
+                            mediaDescription = context.getString(R.string.picture);
                             break;
                         case "2":
-                            mediaDescription = context.getResources().getString(R.string.video);
+                            mediaDescription = context.getString(R.string.video);
                             break;
                         default:
                             mediaDescription = "";
                             break;
                     }
+
                 }
                 String logEntry = (timeFormatted != null ? timeFormatted : "No Time: ")
                         + name
@@ -428,7 +447,7 @@ public class Unsentrec implements IHook {
 
     private void resolveUnresolvedIds(Context context, SQLiteDatabase db1, SQLiteDatabase db2) {
         String unresolvedFilePath = context.getFilesDir() + "/UnresolvedIds.txt";
-        
+
         File unresolvedFile = new File(unresolvedFilePath);
         File testFile = new File(context.getFilesDir(), Main_file);
 
@@ -457,7 +476,7 @@ public class Unsentrec implements IHook {
                     String logEntry = (timeFormatted != null ? timeFormatted : "No Time: ")
                             + name
                             + ": " + (content != null ? content : "NO get id:" + serverId)
-                            + (media != null && media.equals("7") ? context.getResources().getString(R.string.sticker) : media != null && media.equals("1") ? context.getResources().getString(R.string.video) : (media != null && media.equals("2") ? context.getResources().getString(R.string.video) : ""));
+                            + (media != null && media.equals("7") ? (R.string.sticker) : media != null && media.equals("1") ? context.getResources().getString(R.string.video) : (media != null && media.equals("2") ? context.getResources().getString(R.string.video) : ""));
 
                     testWriter.write("reacquisition: " + logEntry);
                     testWriter.newLine();
@@ -487,4 +506,4 @@ public class Unsentrec implements IHook {
 
 
 
-    }
+}
