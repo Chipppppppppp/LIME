@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.webkit.WebView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.robv.android.xposed.XC_MethodHook;
@@ -15,27 +16,15 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
 
 public class RemoveAds implements IHook {
-    static final List<String> adClassNames = List.of(
-            "com.google.android.gms.ads.nativead.NativeAdView",
-            "com.linecorp.line.ladsdk.ui.inventory.album.LadAlbumImageAdView",
-            "com.linecorp.line.ladsdk.ui.inventory.album.LadAlbumVideoAdView",
-            "com.linecorp.line.ladsdk.ui.inventory.album.LadAlbumYjImageAdView",
-            "com.linecorp.line.ladsdk.ui.inventory.home.LadHomeBigBannerImageAdView",
-            "com.linecorp.line.ladsdk.ui.inventory.home.LadHomeBigBannerVideoAdView",
-            "com.linecorp.line.ladsdk.ui.inventory.home.LadHomeImageAdView",
-            "com.linecorp.line.ladsdk.ui.inventory.home.LadHomePerformanceAdView",
-            "com.linecorp.line.ladsdk.ui.inventory.home.LadHomeYjBigBannerAdView",
-            "com.linecorp.line.ladsdk.ui.inventory.home.LadHomeYjImageAdView",
-            "com.linecorp.line.ladsdk.ui.inventory.timeline.post.LadPostAdView",
-            "com.linecorp.line.ladsdk.ui.inventory.wallet.LadWalletBigBannerImageAdView",
-            "com.linecorp.line.ladsdk.ui.inventory.wallet.LadWalletBigBannerVideoAdView",
-            "com.linecorp.square.v2.view.ad.common.SquareCommonHeaderGoogleBannerAdView",
-            "com.linecorp.square.v2.view.ad.common.SquareCommonHeaderGoogleNativeAdView"
-    );
+  
+    static final List<String> adClassNames = new ArrayList<>(List.of(
+
+    ));
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (!limeOptions.removeAds.checked) return;
+
 
         XposedBridge.hookAllMethods(
                 loadPackageParam.classLoader.loadClass(Constants.REQUEST_HOOK.className),
@@ -51,6 +40,7 @@ public class RemoveAds implements IHook {
                 }
         );
 
+
         XposedHelpers.findAndHookMethod(
                 loadPackageParam.classLoader.loadClass("com.linecorp.line.admolin.smartch.v2.view.SmartChannelViewLayout"),
                 "dispatchDraw",
@@ -62,6 +52,7 @@ public class RemoveAds implements IHook {
                     }
                 }
         );
+
 
         XposedHelpers.findAndHookMethod(
                 loadPackageParam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.common.view.lifecycle.LadAdView"),
@@ -78,6 +69,36 @@ public class RemoveAds implements IHook {
                 }
         );
 
+   
+        XposedHelpers.findAndHookMethod(
+                ViewGroup.class,
+                "addView",
+                View.class,
+                ViewGroup.LayoutParams.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        View view = (View) param.args[0];
+                        String className = view.getClass().getName();
+
+                     
+                        if (className.contains("Ad") || className.contains("ad")) {
+                            XposedBridge.log("Detected Ad View: " + className);
+
+                     
+                            if (!adClassNames.contains(className)) {
+                                adClassNames.add(className);
+                              
+                            }
+
+               
+                            view.setVisibility(View.GONE);
+                        }
+                    }
+                }
+        );
+
+ 
         for (String adClassName : adClassNames) {
             XposedBridge.hookAllConstructors(
                     loadPackageParam.classLoader.loadClass(adClassName),
@@ -94,12 +115,12 @@ public class RemoveAds implements IHook {
                                     }
                                 }
                             });
-
                         }
                     }
             );
         }
 
+    
         XposedHelpers.findAndHookMethod(
                 loadPackageParam.classLoader.loadClass(Constants.WEBVIEW_CLIENT_HOOK.className),
                 Constants.WEBVIEW_CLIENT_HOOK.methodName,
