@@ -82,8 +82,8 @@ public class RemoveAds implements IHook {
                         String className = view.getClass().getName();
 
                      
-                        if (className.contains("Ad") || className.contains("ad")) {
-                            XposedBridge.log("Detected Ad View: " + className);
+                        if (className.contains("Ad") ) {
+                          
 
                      
                             if (!adClassNames.contains(className)) {
