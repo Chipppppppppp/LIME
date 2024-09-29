@@ -135,6 +135,11 @@ LI**M**E
 > [!WARNING]
 > この方法は現在利用できません
 
+### 2. 最大バージョンに偽装をしてログインする
+> [!WARNING]
+> この方法は現在利用できません
+
+
 <details><summary>方法を確認</summary>
 
 PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制ログアウトされますが、使えない機能がある PC 版 LINE を Android 版 LINE に移すことができます。
@@ -154,7 +159,7 @@ PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制
 
 </details>
 
-### 2. Android ID を偽装する
+### 3. Android ID を偽装する
 
 この方法は**両方のデバイスを Root 化している**場合のみ可能です。  
 <https://jesuscorona.hatenablog.com/entry/2019/02/10/010920> にあるように、メッセージの同期などに若干の遅れが生じることに注意が必要です。
@@ -171,6 +176,7 @@ PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制
 5. ログイン後、[Swift Backup](https://play.google.com/store/apps/details?id=org.swiftapps.swiftbackup) を利用して LINE アプリをバックアップ (詳しくは[こちら](https://blog.hogehoge.com/2022/01/android-swift-backup.html))
 6. Swift Backup のバックアップフォルダをもう一つの端末に移し、バックアップした LINE をインストール (詳しくは[こちら](https://blog.hogehoge.com/2022/05/SwiftBackup2.html))
 7. LINE アプリを**開かず**に先に LIME をインストールする
+
 
 ## 問題の報告
 
