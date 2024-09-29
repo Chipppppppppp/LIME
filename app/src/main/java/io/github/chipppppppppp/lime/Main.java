@@ -1,115 +1,577 @@
-package io.github.chipppppppppp.lime;
+package io.github.chipppppppppp.lime.hooks;
 
-import android.content.res.XModuleResources;
-import android.support.annotation.NonNull;
+import android.app.AlertDialog;
+import android.app.AndroidAppHelper;
+import android.app.Application;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
-import de.robv.android.xposed.IXposedHookInitPackageResources;
-import de.robv.android.xposed.IXposedHookLoadPackage;
-import de.robv.android.xposed.IXposedHookZygoteInit;
-import de.robv.android.xposed.XSharedPreferences;
-import de.robv.android.xposed.callbacks.XC_InitPackageResources;
-import de.robv.android.xposed.callbacks.XC_LayoutInflated;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import io.github.chipppppppppp.lime.hooks.AddRegistrationOptions;
-import io.github.chipppppppppp.lime.hooks.BlockTracking;
-import io.github.chipppppppppp.lime.hooks.CheckHookTargetVersion;
-import io.github.chipppppppppp.lime.hooks.Constants;
-import io.github.chipppppppppp.lime.hooks.EmbedOptions;
-import io.github.chipppppppppp.lime.hooks.IHook;
-import io.github.chipppppppppp.lime.hooks.KeepUnread;
-import io.github.chipppppppppp.lime.hooks.ModifyRequest;
-import io.github.chipppppppppp.lime.hooks.ModifyResponse;
-import io.github.chipppppppppp.lime.hooks.OutputRequest;
-import io.github.chipppppppppp.lime.hooks.OutputResponse;
-import io.github.chipppppppppp.lime.hooks.PreventMarkAsRead;
-import io.github.chipppppppppp.lime.hooks.PreventUnsendMessage;
-import io.github.chipppppppppp.lime.hooks.RedirectWebView;
-import io.github.chipppppppppp.lime.hooks.RemoveAds;
-import io.github.chipppppppppp.lime.hooks.RemoveFlexibleContents;
-import io.github.chipppppppppp.lime.hooks.RemoveIconLabels;
-import io.github.chipppppppppp.lime.hooks.RemoveIcons;
-import io.github.chipppppppppp.lime.hooks.RemoveReplyMute;
-import io.github.chipppppppppp.lime.hooks.SendMuteMessage;
-import io.github.chipppppppppp.lime.hooks.SpoofAndroidId;
-import io.github.chipppppppppp.lime.hooks.SpoofUserAgent;
-import io.github.chipppppppppp.lime.hooks.Unsentrec;
+import io.github.chipppppppppp.lime.LimeOptions;
+import io.github.chipppppppppp.lime.R;
 
-public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
-    public static String modulePath;
+public class Unsentrec implements IHook {
 
-    public static XSharedPreferences xModulePrefs;
-    public static XSharedPreferences xPackagePrefs;
-    public static XSharedPreferences xPrefs;
-    public static LimeOptions limeOptions = new LimeOptions();
 
-    static final IHook[] hooks = {
-            new OutputResponse(),
-            new ModifyRequest(),
-            new CheckHookTargetVersion(),
-            new SpoofAndroidId(),
-            new SpoofUserAgent(),
-            new AddRegistrationOptions(),
-            new EmbedOptions(),
-            new RemoveIcons(),
-            new RemoveIconLabels(),
-            new RemoveAds(),
-            new RemoveFlexibleContents(),
-            new RemoveReplyMute(),
-            new RedirectWebView(),
-            new PreventMarkAsRead(),
-            new PreventUnsendMessage(),
-            new SendMuteMessage(),
-            new KeepUnread(),
-            new BlockTracking(),
-            new ModifyResponse(),
-            new OutputRequest(),
-            new Unsentrec()
-    };
 
-    public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-        if (!loadPackageParam.packageName.equals(Constants.PACKAGE_NAME)) return;
+    public static final String Main_file = "UNSENT_REC.txt";
+    public static final String Main_backup = "BackUpFile.txt";
 
-        xModulePrefs = new XSharedPreferences(Constants.MODULE_NAME, "options");
-        xPackagePrefs = new XSharedPreferences(Constants.PACKAGE_NAME, Constants.MODULE_NAME + "-options");
-        if (xModulePrefs.getBoolean("unembed_options", false)) {
-            xPrefs = xModulePrefs;
-        } else {
-            xPrefs = xPackagePrefs;
-        }
-        for (LimeOptions.Option option : limeOptions.options) {
-            option.checked = xPrefs.getBoolean(option.name, option.checked);
-        }
 
-        for (IHook hook : hooks) {
-            hook.hook(limeOptions, loadPackageParam);
-        }
-    }
+
+    SQLiteDatabase db1 = null;
+    SQLiteDatabase db2 = null;
+
+
+
 
     @Override
-    public void handleInitPackageResources(@NonNull XC_InitPackageResources.InitPackageResourcesParam resparam) throws Throwable {
-        if (!resparam.packageName.equals(Constants.PACKAGE_NAME))
-            return;
+    public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
 
-        XModuleResources xModuleResources = XModuleResources.createInstance(modulePath, resparam.res);
 
-        if (limeOptions.removeIconLabels.checked) {
-            resparam.res.setReplacement(Constants.PACKAGE_NAME, "dimen", "main_bnb_button_height", xModuleResources.fwd(R.dimen.main_bnb_button_height));
-            resparam.res.setReplacement(Constants.PACKAGE_NAME, "dimen", "main_bnb_button_width", xModuleResources.fwd(R.dimen.main_bnb_button_width));
-            resparam.res.hookLayout(Constants.PACKAGE_NAME, "layout", "app_main_bottom_navigation_bar_button", new XC_LayoutInflated() {
+
+        XposedBridge.hookAllConstructors(
+                loadPackageParam.classLoader.loadClass("jp.naver.line.android.common.view.listview.PopupListView"),
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        ViewGroup viewGroup = (ViewGroup) param.thisObject;
+                        Context appContext = viewGroup.getContext();
+
+                      
+                        
+                        Context moduleContext = AndroidAppHelper.currentApplication().createPackageContext(
+                                "io.github.chipppppppppp.lime", Context.CONTEXT_IGNORE_SECURITY);
+
+                        RelativeLayout container = new RelativeLayout(appContext);
+                        RelativeLayout.LayoutParams containerParams = new RelativeLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        container.setLayoutParams(containerParams);
+
+                     
+                        
+                        Button openFileButton = new Button(appContext);
+                        openFileButton.setText(moduleContext.getResources().getString(R.string.confirm_messages));  
+
+
+                        openFileButton.setTextSize(12);
+                        openFileButton.setTextColor(Color.BLACK);
+                        openFileButton.setId(View.generateViewId());
+
+                        RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        buttonParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                        container.addView(openFileButton, buttonParams);
+
+                        Button clearFileButton = new Button(appContext);
+                        clearFileButton.setText(moduleContext.getResources().getString(R.string.delete_messages)); 
+                        clearFileButton.setTextSize(12);
+                        clearFileButton.setTextColor(Color.RED);
+                        clearFileButton.setId(View.generateViewId());
+
+                        RelativeLayout.LayoutParams clearButtonParams = new RelativeLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        clearButtonParams.addRule(RelativeLayout.BELOW, openFileButton.getId());
+                        clearButtonParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                        container.addView(clearFileButton, clearButtonParams);
+
+                    
+                        openFileButton.setOnClickListener(v -> {
+                            File backupFile = new File(appContext.getFilesDir(), Main_backup);
+                            if (!backupFile.exists()) {
+                                try {
+                                    backupFile.createNewFile();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(appContext, moduleContext.getResources().getString(R.string.file_creation_failed), Toast.LENGTH_SHORT).show();  
+                                    return;
+                                }
+                            }
+                            if (backupFile.length() > 0) {
+                                try {
+                                    StringBuilder output = new StringBuilder();
+                                    BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(backupFile)));
+                                    String line;
+                                    while ((line = reader.readLine()) != null) {
+                                        output.append(line).append("\n");
+                                    }
+                                    reader.close();
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(appContext);
+                                    builder.setTitle(moduleContext.getResources().getString(R.string.backup))  
+                                            .setMessage(output.toString())
+                                            .setPositiveButton("OK", null)
+                                            .create()
+                                            .show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(appContext, moduleContext.getResources().getString(R.string.read_BackUpFile_failed), Toast.LENGTH_SHORT).show();  
+                                }
+                            } else {
+                                Toast.makeText(appContext, moduleContext.getResources().getString(R.string.no_backup_found), Toast.LENGTH_SHORT).show();  
+                            }
+                        });
+
+                        clearFileButton.setOnClickListener(v -> {
+                            new AlertDialog.Builder(appContext)
+                                    .setTitle(moduleContext.getResources().getString(R.string.check))  
+                                    .setMessage(moduleContext.getResources().getString(R.string.really_delete))  
+                                    .setPositiveButton(moduleContext.getResources().getString(R.string.yes), (dialog, which) -> {
+                                        File backupFile = new File(appContext.getFilesDir(), Main_backup);
+                                        if (backupFile.exists()) {
+                                            try {
+                                                BufferedWriter writer = new BufferedWriter(new FileWriter(backupFile));
+                                                writer.write("");
+                                                writer.close();
+                                                Toast.makeText(appContext, moduleContext.getResources().getString(R.string.file_content_deleted), Toast.LENGTH_SHORT).show();  
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                                Toast.makeText(appContext, moduleContext.getResources().getString(R.string.file_delete_failed), Toast.LENGTH_SHORT).show();  
+                                            }
+                                        } else {
+                                            Toast.makeText(appContext, moduleContext.getResources().getString(R.string.file_not_found), Toast.LENGTH_SHORT).show();  
+                                        }
+                                    })
+                                    .setNegativeButton(moduleContext.getResources().getString(R.string.no), null)
+                                    .create()
+                                    .show();
+                        });
+
+                      
+                        ((ListView) viewGroup.getChildAt(0)).addFooterView(container);
+                    }
+                }
+        );
+
+
+
+        XposedHelpers.findAndHookMethod(
+
+
+                "com.linecorp.line.chatlist.view.fragment.ChatListPageFragment",
+                loadPackageParam.classLoader, "onCreateView",
+                LayoutInflater.class, ViewGroup.class, android.os.Bundle.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        Context moduleContext = AndroidAppHelper.currentApplication().createPackageContext(
+                                "io.github.chipppppppppp.lime", Context.CONTEXT_IGNORE_SECURITY);
+
+                        View rootView = (View) param.getResult();
+                        Context context = rootView.getContext();
+
+
+                        File originalFile = new File(context.getFilesDir(), Main_file);
+                        if (!originalFile.exists()) {
+                            try {
+                                originalFile.createNewFile();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Toast.makeText(context,  moduleContext.getResources().getString(R.string.file_creation_failed), Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+
+                        if (originalFile.length() > 0) {
+                            int lineCount = countLinesInFile(originalFile);
+
+                            if (lineCount > 0) {
+                                Button button = new Button(context);
+                                button.setText(Integer.toString(lineCount));
+                                int buttonId = View.generateViewId();
+                                button.setId(buttonId);  
+                                RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
+                                        RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                buttonParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                                button.setLayoutParams(buttonParams);
+                                button.setOnClickListener(v -> {
+                                    try {
+                                        StringBuilder output = new StringBuilder();
+                                        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(originalFile)));
+                                        String line;
+                                        while ((line = reader.readLine()) != null) {
+                                            if (line.contains("No content") || line.contains("No name")) {
+                                                Toast.makeText(context, moduleContext.getResources().getString(R.string.no_get_restart_app), Toast.LENGTH_SHORT).show();
+                                                continue;
+                                            }
+                                            output.append(line).append("\n");
+                                        }
+                                        reader.close();
+
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                        builder.setTitle(moduleContext.getResources().getString(R.string.deleted_messages))
+                                                .setMessage(output.toString())
+                                                .setPositiveButton(moduleContext.getResources().getString(R.string.ok), (dialog, which) -> {
+                                                    try {
+                                                        File backupFile = new File(context.getFilesDir(), Main_backup);
+                                                        BufferedWriter writer = new BufferedWriter(new FileWriter(backupFile, true));
+                                                        writer.write(output.toString());
+                                                        writer.close();
+                                                        BufferedWriter clearWriter = new BufferedWriter(new FileWriter(originalFile));
+                                                        clearWriter.write("");
+                                                        clearWriter.close();
+                                                        Toast.makeText(context,moduleContext.getResources().getString( R.string.content_moved_to_backup), Toast.LENGTH_SHORT).show();
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                        Toast.makeText(context,moduleContext.getResources().getString( R.string.file_move_failed), Toast.LENGTH_SHORT).show();
+                                                    }
+
+                                   
+                                                    
+                                                    if (button.getParent() instanceof ViewGroup) {
+                                                        ViewGroup parent = (ViewGroup) button.getParent();
+                                                        parent.removeView(button);
+                                                    }
+                                                })
+                                                .create()
+                                                .show();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(context,moduleContext.getResources().getString( R.string.read_BackUpFile_failed), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+
+                                if (rootView instanceof ViewGroup) {
+                                    ViewGroup viewGroup = (ViewGroup) rootView;
+                                    viewGroup.addView(button);
+
+                                    View existingButton = viewGroup.findViewById(buttonId);
+                                    if (existingButton != null) {
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+        );
+
+
+
+        XposedBridge.hookAllMethods(Application.class, "onCreate", new XC_MethodHook() {
+
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                Application appContext = (Application) param.thisObject;
+
+               
+                if (appContext == null) {
+                    XposedBridge.log("appContext is null!");
+                    return;
+                }
+
+              
+                Context moduleContext;
+                try {
+                    moduleContext = appContext.createPackageContext(
+                            "io.github.chipppppppppp.lime", Context.CONTEXT_IGNORE_SECURITY);
+                } catch (PackageManager.NameNotFoundException e) {
+                    XposedBridge.log("Failed to create package context: " + e.getMessage());
+                    return;
+                }
+
+     
+                File dbFile1 = appContext.getDatabasePath("naver_line");
+                File dbFile2 = appContext.getDatabasePath("contact");
+
+                if (dbFile1.exists() && dbFile2.exists()) {
+              
+                    SQLiteDatabase.OpenParams.Builder builder1 = new SQLiteDatabase.OpenParams.Builder();
+                    builder1.addOpenFlags(SQLiteDatabase.OPEN_READWRITE);
+                    SQLiteDatabase.OpenParams dbParams1 = builder1.build();
+
+                    SQLiteDatabase.OpenParams.Builder builder2 = new SQLiteDatabase.OpenParams.Builder();
+                    builder2.addOpenFlags(SQLiteDatabase.OPEN_READWRITE);
+                    SQLiteDatabase.OpenParams dbParams2 = builder2.build();
+
+                    SQLiteDatabase db1 = SQLiteDatabase.openDatabase(dbFile1, dbParams1);
+                    SQLiteDatabase db2 = SQLiteDatabase.openDatabase(dbFile2, dbParams2);
+
+                  
+                    hookMessageDeletion(loadPackageParam, appContext, db1, db2);
+
+
+                    resolveUnresolvedIds(loadPackageParam, appContext, db1, db2);
+                }
+            }
+        });
+
+    }
+
+    private String queryDatabase(SQLiteDatabase db, String query, String... selectionArgs) {
+        if (db == null) {
+            XposedBridge.log("Database is not initialized.");
+            return null;
+        }
+        Cursor cursor = db.rawQuery(query, selectionArgs);
+        String result = null;
+        if (cursor.moveToFirst()) {
+            result = cursor.getString(0);
+        }
+        cursor.close();
+        return result;
+    }
+
+    private int countLinesInFile(File file) throws IOException {
+        int lineCount = 0;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
+            while (reader.readLine() != null) {
+                lineCount++;
+            }
+        }
+        return lineCount;
+    }
+    private void hookMessageDeletion(XC_LoadPackage.LoadPackageParam loadPackageParam, Context context, SQLiteDatabase db1, SQLiteDatabase db2) {
+        try {
+            Class<?> hookTarget = loadPackageParam.classLoader.loadClass("org.apache.thrift.k");
+            XposedBridge.hookAllMethods(hookTarget, "a", new XC_MethodHook() {
+
                 @Override
-                public void handleLayoutInflated(XC_LayoutInflated.LayoutInflatedParam liparam) throws Throwable {
-                    liparam.view.setTranslationY(xModuleResources.getDimensionPixelSize(R.dimen.gnav_icon_offset));
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    String paramValue = param.args[1].toString();
+                    if (paramValue.contains("type:NOTIFIED_DESTROY_MESSAGE,")) {
+
+                    
+                        
+                        Context moduleContext = AndroidAppHelper.currentApplication().createPackageContext(
+                                "io.github.chipppppppppp.lime", Context.CONTEXT_IGNORE_SECURITY);
+
+                 
+                        
+                        processMessage(paramValue, moduleContext, db1, db2,context);
+                    }
                 }
             });
-        }
-
-        if (limeOptions.removeServiceLabels.checked) {
-            resparam.res.setReplacement(Constants.PACKAGE_NAME, "dimen", "home_tab_v3_service_icon_size", xModuleResources.fwd(R.dimen.home_tab_v3_service_icon_size));
+        } catch (ClassNotFoundException e) {
+            XposedBridge.log("Class not found: " + e.getMessage());
         }
     }
 
-    @Override
-    public void initZygote(@NonNull StartupParam startupParam) throws Throwable {
-        modulePath = startupParam.modulePath;
+    private void processMessage(String paramValue, Context moduleContext, SQLiteDatabase db1, SQLiteDatabase db2, Context context) {
+        String unresolvedFilePath = context.getFilesDir() + "/UnresolvedIds.txt";
+
+        String[] operations = paramValue.split("Operation\\(");
+        for (String operation : operations) {
+            if (operation.trim().isEmpty()) continue;
+            String revision = null;
+            String createdTime = null;
+            String type = null;
+            String from = null;
+            String to = null;
+            String param12 = null;
+            String param22 = null;
+            String operationContent = null;
+            String serverId = null;
+            String talkId = null;
+
+            String[] parts = operation.split(",");
+            for (String part : parts) {
+                part = part.trim();
+                if (part.startsWith("param1:")) {
+                    talkId = part.substring("param1:".length()).trim();
+                } else if (part.startsWith("param2:")) {
+                    serverId = part.substring("param2:".length()).trim();
+                } else if (part.startsWith("revision:")) {
+                    revision = part.substring("revision:".length()).trim();
+                } else if (part.startsWith("createdTime:")) {
+                    createdTime = part.substring("createdTime:".length()).trim();
+                } else if (part.startsWith("type:")) {
+                    type = part.substring("type:".length()).trim();
+                } else if (part.startsWith("from:")) {
+                    from = part.substring("from:".length()).trim();
+                } else if (part.startsWith("to:")) {
+                    to = part.substring("to:".length()).trim();
+                } else if (part.startsWith("contentMetadata:")) {
+                    param12 = part.substring("contentMetadata:".length()).trim();
+                } else if (part.startsWith("operationContent:")) {
+                    operationContent = part.substring("operationContent:".length()).trim();
+                }
+            }
+
+            if (serverId != null && talkId != null) {
+                String content = queryDatabase(db1, "SELECT content FROM chat_history WHERE server_id=?", serverId);
+                String imageCheck = queryDatabase(db1, "SELECT attachement_image FROM chat_history WHERE server_id=?", serverId);
+                String timeEpochStr = queryDatabase(db1, "SELECT created_time FROM chat_history WHERE server_id=?", serverId);
+                String timeFormatted = formatMessageTime(timeEpochStr);
+                String groupName = queryDatabase(db1, "SELECT name FROM groups WHERE id=?", talkId);
+                String media = queryDatabase(db1, "SELECT attachement_type FROM chat_history WHERE server_id=?", serverId);
+                String talkName = queryDatabase(db2, "SELECT profile_name FROM contacts WHERE mid=?", talkId);
+
+                String name = (groupName != null ? groupName : (talkName != null ? talkName : "No Name" + ":" + ":" + "talkId" + talkId));
+
+                if (content == null && !("0".equals(media))) {
+                    saveUnresolvedIds(serverId, talkId, unresolvedFilePath);
+                }
+
+          
+                String mediaDescription = "";
+                if (media != null) {
+                    switch (media) {
+                        case "7":
+                            mediaDescription = moduleContext.getResources().getString(R.string.sticker); 
+                            break;
+                        case "1":
+                            mediaDescription = moduleContext.getResources().getString(R.string.picture); 
+                            break;
+                        case "2":
+                            mediaDescription = moduleContext.getResources().getString(R.string.video);  
+                            break;
+                        default:
+                            mediaDescription = "";  
+                            break;
+                    }
+                }
+
+                String logEntry = (timeFormatted != null ? timeFormatted : "No Time: ")
+                        + name
+                        + ": "
+                        + ((content != null) ? content : (mediaDescription.isEmpty() ? "No content:" + serverId : ""))
+                        + mediaDescription;
+
+               
+                File fileToWrite = new File(context.getFilesDir(), Main_file);
+
+                try {
+                    
+                    if (!fileToWrite.getParentFile().exists()) {
+                        if (!fileToWrite.getParentFile().mkdirs()) {
+                            XposedBridge.log("ディレクトリの作成に失敗しました: " + fileToWrite.getParent());
+                        }
+                    }
+
+                
+                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToWrite, true))) {
+                        writer.write(logEntry);
+                        writer.newLine();
+                    }
+                } catch (IOException e) {
+                    XposedBridge.log("IOException occurred while writing to file: " + e.getMessage());
+                }
+            }
+
+        }
     }
+
+
+
+
+
+
+    private void saveUnresolvedIds(String serverId, String talkId, String filePath) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+            writer.write("serverId:" + serverId + ",talkId:" + talkId);
+            writer.newLine();
+        } catch (IOException e) {
+            XposedBridge.log("IOException occurred while saving unresolved IDs: " + e.getMessage());
+        }
+    }
+
+    private void resolveUnresolvedIds(XC_LoadPackage.LoadPackageParam loadPackageParam, Context context, SQLiteDatabase db1, SQLiteDatabase db2) {
+        String unresolvedFilePath = context.getFilesDir() + "/UnresolvedIds.txt";  
+
+        File unresolvedFile = new File(unresolvedFilePath);
+        File testFile = new File(context.getFilesDir(), Main_file);
+
+        if (!unresolvedFile.exists()) return;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(unresolvedFile));
+             BufferedWriter testWriter = new BufferedWriter(new FileWriter(testFile, true))) {
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                String serverId = parts[0].split(":")[1];
+                String talkId = parts[1].split(":")[1];
+
+                String content = queryDatabase(db1, "SELECT content FROM chat_history WHERE server_id=?", serverId);
+                String imageCheck = queryDatabase(db1, "SELECT attachement_image FROM chat_history WHERE server_id=?", serverId);
+                String timeEpochStr = queryDatabase(db1, "SELECT created_time FROM chat_history WHERE server_id=?", serverId);
+                String timeFormatted = formatMessageTime(timeEpochStr);
+                String groupName = queryDatabase(db1, "SELECT name FROM groups WHERE id=?", talkId);
+                String media = queryDatabase(db1, "SELECT attachement_type FROM chat_history WHERE server_id=?", serverId);
+                
+                String talkName = queryDatabase(db2, "SELECT profile_name FROM contacts WHERE mid=?", talkId);
+
+                String name = (groupName != null ? groupName : (talkName != null ? talkName : "No Name" + ":" + ":" + "talkId" + talkId));
+
+                String mediaDescription = ""; 
+                if (media != null) {
+                    switch (media) {
+                        case "7":
+                            mediaDescription = context.getString(R.string.sticker);
+                            break;
+                        case "1":
+                            mediaDescription = context.getString(R.string.picture);
+                            break;
+                        case "2":
+                            mediaDescription = context.getString(R.string.video);
+                            break;
+                        default:
+                            mediaDescription = "";
+                            break;
+                    }
+                }
+
+                String logEntry = (timeFormatted != null ? timeFormatted : "No Time: ")
+                        + name
+                        + ": " + (content != null ? content : "NO get id:" + serverId)
+                        + mediaDescription;  
+                
+
+                if (timeEpochStr == null) {
+                    saveUnresolvedIds(serverId, talkId, unresolvedFilePath);
+                }
+                testWriter.write("再取得" + logEntry);
+                testWriter.newLine();
+            }
+
+           
+            
+            try (BufferedWriter clearWriter = new BufferedWriter(new FileWriter(unresolvedFile))) {
+                clearWriter.write("");
+            }
+
+        } catch (IOException e) {
+            XposedBridge.log("IOException occurred while resolving and saving unresolved IDs: " + e.getMessage());
+        }
+    }
+
+
+
+
+    private String formatMessageTime(String timeEpochStr) {
+        if (timeEpochStr == null) return null;
+        long timeEpoch = Long.parseLong(timeEpochStr);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        return sdf.format(new Date(timeEpoch));
+    }
+
+
+
 }
