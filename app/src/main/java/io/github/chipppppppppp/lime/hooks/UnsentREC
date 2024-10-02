@@ -554,12 +554,29 @@ public class UnsentRec implements IHook {
             }
 
         }
-    }private void saveUnresolvedIds(String serverId, String talkId, String filePath) {
+    }
+
+    private void saveUnresolvedIds(String serverId, String talkId, String filePath) {
+        String newEntry = "serverId:" + serverId + ",talkId:" + talkId;
+
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.equals(newEntry)) {
+         
+                    return;
+                }
+            }
+        } catch (IOException e) {
+            
+        }
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
-            writer.write("serverId:" + serverId + ",talkId:" + talkId);
+            writer.write(newEntry);
             writer.newLine();
         } catch (IOException e) {
-            XposedBridge.log("IOException occurred while saving unresolved IDs: " + e.getMessage());
+     
         }
     }
 
