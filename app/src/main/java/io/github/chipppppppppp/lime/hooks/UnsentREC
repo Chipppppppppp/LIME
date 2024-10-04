@@ -57,8 +57,7 @@ public class UnsentRec implements IHook {
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
 
-
-
+        if (!limeOptions.preventUnsendMessage.checked) return;
         XposedBridge.hookAllConstructors(
                 loadPackageParam.classLoader.loadClass("jp.naver.line.android.common.view.listview.PopupListView"),
                 new XC_MethodHook() {
@@ -123,20 +122,20 @@ public class UnsentRec implements IHook {
                                     String line;
                                     while ((line = reader.readLine()) != null) {
                                         output.append(line).append("\n");
-                                    }                                 
+                                    }                                  // カスタムViewを作成
                                     HorizontalScrollView horizontalScrollView = new HorizontalScrollView(context); // 横スクロール用のScrollView
                                     ScrollView verticalScrollView = new ScrollView(context); // 縦スクロール用のScrollView
 
                                     TextView textView = new TextView(context);
                                     textView.setText(output.toString());
 
-                                  
-                                    textView.setMaxLines(Integer.MAX_VALUE); 
-                                    textView.setHorizontallyScrolling(true); 
-                                    textView.setHorizontalScrollBarEnabled(true); 
+                                    // TextViewの設定（改行を防ぎ、横スクロールをサポート）
+                                    textView.setMaxLines(Integer.MAX_VALUE); // 最大行数を設定（実質無制限）
+                                    textView.setHorizontallyScrolling(true); // 横スクロールを有効にする
+                                    textView.setHorizontalScrollBarEnabled(true); // 横スクロールバーを表示する
 
-                                  
-                                    horizontalScrollView.addView(textView);
+                                    // スクロールビューにTextViewを追加
+                                    horizontalScrollView.addView(textView); // 横スクロールをサポートするScrollViewにTextViewを追加
                                     verticalScrollView.addView(horizontalScrollView); // 縦スクロールをサポートするScrollViewに横ScrollViewを追加
                                     reader.close();
                                     AlertDialog.Builder builder = new AlertDialog.Builder(appContext);
@@ -221,15 +220,15 @@ public class UnsentRec implements IHook {
                                 Button button = new Button(context);
                                 button.setText(Integer.toString(lineCount));
                                 int buttonId = View.generateViewId();
-                                button.setId(buttonId);  
+                                button.setId(buttonId);  // IDを設定
                                 RelativeLayout.LayoutParams buttonParams = new RelativeLayout.LayoutParams(
                                         RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                                 buttonParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                                 button.setLayoutParams(buttonParams);
 
-                         
+                                // SharedPreferencesでフラグの状態を取得
                                 SharedPreferences prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
-                                boolean messageShown = prefs.getBoolean("messageShown", false); 
+                                boolean messageShown = prefs.getBoolean("messageShown", false); // デフォルトはfalse
 
                                 button.setOnClickListener(v -> {
                                     try {
@@ -237,7 +236,7 @@ public class UnsentRec implements IHook {
                                         StringBuilder updatedContent = new StringBuilder();
                                         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(originalFile)));
                                         String line;
-                                        boolean showToast = false; 
+                                        boolean showToast = false;  // トーストを表示するかどうか
 
                                         while ((line = reader.readLine()) != null) {
                                             if (line.contains("No content") || line.contains("No name")) {
@@ -249,38 +248,38 @@ public class UnsentRec implements IHook {
                                                     editor.putBoolean("messageShown", true);
                                                     editor.apply();
                                                 }
-                                              
+                                                // 取得できなかったメッセージは表示せず、削除のため更新しない
                                                 continue;
                                             }
                                             output.append(line).append("\n");
-                                            updatedContent.append(line).append("\n"); 
+                                            updatedContent.append(line).append("\n"); // 有効な行は保持
                                         }
                                         reader.close();
 
-                                  
+                                        // トーストメッセージの表示
                                         if (showToast) {
                                             Toast.makeText(context, moduleContext.getResources().getString(R.string.no_get_restart_app), Toast.LENGTH_SHORT).show();
                                         }
 
 
 
-                          
+                                        // カスタムViewを作成
                                         HorizontalScrollView horizontalScrollView = new HorizontalScrollView(context); // 横スクロール用のScrollView
                                         ScrollView verticalScrollView = new ScrollView(context); // 縦スクロール用のScrollView
 
                                         TextView textView = new TextView(context);
                                         textView.setText(output.toString());
 
-
+// TextViewの設定（改行を防ぎ、横スクロールをサポート）
                                         textView.setMaxLines(Integer.MAX_VALUE); // 最大行数を設定（実質無制限）
                                         textView.setHorizontallyScrolling(true); // 横スクロールを有効にする
                                         textView.setHorizontalScrollBarEnabled(true); // 横スクロールバーを表示する
 
+// スクロールビューにTextViewを追加
+                                        horizontalScrollView.addView(textView); // 横スクロールをサポートするScrollViewにTextViewを追加
+                                        verticalScrollView.addView(horizontalScrollView); // 縦スクロールをサポートするScrollViewに横ScrollViewを追加
 
-                                        horizontalScrollView.addView(textView); 
-                                        verticalScrollView.addView(horizontalScrollView);
-
-
+// AlertDialogを作成
                                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
                                         builder.setTitle( moduleContext.getResources().getString(R.string.deleted_messages))
                                                 .setView(verticalScrollView)  // カスタムビューをセット
@@ -291,14 +290,14 @@ public class UnsentRec implements IHook {
                                                         writer.write(output.toString());
                                                         writer.close();
 
-                                                       
+                                                        // originalFileの内容をクリアしてバックアップ
                                                         BufferedWriter clearWriter = new BufferedWriter(new FileWriter(originalFile));
                                                         clearWriter.close();
 
                                                         Toast.makeText(context,
                                                                 moduleContext.getResources().getString(R.string.content_moved_to_backup),Toast.LENGTH_SHORT).show();
 
-                                                  
+                                                        // フラグをリセット
                                                         SharedPreferences.Editor editor = prefs.edit();
                                                         editor.putBoolean("messageShown", false);
                                                         editor.apply();
@@ -308,7 +307,7 @@ public class UnsentRec implements IHook {
                                                         Toast.makeText(context,  moduleContext.getResources().getString(R.string.file_move_failed), Toast.LENGTH_SHORT).show();
                                                     }
 
-                                                 
+                                                    // ボタンの親からボタンを削除
                                                     if (button.getParent() instanceof ViewGroup) {
                                                         ViewGroup parent = (ViewGroup) button.getParent();
                                                         parent.removeView(button);
@@ -380,10 +379,8 @@ public class UnsentRec implements IHook {
                     SQLiteDatabase db2 = SQLiteDatabase.openDatabase(dbFile2, dbParams2);
 
 
-                    hookMessageDeletion(loadPackageParam, appContext, db1, db2);
-
-
-                    resolveUnresolvedIds(loadPackageParam, appContext, db1, db2);
+                    hookMessageDeletion(loadPackageParam, appContext,db1, db2);
+                    resolveUnresolvedIds(loadPackageParam, appContext,db1, db2,moduleContext);
                 }
             }
         });
@@ -404,36 +401,43 @@ public class UnsentRec implements IHook {
         return result;
     }
 
-    private int countLinesInFile(File file) throws IOException {
-        int lineCount = 0;
+    private int countLinesInFile(File file) {
+        int count = 0;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
-            while (reader.readLine() != null) {
-                lineCount++;
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (!(line.contains("No content") || line.contains("No name"))) {
+                    count++; // 条件に合致しない行だけをカウント
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return lineCount;
+        return count;
     }
     private void hookMessageDeletion(XC_LoadPackage.LoadPackageParam loadPackageParam, Context context, SQLiteDatabase db1, SQLiteDatabase db2) {
         try {
-            Class<?> hookTarget = loadPackageParam.classLoader.loadClass("org.apache.thrift.k");
-            XposedBridge.hookAllMethods(hookTarget, "a", new XC_MethodHook() {
+            XposedBridge.hookAllMethods(
+            loadPackageParam.classLoader.loadClass(Constants.RESPONSE_HOOK.className),
+                    Constants.RESPONSE_HOOK.methodName,
 
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    String paramValue = param.args[1].toString();
-                    if (paramValue.contains("type:NOTIFIED_DESTROY_MESSAGE,")) {
+                    new XC_MethodHook() {
 
-
-
-                        Context moduleContext = AndroidAppHelper.currentApplication().createPackageContext(
-                                "io.github.chipppppppppp.lime", Context.CONTEXT_IGNORE_SECURITY);
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            String paramValue = param.args[1].toString();
+                            if (paramValue.contains("type:NOTIFIED_DESTROY_MESSAGE,")) {
 
 
+                                Context moduleContext = AndroidAppHelper.currentApplication().createPackageContext(
+                                        "io.github.chipppppppppp.lime", Context.CONTEXT_IGNORE_SECURITY);
 
-                        processMessage(paramValue, moduleContext, db1, db2,context);
-                    }
-                }
-            });
+
+
+                                processMessage(paramValue, moduleContext, db1, db2,context);
+                            }
+                        }
+                    });
         } catch (ClassNotFoundException e) {
             XposedBridge.log("Class not found: " + e.getMessage());
         }
@@ -491,11 +495,22 @@ public class UnsentRec implements IHook {
 
                 String name = (groupName != null ? groupName : (talkName != null ? talkName : "No Name" + ":" + ":" + "talkId" + talkId));
 
-                if (content == null && !("0".equals(media))) {
+                if (timeEpochStr == null) {
                     saveUnresolvedIds(serverId, talkId, unresolvedFilePath);
                 }
 
-
+                // groupNameが取得できた場合、from_midとsender_nameを取得する
+                String from_mid = null;
+                String sender_name = null;
+                if (groupName != null) {
+                    from_mid = queryDatabase(db1, "SELECT from_mid FROM chat_history WHERE server_id=?", serverId);
+                    if (from_mid != null) {
+                        sender_name = queryDatabase(db2, "SELECT profile_name FROM contacts WHERE mid=?", from_mid);
+                    }
+                }                // sender_nameが取得できた場合、nameを更新する
+                if (sender_name != null) {
+                    name = groupName + ": " + sender_name;
+                }
                 String mediaDescription = "";
                 if (media != null) {
                     switch (media) {
@@ -527,11 +542,9 @@ public class UnsentRec implements IHook {
 
                     if (!fileToWrite.getParentFile().exists()) {
                         if (!fileToWrite.getParentFile().mkdirs()) {
-                            XposedBridge.log("ディレクトリの作成に失敗しました: " + fileToWrite.getParent());
+                            XposedBridge.log("Failed to create directory " + fileToWrite.getParent());
                         }
                     }
-
-
                     try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToWrite, true))) {
                         writer.write(logEntry);
                         writer.newLine();
@@ -543,12 +556,6 @@ public class UnsentRec implements IHook {
 
         }
     }
-
-
-
-
-
-
     private void saveUnresolvedIds(String serverId, String talkId, String filePath) {
         String newEntry = "serverId:" + serverId + ",talkId:" + talkId;
 
@@ -565,6 +572,7 @@ public class UnsentRec implements IHook {
 
         }
 
+        // 新しいエントリーを書き込む
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
             writer.write(newEntry);
             writer.newLine();
@@ -573,7 +581,9 @@ public class UnsentRec implements IHook {
         }
     }
 
-    private void resolveUnresolvedIds(XC_LoadPackage.LoadPackageParam loadPackageParam, Context context, SQLiteDatabase db1, SQLiteDatabase db2) {
+
+
+    private void resolveUnresolvedIds(XC_LoadPackage.LoadPackageParam loadPackageParam, Context context, SQLiteDatabase db1, SQLiteDatabase db2,Context moduleContext) {
         String unresolvedFilePath = context.getFilesDir() + "/UnresolvedIds.txt";
 
         File unresolvedFile = new File(unresolvedFilePath);
@@ -600,18 +610,30 @@ public class UnsentRec implements IHook {
                 String talkName = queryDatabase(db2, "SELECT profile_name FROM contacts WHERE mid=?", talkId);
 
                 String name = (groupName != null ? groupName : (talkName != null ? talkName : "No Name" + ":" + ":" + "talkId" + talkId));
+                // groupNameが取得できた場合、from_midとsender_nameを取得する
+                String from_mid = null;
+                String sender_name = null;
+                if (groupName != null) {
+                    from_mid = queryDatabase(db1, "SELECT from_mid FROM chat_history WHERE server_id=?", serverId);
+                    if (from_mid != null) {
+                        sender_name = queryDatabase(db2, "SELECT profile_name FROM contacts WHERE mid=?", from_mid);
+                    }
+                }
 
+                if (sender_name != null) {
+                    name = groupName + ": " + sender_name;
+                }
                 String mediaDescription = "";
                 if (media != null) {
                     switch (media) {
                         case "7":
-                            mediaDescription = context.getString(R.string.sticker);
+                            mediaDescription = moduleContext.getResources().getString(R.string.sticker);
                             break;
                         case "1":
-                            mediaDescription = context.getString(R.string.picture);
+                            mediaDescription = moduleContext.getResources().getString(R.string.picture);
                             break;
                         case "2":
-                            mediaDescription = context.getString(R.string.video);
+                            mediaDescription = moduleContext.getResources().getString(R.string.video);
                             break;
                         default:
                             mediaDescription = "";
@@ -623,10 +645,13 @@ public class UnsentRec implements IHook {
                         + name
                         + ": " + (content != null ? content : "NO get id:" + serverId)
                         + mediaDescription;
-
-
-                testWriter.write("再取得" + logEntry);
+                if (timeEpochStr == null) {
+                    saveUnresolvedIds(serverId, talkId, unresolvedFilePath);
+                }
+                testWriter.write(moduleContext.getResources().getString(R.string.reacquisition) + logEntry);
                 testWriter.newLine();
+
+
             }
 
 
