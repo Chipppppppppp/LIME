@@ -20,5 +20,4 @@ public class Constants {
     static final HookTarget MARK_AS_READ_HOOK = new HookTarget("JL.e$d", "run");
     static final HookTarget REQUEST_HOOK = new HookTarget("org.apache.thrift.k", "b");
     static final HookTarget RESPONSE_HOOK = new HookTarget("org.apache.thrift.k", "a");
-
 }
