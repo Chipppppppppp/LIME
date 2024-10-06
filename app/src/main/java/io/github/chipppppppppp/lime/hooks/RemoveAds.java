@@ -16,15 +16,12 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
 
 public class RemoveAds implements IHook {
-  
-    static final List<String> adClassNames = new ArrayList<>(List.of(
 
-    ));
+    List<String> adClassNames;
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (!limeOptions.removeAds.checked) return;
-
 
         XposedBridge.hookAllMethods(
                 loadPackageParam.classLoader.loadClass(Constants.REQUEST_HOOK.className),
@@ -40,7 +37,6 @@ public class RemoveAds implements IHook {
                 }
         );
 
-
         XposedHelpers.findAndHookMethod(
                 loadPackageParam.classLoader.loadClass("com.linecorp.line.admolin.smartch.v2.view.SmartChannelViewLayout"),
                 "dispatchDraw",
@@ -52,7 +48,6 @@ public class RemoveAds implements IHook {
                     }
                 }
         );
-
 
         XposedHelpers.findAndHookMethod(
                 loadPackageParam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.common.view.lifecycle.LadAdView"),
@@ -68,7 +63,6 @@ public class RemoveAds implements IHook {
                     }
                 }
         );
-
    
         XposedHelpers.findAndHookMethod(
                 ViewGroup.class,
@@ -79,25 +73,16 @@ public class RemoveAds implements IHook {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         View view = (View) param.args[0];
-                        String className = view.getClass().getName();
-
-                     
+                        String className = view.getClass().getName();                     
                         if (className.contains("Ad") ) {
-                          
-
-                     
                             if (!adClassNames.contains(className)) {
                                 adClassNames.add(className);
-                              
                             }
-
-               
                             view.setVisibility(View.GONE);
                         }
                     }
                 }
         );
-
  
         for (String adClassName : adClassNames) {
             XposedBridge.hookAllConstructors(
@@ -119,7 +104,6 @@ public class RemoveAds implements IHook {
                     }
             );
         }
-
     
         XposedHelpers.findAndHookMethod(
                 loadPackageParam.classLoader.loadClass(Constants.WEBVIEW_CLIENT_HOOK.className),
