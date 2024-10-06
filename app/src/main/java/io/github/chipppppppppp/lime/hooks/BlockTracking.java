@@ -18,7 +18,7 @@ public class BlockTracking implements IHook {
                 loadPackageParam.classLoader.loadClass(Constants.REQUEST_HOOK.className),
                 Constants.REQUEST_HOOK.methodName,
                 new XC_MethodHook() {
-                    static final Set<String> requests = new HashSet<>(Arrays.asList(
+                    final Set<String> requests = new HashSet<>(Arrays.asList(
                             "noop",
                             "reportAbuseEx",
                             "reportDeviceState",
