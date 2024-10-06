@@ -6,14 +6,11 @@ android {
     namespace 'io.github.chipppppppppp.lime'
     compileSdk 34
 
-    buildFeatures.buildConfig = true
-
     defaultConfig {
         minSdk 28
-        //noinspection OldTargetApi
-        targetSdk 33
-        versionCode 13
-        versionName "1.9.2"
+        targetSdk 34
+        versionCode 14
+        versionName "1.10.0"
         multiDexEnabled false
         proguardFiles += 'proguard-rules.pro'
         buildConfigField 'String', 'HOOK_TARGET_VERSION', '"141600311"'
@@ -49,13 +46,20 @@ android {
         checkReleaseBuilds false
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+    buildFeatures{
+        buildConfig true
+        compose false
+    }
+
+    dependenciesInfo {
+        includeInApk false
+        includeInBundle false
     }
 
     aaptOptions {
-        aaptOptions.additionalParameters '--allow-reserved-package-id', '--package-id', '0x64'
+        aaptOptions {
+            additionalParameters '--allow-reserved-package-id', '--package-id', '0x64'
+        }
     }
 }
 
