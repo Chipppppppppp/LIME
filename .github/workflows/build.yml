@@ -43,7 +43,7 @@ jobs:
           } >> $GITHUB_ENV
 
       - name: Set LINE Original Version Name
-        run: echo "line_ver=$(echo $(echo ${{ env.line_ver_code }} | cut -c-2).$(echo ${{ env.line_ver_code }} | cut -c3-4).$(echo ${{ env.line_ver_code }} | cut -c5) | sed -e 's/.0/./')" >> $GITHUB_ENV
+        run: echo "line_ver=$(echo '${{ env.line_ver_code }}' | awk '{print substr($0,1,2)"."substr($0,3,2)"."int(substr($0,5,1))}')" >> $GITHUB_ENV
 
       - name: Setup Java
         uses: actions/setup-java@v4
