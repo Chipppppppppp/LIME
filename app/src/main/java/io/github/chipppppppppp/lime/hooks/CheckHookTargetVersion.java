@@ -25,7 +25,7 @@ public class CheckHookTargetVersion implements IHook {
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         Context context = (Context) param.thisObject;
                         PackageManager pm = context.getPackageManager();
-                        if (!BuildConfig.HOOK_TARGET_VERSION.equals(pm.getPackageInfo(loadPackageParam.packageName, 0).versionCode.toString())) {
+                        if (!BuildConfig.HOOK_TARGET_VERSION.equals(pm.getPackageInfo(loadPackageParam.packageName, 0).versionCode)) {
                             Utils.addModuleAssetPath(context);
                             Toast.makeText(context.getApplicationContext(), context.getString(R.string.incompatible_version), Toast.LENGTH_SHORT).show();
                         }
