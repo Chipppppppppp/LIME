@@ -17,7 +17,7 @@ import io.github.chipppppppppp.lime.LimeOptions;
 
 public class RemoveAds implements IHook {
 
-    List<String> adClassNames;
+    static final List<String> adClassNames = new ArrayList<>(List.of());
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
