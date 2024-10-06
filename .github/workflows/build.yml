@@ -98,7 +98,7 @@ jobs:
         if: github.event.inputs.lspatch == 'true'
         run: |
           cat << EOF > conf
-          https://github.com/LSPosed/LSPatch/releases/download/v0.6/jar-v0.6-398-release.jar
+          https://github.com/JingMatrix/LSPatch/releases/latest/download/lspatch.jar
             out=lspatch.jar
           https://d.apkpure.net/b/APK/jp.naver.line.android?versionCode=${{ env.line_ver_code }}&nc=arm64-v8a%2Carmeabi-v7a&sv=28
             out=line-${{ env.line_ver }}.apk
