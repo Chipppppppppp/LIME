@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.view.Gravity;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Switch;
@@ -21,6 +22,9 @@ import io.github.chipppppppppp.lime.R;
 import io.github.chipppppppppp.lime.Utils;
 
 public class AddRegistrationOptions implements IHook {
+
+    private Switch switchAndroidSecondary; // スイッチをフィールドとして定義
+
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         XposedBridge.hookAllMethods(
@@ -51,59 +55,27 @@ public class AddRegistrationOptions implements IHook {
 
                         Switch switchSpoofAndroidId = new Switch(activity);
                         switchSpoofAndroidId.setText(R.string.switch_spoof_android_id);
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(activity)
-                                .setTitle(R.string.options_title);
-
-                        TextView textView = new TextView(activity);
-                        textView.setText(R.string.spoof_android_id_risk);
-                        textView.setPadding(Utils.dpToPx(20, activity), Utils.dpToPx(20, activity), Utils.dpToPx(20, activity), Utils.dpToPx(20, activity));
-                        builder.setView(textView);
-
-                        builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                prefs.edit().putBoolean("spoof_android_id", true).commit();
-                                Toast.makeText(activity.getApplicationContext(), activity.getString(R.string.need_refresh), Toast.LENGTH_SHORT).show();
-                                activity.finish();
-                            }
-                        });
-
-                        builder.setNegativeButton(R.string.negative_button, null);
-
-                        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dialog) {
-                                switchSpoofAndroidId.setChecked(false);
-                            }
-                        });
-
-                        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                            @Override
-                            public void onCancel(DialogInterface dialog) {
-                                switchSpoofAndroidId.setChecked(false);
-                            }
-                        });
-
-                        AlertDialog dialog = builder.create();
-
                         switchSpoofAndroidId.setChecked(prefs.getBoolean("spoof_android_id", false));
                         switchSpoofAndroidId.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                            if (isChecked) dialog.show();
-                            else if (prefs.getBoolean("spoof_android_id", false)) {
-                                prefs.edit().putBoolean("spoof_android_id", false).commit();
+                            if (isChecked) {
+                                showSpoofAndroidIdDialog(activity, prefs);
+                            } else {
+                                prefs.edit().putBoolean("spoof_android_id", false).apply();
                                 Toast.makeText(activity.getApplicationContext(), activity.getString(R.string.need_refresh), Toast.LENGTH_SHORT).show();
                                 activity.finish();
                             }
                         });
 
-                        Switch switchAndroidSecondary = new Switch(activity);
+
+                        switchAndroidSecondary = new Switch(activity);
                         switchAndroidSecondary.setText(R.string.switch_android_secondary);
                         switchAndroidSecondary.setChecked(prefs.getBoolean("android_secondary", false));
                         switchAndroidSecondary.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                            prefs.edit().putBoolean("android_secondary", isChecked).apply();
-                            Toast.makeText(activity.getApplicationContext(), activity.getString(R.string.need_refresh), Toast.LENGTH_SHORT).show();
-                            activity.finish();
+                            if (isChecked) {
+                                showSpoofVersionIdDialog(activity, prefs);
+                            } else {
+                                prefs.edit().putBoolean("android_secondary", false).apply();
+                            }
                         });
 
                         linearLayout.addView(switchSpoofAndroidId);
@@ -113,5 +85,76 @@ public class AddRegistrationOptions implements IHook {
                     }
                 }
         );
+    }
+    private void showSpoofVersionIdDialog(Activity activity, SharedPreferences prefs) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity)
+                .setTitle(R.string.options_title);
+
+
+        LinearLayout layout = new LinearLayout(activity);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(Utils.dpToPx(20, activity), Utils.dpToPx(20, activity), Utils.dpToPx(20, activity), Utils.dpToPx(20, activity));
+
+
+        TextView textView = new TextView(activity);
+        textView.setText(R.string.spoof_version_id_risk);
+        layout.addView(textView);
+
+
+        EditText editTextOsName = new EditText(activity);
+        editTextOsName.setHint("OS名");
+        editTextOsName.setText(prefs.getString("os_name", "Android OS"));
+
+        EditText editTextOsVersion = new EditText(activity);
+        editTextOsVersion.setHint("OSバージョン");
+        editTextOsVersion.setText(prefs.getString("os_version", "14"));
+
+        EditText editTextAndroidVersion = new EditText(activity);
+        editTextAndroidVersion.setHint("アプリのバージョン");
+        editTextAndroidVersion.setText(prefs.getString("android_version", "14.16.0"));
+
+
+        layout.addView(editTextOsName);
+        layout.addView(editTextOsVersion);
+        layout.addView(editTextAndroidVersion);
+
+
+        builder.setView(layout);
+        builder.setPositiveButton(R.string.positive_button, (dialog, which) -> {
+            prefs.edit()
+                    .putBoolean("android_secondary", true)
+                    .putString("os_name", editTextOsName.getText().toString())
+                    .putString("os_version", editTextOsVersion.getText().toString())
+                    .putString("android_version", editTextAndroidVersion.getText().toString())
+                    .apply();
+
+            switchAndroidSecondary.setChecked(true);
+
+            Toast.makeText(activity.getApplicationContext(), activity.getString(R.string.need_refresh), Toast.LENGTH_SHORT).show();
+            activity.finish();
+        });
+
+        builder.setNegativeButton(R.string.negative_button, null);
+        builder.show();
+    }
+
+
+    private void showSpoofAndroidIdDialog(Activity activity, SharedPreferences prefs) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity)
+                .setTitle(R.string.options_title);
+
+        TextView textView = new TextView(activity);
+        textView.setText(R.string.spoof_android_id_risk);
+        textView.setPadding(Utils.dpToPx(20, activity), Utils.dpToPx(20, activity), Utils.dpToPx(20, activity), Utils.dpToPx(20, activity));
+        builder.setView(textView);
+
+        builder.setPositiveButton(R.string.positive_button, (dialog, which) -> {
+            prefs.edit().putBoolean("spoof_android_id", true).apply();
+            Toast.makeText(activity.getApplicationContext(), activity.getString(R.string.need_refresh), Toast.LENGTH_SHORT).show();
+            activity.finish();
+        });
+
+        builder.setNegativeButton(R.string.negative_button, null);
+        builder.show();
     }
 }
