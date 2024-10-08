@@ -20,19 +20,24 @@ public class SpoofUserAgent implements IHook {
                 Constants.USER_AGENT_HOOK.methodName,
                 Context.class,
                 new XC_MethodHook() {
+                    private static boolean hasLoggedSpoofedUserAgent = false;  /
 
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        SharedPreferences prefs = Main.xPackagePrefs; 
-                        
-                        String androidVersion = prefs.getString("android_version", "14.16.0"); 
-                        String osName = prefs.getString("os_name", "Android OS"); 
-                        String osVersion = prefs.getString("os_version", "14"); 
-                        
+                        SharedPreferences prefs = Main.xPackagePrefs;
+
+                        String androidVersion = prefs.getString("android_version", "14.16.0");
+                        String osName = prefs.getString("os_name", "Android OS");
+                        String osVersion = prefs.getString("os_version", "14");
+
                         String spoofedUserAgent = "ANDROID\t" + androidVersion + "\t" + osName + "\t" + osVersion;
                         param.setResult(spoofedUserAgent);
-                        
-                        XposedBridge.log("Spoofed User-Agent: " + spoofedUserAgent);
+
+                        // ログは一度だけ出力
+                        if (!hasLoggedSpoofedUserAgent) {
+                            XposedBridge.log("Spoofed User-Agent: " + spoofedUserAgent);
+                            hasLoggedSpoofedUserAgent = true;  
+                        }
                     }
 
                 }
