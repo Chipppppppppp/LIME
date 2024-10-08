@@ -3,11 +3,12 @@ package io.github.chipppppppppp.lime.hooks;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.customtabs.CustomTabsIntent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
@@ -24,24 +25,48 @@ public class RedirectWebView implements IHook {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         Activity activity = (Activity) param.thisObject;
-                        int webViewResId = activity.getResources().getIdentifier("iab_webview", "id", activity.getPackageName());
-                        WebView webView = (WebView) activity.findViewById(webViewResId);
-                        webView.setVisibility(View.GONE);
-                        webView.stopLoading();
-                        Uri uri = Uri.parse(webView.getUrl());
-                        if (limeOptions.openInBrowser.checked) {
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(uri);
-                            activity.startActivity(intent);
-                        } else {
-                            CustomTabsIntent tabsIntent = new CustomTabsIntent.Builder()
-                                    .setShowTitle(true)
-                                    .build();
-                            tabsIntent.launchUrl(activity, uri);
+
+                        View rootView = activity.findViewById(android.R.id.content);
+
+                        logAllViews(rootView);
+
+                        WebView webView = findWebView(rootView);
+                        if (webView != null) {
+                            String url = webView.getUrl();
+                            if (url != null) {
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.setData(Uri.parse(url));
+                                activity.startActivity(intent);
+                                webView.setVisibility(View.GONE);
+                                webView.stopLoading();
+                                activity.finish();
+                            }
                         }
-                        activity.finish();
                     }
                 }
         );
+    }
+    private WebView findWebView(View view) {
+        if (view instanceof WebView) {
+            return (WebView) view;
+        } else if (view instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) view;
+            for (int i = 0; i < group.getChildCount(); i++) {
+                WebView result = findWebView(group.getChildAt(i));
+                if (result != null) {
+                    return result;
+                }
+            }
+        }
+        return null;
+    }
+
+    private void logAllViews(View view) {
+        if (view instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) view;
+            for (int i = 0; i < group.getChildCount(); i++) {
+                logAllViews(group.getChildAt(i));
+            }
+        }
     }
 }
