@@ -67,7 +67,7 @@ Rhino の仕様、特に **Java 文字列との比較に `equals` を用いる**
 ## インストール
 
 初めに、以下のサイトの中から、  
-**LINE 14.9.1** と **LIME 1.9.0** の APK をダウンロードしてください｡
+**LINE 14.16.0** と **LIME 1.10.1** の APK をダウンロードしてください｡
 
 > [!IMPORTANT]
 > 分割 APK は使用しないでください
@@ -76,6 +76,7 @@ LI**N**E
 - [APKMirror](https://www.apkmirror.com/uploads/?appcategory=line)
 - [APKPure](https://apkpure.net/jp/line-calls-messages/jp.naver.line.android/versions)
 - [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/old-versions/)
+- [Uptodown](https://line.jp.uptodown.com/android/versions)
 
 LI**M**E
 - [Release](https://github.com/Chipppppppppp/LIME/releases/latest)
@@ -84,19 +85,20 @@ LI**M**E
 
 1. [**LSPosed**](https://github.com/LSPosed/LSPosed) をインストール
 2. LI**N**E アプリと LI**M**E アプリを両方ともインストール
-3. Google Play ストアの自動アップデートを防ぐために、[**Update Locker**](https://github.com/Xposed-Modules-Repo/ru.mike.updatelocker) か [**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを選択する
-   [Aurora Store](https://auroraoss.com) の場合はブラックリストを使用
+3. Google Play ストアの自動アップデートを防ぐために、[**Update Locker**](https://github.com/Xposed-Modules-Repo/ru.mike.updatelocker) や [**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを指定する  
+  [Aurora Store](https://auroraoss.com) の場合はブラックリストを使用
 4. LSPosed のモジュールから LIME に移動し、<kbd>モジュールの有効化</kbd> と LINE アプリにチェックを入れる
 
 ### 非 Root 端末
 
 > [!WARNING]
 > 非 root 端末では､ 以下の問題があります  
-> - Google アカウント (ドライブ) を使用したトーク履歴の復元ができない ([この方法](https://github.com/Chipppppppppp/LIME/issues/50#issuecomment-2174842592) でログインすれば可能)
+> - Google アカウント (ドライブ) を使用したトーク履歴の復元ができない  
+>   ([この方法](https://github.com/Chipppppppppp/LIME/issues/50#issuecomment-2174842592) でログインすれば可能)  
 > - 発/着信音が鳴らない  
 > - 着信が入るとクラッシュ  
 > - コインの購入が不可  
-> - LINE Pay の一部の機能が使用不可
+> - LINE Pay の一部の機能が使用不可  
 > - Wear OS (スマートウォッチ)での使用不可
 
 1. [**LSPatch**](https://github.com/LSPosed/LSPatch) をインストール  
@@ -113,32 +115,14 @@ LI**M**E
 3. [**Shizuku**](https://github.com/RikkaApps/Shizuku) を使用している場合は <kbd>インストール</kbd> を押して続行する  
   使用していない場合は、ファイルエクスプローラー等の別のアプリからインストールする
 
-<details><summary>GitHub Actions を使ってパッチする方法</summary>
-
-1. このリポジトリを [**fork**](https://github.com/Chipppppppppp/LIME/fork) する
-2. フォーク先の **Actions** に移動
-3. 初回のみ同意して、**All workflows** から **Build** を選択
-4. **Run workflow** (プルダウン) をタップし、**LSPatch** にチェックを入れてから、**Run workflow** (緑のボタン) を選択
-5. ビルド完了後、**Artifacts** に **LINE-** から始まるZIPファイルがあるのでそれをダウンロードし、その中のAPKをインストール
-
-</details>
-
 > [!IMPORTANT]
 > 既に Playストア からインストールした LINE アプリがインストールされている場合は、署名が競合するため、最初にアンインストールを行ってください。  
 
-
 ## 複数デバイスログイン
-
-[**MagiskOnWSA**Local](https://github.com/LSPosed/MagiskOnWSALocal) や [WSA-Script](https://github.com/YT-Advanced/WSA-Script) 等の改造版 [**WSA**](https://learn.microsoft.com/ja-jp/windows/android/wsa/) を使用して Windows 上の Android で同様の操作を行うことで、Windows での複数デバイスログインも可能です。
 
 ### 1. PC としてログインする
 > [!WARNING]
 > この方法は現在利用できません
-
-### 2. 最大バージョンに偽装をしてログインする
-> [!WARNING]
-> この方法は現在利用できません
-
 
 <details><summary>方法を確認</summary>
 
@@ -159,13 +143,18 @@ PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制
 
 </details>
 
-### 3. Android ID を偽装する
+### 2. 最大バージョンに偽装をしてログインする
+> [!WARNING]
+> この方法は現在利用できません
 
+### 3. Android ID を偽装する
 この方法は**両方のデバイスを Root 化している**場合のみ可能です。  
 <https://jesuscorona.hatenablog.com/entry/2019/02/10/010920> にあるように、メッセージの同期などに若干の遅れが生じることに注意が必要です。
 
-- メリット：3 端末以上でもログイン可能、すべてのサービスを使用可能
-- デメリット：メッセージの同期に遅れが生じる、Root 限定
+<details>
+
+- メリット：3 端末以上でもログイン可能・すべてのサービスを使用可能
+- デメリット：メッセージの同期に遅れが生じる・Root 限定
 
 #### 手順
 
@@ -177,6 +166,7 @@ PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制
 6. Swift Backup のバックアップフォルダをもう一つの端末に移し、バックアップした LINE をインストール (詳しくは[こちら](https://blog.hogehoge.com/2022/05/SwiftBackup2.html))
 7. LINE アプリを**開かず**に先に LIME をインストールする
 
+</details>
 
 ## 問題の報告
 
