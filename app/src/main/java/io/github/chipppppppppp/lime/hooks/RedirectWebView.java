@@ -3,6 +3,7 @@ package io.github.chipppppppppp.lime.hooks;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.customtabs.CustomTabsIntent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -25,22 +26,30 @@ public class RedirectWebView implements IHook {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         Activity activity = (Activity) param.thisObject;
-
-                        View rootView = activity.findViewById(android.R.id.content);
-
-                        logAllViews(rootView);
-
+                        
+                        View rootView = activity.getWindow().getDecorView().getRootView();
                         WebView webView = findWebView(rootView);
+
                         if (webView != null) {
-                            String url = webView.getUrl();
-                            if (url != null) {
+                            webView.setVisibility(View.GONE);
+                            webView.stopLoading();
+                            
+                            Uri uri = Uri.parse(webView.getUrl());
+                            
+                            if (limeOptions.openInBrowser.checked) {
                                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                                intent.setData(Uri.parse(url));
+                                intent.setData(uri);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 activity.startActivity(intent);
-                                webView.setVisibility(View.GONE);
-                                webView.stopLoading();
-                                activity.finish();
+                            } else {
+                                CustomTabsIntent tabsIntent = new CustomTabsIntent.Builder()
+                                        .setShowTitle(true)
+                                        .build();
+                                tabsIntent.launchUrl(activity, uri);
                             }
+                         
+                            activity.finish();
+
                         }
                     }
                 }
@@ -59,14 +68,5 @@ public class RedirectWebView implements IHook {
             }
         }
         return null;
-    }
-
-    private void logAllViews(View view) {
-        if (view instanceof ViewGroup) {
-            ViewGroup group = (ViewGroup) view;
-            for (int i = 0; i < group.getChildCount(); i++) {
-                logAllViews(group.getChildAt(i));
-            }
-        }
     }
 }
