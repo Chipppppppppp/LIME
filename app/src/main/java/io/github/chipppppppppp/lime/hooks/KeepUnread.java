@@ -30,10 +30,8 @@ public class KeepUnread implements IHook {
         if (limeOptions.removeKeepUnread.checked) return;
 
         XposedBridge.hookAllConstructors(
-
                 loadPackageParam.classLoader.loadClass("jp.naver.line.android.common.view.listview.PopupListView"),
                 new XC_MethodHook() {
-
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         ViewGroup viewGroup = (ViewGroup) param.thisObject;
@@ -54,7 +52,6 @@ public class KeepUnread implements IHook {
                         background.setShape(GradientDrawable.RECTANGLE);
                         background.setColor(Color.parseColor("#06C755"));
                         background.setCornerRadii(new float[]{100, 100, 80, 30, 100, 100, 80, 30});
-
                         container.setBackground(background);
 
                         TextView label = new TextView(context);
@@ -120,8 +117,4 @@ public class KeepUnread implements IHook {
             return false;
         }
     }
-
-
-
-
 }
