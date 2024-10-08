@@ -26,16 +26,15 @@ public class RedirectWebView implements IHook {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         Activity activity = (Activity) param.thisObject;
-                        
                         View rootView = activity.getWindow().getDecorView().getRootView();
                         WebView webView = findWebView(rootView);
 
                         if (webView != null) {
                             webView.setVisibility(View.GONE);
                             webView.stopLoading();
-                            
+
                             Uri uri = Uri.parse(webView.getUrl());
-                            
+
                             if (limeOptions.openInBrowser.checked) {
                                 Intent intent = new Intent(Intent.ACTION_VIEW);
                                 intent.setData(uri);
@@ -47,7 +46,7 @@ public class RedirectWebView implements IHook {
                                         .build();
                                 tabsIntent.launchUrl(activity, uri);
                             }
-                         
+
                             activity.finish();
 
                         }
@@ -55,6 +54,7 @@ public class RedirectWebView implements IHook {
                 }
         );
     }
+
     private WebView findWebView(View view) {
         if (view instanceof WebView) {
             return (WebView) view;
