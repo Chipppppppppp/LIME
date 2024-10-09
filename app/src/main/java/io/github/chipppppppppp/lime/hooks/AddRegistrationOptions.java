@@ -102,16 +102,17 @@ public class AddRegistrationOptions implements IHook {
 
 
         EditText editTextOsName = new EditText(activity);
-        editTextOsName.setHint("OS名");
+        editTextOsName.setHint(R.string.spoof_os_name);
         editTextOsName.setText(prefs.getString("os_name", "Android OS"));
 
         EditText editTextOsVersion = new EditText(activity);
-        editTextOsVersion.setHint("OSバージョン");
+        editTextOsVersion.setHint(R.string.spoof_os_version);
         editTextOsVersion.setText(prefs.getString("os_version", "14"));
 
         EditText editTextAndroidVersion = new EditText(activity);
-        editTextAndroidVersion.setHint("アプリのバージョン");
+        editTextAndroidVersion.setHint(R.string.spoof_android_version);
         editTextAndroidVersion.setText(prefs.getString("android_version", "14.16.0"));
+
 
 
         layout.addView(editTextOsName);
