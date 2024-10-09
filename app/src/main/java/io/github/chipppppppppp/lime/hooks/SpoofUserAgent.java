@@ -20,7 +20,7 @@ public class SpoofUserAgent implements IHook {
                 Constants.USER_AGENT_HOOK.methodName,
                 Context.class,
                 new XC_MethodHook() {
-                    private static boolean hasLoggedSpoofedUserAgent = false;  /
+                    private static boolean hasLoggedSpoofedUserAgent = false;  
 
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
