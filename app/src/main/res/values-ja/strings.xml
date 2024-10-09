@@ -16,6 +16,7 @@
     <string name="switch_spoof_android_id">Android ID を偽装</string>
     <string name="spoof_android_id_risk">Android ID の偽装は自己責任です</string>
     <string name="spoof_version_id_risk">アプリのバージョン偽装は自己責任です</string>
+    <string name="spoof_device_name">Device名</string>
     <string name="spoof_os_name">OS 名</string>
     <string name="spoof_os_version">OS バージョン</string>
     <string name="spoof_version_id_risk">プリのバージョン偽装は自己責任です</string>
