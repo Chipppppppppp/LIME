@@ -1,8 +1,10 @@
 package io.github.chipppppppppp.lime.hooks;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
@@ -18,11 +20,29 @@ public class SpoofUserAgent implements IHook {
                 Constants.USER_AGENT_HOOK.methodName,
                 Context.class,
                 new XC_MethodHook() {
+                    private static boolean hasLoggedSpoofedUserAgent = false;
+
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        param.setResult("ANDROID\t32767.2147483647.2147483647");
+                        SharedPreferences prefs = Main.xPackagePrefs;
+
+                        String device = prefs.getString("device_name", "ANDROID");
+                        String androidVersion = prefs.getString("android_version", "14.16.0");
+                        String osName = prefs.getString("os_name", "Android OS");
+                        String osVersion = prefs.getString("os_version", "14");
+
+                        String spoofedUserAgent = device + "\t" + androidVersion + "\t" + osName + "\t" + osVersion;
+                        param.setResult(spoofedUserAgent);
+
+                     
+                        if (!hasLoggedSpoofedUserAgent) {
+                            XposedBridge.log("Spoofed User-Agent: " + spoofedUserAgent);
+                            hasLoggedSpoofedUserAgent = true;  
+                        }
+
                     }
                 }
+
         );
     }
 }
