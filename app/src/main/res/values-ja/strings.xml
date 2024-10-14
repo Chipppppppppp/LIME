@@ -45,4 +45,42 @@
 
     <!-- Menu -->
     <string name="switch_keep_unread">未読のまま閲覧</string>
+
+
+    
+    <!-- UNSENT REC -->
+
+
+    <string name="backup">バックアップ</string>
+    <string name="backup_creation_failed">バックアップの作成に失敗しました</string>
+    <string name="check">確認</string>
+    <string name="class_not_found">クラスが見つかりません</string>
+
+    <string name="confirm_messages">確認済みのメッセージ</string>
+    <string name="delete_messages">メッセージを削除</string>
+    <string name="deleted_messages">削除されたメッセージ</string>
+    <string name="content_moved_to_backup">内容がバックアップファイルに移動されました</string>
+
+    <string name="file_content_deleted">ファイルの内容が削除されました</string>
+    <string name="file_creation_failed">ファイルを作成できませんでした</string>
+    <string name="file_delete_failed">ファイルの削除に失敗しました</string>
+    <string name="file_move_failed">ファイルの移動に失敗しました</string>
+    <string name="file_save_failed">ファイルの保存に失敗しました</string>
+    <string name="file_not_found">ファイルが見つかりません</string>
+    <string name="read_BackUpFile_failed">BackUpFile.txtの読み取りに失敗しました</string>
+    <string name="really_delete">本当に削除しますか</string>
+
+
+    <string name="no_backup_found">何もバックアップされていません</string>
+    <string name="no_get_restart_app">正しく取得できませんでした。アプリを再起動してください</string>
+    <string name="ok">ok</string>
+
+    <string name="yes">はい</string>
+    <string name="no">いいえ</string>
+    <string name="cancel">キャンセル</string>
+    <string name="sticker">スタンプ</string>
+    <string name="video">動画</string>
+    <string name="picture">写真</string>
+    <string name="reacquisition">再取得</string>
+
 </resources>
