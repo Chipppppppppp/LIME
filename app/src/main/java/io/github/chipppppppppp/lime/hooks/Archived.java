@@ -39,7 +39,7 @@ public class Archived implements IHook {
                 if (appContext == null) {
                     return;
                 }
-                Context moduleContext = appContext; 
+                Context moduleContext = appContext;
 
                 File dbFile = appContext.getDatabasePath("naver_line");
 
