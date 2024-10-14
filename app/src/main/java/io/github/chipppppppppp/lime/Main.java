@@ -11,6 +11,7 @@ import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.hooks.AddRegistrationOptions;
+import io.github.chipppppppppp.lime.hooks.Archived;
 import io.github.chipppppppppp.lime.hooks.BlockTracking;
 import io.github.chipppppppppp.lime.hooks.CheckHookTargetVersion;
 import io.github.chipppppppppp.lime.hooks.Constants;
@@ -32,6 +33,7 @@ import io.github.chipppppppppp.lime.hooks.RemoveReplyMute;
 import io.github.chipppppppppp.lime.hooks.SendMuteMessage;
 import io.github.chipppppppppp.lime.hooks.SpoofAndroidId;
 import io.github.chipppppppppp.lime.hooks.SpoofUserAgent;
+
 
 public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
     public static String modulePath;
@@ -61,7 +63,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new KeepUnread(),
             new BlockTracking(),
             new ModifyResponse(),
-            new OutputRequest()
+            new OutputRequest(),
+            new Archived()
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
