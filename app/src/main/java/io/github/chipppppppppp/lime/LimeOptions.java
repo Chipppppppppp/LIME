@@ -53,10 +53,11 @@ public class LimeOptions {
             preventMarkAsRead,
             preventUnsendMessage,
             sendMuteMessage,
+            Archived,
             removeKeepUnread,
             blockTracking,
             stopVersionCheck,
-            outputCommunication,
-            Archived
+            outputCommunication
+           
     };
 }
