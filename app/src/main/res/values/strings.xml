@@ -15,6 +15,11 @@
     <string name="need_refresh">Forced stop and cache clearing are required</string>
     <string name="switch_spoof_android_id">Spoof Android ID</string>
     <string name="spoof_android_id_risk">Spoofing Android ID is at your own risk</string>
+    <string name="spoof_version_id_risk">Spoofing LINE Version is at your own risk</string>
+    <string name="spoof_device_name">Device name</string>
+    <string name="spoof_os_name" >OS name</string>
+    <string name="spoof_os_version" >OS version</string>
+    <string name="spoof_android_version" >App version</string>
     <string name="incompatible_version">Some functions are not available due to version incompatibility</string>
     <string name="switch_android_secondary">Disguise as the highest version</string>
     <string name="switch_unembed_options">Do not embed options in LINE (options will not be synchronized)</string>
