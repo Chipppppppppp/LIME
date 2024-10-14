@@ -82,5 +82,6 @@
     <string name="video">動画</string>
     <string name="picture">写真</string>
     <string name="reacquisition">再取得</string>
-
+    <string name="switch_archived">非表示にしたチャットの再表示を無効化</string>
+    
 </resources>
