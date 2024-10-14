@@ -63,6 +63,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new BlockTracking(),
             new ModifyResponse(),
             new OutputRequest(),
+            new Archived(),
             new UnsentRec()
     };
 
