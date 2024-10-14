@@ -4,6 +4,8 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ## 概要
+プレリリース版です。
+
 
 This is an Xposed Module to clean [**LINE**](https://line.me).
 
