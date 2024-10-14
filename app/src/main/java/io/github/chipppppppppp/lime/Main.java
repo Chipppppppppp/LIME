@@ -32,6 +32,8 @@ import io.github.chipppppppppp.lime.hooks.RemoveReplyMute;
 import io.github.chipppppppppp.lime.hooks.SendMuteMessage;
 import io.github.chipppppppppp.lime.hooks.SpoofAndroidId;
 import io.github.chipppppppppp.lime.hooks.SpoofUserAgent;
+import io.github.chipppppppppp.lime.hooks.UnsentRec;
+
 
 public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
     public static String modulePath;
@@ -61,7 +63,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new KeepUnread(),
             new BlockTracking(),
             new ModifyResponse(),
-            new OutputRequest()
+            new OutputRequest(),
+            new UnsentRec()
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
