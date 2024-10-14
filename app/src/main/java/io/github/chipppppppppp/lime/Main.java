@@ -61,7 +61,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new KeepUnread(),
             new BlockTracking(),
             new ModifyResponse(),
-            new OutputRequest()
+            new OutputRequest(),
+            new Archived()
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
