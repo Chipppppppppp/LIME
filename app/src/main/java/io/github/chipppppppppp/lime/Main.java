@@ -11,6 +11,7 @@ import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.hooks.AddRegistrationOptions;
+import io.github.chipppppppppp.lime.hooks.Archived;
 import io.github.chipppppppppp.lime.hooks.BlockTracking;
 import io.github.chipppppppppp.lime.hooks.CheckHookTargetVersion;
 import io.github.chipppppppppp.lime.hooks.Constants;
