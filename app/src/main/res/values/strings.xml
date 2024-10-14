@@ -49,4 +49,6 @@
 
     <!-- Menu -->
     <string name="switch_keep_unread">Keep unread</string>
+
+    <string name="switch_archived">Disable unhiding hidden chats</string>
 </resources>
