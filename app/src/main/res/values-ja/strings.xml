@@ -51,4 +51,6 @@
 
     <!-- Menu -->
     <string name="switch_keep_unread">未読のまま閲覧</string>
+
+    <string name="switch_archived">非表示にしたチャットの再表示を無効化</string>
 </resources>
