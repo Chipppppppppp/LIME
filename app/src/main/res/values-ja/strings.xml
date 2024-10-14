@@ -17,6 +17,7 @@
     <string name="spoof_android_id_risk">Android ID の偽装は自己責任です</string>
     <string name="incompatible_version">バージョン不適合のため一部機能が利用できません</string>
     <string name="switch_android_secondary">最大バージョンに偽装</string>
+    <string name="switch_archived">非表示にしたチャットの再表示を無効化</string>
     <string name="switch_unembed_options">設定を LINE に埋め込まない (設定は同期されません)</string>
     <string name="switch_remove_voom">VOOM アイコンを削除</string>
     <string name="switch_remove_wallet">ウォレットアイコンを削除</string>
