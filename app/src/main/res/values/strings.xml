@@ -46,34 +46,5 @@
     <!-- Menu -->
     <string name="switch_keep_unread">Keep unread</string>
 
-    <!-- UNSENT REC -->
 
-<string name="backup">Backup</string>
-<string name="backup_creation_failed">Failed to create backup</string>
-<string name="check">Confirm</string>
-<string name="class_not_found">Class not found</string>
-
-<string name="confirm_messages">Confirmed messages</string>
-<string name="delete_messages">Deleted messages</string>
-<string name="deleted_messages">Deleted messages</string>
-<string name="content_moved_to_backup">Content moved to backup file</string>
-
-<string name="file_content_deleted">File contents deleted</string>
-<string name="file_creation_failed">Could not create file</string>
-<string name="file_delete_failed">Failed to delete file</string>
-<string name="file_move_failed">Failed to move file</string>
-<string name="file_save_failed">Failed to save file</string>
-<string name="file_not_found">File not found</string>
-<string name="read_BackUpFile_failed">Failed to read BackUpFile.txt</string>
-<string name="really_delete">Really delete?</string>
-<string name="no_backup_found">Nothing backed up</string>
-<string name="no_get_restart_app">Could not get properly. Please restart the app</string>
-<string name="ok">ok</string>
-<string name="yes">Yes</string>
-<string name="no">No</string>
-<string name="cancel">Cancel</string>
-<string name="sticker">Stickers</string>
-<string name="video">Videos</string>
-<string name="picture">Photos</string>
-<string name="reacquisition">Reacquisition</string>
 </resources>
