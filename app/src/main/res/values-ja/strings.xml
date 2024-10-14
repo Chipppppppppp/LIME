@@ -8,6 +8,7 @@
     <string name="xposed_desc">LINE をクリーンに。</string>
 
     <!-- Options -->
+    
     <string name="module_not_enabled_title">エラー</string>
     <string name="module_not_enabled_text">モジュールが有効化されていません！</string>
     <string name="options_title">設定</string>
@@ -88,4 +89,11 @@
     <string name="video">動画</string>
     <string name="picture">写真</string>
     <string name="reacquisition">再取得</string>
+    
+    <string name="spoof_version_id_risk">アプリのバージョン偽装は自己責任です</string>
+    <string name="spoof_device_name">Device名</string>
+    <string name="spoof_os_name">OS 名</string>
+    <string name="spoof_os_version">OS バージョン</string>
+    <string name="spoof_version_id_risk">アプリのバージョン偽装は自己責任です</string>
+    <string name="spoof_android_version">アプリのバージョン</string>
 </resources>
