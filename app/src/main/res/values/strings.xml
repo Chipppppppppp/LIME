@@ -43,8 +43,100 @@
     <string name="button_copy">Copy</string>
     <string name="button_paste">Paste</string>
 
+
+    
     <!-- Menu -->
     <string name="switch_keep_unread">Keep unread</string>
 
 
+    <resources>
+    <string translatable="false" name="app_name">LIME</string>
+    <!-- General -->
+    <string name="positive_button">OK</string>
+    <string name="negative_button">Cancel</string>
+
+    <!-- Xposed API -->
+    <string name="xposed_desc">Clean LINE.</string>
+
+    <!-- Options -->
+    <string name="module_not_enabled_title">Error</string>
+    <string name="module_not_enabled_text">Module not enabled!</string>
+    <string name="options_title">Options</string>
+    <string name="restarting">Restarting now...</string>
+    <string name="need_refresh">Forced stop and cache clearing are required</string>
+    <string name="switch_spoof_android_id">Spoof Android ID</string>
+    <string name="spoof_android_id_risk">Spoofing Android ID is at your own risk</string>
+    <string name="incompatible_version">Some functions are not available due to version incompatibility</string>
+    <string name="switch_android_secondary">Disguise as the highest version</string>
+    <string name="switch_unembed_options">Do not embed options in LINE (options will not be synchronized)</string>
+    <string name="switch_remove_voom">Remove the VOOM icon</string>
+    <string name="switch_remove_wallet">Remove the wallet icon</string>
+    <string name="switch_remove_news_or_call">Remove the news or call icon</string>
+    <string name="switch_distribute_evenly">Distribute the icons on the bottom bar evenly</string>
+    <string name="switch_extend_clickable_area">Extend the clickable area of the icons on the bottom bar</string>
+    <string name="switch_remove_icon_labels">Remove the icon labels on the bottom bar</string>
+    <string name="switch_remove_ads">Remove ads</string>
+    <string name="switch_remove_recommendation">Remove recommendations</string>
+    <string name="switch_remove_premium_recommendation">Remove LYP Premium recommendations</string>
+    <string name="switch_remove_service_labels">Remove tbe service labels</string>
+    <string name="switch_remove_reply_mute">Remove the \"Mute chat\" action from notifications</string>
+    <string name="switch_redirect_webview">Redirect WebView to the default browser</string>
+    <string name="switch_open_in_browser">Open in the browser app</string>
+    <string name="switch_prevent_mark_as_read">Always prevent marking as read</string>
+    <string name="switch_send_mute_message">Always send mute messages</string>
+    <string name="switch_prevent_unsend_message">Prevent messages from unsending</string>
+    <string name="switch_remove_keep_unread">Remove the \"Keep unread\" switch from the menu in the top right corner of the chat tab</string>
+    <string name="switch_block_tracking">Block tracking communications</string>
+    <string name="switch_stop_version_check">Stop checking LINE version</string>
+    <string name="switch_output_communication">Output communication contents to log (for developers)</string>
+    <string name="modify_request">Modify requests</string>
+    <string name="modify_response">Modify responses</string>
+    <string name="button_copy">Copy</string>
+    <string name="button_paste">Paste</string>
+
+    <!-- Menu -->
+    <string name="switch_keep_unread">Keep unread</string>
+
+
+    <string name="backup">バックアップ</string>
+    <string name="backup_creation_failed">バックアップの作成に失敗しました</string>
+    <string name="check">確認</string>
+    <string name="class_not_found">クラスが見つかりません</string>
+
+    <string name="confirm_messages">確認済みのメッセージ</string>
+    <string name="delete_messages">メッセージを削除</string>
+    <string name="deleted_messages">削除されたメッセージ</string>
+    <string name="content_moved_to_backup">内容がバックアップファイルに移動されました</string>
+
+    <string name="file_content_deleted">ファイルの内容が削除されました</string>
+    <string name="file_creation_failed">ファイルを作成できませんでした</string>
+    <string name="file_delete_failed">ファイルの削除に失敗しました</string>
+    <string name="file_move_failed">ファイルの移動に失敗しました</string>
+    <string name="file_save_failed">ファイルの保存に失敗しました</string>
+    <string name="file_not_found">ファイルが見つかりません</string>
+    <string name="read_BackUpFile_failed">BackUpFile.txtの読み取りに失敗しました</string>
+    <string name="really_delete">本当に削除しますか</string>
+
+
+    <string name="no_backup_found">何もバックアップされていません</string>
+    <string name="no_get_restart_app">正しく取得できませんでした。アプリを再起動してください</string>
+    <string name="ok">ok</string>
+
+    <string name="set_id">IDを設定</string>
+
+    <string name="enter_name">名前を入力</string>
+    <string name="please_enter_name">名前を入力してください</string>
+    <string name="enter_name_for_all_fields">全てのフィールドに名前を入力してください。</string>
+    <string name="all_names_set_restart_suggested">全ての名前が設定されました。再起動を推奨します。</string>
+    <string name="name_set_restart_suggested">名前が設定されました。再起動を推奨します。</string>
+
+    <string name="read_nonamelogs_failed">NoNameLogs.txtの読み取りに失敗しました</string>
+
+    <string name="yes">はい</string>
+    <string name="no">いいえ</string>
+    <string name="cancel">キャンセル</string>
+    <string name="sticker">スタンプ</string>
+    <string name="video">動画</string>
+    <string name="picture">写真</string>
+    <string name="reacquisition">再取得</string>
 </resources>
