@@ -15,6 +15,10 @@
     <string name="need_refresh">強制停止とキャッシュの削除が必要です</string>
     <string name="switch_spoof_android_id">Android ID を偽装</string>
     <string name="spoof_android_id_risk">Android ID の偽装は自己責任です</string>
+    <string name="spoof_version_id_risk">アプリのバージョン偽装は自己責任です</string>
+    <string name="spoof_device_name">Device名</string>
+    <string name="spoof_os_name">OS 名</string>
+    <string name="spoof_os_version">OS バージョン</string>
     <string name="incompatible_version">バージョン不適合のため一部機能が利用できません</string>
     <string name="switch_android_secondary">最大バージョンに偽装</string>
     <string name="switch_unembed_options">設定を LINE に埋め込まない (設定は同期されません)</string>
