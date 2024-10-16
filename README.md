@@ -14,9 +14,7 @@ LIME  開発者
 https://github.com/Chipppppppppp
 
 コラボレーター
-https://github.com/Chipppppppppp/LIME/commits?author=s1204IT
-
-
+https://github.com/s1204IT
 
 This is an Xposed Module to clean [**LINE**](https://line.me).
 
