@@ -3,10 +3,12 @@ package io.github.chipppppppppp.lime.hooks;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.customtabs.CustomTabsIntent;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+
+import androidx.browser.customtabs.CustomTabsIntent;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
