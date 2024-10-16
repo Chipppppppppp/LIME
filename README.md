@@ -11,7 +11,7 @@
 Thank you 
 
 LIME  開発者
-bit.ly/chippppp_github
+https://github.com/Chipppppppppp
 
 コラボレーター
 https://github.com/Chipppppppppp/LIME/commits?author=s1204IT
