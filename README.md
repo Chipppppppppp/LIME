@@ -6,6 +6,17 @@
 ## 概要
 プレリリース版です。自己責任でお願いします。
 
+このアプリで追加されている機能は、いずれPRするものがおおいですが、機能の追加を優先しているため、修正が必要なものが多く、このような形で公開させていただいております。
+
+Thank you 
+
+LIME  開発者
+bit.ly/chippppp_github
+
+コラボレーター
+https://github.com/Chipppppppppp/LIME/commits?author=s1204IT
+
+
 
 This is an Xposed Module to clean [**LINE**](https://line.me).
 
