@@ -10,7 +10,7 @@
 
 Thank you 
 
-LIME  開発者
+LIME  開発者 \n
 https://github.com/Chipppppppppp
 
 コラボレーター
