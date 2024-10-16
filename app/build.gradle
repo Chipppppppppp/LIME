@@ -66,6 +66,7 @@ dependencies {
     implementation 'com.android.support:customtabs:23.0.0'
     compileOnly 'de.robv.android.xposed:api:82'
     implementation 'org.mozilla:rhino:1.7.15'
+     implementation 'androidx.core:core:1.9.0' // 最新のバージョンを確認して設定
 }
 
 tasks.withType(JavaCompile).configureEach {
