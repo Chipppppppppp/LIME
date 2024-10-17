@@ -186,22 +186,44 @@ public class EmbedOptions implements IHook {
                             backupButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    backupChatHistory(context); // バックアップメソッドを呼び出す
-                     
+                                    backupChatHistory(context); 
+
                                 }
                             });
                             layout.addView(backupButton);
-                            
+
                             Button restoreButton = new Button(context);
                             restoreButton.setLayoutParams(buttonParams);
                             restoreButton.setText("リストア");
                             restoreButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    restoreChatHistory(context); // リストアメソッドを呼び出す
+                                    restoreChatHistory(context); 
                                 }
                             });
                             layout.addView(restoreButton);
+
+                            Button backupfolderButton = new Button(context);
+                            backupfolderButton.setLayoutParams(buttonParams);
+                            backupfolderButton.setText("トーク画像のバックアップ");
+                            backupfolderButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    backupChatsFolder(context); 
+                                }
+                            });
+                            layout.addView(backupfolderButton);
+
+                            Button restorefolderButton = new Button(context);
+                            restorefolderButton.setLayoutParams(buttonParams);
+                            restorefolderButton.setText("トーク画像のリストア");
+                            restorefolderButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    restoreChatsFolder(context); 
+                                }
+                            });
+                            layout.addView(restorefolderButton);
 
 
                             builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
@@ -461,13 +483,12 @@ public class EmbedOptions implements IHook {
     }
 
     private void backupChatHistory( Context appContext) {
-        // Get the original database file using appContext
+ 
         File originalDbFile = appContext.getDatabasePath("naver_line");
 
-        // Create the backup directory path
+
         File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
 
-        // Ensure the backup directory exists
         if (!backupDir.exists()) {
             if (!backupDir.mkdirs()) {
                 Log.e(TAG, "Failed to create backup directory: " + backupDir.getAbsolutePath());
@@ -475,11 +496,11 @@ public class EmbedOptions implements IHook {
             }
         }
 
-        // Now we can create a file in the backup directory
+
         File backupFile = new File(backupDir, "naver_line_backup.db");
-        // Backup succeeded, now share the backup file
+
         shareBackupFileInHookedApp(appContext, backupFile);
-        // Perform the backup
+
         try (FileChannel source = new FileInputStream(originalDbFile).getChannel();
              FileChannel destination = new FileOutputStream(backupFile).getChannel()) {
             destination.transferFrom(source, 0, source.size());
@@ -499,20 +520,18 @@ public class EmbedOptions implements IHook {
             return;
         }
 
-        // ファイルのURIを取得
         Uri fileUri = FileProvider.getUriForFile(
                 hookedAppContext,
                 hookedAppContext.getPackageName() + ".fileprovider", // フックしているアプリのパッケージ名を使用
                 backupFile
         );
 
-        // 共有用のIntentを作成
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.setType("application/octet-stream"); // バイナリファイルのMIMEタイプ
-        shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
-        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // URIの読み取り権限を付与
 
-        // フックしているアプリのコンテキストを使用してIntentを発行
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("application/octet-stream"); 
+        shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
         hookedAppContext.startActivity(Intent.createChooser(shareIntent, "バックアップファイルを共有"));
     }
 
@@ -552,7 +571,6 @@ public class EmbedOptions implements IHook {
             backupDb = SQLiteDatabase.openDatabase(backupDbFile.getPath(), null, SQLiteDatabase.OPEN_READONLY);
             originalDb = context.openOrCreateDatabase("naver_line", Context.MODE_PRIVATE, null);
 
-            // chat_historyテーブルの復元
             Cursor cursor = backupDb.rawQuery("SELECT * FROM chat_history", null);
             if (cursor.moveToFirst()) {
                 do {
@@ -580,21 +598,22 @@ public class EmbedOptions implements IHook {
                     String parameter = cursor.getString(cursor.getColumnIndex("parameter"));
                     byte[] chunks = cursor.getBlob(cursor.getColumnIndex("chunks"));
 
-                if (serverId == null) {
-                    continue;
-                }
 
-   
-                Cursor existingCursor = originalDb.rawQuery("SELECT 1 FROM chat_history WHERE server_id = ?", new String[]{serverId});
-                boolean recordExists = existingCursor.moveToFirst();
-                existingCursor.close();
-
-                if (recordExists) {
-                    continue;
-                }
+                    if (serverId == null) {
+                        continue;
+                    }
 
 
-                    // ContentValuesを使用してデータを挿入
+                    Cursor existingCursor = originalDb.rawQuery("SELECT 1 FROM chat_history WHERE server_id = ?", new String[]{serverId});
+                    boolean recordExists = existingCursor.moveToFirst();
+                    existingCursor.close();
+
+                    if (recordExists) {
+
+                        continue;
+                    }
+
+
                     ContentValues values = new ContentValues();
                     values.put("server_id", serverId);
                     values.put("type", type);
@@ -620,7 +639,7 @@ public class EmbedOptions implements IHook {
                     values.put("parameter", parameter);
                     values.put("chunks", chunks);
 
-                    // データベースに挿入
+
                     originalDb.insertWithOnConflict("chat_history", null, values, SQLiteDatabase.CONFLICT_IGNORE);
                 } while (cursor.moveToNext());
             }
@@ -653,7 +672,7 @@ public class EmbedOptions implements IHook {
             backupDb = SQLiteDatabase.openDatabase(backupDbFile.getPath(), null, SQLiteDatabase.OPEN_READONLY);
             originalDb = context.openOrCreateDatabase("naver_line", Context.MODE_PRIVATE, null);
 
-            // chatテーブルの復元
+
             Cursor cursor = backupDb.rawQuery("SELECT * FROM chat", null);
             if (cursor.moveToFirst()) {
                 do {
@@ -691,7 +710,7 @@ public class EmbedOptions implements IHook {
                         continue;
                     }
 
-                    // ContentValuesを使用してデータを挿入
+
                     ContentValues values = new ContentValues();
                     values.put("chat_id", chatId);
                     values.put("chat_name", chatName);
@@ -722,7 +741,7 @@ public class EmbedOptions implements IHook {
                     values.put("chat_room_should_show_bgm_badge", chatRoomShouldShowBgmBadge);
                     values.put("unread_type_and_count", unreadTypeAndCount);
 
-                    // データベースに挿入
+          
                     originalDb.insertWithOnConflict("chat", null, values, SQLiteDatabase.CONFLICT_IGNORE);
                 } while (cursor.moveToNext());
             }
@@ -739,6 +758,97 @@ public class EmbedOptions implements IHook {
             if (originalDb != null) {
                 originalDb.close();
             }
+        }
+    }
+    private void backupChatsFolder(Context context) {
+
+        File originalChatsDir = new File(Environment.getExternalStorageDirectory(), "Android/data/jp.naver.line.android/files/chats");
+
+
+        File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
+
+
+        if (!backupDir.exists() && !backupDir.mkdirs()) {
+            Log.e(TAG, "Failed to create backup directory: " + backupDir.getAbsolutePath());
+            return;
+        }
+
+
+        File backupChatsDir = new File(backupDir, "chats_backup");
+        if (!backupChatsDir.exists() && !backupChatsDir.mkdirs()) {
+            Log.e(TAG, "Failed to create chats backup directory: " + backupChatsDir.getAbsolutePath());
+            return;
+        }
+
+
+        try {
+            copyDirectory(originalChatsDir, backupChatsDir);
+            Log.i(TAG, "Chats folder successfully backed up to: " + backupChatsDir.getAbsolutePath());
+            Toast.makeText(context, "チャットフォルダのバックアップが成功しました", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            Log.e(TAG, "Error while backing up chats folder", e);
+            Toast.makeText(context, "チャットフォルダのバックアップ中にエラーが発生しました", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    private void copyDirectory(File sourceDir, File destDir) throws IOException {
+        if (!sourceDir.exists()) {
+            throw new IOException("Source directory does not exist: " + sourceDir.getAbsolutePath());
+        }
+
+        if (!destDir.exists()) {
+            destDir.mkdirs();
+        }
+
+        File[] files = sourceDir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                File destFile = new File(destDir, file.getName());
+                if (file.isDirectory()) {
+     
+                    copyDirectory(file, destFile);
+                } else {
+
+                    copyFile(file, destFile);
+                }
+            }
+        }
+    }
+
+    private void copyFile(File sourceFile, File destFile) throws IOException {
+        try (FileChannel sourceChannel = new FileInputStream(sourceFile).getChannel();
+             FileChannel destChannel = new FileOutputStream(destFile).getChannel()) {
+            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
+        }
+    }
+
+    private void restoreChatsFolder(Context context) {
+        File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup/chats_backup");
+
+
+        File originalChatsDir = new File(Environment.getExternalStorageDirectory(), "Android/data/jp.naver.line.android/files/chats");
+
+
+        if (!backupDir.exists()) {
+            Log.e(TAG, "Backup directory does not exist: " + backupDir.getAbsolutePath());
+            Toast.makeText(context, "バックアップフォルダが見つかりません", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!originalChatsDir.exists() && !originalChatsDir.mkdirs()) {
+            Log.e(TAG, "Failed to create original chats directory: " + originalChatsDir.getAbsolutePath());
+            Toast.makeText(context, "復元先のフォルダの作成に失敗しました", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            copyDirectory(backupDir, originalChatsDir);
+            Log.i(TAG, "Chats folder successfully restored to: " + originalChatsDir.getAbsolutePath());
+            Toast.makeText(context, "チャットフォルダの復元が成功しました", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            Log.e(TAG, "Error while restoring chats folder", e);
+            Toast.makeText(context, "チャットフォルダの復元中にエラーが発生しました", Toast.LENGTH_SHORT).show();
         }
     }
 
