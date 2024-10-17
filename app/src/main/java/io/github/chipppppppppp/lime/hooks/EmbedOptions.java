@@ -38,6 +38,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -177,7 +180,7 @@ public class EmbedOptions implements IHook {
                                     .setTitle(R.string.modify_request);
 
                             builder.setView(scrollView);
-                            // ここにバックアップボタンを追加
+
                             Button backupButton = new Button(context);
 
                             buttonParams.topMargin = Utils.dpToPx(20, context);
@@ -186,7 +189,8 @@ public class EmbedOptions implements IHook {
                             backupButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    backupChatHistory(context); 
+                                    backupChatHistory(context);
+
 
                                 }
                             });
@@ -198,7 +202,7 @@ public class EmbedOptions implements IHook {
                             restoreButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    restoreChatHistory(context); 
+                                    restoreChatHistory(context);
                                 }
                             });
                             layout.addView(restoreButton);
@@ -209,7 +213,7 @@ public class EmbedOptions implements IHook {
                             backupfolderButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    backupChatsFolder(context); 
+                                    backupChatsFolder(context);
                                 }
                             });
                             layout.addView(backupfolderButton);
@@ -220,7 +224,7 @@ public class EmbedOptions implements IHook {
                             restorefolderButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    restoreChatsFolder(context); 
+                                    restoreChatsFolder(context);
                                 }
                             });
                             layout.addView(restorefolderButton);
@@ -462,19 +466,7 @@ public class EmbedOptions implements IHook {
         );
     }
 
-
-    private LinearLayout createLayout(Context context, Context moduleContext) {
-        LinearLayout layout = new LinearLayout(context);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-        addButton(layout, "バックアップ", v -> backupChatHistory(context));
-        addButton(layout, "リストア", v -> restoreChatHistory(context));
-
-        return layout;
-    }
-
+    
     private void addButton(LinearLayout layout, String buttonText, View.OnClickListener listener) {
         Button button = new Button(layout.getContext());
         button.setText(buttonText);
@@ -482,77 +474,50 @@ public class EmbedOptions implements IHook {
         layout.addView(button);
     }
 
-    private void backupChatHistory( Context appContext) {
- 
+    private void backupChatHistory(Context appContext) {
         File originalDbFile = appContext.getDatabasePath("naver_line");
-
-
+        
         File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
-
+        
         if (!backupDir.exists()) {
             if (!backupDir.mkdirs()) {
                 Log.e(TAG, "Failed to create backup directory: " + backupDir.getAbsolutePath());
                 return;
             }
         }
+        
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String backupFileNameWithTimestamp = "naver_line_backup_" + timeStamp + ".db";
+        String backupFileNameFixed = "naver_line_backup.db";
+        
+        File backupFileWithTimestamp = new File(backupDir, backupFileNameWithTimestamp);
+        File backupFileFixed = new File(backupDir, backupFileNameFixed);
+        
+        try (FileChannel source = new FileInputStream(originalDbFile).getChannel()) {
+            try (FileChannel destinationWithTimestamp = new FileOutputStream(backupFileWithTimestamp).getChannel()) {
+                destinationWithTimestamp.transferFrom(source, 0, source.size());
+            }
+            
+            source.position(0); 
+            try (FileChannel destinationFixed = new FileOutputStream(backupFileFixed).getChannel()) {
+                destinationFixed.transferFrom(source, 0, source.size());
+            }
 
-
-        File backupFile = new File(backupDir, "naver_line_backup.db");
-
-        shareBackupFileInHookedApp(appContext, backupFile);
-
-        try (FileChannel source = new FileInputStream(originalDbFile).getChannel();
-             FileChannel destination = new FileOutputStream(backupFile).getChannel()) {
-            destination.transferFrom(source, 0, source.size());
-
-            Log.i(TAG, "Backup successfully created: " + backupFile.getAbsolutePath());
-
+            Toast.makeText(appContext, "バックアップが成功しました", Toast.LENGTH_SHORT).show();
+            Log.i(TAG, "Backup successfully created: " + backupFileWithTimestamp.getAbsolutePath() + " and " + backupFileFixed.getAbsolutePath());
 
         } catch (IOException e) {
+            Toast.makeText(appContext, "バックアップ中にエラーが発生しました: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Error while creating backup", e);
         }
     }
 
 
-    private void shareBackupFileInHookedApp(Context hookedAppContext, File backupFile) {
-        if (!backupFile.exists()) {
-            Toast.makeText(hookedAppContext, "バックアップファイルが存在しません", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        Uri fileUri = FileProvider.getUriForFile(
-                hookedAppContext,
-                hookedAppContext.getPackageName() + ".fileprovider", // フックしているアプリのパッケージ名を使用
-                backupFile
-        );
-
-
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.setType("application/octet-stream"); 
-        shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
-        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-        hookedAppContext.startActivity(Intent.createChooser(shareIntent, "バックアップファイルを共有"));
-    }
 
 
 
-    private void createBackup(File originalDbFile, File temporaryBackupFile, Context context) {
-        try (FileChannel source = new FileInputStream(originalDbFile).getChannel();
-             FileChannel destination = new FileOutputStream(temporaryBackupFile).getChannel()) {
-            destination.transferFrom(source, 0, source.size());
-            showToast(context, "バックアップが成功しました");
-            Log.i(TAG, "Backup created successfully: " + temporaryBackupFile.getAbsolutePath());
-        } catch (IOException e) {
-            showToast(context, "バックアップ中にエラーが発生しました: " + e.getMessage());
-            Log.e(TAG, "Error while creating backup", e);
-        }
-    }
 
 
-    private void showToast(Context context, String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-    }
 
 
     private void restoreChatHistory(Context context) {
@@ -598,18 +563,15 @@ public class EmbedOptions implements IHook {
                     String parameter = cursor.getString(cursor.getColumnIndex("parameter"));
                     byte[] chunks = cursor.getBlob(cursor.getColumnIndex("chunks"));
 
-
                     if (serverId == null) {
                         continue;
                     }
-
 
                     Cursor existingCursor = originalDb.rawQuery("SELECT 1 FROM chat_history WHERE server_id = ?", new String[]{serverId});
                     boolean recordExists = existingCursor.moveToFirst();
                     existingCursor.close();
 
                     if (recordExists) {
-
                         continue;
                     }
 
@@ -638,7 +600,6 @@ public class EmbedOptions implements IHook {
                     values.put("attachement_local_uri", attachmentLocalUri);
                     values.put("parameter", parameter);
                     values.put("chunks", chunks);
-
 
                     originalDb.insertWithOnConflict("chat_history", null, values, SQLiteDatabase.CONFLICT_IGNORE);
                 } while (cursor.moveToNext());
@@ -672,7 +633,6 @@ public class EmbedOptions implements IHook {
             backupDb = SQLiteDatabase.openDatabase(backupDbFile.getPath(), null, SQLiteDatabase.OPEN_READONLY);
             originalDb = context.openOrCreateDatabase("naver_line", Context.MODE_PRIVATE, null);
 
-
             Cursor cursor = backupDb.rawQuery("SELECT * FROM chat", null);
             if (cursor.moveToFirst()) {
                 do {
@@ -705,7 +665,6 @@ public class EmbedOptions implements IHook {
                     Integer chatRoomShouldShowBgmBadge = cursor.isNull(cursor.getColumnIndex("chat_room_should_show_bgm_badge")) ? null : cursor.getInt(cursor.getColumnIndex("chat_room_should_show_bgm_badge"));
                     String unreadTypeAndCount = cursor.getString(cursor.getColumnIndex("unread_type_and_count"));
 
-                    // chat_idがnullの場合はスキップ
                     if (chatId == null) {
                         continue;
                     }
@@ -741,7 +700,6 @@ public class EmbedOptions implements IHook {
                     values.put("chat_room_should_show_bgm_badge", chatRoomShouldShowBgmBadge);
                     values.put("unread_type_and_count", unreadTypeAndCount);
 
-          
                     originalDb.insertWithOnConflict("chat", null, values, SQLiteDatabase.CONFLICT_IGNORE);
                 } while (cursor.moveToNext());
             }
@@ -806,7 +764,7 @@ public class EmbedOptions implements IHook {
             for (File file : files) {
                 File destFile = new File(destDir, file.getName());
                 if (file.isDirectory()) {
-     
+
                     copyDirectory(file, destFile);
                 } else {
 
@@ -816,6 +774,7 @@ public class EmbedOptions implements IHook {
         }
     }
 
+
     private void copyFile(File sourceFile, File destFile) throws IOException {
         try (FileChannel sourceChannel = new FileInputStream(sourceFile).getChannel();
              FileChannel destChannel = new FileOutputStream(destFile).getChannel()) {
@@ -824,11 +783,11 @@ public class EmbedOptions implements IHook {
     }
 
     private void restoreChatsFolder(Context context) {
+
         File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup/chats_backup");
 
 
         File originalChatsDir = new File(Environment.getExternalStorageDirectory(), "Android/data/jp.naver.line.android/files/chats");
-
 
         if (!backupDir.exists()) {
             Log.e(TAG, "Backup directory does not exist: " + backupDir.getAbsolutePath());
@@ -836,11 +795,13 @@ public class EmbedOptions implements IHook {
             return;
         }
 
+
         if (!originalChatsDir.exists() && !originalChatsDir.mkdirs()) {
             Log.e(TAG, "Failed to create original chats directory: " + originalChatsDir.getAbsolutePath());
             Toast.makeText(context, "復元先のフォルダの作成に失敗しました", Toast.LENGTH_SHORT).show();
             return;
         }
+
 
         try {
             copyDirectory(backupDir, originalChatsDir);
