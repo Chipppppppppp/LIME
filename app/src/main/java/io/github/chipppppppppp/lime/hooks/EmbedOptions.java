@@ -580,10 +580,19 @@ public class EmbedOptions implements IHook {
                     String parameter = cursor.getString(cursor.getColumnIndex("parameter"));
                     byte[] chunks = cursor.getBlob(cursor.getColumnIndex("chunks"));
 
-                    // server_idがnullの場合はスキップ
-                    if (serverId == null) {
-                        continue;
-                    }
+                if (serverId == null) {
+                    continue;
+                }
+
+   
+                Cursor existingCursor = originalDb.rawQuery("SELECT 1 FROM chat_history WHERE server_id = ?", new String[]{serverId});
+                boolean recordExists = existingCursor.moveToFirst();
+                existingCursor.close();
+
+                if (recordExists) {
+                    continue;
+                }
+
 
                     // ContentValuesを使用してデータを挿入
                     ContentValues values = new ContentValues();
