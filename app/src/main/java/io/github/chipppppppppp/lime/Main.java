@@ -36,6 +36,7 @@ import io.github.chipppppppppp.lime.hooks.SpoofAndroidId;
 import io.github.chipppppppppp.lime.hooks.SpoofUserAgent;
 import io.github.chipppppppppp.lime.hooks.UnsentRec;
 import io.github.chipppppppppp.lime.hooks.Archived;
+import io.github.chipppppppppp.lime.hooks.test;
 
 
 public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
@@ -69,7 +70,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new OutputRequest(),
             new Archived(),
             new UnsentRec(),
-
+            new test(),
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
