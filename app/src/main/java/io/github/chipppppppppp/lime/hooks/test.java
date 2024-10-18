@@ -13,10 +13,13 @@ import io.github.chipppppppppp.lime.LimeOptions;
 
 public class test implements IHook {
     private Ringtone ringtone = null;
-    private boolean isPlaying = false; // 着信音が再生中かどうかを管理するフラグ
+    private boolean isPlaying = false; 
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
+
+        if (!limeOptions.calltone.checked) return;
+        
         XposedBridge.hookAllMethods(
                 loadPackageParam.classLoader.loadClass(Constants.RESPONSE_HOOK.className),
                 Constants.RESPONSE_HOOK.methodName,
@@ -26,30 +29,28 @@ public class test implements IHook {
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         String paramValue = param.args[1].toString();
 
-                        // 着信音を再生する条件
                         if (paramValue.contains("type:NOTIFIED_RECEIVED_CALL,") && !isPlaying) {
                             try {
-                                // アプリケーションのコンテキストを取得
+                               
                                 Context context = AndroidAppHelper.currentApplication().getApplicationContext();
                                 if (context != null) {
                                     Uri ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
                                     ringtone = RingtoneManager.getRingtone(context, ringtoneUri);
-                                    ringtone.play(); // 着信音を再生
-                                    isPlaying = true; // 再生中フラグをセット
-                                    XposedBridge.log("Ringtone is playing."); // デバッグログ
+                                    ringtone.play(); 
+                                    isPlaying = true; 
+                                    XposedBridge.log("Ringtone is playing."); 
                                 }
                             } catch (Exception e) {
                                 XposedBridge.log(e);
                             }
                         }
 
-                        // 着信音を停止する条件
                         if (paramValue.contains("RESULT=REJECTED,") ||
                                 paramValue.contains("RESULT=REJECTED,")) {
                             if (ringtone != null && ringtone.isPlaying()) {
-                                ringtone.stop(); // 着信音を停止
-                                isPlaying = false; // 再生中フラグをリセット
-                                XposedBridge.log("Ringtone has been stopped."); // デバッグログ
+                                ringtone.stop();
+                                isPlaying = false; 
+                      
                             }
                         }
                     }
@@ -61,9 +62,8 @@ public class test implements IHook {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 if (ringtone != null && ringtone.isPlaying()) {
-                    ringtone.stop(); // フラグがリセットされる前に着信音を停止
-                    isPlaying = false; // 再生中フラグをリセット
-                    XposedBridge.log("Ringtone has been stopped in onCreate."); // デバッグログ
+                    ringtone.stop(); 
+                    isPlaying = false; 
                 }
             }
         });
