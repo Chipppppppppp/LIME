@@ -80,7 +80,8 @@
 <string name="picture">Photos</string>
 <string name="reacquisition">Reacquire</string>
 
- <string name="switch_archived">Disable unhiding hidden chats</string>   
+ <string name="switch_archived">Disable unhiding hidden chats</string>
+    <string name="calltone">LsPatch用　着信音を鳴らす</string>
 
-    
+
 </resources>
