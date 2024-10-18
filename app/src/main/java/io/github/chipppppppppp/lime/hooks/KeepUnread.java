@@ -42,6 +42,7 @@ public class KeepUnread implements IHook {
                 layout.setLayoutParams(layoutParams);
 
                 Switch switchView = new Switch(context);
+                switchView.setText("未読のまま閲覧"); // スイッチの名前を設定
                 RelativeLayout.LayoutParams switchParams = new RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 switchParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
@@ -56,6 +57,8 @@ public class KeepUnread implements IHook {
                 ((ListView) viewGroup.getChildAt(0)).addFooterView(layout);
             }
         });
+
+
         XposedHelpers.findAndHookMethod(
                 loadPackageParam.classLoader.loadClass(Constants.MARK_AS_READ_HOOK.className),
                 Constants.MARK_AS_READ_HOOK.methodName,
