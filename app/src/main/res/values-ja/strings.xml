@@ -43,7 +43,7 @@
     <string name="modify_response">レスポンスを改変</string>
     <string name="button_copy">コピー</string>
     <string name="button_paste">ペースト</string>
-
+    <string name="calltone">LsPatch用　着信音を鳴らす</string>
     <!-- Menu -->
     <string name="switch_keep_unread">未読のまま閲覧</string>
 </resources>
