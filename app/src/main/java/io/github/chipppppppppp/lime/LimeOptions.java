@@ -34,6 +34,7 @@ public class LimeOptions {
     public Option stopVersionCheck = new Option("stop_version_check", R.string.switch_stop_version_check, false);
     public Option outputCommunication = new Option("output_communication", R.string.switch_output_communication, false);
     public Option Archived = new Option("Archived_message", R.string.switch_archived, false);
+    public Option calltone = new Option("calltone", R.string.calltone, false);
     
     public Option[] options = {
             removeVoom,
@@ -56,6 +57,7 @@ public class LimeOptions {
             removeKeepUnread,
             blockTracking,
             stopVersionCheck,
-            outputCommunication
+            outputCommunication,
+            calltone
     };
 }
