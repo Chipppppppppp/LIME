@@ -25,7 +25,6 @@ public class RemoveFlexibleContents implements IHook {
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         Context context = (Context) param.thisObject;
 
-                        // IDを取得
                         recommendationResId = getIdByName(context, "home_tab_contents_recommendation_placement");
                         serviceNameResId = getIdByName(context, "home_tab_service_name");
                         notificationResId = getIdByName(context, "notification_hub_row_rolling_view_group");
