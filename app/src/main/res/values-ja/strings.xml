@@ -43,6 +43,13 @@
     <string name="button_copy">コピー</string>
     <string name="button_paste">ペースト</string>
 
+
+    <string name="spoof_version_id_risk">LINEバージョンの偽装は自己責任です</string>
+    <string name="spoof_os_name" >OS 名</string>
+    <string name="spoof_os_version" >OS バージョン</string>
+    <string name="spoof_android_version" >LINEバージョン</string>
+    
+
     <!-- Menu -->
     <string name="switch_keep_unread">未読のまま閲覧</string>
 
