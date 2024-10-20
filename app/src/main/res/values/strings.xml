@@ -43,6 +43,11 @@
     <string name="button_copy">Copy</string>
     <string name="button_paste">Paste</string>
 
+    <string name="spoof_version_id_risk">Spoofing LINE Version is at your own risk</string>
+    <string name="spoof_os_name" >OS name</string>
+    <string name="spoof_os_version" >OS version</string>
+    <string name="spoof_android_version" >App version</string>
+    
     <!-- Menu -->
     <string name="switch_keep_unread">Keep unread</string>
 
