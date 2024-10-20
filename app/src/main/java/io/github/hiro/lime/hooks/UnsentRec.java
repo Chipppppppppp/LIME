@@ -69,7 +69,7 @@ public class UnsentRec implements IHook {
 
 
                         Context moduleContext = AndroidAppHelper.currentApplication().createPackageContext(
-                                "io.github.chipppppppppp.lime", Context.CONTEXT_IGNORE_SECURITY);
+                                "io.github.hiro.lime", Context.CONTEXT_IGNORE_SECURITY);
 
                         RelativeLayout container = new RelativeLayout(appContext);
                         RelativeLayout.LayoutParams containerParams = new RelativeLayout.LayoutParams(
@@ -196,7 +196,7 @@ public class UnsentRec implements IHook {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         Context moduleContext = AndroidAppHelper.currentApplication().createPackageContext(
-                                "io.github.chipppppppppp.lime", Context.CONTEXT_IGNORE_SECURITY);
+                                "io.github.hiro.lime", Context.CONTEXT_IGNORE_SECURITY);
 
                         View rootView = (View) param.getResult();
                         Context context = rootView.getContext();
@@ -355,7 +355,7 @@ public class UnsentRec implements IHook {
                 Context moduleContext;
                 try {
                     moduleContext = appContext.createPackageContext(
-                            "io.github.chipppppppppp.lime", Context.CONTEXT_IGNORE_SECURITY);
+                            "io.github.hiro.lime", Context.CONTEXT_IGNORE_SECURITY);
                 } catch (PackageManager.NameNotFoundException e) {
                     XposedBridge.log("Failed to create package context: " + e.getMessage());
                     return;
@@ -430,7 +430,7 @@ public class UnsentRec implements IHook {
 
 
                                 Context moduleContext = AndroidAppHelper.currentApplication().createPackageContext(
-                                        "io.github.chipppppppppp.lime", Context.CONTEXT_IGNORE_SECURITY);
+                                        "io.github.hiro.lime", Context.CONTEXT_IGNORE_SECURITY);
 
 
 

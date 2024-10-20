@@ -2,7 +2,7 @@ package io.github.hiro.lime.hooks;
 
 public class Constants {
     public static final String PACKAGE_NAME = "jp.naver.line.android";
-    public static final String MODULE_NAME = "io.github.chipppppppppp.lime";
+    public static final String MODULE_NAME = "io.github.hiro.lime";
 
     public static class HookTarget {
         public String className;
