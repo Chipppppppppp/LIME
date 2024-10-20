@@ -56,13 +56,13 @@ public class RemoveFlexibleContents implements IHook {
 
                         if (limeOptions.removeRecommendation.checked && viewId == recommendationResId
                                 || limeOptions.removeServiceLabels.checked && viewId == serviceNameResId
-                                || viewId == serviceRowContainerResId
+                                || limeOptions.removeAllServices.checked && (viewId == serviceRowContainerResId
                                 || viewId == serviceIconResId
                                 || viewId == serviceCarouselResId
                                 || viewId == serviceTitleBackgroundResId
                                 || viewId == serviceTitleResId
                                 || viewId == serviceSeeMoreResId
-                                || viewId == serviceSeeMoreBadgeResId) {
+                                || viewId == serviceSeeMoreBadgeResId)) {
                             ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
                             layoutParams.height = 0;
                             view.setLayoutParams(layoutParams);

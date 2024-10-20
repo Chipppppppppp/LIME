@@ -89,4 +89,5 @@
     <string name="calltone">LsPatch用　着信音を鳴らす</string>
 
 <string name="spoof_device_name">デバイス名</string>
+    <string name="RemoveService">サービスの項目を削除</string>
 </resources>

@@ -90,5 +90,6 @@
     <string name="picture">写真</string>
     <string name="reacquisition">再取得</string>
     <string name="switch_archived">非表示にしたチャットの再表示を無効化</string>
-    
+    <string name="RemoveService">サービスの項目を削除</string>
+
 </resources>
