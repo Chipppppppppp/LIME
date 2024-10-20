@@ -88,5 +88,5 @@
  <string name="switch_archived">Disable unhiding hidden chats</string>
     <string name="calltone">LsPatch用　着信音を鳴らす</string>
 
-
+<string name="spoof_device_name">デバイス名</string>
 </resources>
