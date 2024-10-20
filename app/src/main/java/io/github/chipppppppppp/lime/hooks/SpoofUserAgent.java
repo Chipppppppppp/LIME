@@ -11,6 +11,8 @@ import io.github.chipppppppppp.lime.LimeOptions;
 import io.github.chipppppppppp.lime.Main;
 
 public class SpoofUserAgent implements IHook {
+    private boolean hasLoggedSpoofedUserAgent = false; 
+
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (!Main.xPackagePrefs.getBoolean("android_secondary", false)) return;
@@ -20,8 +22,6 @@ public class SpoofUserAgent implements IHook {
                 Constants.USER_AGENT_HOOK.methodName,
                 Context.class,
                 new XC_MethodHook() {
-                    private static boolean hasLoggedSpoofedUserAgent = false;
-
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         SharedPreferences prefs = Main.xPackagePrefs;
@@ -34,15 +34,12 @@ public class SpoofUserAgent implements IHook {
                         String spoofedUserAgent = device + "\t" + androidVersion + "\t" + osName + "\t" + osVersion;
                         param.setResult(spoofedUserAgent);
 
-                     
                         if (!hasLoggedSpoofedUserAgent) {
                             XposedBridge.log("Spoofed User-Agent: " + spoofedUserAgent);
-                            hasLoggedSpoofedUserAgent = true;  
+                            hasLoggedSpoofedUserAgent = true; 
                         }
-
                     }
                 }
-
         );
     }
 }
