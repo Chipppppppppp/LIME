@@ -49,7 +49,7 @@
     <string name="spoof_os_version" >OS バージョン</string>
     <string name="spoof_android_version" >LINEバージョン</string>
     
-
+    <string name="spoof_device_name">デバイス名</string>
     <!-- Menu -->
     <string name="switch_keep_unread">未読のまま閲覧</string>
 
