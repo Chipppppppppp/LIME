@@ -51,7 +51,7 @@ public class RemoveFlexibleContents implements IHook {
 
 
                         int viewId = view.getId();
-                        String resourceName = getResourceName(view.getContext(), viewId);
+                      //  String resourceName = getResourceName(view.getContext(), viewId);
                       //  XposedBridge.log("View ID: " + viewId + ", Resource Name: " + resourceName);
 
                         if (limeOptions.removeRecommendation.checked && viewId == recommendationResId
