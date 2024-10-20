@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.github.chipppppppppp.lime"> <!-- package属性を追加 -->
+    package="io.github.hiro.lime"> <!-- package属性を追加 -->
 
     <application
         android:icon="@mipmap/ic_launcher"

@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace 'io.github.chipppppppppp.lime'
+    namespace 'io.github.hiro.lime'
     compileSdk 34
 
     defaultConfig {
