@@ -17,6 +17,7 @@
     <string name="spoof_android_id_risk">Spoofing Android ID is at your own risk</string>
     <string name="incompatible_version">Some functions are not available due to version incompatibility</string>
     <string name="switch_android_secondary">Disguise as the highest version</string>
+    <string name="switch_archived">Disable unhiding hidden chats</string>
     <string name="switch_unembed_options">Do not embed options in LINE (options will not be synchronized)</string>
     <string name="switch_remove_voom">Remove the VOOM icon</string>
     <string name="switch_remove_wallet">Remove the wallet icon</string>
