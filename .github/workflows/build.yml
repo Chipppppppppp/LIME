@@ -135,7 +135,9 @@ jobs:
           tag_name: ${{ env.version }}
           draft: false
           prerelease: false
-          files: ${{ env.repo }}-${{ env.version }}.apk
+          files: |
+            ${{ env.repo }}-${{ env.version }}.apk
+            line-${{ env.line_ver }}-*-lspatched.apk  # ここを追加
           body: |
             # 更新内容
             
