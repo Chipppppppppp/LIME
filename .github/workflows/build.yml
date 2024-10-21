@@ -101,15 +101,12 @@ jobs:
           echo "Extracting XAPK..."
           unzip line-14-16-0.xapk -d extracted_xapk || { echo "Extraction failed"; exit 1; }
           echo "Patching LIME..."
-          APK_PATH="extracted_xapk/base.apk"
+          APK_PATH="extracted_xapk/jp.naver.line.android.apk"  # ここを修正
           java -jar lspatch.jar "$APK_PATH" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v || { echo "Patching failed"; exit 1; }
           echo "Repackaging to XAPK..."
           cd extracted_xapk
           zip -r ../new_line-14-16-0.xapk * || { echo "Repackaging failed"; exit 1; }
 
-          # 生成されたAPKファイルをリスト表示
-          echo "生成されたAPKファイル:"
-          ls -la new_line-14-16-0.xapk || { echo "Failed to list generated XAPK files"; exit 1; }
 
       - name: Upload Patched LINE XAPK
         uses: actions/upload-artifact@v4
