@@ -77,6 +77,11 @@ jobs:
             exit 1
           fi
 
+      - name: Download LINE APK
+        run: |
+          echo "Downloading LINE APK..."
+          curl -L -o line-14-16-0.apk "https://dw.uptodown.net/dwn/EPg68xzS-22jffuYiEmWRTQoDPmpdIQpQjN7cd7jPOby7Pm84VwTQufPPdGJPTQ6x6WalMPFSXGvECpOG2BwqRhn6PSKnad9EZ3dKgvBC5lqcC33qVzXJJOeEGqT3Rs4/KuUd2YWGcEh4w6TG6IPUPWpcdjUYtJXZuGpV82jZWrp-N4TH7iVJ6V01iU5lbY_cUvwJucl22BSGqs5gPKg5mLGRnivYa3MTynb4taJkpfUB7_tUxlhuaVCuV2n_1_Lv/cSkXM9sGvQmHzAM9SWD4Mz_V0X6KChgaIPOaZYqhCPoAQ7AmBBh6o8h2krytqHO4/line-14-16-0.apk" || { echo "Download failed"; exit 1; }
+
       - name: Build with Gradle
         run: |
           if [ "${{ inputs.release }}" == "true" ]; then
