@@ -21,7 +21,21 @@ https://github.com/s1204IT
 apks→apk
 https://github.com/AbdurazaaqMohammed/AntiSplit-M
 
+
+##トークのバックアップ、リストアについて
+
+一度アプリをアンインストールした場合以下に従ってください。
+
+
+①バックアップしたいファイルを移動させる
+②LINEを開いてバックアップ
+③移動させたファイルの名前を`naver_line_backup.db`に変更する
+④LIME backup フォルダに入れ替え
+で、移動させる
+⑤リストアさせる
+
 This is an Xposed Module to clean [**LINE**](https://line.me).
+
 
 LINE を掃除する Xposed Module です。
 
