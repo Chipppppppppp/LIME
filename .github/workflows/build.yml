@@ -109,14 +109,19 @@ jobs:
           # LSPatchでLINE APKにパッチを適用
           java -jar lspatch.jar "line-14-16-0.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
 
+      - name: List Patched APKs
+        run: |
+          echo "生成されたAPKファイル:"
+          ls -la line-*.apk
 
-      - name: Upload Module APK
+      - name: Upload Patched LINE APK
         uses: actions/upload-artifact@v4
-        if: github.event.inputs.release != 'true'
+        if: github.event.inputs.lspatch == 'true'
         with:
-          name: ${{ env.repo }}-${{ env.version }}@${{ env.commit }}
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: LINE-${{ env.line_ver }}@${{ env.commit }}
+          path: line-*.apk  # 変更点: ここでパターンを変更
           if-no-files-found: error
+
 
       - name: Upload Patched LINE APK
         uses: actions/upload-artifact@v4
