@@ -119,8 +119,9 @@ jobs:
         if: github.event.inputs.lspatch == 'true'
         with:
           name: LINE-${{ env.line_ver }}@${{ env.commit }}
-          path: line-*.apk  # 変更点: ここでパターンを変更
+          path: line-${{ env.line_ver }}-*-lspatched.apk  # ここを変更
           if-no-files-found: error
+
 
 
       - name: Upload Patched LINE APK
