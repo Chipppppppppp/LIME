@@ -100,18 +100,17 @@ jobs:
         run: |
           cat << EOF > conf
           https://github.com/JingMatrix/LSPatch/releases/latest/download/lspatch.jar
-            out=lspatch.jar
+          out=lspatch.jar
           https://dw.uptodown.net/dwn/EPg68xzS-22jffuYiEmWRTQoDPmpdIQpQjN7cd7jPOby7Pm84VwTQufPPdGJPTQ6x6WalMPFSXGvECpOG2BwqRhn6PSKnad9EZ3dKgvBC5lqcC33qVzXJJOeEGqT3Rs4/KuUd2YWGcEh4w6TG6IPUPWpcdjUYtJXZuGpV82jZWrp-N4TH7iVJ6V01iU5lbY_cUvwJucl22BSGqs5gPKg5mLGRnivYa3MTynb4taJkpfUB7_tUxlhuaVCuV2n_1_Lv/cSkXM9sGvQmHzAM9SWD4Mz_V0X6KChgaIPOaZYqhCPoAQ7AmBBh6o8h2krytqHO4/line-14-16-0.apk
           EOF
           echo "Downloading APK..."
           aria2c --no-conf -x16 -s16 -R -m0 -V --async-dns=false -i conf || { echo "Download failed"; exit 1; }
           echo "Patching LIME..."
-          java -jar lspatch.jar "line-${{ env.line_ver }}.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v || { echo "Patching failed"; exit 1; }
+          java -jar lspatch.jar "line-14-16-0.1.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v || { echo "Patching failed"; exit 1; }
+            echo "生成されたAPKファイル:"
+            ls -la line-*-lspatched.apk || { echo "Failed to list generated APK files"; exit 1; }
 
-          # 生成されたAPKファイルをリスト表示
-          echo "生成されたAPKファイル:"
-          ls -la line-*-lspatched.apk || { echo "Failed to list generated APK files"; exit 1; }
-
+        
       - name: Upload Module APK
         uses: actions/upload-artifact@v4
         if: github.event.inputs.release != 'true'
