@@ -122,7 +122,7 @@ jobs:
           prerelease: false
           files: |
             ${{ env.repo }}-${{ env.version }}.apk
-            line-${{ env.line_ver }}-*-lspatched.apk
+            line-14-16-0-416-lspatched.apk
           body: |
             # 更新内容
             
