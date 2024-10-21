@@ -31,12 +31,13 @@ import io.github.hiro.lime.hooks.RemoveFlexibleContents;
 import io.github.hiro.lime.hooks.RemoveIconLabels;
 import io.github.hiro.lime.hooks.RemoveIcons;
 import io.github.hiro.lime.hooks.RemoveReplyMute;
+import io.github.hiro.lime.hooks.Ringtone;
 import io.github.hiro.lime.hooks.SendMuteMessage;
 import io.github.hiro.lime.hooks.SpoofAndroidId;
 import io.github.hiro.lime.hooks.SpoofUserAgent;
 import io.github.hiro.lime.hooks.UnsentRec;
 import io.github.hiro.lime.hooks.Archived;
-import io.github.hiro.lime.hooks.test;
+
 
 
 public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
@@ -70,7 +71,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new OutputRequest(),
             new Archived(),
             new UnsentRec(),
-            new test(),
+            new Ringtone(),
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
