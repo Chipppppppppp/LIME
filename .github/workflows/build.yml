@@ -77,22 +77,17 @@ jobs:
             exit 1
           fi
 
-      - name: Download LINE APK
-        run: |
-          echo "Downloading LINE APK..."
-          curl -L -o line-14-16-0.apk "https://dw.uptodown.net/dwn/EPg68xzS-22jffuYiEmWRTQoDPmpdIQpQjN7cd7jPOby7Pm84VwTQufPPdGJPTQ6x6WalMPFSXGvECpOG2BwqRhn6PSKnad9EZ3dKgvBC5lqcC33qVzXJJOeEGqT3Rs4/KuUd2YWGcEh4w6TG6IPUPWpcdjUYtJXZuGpV82jZWrp-N4TH7iVJ6V01iU5lbY_cUvwJucl22BSGqs5gPKg5mLGRnivYa3MTynb4taJkpfUB7_tUxlhuaVCuV2n_1_Lv/cSkXM9sGvQmHzAM9SWD4Mz_V0X6KChgaIPOaZYqhCPoAQ7AmBBh6o8h2krytqHO4/line-14-16-0.apk" || { echo "Download failed"; exit 1; }
-
       - name: Build with Gradle
         run: |
           if [ "${{ inputs.release }}" == "true" ]; then
-            echo "${{ secrets.STORE_FILE }}" | base64 -d > app/release.jks || { echo "Failed to decode STORE_FILE"; exit 1; }
+            echo "${{ secrets.STORE_FILE }}" | base64 -d > app/release.jks
             export STORE_PASSWORD="${{ secrets.STORE_PASSWORD }}"
             export KEY_ALIAS="${{ secrets.KEY_ALIAS }}"
             export KEY_PASSWORD="${{ secrets.KEY_PASSWORD }}"
-            ./gradlew assembleRelease --no-daemon --stacktrace || { echo "Release build failed"; exit 1; }
-            cp -f app/build/outputs/apk/release/app-release.apk ${{ env.repo }}-${{ env.version }}.apk || { echo "Failed to copy release APK"; exit 1; }
+            ./gradlew assembleRelease --no-daemon --stacktrace
+            cp -f app/build/outputs/apk/release/app-release.apk ${{ env.repo }}-${{ env.version }}.apk
           else
-            ./gradlew assembleDebug --no-daemon --stacktrace || { echo "Debug build failed"; exit 1; }
+            ./gradlew assembleDebug --no-daemon --stacktrace
           fi
 
       - name: LSPatch
@@ -106,18 +101,11 @@ jobs:
           echo "Downloading APK..."
           aria2c --no-conf -x16 -s16 -R -m0 -V --async-dns=false -i conf || { echo "Download failed"; exit 1; }
           echo "Patching LIME..."
-          java -jar lspatch.jar "line-14-16-0.1.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v || { echo "Patching failed"; exit 1; }
-            echo "生成されたAPKファイル:"
-            ls -la line-*-lspatched.apk || { echo "Failed to list generated APK files"; exit 1; }
+          java -jar lspatch.jar "line-14-16-0.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v || { echo "Patching failed"; exit 1; }
 
-        
-      - name: Upload Module APK
-        uses: actions/upload-artifact@v4
-        if: github.event.inputs.release != 'true'
-        with:
-          name: ${{ env.repo }}-${{ env.version }}@${{ env.commit }}
-          path: app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
+          # 生成されたAPKファイルをリスト表示
+          echo "生成されたAPKファイル:"
+          ls -la line-*-lspatched.apk || { echo "Failed to list generated APK files"; exit 1; }
 
       - name: Upload Patched LINE APK
         uses: actions/upload-artifact@v4
@@ -126,20 +114,6 @@ jobs:
           name: LINE-${{ env.line_ver }}@${{ env.commit }}
           path: line-${{ env.line_ver }}-*-lspatched.apk
           if-no-files-found: error
-
-      - name: Check File Pattern
-        run: |
-          echo "Checking if files match the pattern:"
-          ls line-${{ env.line_ver }}-*-lspatched.apk || echo "No files matching the pattern."
-
-      - name: Check Patched LINE APK Existence
-        run: |
-          if ls line-${{ env.line_ver }}-*-lspatched.apk 1> /dev/null 2>&1; then
-            echo "Patched LINE APK exists."
-          else
-            echo "ERROR: Patched LINE APK does not exist."
-            exit 1
-          fi
 
       - name: Release
         uses: softprops/action-gh-release@v2
