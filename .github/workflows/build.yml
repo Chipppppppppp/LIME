@@ -98,19 +98,25 @@ jobs:
           https://dw.uptodown.net/dwn/EPg68xzS-22jffuYiEmWRTQoDPmpdIQpQjN7cd7jPOYS81ZvfGrCN8-GxhCKL5gEUH9lbUdo-OHjUoTKUTU9a9zxG4YY8bcHtI-5mkz1qRG7B-rUsYoN6yB5hLavJTyc/04k-ytIuqSWMxlg8dPYUgaznX-rOsCVu-C8rOUhk92YEl0J_cLZ7ZodlC1DsHsiVjLdSUT4wWKGp9I2gfgxD8hjaU9m1vaC8L7gVRzmv3GDLfvGNAEqscgQJgsN0DH3s/5iSw0EavXIhg4rc0rlsGgUmaNcH-daS3VXDxfJEmqIHT9kUrUD_xDQp49AvBmwI6/line-14-16-0.xapk
           EOF
           aria2c --no-conf -x16 -s16 -R -m0 -V --async-dns=false -i conf || { echo "Download failed"; exit 1; }
+          echo "Extracting XAPK..."
+          unzip line-14-16-0.xapk -d extracted_xapk || { echo "Extraction failed"; exit 1; }
           echo "Patching LIME..."
-          java -jar lspatch.jar "line-14-16-0.xapk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v || { echo "Patching failed"; exit 1; }
+          APK_PATH="extracted_xapk/base.apk"
+          java -jar lspatch.jar "$APK_PATH" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v || { echo "Patching failed"; exit 1; }
+          echo "Repackaging to XAPK..."
+          cd extracted_xapk
+          zip -r ../new_line-14-16-0.xapk * || { echo "Repackaging failed"; exit 1; }
 
           # 生成されたAPKファイルをリスト表示
           echo "生成されたAPKファイル:"
-          ls -la line-*-lspatched.apk || { echo "Failed to list generated APK files"; exit 1; }
+          ls -la new_line-14-16-0.xapk || { echo "Failed to list generated XAPK files"; exit 1; }
 
-      - name: Upload Patched LINE APK
+      - name: Upload Patched LINE XAPK
         uses: actions/upload-artifact@v4
         if: github.event.inputs.lspatch == 'true'
         with:
           name: LINE-${{ env.line_ver }}@${{ env.commit }}
-          path: line-14-16-0-416-lspatched.apk
+          path: new_line-14-16-0.xapk
           if-no-files-found: error
 
       - name: Release
@@ -122,7 +128,7 @@ jobs:
           prerelease: false
           files: |
             ${{ env.repo }}-${{ env.version }}.apk
-            line-14-16-0-416-lspatched.apk
+            new_line-14-16-0.xapk
           body: |
             # 更新内容
             
