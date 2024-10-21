@@ -99,7 +99,7 @@ jobs:
           EOF
           aria2c --no-conf -x16 -s16 -R -m0 -V --async-dns=false -i conf || { echo "Download failed"; exit 1; }
           echo "Patching LIME..."
-          java -jar lspatch.jar "line-14-16-0.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v || { echo "Patching failed"; exit 1; }
+          java -jar lspatch.jar "line-14-16-0.xapk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v || { echo "Patching failed"; exit 1; }
 
           # 生成されたAPKファイルをリスト表示
           echo "生成されたAPKファイル:"
