@@ -124,6 +124,15 @@ jobs:
           path: line-${{ env.line_ver }}-*-lspatched.apk
           if-no-files-found: error
 
+      - name: Check Patched LINE APK Existence
+        run: |
+          if ls line-${{ env.line_ver }}-*-lspatched.apk 1> /dev/null 2>&1; then
+            echo "Patched LINE APK exists."
+          else
+            echo "ERROR: Patched LINE APK does not exist."
+            exit 1
+          fi
+
       - name: Release
         uses: softprops/action-gh-release@v2
         if: github.event.inputs.release == 'true'
