@@ -107,7 +107,8 @@ jobs:
           aria2c --no-conf -x16 -s16 -R -m0 -V --async-dns=false -iconf
           echo "Patching LIME..."
           java -jar lspatch.jar "line-${{ env.line_ver }}.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
-          mv "line-${{ env.line_ver }}-*-lspatched.apk" "line-${{ env.line_ver }}-lspatched.apk"
+          mv "line-${{ env.line_ver }}-${{ env.line_ver_code }}-lspatched.apk" "line-${{ env.line_ver }}-lspatched.apk"
+
 
       - name: Upload Module APK
         uses: actions/upload-artifact@v4
