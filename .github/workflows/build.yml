@@ -49,10 +49,10 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: 21
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Get previous version name
         uses: oprypin/find-latest-tag@v1.1.2
@@ -97,41 +97,37 @@ jobs:
       - name: LSPatch
         if: github.event.inputs.lspatch == 'true'
         run: |
-          # LSPatchとLINE APKを指定されたURLからダウンロード
-          cat << EOF > urls.txt
+          cat << EOF > conf
           https://github.com/JingMatrix/LSPatch/releases/latest/download/lspatch.jar
             out=lspatch.jar
-          https://dw.uptodown.net/dwn/95WBlLmev1SZyd7mcA3R9IFlGorsx0h9h6bQC5Y21wsLJgK_ZKqCI6PhEd_RxvBOQK55pwJdfs-Dkak7Ide7Yxdbh_BhfJs5t8ZG2Nm8Fn6GRq1haVU0iBIC0fvMTWaP/i733-UrWd7LIDozdAbaJkNW4pmJu54ATjq_5lFWjIZiOeDyKzENXwtqbLfs4Z9nCIXeXg59FpUKbm4KScJAiiba4w91diBDw1IrC0kbiig2t458BZPSPAXs2O57XvXTD/lupLeTtTMQPjpy-Wi3Ym7sV9MQPVv981_0QIh8JsmKbkCCfCw2Rrcs4opQd9XRtk/line-14-16-0.apk
-            out=line-14-16-0.apk
+          https://d.apkpure.net/b/APK/jp.naver.line.android?versionCode=${{ env.line_ver_code }}&nc=arm64-v8a%2Carmeabi-v7a&sv=28
+            out=line-${{ env.line_ver }}.apk
           EOF
-          # 複数のファイルを同時にダウンロード
-          aria2c -x16 -s16 -R -j2 -i urls.txt
-          # LSPatchでLINE APKにパッチを適用
-          java -jar lspatch.jar "line-14-16-0.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
+          echo "Downloading APK..."
+          aria2c --no-conf -x16 -s16 -R -m0 -V --async-dns=false -i conf || { echo "Download failed"; exit 1; }
+          echo "Patching LIME..."
+          java -jar lspatch.jar "line-${{ env.line_ver }}.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v || { echo "Patching failed"; exit 1; }
 
       - name: List Patched APKs
         run: |
           echo "生成されたAPKファイル:"
-          ls -la line-*.apk
+          ls -la line-*-lspatched.apk
+
+      - name: Upload Module APK
+        uses: actions/upload-artifact@v4
+        if: github.event.inputs.release != 'true'
+        with:
+          name: ${{ env.repo }}-${{ env.version }}@${{ env.commit }}
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
 
       - name: Upload Patched LINE APK
         uses: actions/upload-artifact@v4
         if: github.event.inputs.lspatch == 'true'
         with:
           name: LINE-${{ env.line_ver }}@${{ env.commit }}
-          path: line-${{ env.line_ver }}-*-lspatched.apk  # ここを変更
+          path: line-${{ env.line_ver }}-*-lspatched.apk
           if-no-files-found: error
-
-
-
-      - name: Upload Patched LINE APK
-        uses: actions/upload-artifact@v4
-        if: github.event.inputs.lspatch == 'true'
-        with:
-          name: LINE-${{ env.line_ver }}@${{ env.commit }}
-          path: line-14-16-0-*-lspatched.apk  # 変更点: ワイルドカードを使って正しいファイルを指定
-          if-no-files-found: error
-
 
       - name: Release
         uses: softprops/action-gh-release@v2
