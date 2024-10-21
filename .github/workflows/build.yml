@@ -108,8 +108,7 @@ jobs:
           echo "Patching LIME..."
           java -jar lspatch.jar "line-${{ env.line_ver }}.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v || { echo "Patching failed"; exit 1; }
 
-      - name: List Patched APKs
-        run: |
+          # ここで生成されたAPKファイルをリスト表示
           echo "生成されたAPKファイル:"
           ls -la line-*-lspatched.apk
 
