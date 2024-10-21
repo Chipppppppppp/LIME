@@ -107,7 +107,6 @@ jobs:
           cd extracted_xapk
           zip -r ../new_line-14-16-0.xapk * || { echo "Repackaging failed"; exit 1; }
 
-
       - name: Upload Patched LINE XAPK
         uses: actions/upload-artifact@v4
         if: github.event.inputs.lspatch == 'true'
