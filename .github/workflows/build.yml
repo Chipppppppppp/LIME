@@ -80,14 +80,14 @@ jobs:
       - name: Build with Gradle
         run: |
           if [ "${{ inputs.release }}" == "true" ]; then
-            echo "${{ secrets.STORE_FILE }}" | base64 -d > app/release.jks
+            echo "${{ secrets.STORE_FILE }}" | base64 -d > app/release.jks || { echo "Failed to decode STORE_FILE"; exit 1; }
             export STORE_PASSWORD="${{ secrets.STORE_PASSWORD }}"
             export KEY_ALIAS="${{ secrets.KEY_ALIAS }}"
             export KEY_PASSWORD="${{ secrets.KEY_PASSWORD }}"
-            ./gradlew assembleRelease --no-daemon --stacktrace
-            cp -f app/build/outputs/apk/release/app-release.apk ${{ env.repo }}-${{ env.version }}.apk
+            ./gradlew assembleRelease --no-daemon --stacktrace || { echo "Release build failed"; exit 1; }
+            cp -f app/build/outputs/apk/release/app-release.apk ${{ env.repo }}-${{ env.version }}.apk || { echo "Failed to copy release APK"; exit 1; }
           else
-            ./gradlew assembleDebug --no-daemon --stacktrace
+            ./gradlew assembleDebug --no-daemon --stacktrace || { echo "Debug build failed"; exit 1; }
           fi
 
       - name: LSPatch
@@ -106,7 +106,7 @@ jobs:
 
           # 生成されたAPKファイルをリスト表示
           echo "生成されたAPKファイル:"
-          ls -la line-*-lspatched.apk
+          ls -la line-*-lspatched.apk || { echo "Failed to list generated APK files"; exit 1; }
 
       - name: Upload Module APK
         uses: actions/upload-artifact@v4
@@ -156,4 +156,3 @@ jobs:
             
             ### 差分
             https://github.com/${{ github.repository }}/compare/${{ steps.previous.outputs.tag }}...${{ env.version }}
-
