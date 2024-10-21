@@ -97,15 +97,13 @@ jobs:
       - name: LSPatch
         if: github.event.inputs.lspatch == 'true'
         run: |
-          cat << EOF > conf
+          cat << EOF > urls.txt
           https://github.com/JingMatrix/LSPatch/releases/latest/download/lspatch.jar
             out=lspatch.jar
           https://d.apkpure.net/b/APK/jp.naver.line.android?versionCode=${{ env.line_ver_code }}&nc=arm64-v8a%2Carmeabi-v7a&sv=28
             out=line-${{ env.line_ver }}.apk
           EOF
-          echo "Downloading APK..."
-          aria2c --no-conf -x16 -s16 -R -m0 -V --async-dns=false -iconf
-          echo "Patching LIME..."
+          aria2c -x16 -s16 -R -j2 -i urls.txt
           java -jar lspatch.jar "line-${{ env.line_ver }}.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
 
       - name: Upload Module APK
