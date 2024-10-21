@@ -124,6 +124,11 @@ jobs:
           path: line-${{ env.line_ver }}-*-lspatched.apk
           if-no-files-found: error
 
+      - name: Check File Pattern
+        run: |
+          echo "Checking if files match the pattern:"
+          ls line-${{ env.line_ver }}-*-lspatched.apk || echo "No files matching the pattern."
+
       - name: Check Patched LINE APK Existence
         run: |
           if ls line-${{ env.line_ver }}-*-lspatched.apk 1> /dev/null 2>&1; then
