@@ -131,18 +131,7 @@ jobs:
           tag_name: ${{ env.version }}
           draft: false
           prerelease: false
-          files: |
-            ${{ env.repo }}-${{ env.version }}.apk
-            line-${{ env.line_ver }}-*-lspatched.apk  # ここを修正
-          body: |
-            # 更新内容
-            
-            ## 対応するLINEのバージョン
-            ${{ env.line_ver }}
-            
-            ### 差分
-            https://github.com/${{ github.repository }}/compare/${{ steps.previous.outputs.tag }}...${{ env.version }}
-
+          files: ${{ env.repo }}-${{ env.version }}.apk
           body: |
             # 更新内容
             
