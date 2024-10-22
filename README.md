@@ -11,7 +11,11 @@
 
 Github 
 
-https://github.com/areteruhiro/LIME-beta-hiro/blob/master/README.md
+READ
+
+https://github.com/areteruhiro/LIME-beta-hiro/blob/master/README.md <br> 
+
+バグレポート
 https://github.com/areteruhiro/LIME-beta-hiro/blob/master/.github/ISSUE_TEMPLATE/bug_report.yml
 
 App Code　
