@@ -22,6 +22,9 @@ apks→apk
 https://github.com/AbdurazaaqMohammed/AntiSplit-M
 
 
+Icon
+https://github.com/reindex-ot
+
 ## トークのバックアップ、リストアについて
 
 一度アプリをアンインストールした場合以下に従ってください。
