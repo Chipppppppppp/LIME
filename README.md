@@ -33,7 +33,7 @@ https://github.com/AbdurazaaqMohammed/AntiSplit-M
 で、移動させる
 ⑤リストアさせる
 
-方法が怪しい場合以下の動画を参照してから、リストアを行ってください。(データがリストアできなくなる場合があります)
+方法が怪しい場合以下の動画を参照してから、リストアを行ってください。(データが上書きされリストアできなくなる恐れがあります)
 https://youtu.be/94JN4NLGdOI
 
 This is an Xposed Module to clean [**LINE**](https://line.me).
