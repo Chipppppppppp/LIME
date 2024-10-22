@@ -14,7 +14,7 @@ Github
 https://github.com/areteruhiro/LIME-beta-hiro/blob/master/README.md
 https://github.com/areteruhiro/LIME-beta-hiro/blob/master/.github/ISSUE_TEMPLATE/bug_report.yml
 
-App Code
+App Code　
 
 Translation assistance
 https://github.com/areteruhiro/LIME-beta-hiro/tree/master/app/src/main/res/values
@@ -147,8 +147,7 @@ LI**M**E
 > [!WARNING]
 > 非 root 端末では､ 以下の問題があります  
 > - Google アカウント (ドライブ) を使用したトーク履歴の復元ができない  
->   ([この方法](https://github.com/Chipppppppppp/LIME/issues/50#issuecomment-2174842592) でログインすれば可能)  
-> - 発/着信音が鳴らない  
+>   ([この方法](https://github.com/Chipppppppppp/LIME/issues/50#issuecomment-2174842592) でログインすれば可能)   
 > - 着信が入るとクラッシュ  
 > - コインの購入が不可  
 > - LINE Pay の一部の機能が使用不可  
@@ -169,36 +168,11 @@ LI**M**E
   使用していない場合は、ファイルエクスプローラー等の別のアプリからインストールする
 
 > [!IMPORTANT]
-> 既に Playストア からインストールした LINE アプリがインストールされている場合は、署名が競合するため、最初にアンインストールを行ってください。  
+> 既に Playストア からインストールした LINE アプリがインストールされている場合は、署名が競合するため、最初にアンインストールを行ってください。
 
-## 複数デバイスログイン
 
-### 1. PC としてログインする
-> [!WARNING]
-> この方法は現在利用できません
-
-<details><summary>方法を確認</summary>
-
-PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制ログアウトされますが、使えない機能がある PC 版 LINE を Android 版 LINE に移すことができます。
-
-※片方のデバイスが iOS の場合、Letter Sealing がうまくいかずメッセージを受信できない場合があるので、[この方法](https://github.com/Chipppppppppp/LIME/issues/88#issuecomment-2012001059) に従って Letter Sealing ガチャを行ってください。(キーはだれかとのチャットの右上の <kbd>☰</kbd> > <kbd>設定</kbd> > <kbd>暗号化キー</kbd> から確認できます。)
-
-- メリット：メッセージの同期に問題がない、LIME は片方の端末に入れるだけで良い、非 Root でも可能
-- デメリット：3 端末以上でログインできない、2 端末目でサービスアイコンが表示されない
-
-#### 手順
-
-1. もう一つの端末に LINE と LIME をインストールする
-2. LINE ログイン画面で、「PC (DESKTOPWIN) に偽装」にチェックを入れる
-3. <kbd>設定</kbd> > <kbd>アプリ</kbd> > <kbd>LINE</kbd> より、LINE アプリの設定画面から「強制停止」と「ストレージとキャッシュ」の「キャッシュを削除」をタップ
-4. LINE アプリを再度開き、「Log in as secondary device」をタップしてログインする
-5. ログイン後、LINE の設定から「トークのバックアップ・復元」をタップし、2 週間より前のトークを復元する
-
-</details>
-
-### 2. 最大バージョンに偽装をしてログインする
-> [!WARNING]
-> この方法は現在利用できません
+### 1. デバイス、アプリバージョンを偽装してログイン
+この機能は自己責任です
 
 ### 3. Android ID を偽装する
 この方法は**両方のデバイスを Root 化している**場合のみ可能です。  
