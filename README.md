@@ -26,7 +26,7 @@ https://github.com/AbdurazaaqMohammed/AntiSplit-M
 
 一度アプリをアンインストールした場合以下に従ってください。
 
-①バックアップしたいファイルを移動させる
+①リストアしたいファイルを移動させる
 ②LINEを開いてバックアップ
 ③移動させたファイルの名前を`naver_line_backup.db`に変更する
 ④LIME backup フォルダに入れ替え
