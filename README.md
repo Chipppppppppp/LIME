@@ -3,7 +3,19 @@
 [![Latest Release](https://img.shields.io/github/v/release/Chipppppppppp/LIME?label=latest)](https://github.com/Chipppppppppp/LIME/releases/latest)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+
+## 通知が届かないの解決方法
+初めて、LIMEを使う方は、
+下記の、LINE 14.3.2をインストールしパッチを行い、インストールを行って、ログインをしてください。
+
+
+ログイン後、LIMEに適応するバージョンのLINEにパッチを行って、インストールするようにしてください。
+
+https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.3.2-apk
+
+
 ## 概要
+
 β版です。自己責任でお願いします。
 
 このアプリで追加されている機能は、いずれPRするものがおおいですが、機能の追加を優先しているため、修正が必要なものが多く、このような形で公開させていただいております。
@@ -16,12 +28,52 @@ https://github.com/Chipppppppppp
 コラボレーター
 https://github.com/s1204IT
 
-
-
 apks→apk
 https://github.com/AbdurazaaqMohammed/AntiSplit-M
 
-This is an Xposed Module to clean [**LINE**](https://line.me).
+Icon
+https://github.com/reindex-ot
+
+
+
+
+## トークのバックアップ、リストアについて
+
+一度アプリをアンインストールした場合以下に従ってください。
+
+①リストアしたいファイルを移動させる
+②LINEを開いてバックアップ
+③移動させたファイルの名前を`naver_line_backup.db`に変更する
+④LIME backup フォルダに入れ替え
+で、移動させる
+⑤リストアさせる
+
+詳しい情報は以下で説明しています
+https://github.com/areteruhiro/LIME-beta-hiro/issues/5
+
+方法が怪しい場合以下の動画を参照してから、リストアを行ってください。(データが上書きされリストアできなくなる恐れがあります)
+https://youtu.be/94JN4NLGdOI
+
+
+## コラボレーターの募集
+現在
+以下のファイルの改善、追加をしてくださる方を募集しています。
+お気軽にプルリクエストをお願い致します。
+
+Github 
+
+READ
+
+https://github.com/areteruhiro/LIME-beta-hiro/blob/master/README.md <br> 
+
+バグレポート<br> 
+https://github.com/areteruhiro/LIME-beta-hiro/blob/master/.github/ISSUE_TEMPLATE/bug_report.yml
+
+App Code　
+
+Translation assistance<br> 
+https://github.com/areteruhiro/LIME-beta-hiro/tree/master/app/src/main/res/values
+
 
 LINE を掃除する Xposed Module です。
 
@@ -110,8 +162,7 @@ LI**M**E
 > [!WARNING]
 > 非 root 端末では､ 以下の問題があります  
 > - Google アカウント (ドライブ) を使用したトーク履歴の復元ができない  
->   ([この方法](https://github.com/Chipppppppppp/LIME/issues/50#issuecomment-2174842592) でログインすれば可能)  
-> - 発/着信音が鳴らない  
+>   ([この方法](https://github.com/Chipppppppppp/LIME/issues/50#issuecomment-2174842592) でログインすれば可能)   
 > - 着信が入るとクラッシュ  
 > - コインの購入が不可  
 > - LINE Pay の一部の機能が使用不可  
@@ -132,36 +183,11 @@ LI**M**E
   使用していない場合は、ファイルエクスプローラー等の別のアプリからインストールする
 
 > [!IMPORTANT]
-> 既に Playストア からインストールした LINE アプリがインストールされている場合は、署名が競合するため、最初にアンインストールを行ってください。  
+> 既に Playストア からインストールした LINE アプリがインストールされている場合は、署名が競合するため、最初にアンインストールを行ってください。
 
-## 複数デバイスログイン
 
-### 1. PC としてログインする
-> [!WARNING]
-> この方法は現在利用できません
-
-<details><summary>方法を確認</summary>
-
-PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制ログアウトされますが、使えない機能がある PC 版 LINE を Android 版 LINE に移すことができます。
-
-※片方のデバイスが iOS の場合、Letter Sealing がうまくいかずメッセージを受信できない場合があるので、[この方法](https://github.com/Chipppppppppp/LIME/issues/88#issuecomment-2012001059) に従って Letter Sealing ガチャを行ってください。(キーはだれかとのチャットの右上の <kbd>☰</kbd> > <kbd>設定</kbd> > <kbd>暗号化キー</kbd> から確認できます。)
-
-- メリット：メッセージの同期に問題がない、LIME は片方の端末に入れるだけで良い、非 Root でも可能
-- デメリット：3 端末以上でログインできない、2 端末目でサービスアイコンが表示されない
-
-#### 手順
-
-1. もう一つの端末に LINE と LIME をインストールする
-2. LINE ログイン画面で、「PC (DESKTOPWIN) に偽装」にチェックを入れる
-3. <kbd>設定</kbd> > <kbd>アプリ</kbd> > <kbd>LINE</kbd> より、LINE アプリの設定画面から「強制停止」と「ストレージとキャッシュ」の「キャッシュを削除」をタップ
-4. LINE アプリを再度開き、「Log in as secondary device」をタップしてログインする
-5. ログイン後、LINE の設定から「トークのバックアップ・復元」をタップし、2 週間より前のトークを復元する
-
-</details>
-
-### 2. 最大バージョンに偽装をしてログインする
-> [!WARNING]
-> この方法は現在利用できません
+### 1. デバイス、アプリバージョンを偽装してログイン
+この機能は自己責任です
 
 ### 3. Android ID を偽装する
 この方法は**両方のデバイスを Root 化している**場合のみ可能です。  
@@ -190,7 +216,3 @@ PC (Windows) 版 LINE に偽装します。これにより PC 版 LINE は強制
 
 > [!NOTE]
 > 日本語がわかる場合は日本語で記述してください。
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=Chipppppppppp/LIME&type=Date)](https://star-history.com/#Chipppppppppp/LIME&Date)
