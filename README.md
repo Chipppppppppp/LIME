@@ -3,6 +3,16 @@
 [![Latest Release](https://img.shields.io/github/v/release/Chipppppppppp/LIME?label=latest)](https://github.com/Chipppppppppp/LIME/releases/latest)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+
+## 通知が届かないの解決方法
+初めて、LIMEを使う方は、
+下記の、LINE 14.3.2をインストールしパッチを行い、インストールを行ってください。
+
+その後最新バージョンにパッチを行ってください。
+
+https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.3.2-apk
+
+
 ## 概要
 
 β版です。自己責任でお願いします。
