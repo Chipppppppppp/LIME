@@ -5,24 +5,6 @@
 
 ## 概要
 
-現在
-以下のファイルの改善、追加をしてくださる方を募集しています。
-お気軽にプルリクエストをお願い致します。
-
-Github 
-
-READ
-
-https://github.com/areteruhiro/LIME-beta-hiro/blob/master/README.md <br> 
-
-バグレポート
-https://github.com/areteruhiro/LIME-beta-hiro/blob/master/.github/ISSUE_TEMPLATE/bug_report.yml
-
-App Code　
-
-Translation assistance
-https://github.com/areteruhiro/LIME-beta-hiro/tree/master/app/src/main/res/values
-
 β版です。自己責任でお願いします。
 
 このアプリで追加されている機能は、いずれPRするものがおおいですが、機能の追加を優先しているため、修正が必要なものが多く、このような形で公開させていただいております。
@@ -35,14 +17,14 @@ https://github.com/Chipppppppppp
 コラボレーター
 https://github.com/s1204IT
 
-
-
 apks→apk
 https://github.com/AbdurazaaqMohammed/AntiSplit-M
 
-
 Icon
 https://github.com/reindex-ot
+
+
+
 
 ## トークのバックアップ、リストアについて
 
@@ -61,7 +43,24 @@ https://github.com/areteruhiro/LIME-beta-hiro/issues/5
 方法が怪しい場合以下の動画を参照してから、リストアを行ってください。(データが上書きされリストアできなくなる恐れがあります)
 https://youtu.be/94JN4NLGdOI
 
-This is an Xposed Module to clean [**LINE**](https://line.me).
+
+現在
+以下のファイルの改善、追加をしてくださる方を募集しています。
+お気軽にプルリクエストをお願い致します。
+
+Github 
+
+READ
+
+https://github.com/areteruhiro/LIME-beta-hiro/blob/master/README.md <br> 
+
+バグレポート<br> 
+https://github.com/areteruhiro/LIME-beta-hiro/blob/master/.github/ISSUE_TEMPLATE/bug_report.yml
+
+App Code　
+
+Translation assistance<br> 
+https://github.com/areteruhiro/LIME-beta-hiro/tree/master/app/src/main/res/values
 
 
 LINE を掃除する Xposed Module です。
