@@ -36,6 +36,9 @@ https://github.com/reindex-ot
 で、移動させる
 ⑤リストアさせる
 
+詳しい情報は以下で説明しています
+https://github.com/areteruhiro/LIME-beta-hiro/issues/5
+
 方法が怪しい場合以下の動画を参照してから、リストアを行ってください。(データが上書きされリストアできなくなる恐れがあります)
 https://youtu.be/94JN4NLGdOI
 
