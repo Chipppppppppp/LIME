@@ -48,8 +48,6 @@ https://github.com/reindex-ot
 で、移動させる
 ⑤リストアさせる
 
-詳しい情報は以下で説明しています
-https://github.com/areteruhiro/LIME-beta-hiro/issues/5
 
 ファイルエクスプローラーは以下を使用してください（エラーなどの報告に対応しやすくするためです）
 https://play.google.com/store/apps/details?id=me.zhanghai.android.files
