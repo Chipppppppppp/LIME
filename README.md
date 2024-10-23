@@ -4,14 +4,38 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 
-## 通知が届かないの解決方法
-初めて、LIMEを使う方は、
+# LsPatchを利用の方へ 
+
+ ## 通知が届かないの解決方法
 下記の、LINE 14.3.2をインストールしパッチを行い、インストールを行って、ログインをしてください。
 
 
-ログイン後、LIMEに適応するバージョンのLINEにパッチを行って、インストールするようにしてください。
+ログイン後、LIMEに適応するバージョンのLINEにパッチを行って、**更新**するようにしてください。
 
 https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.3.2-apk
+
+
+
+
+
+## トークのバックアップ、リストアについて
+
+一度アプリをアンインストールした場合以下に従ってください。
+
+①リストアしたいファイルを移動させる
+②LINEを開いてバックアップ
+③移動させたファイルの名前を`naver_line_backup.db`に変更する
+④LIME backup フォルダに入れ替え
+で、移動させる
+⑤リストアさせる
+
+
+ファイルエクスプローラーは以下を使用してください（エラーなどの報告に対応しやすくするためです）
+https://play.google.com/store/apps/details?id=me.zhanghai.android.files
+
+
+方法が怪しい場合以下の動画を参照してから、リストアを行ってください。(データが上書きされリストアできなくなる恐れがあります)
+https://youtu.be/94JN4NLGdOI
 
 
 ## 概要
@@ -33,26 +57,6 @@ https://github.com/AbdurazaaqMohammed/AntiSplit-M
 
 Icon
 https://github.com/reindex-ot
-
-
-
-
-## トークのバックアップ、リストアについて
-
-一度アプリをアンインストールした場合以下に従ってください。
-
-①リストアしたいファイルを移動させる
-②LINEを開いてバックアップ
-③移動させたファイルの名前を`naver_line_backup.db`に変更する
-④LIME backup フォルダに入れ替え
-で、移動させる
-⑤リストアさせる
-
-詳しい情報は以下で説明しています
-https://github.com/areteruhiro/LIME-beta-hiro/issues/5
-
-方法が怪しい場合以下の動画を参照してから、リストアを行ってください。(データが上書きされリストアできなくなる恐れがあります)
-https://youtu.be/94JN4NLGdOI
 
 
 ## コラボレーターの募集
