@@ -4,9 +4,9 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 
-## LsPatchを利用の方へ 
+# LsPatchを利用の方へ 
 
- # 通知が届かないの解決方法
+ ##通知が届かないの解決方法
 初めて、LIMEを使う方は、
 下記の、LINE 14.3.2をインストールしパッチを行い、インストールを行って、ログインをしてください。
 
