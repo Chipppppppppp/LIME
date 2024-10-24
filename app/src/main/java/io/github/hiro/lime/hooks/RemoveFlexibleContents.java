@@ -14,7 +14,7 @@ public class RemoveFlexibleContents implements IHook {
     int recommendationResId, serviceNameResId, notificationResId;
     int serviceRowContainerResId, serviceIconResId, serviceCarouselResId;
     int serviceTitleBackgroundResId, serviceTitleResId, serviceSeeMoreResId, serviceSeeMoreBadgeResId;
-
+    int NotificationProfile;
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
@@ -36,7 +36,7 @@ public class RemoveFlexibleContents implements IHook {
                         serviceTitleResId = getIdByName(context, "home_tab_service_title");
                         serviceSeeMoreResId = getIdByName(context, "home_tab_service_see_more");
                         serviceSeeMoreBadgeResId = getIdByName(context, "home_tab_service_see_more_badge");
-
+                        NotificationProfile = getIdByName(context, "bg");
                     }
                 }
         );
@@ -53,10 +53,8 @@ public class RemoveFlexibleContents implements IHook {
 
 
                         int viewId = view.getId();
-
-
-//                   String resourceName = getResourceName(view.getContext(), viewId);
-                  //   XposedBridge.log("View ID: " + viewId + ", Resource Name: " + resourceName);
+                        String resourceName = getResourceName(view.getContext(), viewId);
+         XposedBridge.log("View ID: " + viewId + ", Resource Name: " + resourceName);
 
                         if (limeOptions.removeRecommendation.checked && viewId == recommendationResId
                                 || limeOptions.removeServiceLabels.checked && viewId == serviceNameResId
@@ -66,7 +64,21 @@ public class RemoveFlexibleContents implements IHook {
                                 || viewId == serviceTitleBackgroundResId
                                 || viewId == serviceTitleResId
                                 || viewId == serviceSeeMoreResId
-                                || viewId == serviceSeeMoreBadgeResId))
+                                || viewId == serviceSeeMoreBadgeResId)
+
+                             ||  limeOptions.RemoveNotification.checked &&
+                                (viewId == NotificationProfile
+                                || viewId == 2131428240
+                                || viewId == 2131432002
+                                || viewId == 2131428875
+
+                                        || viewId == 2131430191
+                                        || viewId == 2131432318
+
+
+
+
+                                ))
 
                         {
                             ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
