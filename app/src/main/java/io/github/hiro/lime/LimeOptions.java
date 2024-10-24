@@ -36,7 +36,7 @@ public class LimeOptions {
     public Option Archived = new Option("Archived_message", R.string.switch_archived, false);
     public Option removeAllServices = new Option("remove_Services", R.string.RemoveService, false);
     public Option calltone = new Option("calltone", R.string.calltone, false);
-
+    public Option ReadChecker = new Option("ReadChecker", R.string.ReadChecker, false);
 
     public Option[] options = {
             removeVoom,
@@ -61,6 +61,7 @@ public class LimeOptions {
             blockTracking,
             stopVersionCheck,
             outputCommunication,
-            calltone
+            calltone,
+            ReadChecker
     };
 }

@@ -15,6 +15,7 @@ public class RemoveFlexibleContents implements IHook {
     int serviceRowContainerResId, serviceIconResId, serviceCarouselResId;
     int serviceTitleBackgroundResId, serviceTitleResId, serviceSeeMoreResId, serviceSeeMoreBadgeResId;
 
+
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         XposedBridge.hookAllMethods(
@@ -35,6 +36,7 @@ public class RemoveFlexibleContents implements IHook {
                         serviceTitleResId = getIdByName(context, "home_tab_service_title");
                         serviceSeeMoreResId = getIdByName(context, "home_tab_service_see_more");
                         serviceSeeMoreBadgeResId = getIdByName(context, "home_tab_service_see_more_badge");
+
                     }
                 }
         );
@@ -51,8 +53,10 @@ public class RemoveFlexibleContents implements IHook {
 
 
                         int viewId = view.getId();
-                      //  String resourceName = getResourceName(view.getContext(), viewId);
-                      //  XposedBridge.log("View ID: " + viewId + ", Resource Name: " + resourceName);
+
+
+//                   String resourceName = getResourceName(view.getContext(), viewId);
+                  //   XposedBridge.log("View ID: " + viewId + ", Resource Name: " + resourceName);
 
                         if (limeOptions.removeRecommendation.checked && viewId == recommendationResId
                                 || limeOptions.removeServiceLabels.checked && viewId == serviceNameResId
@@ -62,7 +66,9 @@ public class RemoveFlexibleContents implements IHook {
                                 || viewId == serviceTitleBackgroundResId
                                 || viewId == serviceTitleResId
                                 || viewId == serviceSeeMoreResId
-                                || viewId == serviceSeeMoreBadgeResId)) {
+                                || viewId == serviceSeeMoreBadgeResId))
+
+                        {
                             ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
                             layoutParams.height = 0;
                             view.setLayoutParams(layoutParams);

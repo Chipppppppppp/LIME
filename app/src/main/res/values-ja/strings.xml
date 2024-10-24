@@ -91,5 +91,6 @@
     <string name="reacquisition">再取得</string>
     <string name="switch_archived">非表示にしたチャットの再表示を無効化</string>
     <string name="RemoveService">サービスの項目を削除</string>
+    <string name="ReadChecker">送信したメッセージの既読者の確認</string>
 
 </resources>
