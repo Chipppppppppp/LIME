@@ -6,6 +6,7 @@ import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteReadOnlyDatabaseException;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -51,6 +52,7 @@ public class ReadChecker implements IHook {
 
                 File dbFile3 = appContext.getDatabasePath("naver_line");
                 File dbFile4 = appContext.getDatabasePath("contact");
+                File dbFile5 = appContext.getDatabasePath("lime_data.db"); // lime_data.dbのパス
 
                 if (dbFile3.exists() && dbFile4.exists()) {
                     SQLiteDatabase.OpenParams.Builder builder1 = new SQLiteDatabase.OpenParams.Builder();
@@ -64,6 +66,15 @@ public class ReadChecker implements IHook {
                     db3 = SQLiteDatabase.openDatabase(dbFile3, dbParams1); // フィールドに代入
                     db4 = SQLiteDatabase.openDatabase(dbFile4, dbParams2); // フィールドに代入
 
+                    // lime_data.dbが存在する場合に開く
+                    if (dbFile5.exists()) {
+                        SQLiteDatabase.OpenParams.Builder builder3 = new SQLiteDatabase.OpenParams.Builder();
+                        builder3.addOpenFlags(SQLiteDatabase.OPEN_READWRITE);
+                        SQLiteDatabase.OpenParams dbParams3 = builder3.build();
+
+
+                    }
+
                     // データベースの初期化
                     initializeLimeDatabase(appContext);
 
@@ -73,12 +84,13 @@ public class ReadChecker implements IHook {
             }
         });
 
+        // ChatHistoryRequestクラスをフックしてgroupIdを取得
         Class<?> chatHistoryRequestClass = XposedHelpers.findClass("com.linecorp.line.chat.request.ChatHistoryRequest", loadPackageParam.classLoader);
         XposedHelpers.findAndHookMethod(chatHistoryRequestClass, "getChatId", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 String chatId = (String) param.getResult();
-                //XposedBridge.log(chatId);
+           //     XposedBridge.log(chatId);
                 if (isGroupExists(chatId)) {
                     shouldHookOnCreate = true;
                     currentGroupId = chatId; // groupIdを保存
@@ -108,7 +120,7 @@ public class ReadChecker implements IHook {
 
     private boolean isGroupExists(String groupId) {
         if (limeDatabase == null) {
-            XposedBridge.log("Database is not initialized.");
+           // XposedBridge.log("Database is not initialized.");
             return false;
         }
 
@@ -241,14 +253,12 @@ public class ReadChecker implements IHook {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             String paramValue = param.args[1].toString();
-                            XposedBridge.log(paramValue);
-
+                     //       XposedBridge.log(paramValue);
 
                             if (paramValue.contains("type:NOTIFIED_READ_MESSAGE")) {
-
-                                XposedBridge.log(paramValue);
-                                // Fetch data and save it to the database
-                                fetchDataAndSave(db3, db4, paramValue); // db3とdb4を渡す
+                         //       XposedBridge.log(paramValue);
+                                // データを取得してデータベースに保存
+                                fetchDataAndSave(db3, db4,  paramValue); // db5も渡す
                             }
                         }
                     }
@@ -258,14 +268,14 @@ public class ReadChecker implements IHook {
         }
     }
 
-    private void fetchDataAndSave(SQLiteDatabase db3, SQLiteDatabase db4, String paramValue) {
-        // param1, param2, param3をそれぞれ抽出
+    private void fetchDataAndSave(SQLiteDatabase db3, SQLiteDatabase db4,  String paramValue){
+    // param1, param2, param3をそれぞれ抽出
         String groupId = extractGroupId(paramValue);
         String serverId = extractServerId(paramValue);
         String checkedUser = extractCheckedUser(paramValue);
 
         if (serverId == null || groupId == null || checkedUser == null) {
-           // XposedBridge.log("Missing parameters: serverId=" + serverId + ", groupId=" + groupId + ", checkedUser=" + checkedUser);
+         //   XposedBridge.log("Missing parameters: serverId=" + serverId + ", groupId=" + groupId + ", checkedUser=" + checkedUser);
             return;
         }
 
@@ -287,10 +297,11 @@ public class ReadChecker implements IHook {
     }
 
     private String extractGroupId(String paramValue) {
-        Pattern pattern = Pattern.compile("param1:([a-zA-Z0-9]+)");
+        Pattern pattern = Pattern.compile("to:([a-zA-Z0-9]+)");
         Matcher matcher = pattern.matcher(paramValue);
         return matcher.find() ? matcher.group(1) : null;
     }
+
 
     private String extractServerId(String paramValue) {
         Pattern pattern = Pattern.compile("param3:([0-9]+)");
@@ -308,7 +319,7 @@ public class ReadChecker implements IHook {
 
     private String queryDatabase(SQLiteDatabase db, String query, String... selectionArgs) {
         if (db == null) {
-            XposedBridge.log("Database is not initialized.");
+          //  XposedBridge.log("Database is not initialized.");
             return null;
         }
         Cursor cursor = db.rawQuery(query, selectionArgs);
@@ -322,13 +333,18 @@ public class ReadChecker implements IHook {
 
     private void initializeLimeDatabase(Context context) {
         File dbFile = new File(context.getFilesDir(), "lime_data.db");
-        limeDatabase = SQLiteDatabase.openOrCreateDatabase(dbFile, null);
 
-        // 既存のテーブルがあれば削除する（デモ用に行いますが、実際のアプリでは注意が必要です）
-        String dropTableIfExists = "DROP TABLE IF EXISTS group_messages;";
-        limeDatabase.execSQL(dropTableIfExists);
+        // データベースを読み書き可能で開く。例外が発生する場合は、書き込みモードで再試行
+        try {
+            limeDatabase = SQLiteDatabase.openOrCreateDatabase(dbFile, null);
+          //  XposedBridge.log("Database opened successfully.");
+        } catch (SQLiteReadOnlyDatabaseException e) {
+          //  XposedBridge.log("Read-only database exception occurred, retrying in writable mode.");
+            // 書き込み可能なモードで開き直す
+            limeDatabase = SQLiteDatabase.openDatabase(dbFile.getPath(), null, SQLiteDatabase.OPEN_READWRITE);
+        }
 
-        // 新しいテーブルを作成
+        // group_messages テーブルの作成または更新
         String createGroupTable = "CREATE TABLE IF NOT EXISTS group_messages (" +
                 "group_id TEXT NOT NULL," +
                 "server_id TEXT NOT NULL," +
@@ -336,12 +352,12 @@ public class ReadChecker implements IHook {
                 "group_name TEXT," +
                 "content TEXT," +
                 "talk_name TEXT," +
-                "created_time TEXT," + // ここで created_time カラムを追加
+                "created_time TEXT," + // created_time カラムを追加
                 "PRIMARY KEY (group_id, server_id, checked_user)" +
                 ");";
 
         limeDatabase.execSQL(createGroupTable);
-        XposedBridge.log("Database initialized and group_messages table created.");
+      //  XposedBridge.log("Database initialized and group_messages table created.");
     }
 
 
@@ -369,8 +385,8 @@ public class ReadChecker implements IHook {
 
         limeDatabase.execSQL(insertOrUpdateQuery, new Object[]{groupId, serverId, checkedUser, groupName, content, talkName, createdTime}); // created_timeも追加
 
-        XposedBridge.log("Saved to DB: Group_Id: " + groupId + ", Server_id: " + serverId + ", Checked_user: " + checkedUser +
-                ", Group_Name: " + groupName + ", Content: " + content + ", Talk_Name: " + talkName + ", Created_Time: " + createdTime);
+       // XposedBridge.log("Saved to DB: Group_Id: " + groupId + ", Server_id: " + serverId + ", Checked_user: " + checkedUser +
+          //      ", Group_Name: " + groupName + ", Content: " + content + ", Talk_Name: " + talkName + ", Created_Time: " + createdTime);
     }
 
 
