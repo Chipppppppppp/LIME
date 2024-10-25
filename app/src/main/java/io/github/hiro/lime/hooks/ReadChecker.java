@@ -72,13 +72,13 @@ public class ReadChecker implements IHook {
                 }
             }
         });
-        // ChatHistoryRequestクラスをフックしてgroupIdを取得
+
         Class<?> chatHistoryRequestClass = XposedHelpers.findClass("com.linecorp.line.chat.request.ChatHistoryRequest", loadPackageParam.classLoader);
         XposedHelpers.findAndHookMethod(chatHistoryRequestClass, "getChatId", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 String chatId = (String) param.getResult();
-                XposedBridge.log(chatId);
+                //XposedBridge.log(chatId);
                 if (isGroupExists(chatId)) {
                     shouldHookOnCreate = true;
                     currentGroupId = chatId; // groupIdを保存

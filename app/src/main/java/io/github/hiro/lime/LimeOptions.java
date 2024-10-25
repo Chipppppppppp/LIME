@@ -38,6 +38,7 @@ public class LimeOptions {
     public Option calltone = new Option("calltone", R.string.calltone, false);
     public Option ReadChecker = new Option("ReadChecker", R.string.ReadChecker, false);
     public Option RemoveNotification = new Option("RemoveNotification", R.string.removeNotification, false);
+    public Option NaviColor = new Option("NaviColor", R.string.NaviColor, false);
 
     public Option[] options = {
             removeVoom,
@@ -59,12 +60,13 @@ public class LimeOptions {
             preventUnsendMessage,
             sendMuteMessage,
             Archived,
+            ReadChecker,
             removeKeepUnread,
             blockTracking,
             stopVersionCheck,
             outputCommunication,
             calltone,
-            ReadChecker,
+            NaviColor,
 
     };
 }

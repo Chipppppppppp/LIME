@@ -92,4 +92,5 @@
     <string name="RemoveService">サービスの項目を削除</string>
     <string name="ReadChecker">送信したメッセージの既読者の確認</string>
     <string name="removeNotification">更新されたプロフィールを削除\n</string>
+    <string name="NaviColor">ナビゲーションのボタンの色を黒にする</string>
 </resources>

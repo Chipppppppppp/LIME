@@ -53,8 +53,8 @@ public class RemoveFlexibleContents implements IHook {
 
 
                         int viewId = view.getId();
-                        String resourceName = getResourceName(view.getContext(), viewId);
-         XposedBridge.log("View ID: " + viewId + ", Resource Name: " + resourceName);
+              //String resourceName = getResourceName(view.getContext(), viewId);
+              //XposedBridge.log("View ID: " + viewId + ", Resource Name: " + resourceName);
 
                         if (limeOptions.removeRecommendation.checked && viewId == recommendationResId
                                 || limeOptions.removeServiceLabels.checked && viewId == serviceNameResId
@@ -71,9 +71,8 @@ public class RemoveFlexibleContents implements IHook {
                                 || viewId == 2131428240
                                 || viewId == 2131432002
                                 || viewId == 2131428875
-
-                                        || viewId == 2131430191
-                                        || viewId == 2131432318
+                                || viewId == 2131430191
+                                || viewId == 2131432318
 
 
 

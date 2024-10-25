@@ -38,6 +38,7 @@ import io.github.hiro.lime.hooks.SpoofUserAgent;
 import io.github.hiro.lime.hooks.UnsentRec;
 import io.github.hiro.lime.hooks.Archived;
 import io.github.hiro.lime.hooks.ReadChecker;
+import io.github.hiro.lime.hooks.NaviColor;
 
 
 public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
@@ -72,7 +73,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new Archived(),
             new UnsentRec(),
             new Ringtone(),
-            new ReadChecker()
+            new ReadChecker(),
+            new NaviColor()
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
