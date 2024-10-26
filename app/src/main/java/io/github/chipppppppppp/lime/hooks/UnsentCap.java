@@ -20,6 +20,14 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
+
+import io.github.chipppppppppp.lime.LimeOptions;
+import io.github.chipppppppppp.lime.R;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -32,16 +40,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import io.github.chipppppppppp.lime.LimeOptions;
-import io.github.chipppppppppp.lime.R;
-public class UnsentRec implements IHook {
+public class UnsentCap implements IHook {
 
-    public static final String Main_file = "UNSENT_REC.txt";
-    public static final String Main_backup = "BackUpFile.txt";
+    public static final String Main_file = "unsent_capture.txt";
+    public static final String Main_backup = "capture_backup.txt";
+    public static final String Unresolved_Ids = "Unresolved_Ids.txt";
     SQLiteDatabase db1 = null;
     SQLiteDatabase db2 = null;
 
@@ -119,11 +122,11 @@ public class UnsentRec implements IHook {
                                     new AlertDialog.Builder(appContext)
                                             .setTitle(moduleContext.getResources().getString(R.string.backup))
                                             .setView(verticalScrollView)
-                                            .setPositiveButton("OK", null)
+                                            .setPositiveButton(moduleContext.getResources().getString(R.string.positive_button), null)
                                             .create()
                                             .show();
                                 } catch (IOException ignored) {
-                                    Toast.makeText(appContext, moduleContext.getResources().getString(R.string.read_BackUpFile_failed), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(appContext, moduleContext.getResources().getString(R.string.failed_read_backup_file, Main_backup), Toast.LENGTH_SHORT).show();
                                 }
                             } else {
                                 Toast.makeText(appContext, moduleContext.getResources().getString(R.string.no_backup_found), Toast.LENGTH_SHORT).show();
@@ -131,8 +134,8 @@ public class UnsentRec implements IHook {
                         });
 
                         clearFileButton.setOnClickListener(v -> new AlertDialog.Builder(appContext)
-                                .setTitle(moduleContext.getResources().getString(R.string.check))
-                                .setMessage(moduleContext.getResources().getString(R.string.really_delete))
+                                .setTitle(moduleContext.getResources().getString(R.string.confirm))
+                                .setMessage(moduleContext.getResources().getString(R.string.confirm_delete))
                                 .setPositiveButton(moduleContext.getResources().getString(R.string.yes), (dialog, which) -> {
                                     File backupFile = new File(appContext.getFilesDir(), Main_backup);
                                     if (backupFile.exists()) {
@@ -223,7 +226,7 @@ public class UnsentRec implements IHook {
                                         new AlertDialog.Builder(context)
                                                 .setTitle(moduleContext.getResources().getString(R.string.deleted_messages))
                                                 .setView(verticalScrollView)
-                                                .setPositiveButton("ok", (dialog, which) -> {
+                                                .setPositiveButton(moduleContext.getResources().getString(R.string.positive_button), (dialog, which) -> {
                                                     try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(context.getFilesDir(), Main_backup), true))) {
                                                         writer.write(output.toString());
                                                         new BufferedWriter(new FileWriter(originalFile)).close();
@@ -241,7 +244,7 @@ public class UnsentRec implements IHook {
                                                 .show();
 
                                     } catch (IOException ignored) {
-                                        Toast.makeText(context, moduleContext.getResources().getString(R.string.read_BackUpFile_failed), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, moduleContext.getResources().getString(R.string.failed_read_backup_file, Main_backup), Toast.LENGTH_SHORT).show();
                                     }
                                 });
 
@@ -350,7 +353,7 @@ public class UnsentRec implements IHook {
     }
 
     private void processMessage(String paramValue, Context moduleContext, SQLiteDatabase db1, SQLiteDatabase db2, Context context) {
-        String unresolvedFilePath = context.getFilesDir() + "/UnresolvedIds.txt";
+        String unresolvedFilePath = context.getFilesDir() + "/" + Unresolved_Ids;
         String[] operations = paramValue.split("Operation\\(");
         for (String operation : operations) {
             if (operation.trim().isEmpty()) continue;
@@ -430,7 +433,7 @@ public class UnsentRec implements IHook {
     }
 
     private void resolveUnresolvedIds(XC_LoadPackage.LoadPackageParam loadPackageParam, Context context, SQLiteDatabase db1, SQLiteDatabase db2, Context moduleContext) {
-        String unresolvedFilePath = context.getFilesDir() + "/UnresolvedIds.txt";
+        String unresolvedFilePath = context.getFilesDir() + "/" + Unresolved_Ids;
         File unresolvedFile = new File(unresolvedFilePath);
         File testFile = new File(context.getFilesDir(), Main_file);
         if (!unresolvedFile.exists()) return;
