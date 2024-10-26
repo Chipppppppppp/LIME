@@ -52,7 +52,7 @@
     <string name="modify_response">Modify responses</string>
     <string name="button_copy">Copy</string>
     <string name="button_paste">Paste</string>
-    <string name="calltone">Notify ringtone for LsPatch</string>
+    <string name="call_tone">Notify ringtone of LSPatch</string>
     <!-- Menu -->
     <string name="switch_keep_unread">Keep unread</string>
 

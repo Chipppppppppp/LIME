@@ -16,7 +16,7 @@ public class Ringtone implements IHook {
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
 
-        if (!limeOptions.calltone.checked) return;
+        if (!limeOptions.call_tone.checked) return;
 
         XposedBridge.hookAllMethods(
                 loadPackageParam.classLoader.loadClass(Constants.RESPONSE_HOOK.className),
@@ -41,8 +41,6 @@ public class Ringtone implements IHook {
                                 if (ringtone != null && ringtone.isPlaying()) {
                                     ringtone.stop(); 
                                     isPlaying = false;
-
-
                                 }
                             }
                         }

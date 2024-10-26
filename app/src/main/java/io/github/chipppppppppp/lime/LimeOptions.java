@@ -33,8 +33,8 @@ public class LimeOptions {
     public Option blockTracking = new Option("block_tracking", R.string.switch_block_tracking, false);
     public Option stopVersionCheck = new Option("stop_version_check", R.string.switch_stop_version_check, false);
     public Option outputCommunication = new Option("output_communication", R.string.switch_output_communication, false);
-    public Option Archived = new Option("Archived_message", R.string.switch_archived, false);
-    public Option calltone = new Option("calltone", R.string.calltone, false);
+    public Option archived = new Option("archived_message", R.string.switch_archived, false);
+    public Option callTone = new Option("call_tone", R.string.call_tone, false);
     
     public Option[] options = {
             removeVoom,
@@ -52,12 +52,12 @@ public class LimeOptions {
             openInBrowser,
             preventMarkAsRead,
             preventUnsendMessage,
-            Archived,
+            archived,
             sendMuteMessage,
             removeKeepUnread,
             blockTracking,
             stopVersionCheck,
             outputCommunication,
-            calltone
+            callTone
     };
 }
