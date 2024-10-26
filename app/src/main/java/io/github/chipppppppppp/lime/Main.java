@@ -30,6 +30,7 @@ import io.github.chipppppppppp.lime.hooks.RemoveFlexibleContents;
 import io.github.chipppppppppp.lime.hooks.RemoveIconLabels;
 import io.github.chipppppppppp.lime.hooks.RemoveIcons;
 import io.github.chipppppppppp.lime.hooks.RemoveReplyMute;
+import io.github.chipppppppppp.lime.hooks.Ringtone;
 import io.github.chipppppppppp.lime.hooks.SendMuteMessage;
 import io.github.chipppppppppp.lime.hooks.SpoofAndroidId;
 import io.github.chipppppppppp.lime.hooks.SpoofUserAgent;
