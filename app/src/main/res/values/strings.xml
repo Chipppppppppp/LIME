@@ -38,6 +38,7 @@
     <string name="switch_remove_recommendation">Remove recommendations</string>
     <string name="switch_remove_premium_recommendation">Remove LYP Premium recommendations</string>
     <string name="switch_remove_service_labels">Remove tbe service labels</string>
+    <string name="switch_remove_service">Remove service item</string>
     <string name="switch_remove_reply_mute">Remove the \"Mute chat\" action from notifications</string>
     <string name="switch_redirect_webview">Redirect WebView to the default browser</string>
     <string name="switch_open_in_browser">Open in the browser app</string>
