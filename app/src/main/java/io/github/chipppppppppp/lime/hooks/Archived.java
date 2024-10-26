@@ -27,7 +27,7 @@ public class Archived implements IHook {
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-        if (!limeOptions.Archived.checked) return;
+        if (!limeOptions.archived.checked) return;
 
         XposedBridge.hookAllMethods(Application.class, "onCreate", new XC_MethodHook() {
             @Override
@@ -50,7 +50,7 @@ public class Archived implements IHook {
     }
 
     private void hookMessageDeletion(XC_LoadPackage.LoadPackageParam loadPackageParam, Context context, SQLiteDatabase db, Context moduleContext) {
-        if (!limeOptions.Archived.checked) return;
+        if (!limeOptions.archived.checked) return;
 
         try {
             XposedBridge.hookAllMethods(
