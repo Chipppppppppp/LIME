@@ -12,6 +12,8 @@ import io.github.chipppppppppp.lime.LimeOptions;
 
 public class RemoveFlexibleContents implements IHook {
     int recommendationResId, serviceNameResId, notificationResId;
+    int serviceRowContainerResId, serviceIconResId, serviceCarouselResId;
+    int serviceTitleBackgroundResId, serviceTitleResId, serviceSeeMoreResId, serviceSeeMoreBadgeResId;
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
@@ -25,6 +27,13 @@ public class RemoveFlexibleContents implements IHook {
                         recommendationResId = context.getResources().getIdentifier("home_tab_contents_recommendation_placement", "id", context.getPackageName());
                         serviceNameResId = context.getResources().getIdentifier("home_tab_service_name", "id", context.getPackageName());
                         notificationResId = context.getResources().getIdentifier("notification_hub_row_rolling_view_group", "id", context.getPackageName());
+                        serviceRowContainerResId = context.getResources().getIdentifier("service_row_container", "id", context.getPackageName());
+                        serviceIconResId = context.getResources().getIdentifier("home_tab_service_icon", "id", context.getPackageName());
+                        serviceCarouselResId = context.getResources().getIdentifier("home_tab_service_carousel", "id", context.getPackageName());
+                        serviceTitleBackgroundResId = context.getResources().getIdentifier("home_tab_service_title_background", "id", context.getPackageName());
+                        serviceTitleResId = context.getResources().getIdentifier("home_tab_service_title", "id", context.getPackageName());
+                        serviceSeeMoreResId = context.getResources().getIdentifier("home_tab_service_see_more", "id", context.getPackageName());
+                        serviceSeeMoreBadgeResId = context.getResources().getIdentifier("home_tab_service_see_more_badge", "id", context.getPackageName());
                     }
                 }
         );
@@ -33,22 +42,37 @@ public class RemoveFlexibleContents implements IHook {
                 View.class,
                 "onAttachedToWindow",
                 new XC_MethodHook() {
-                    View view;
-
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        view = (View) param.thisObject;
-                        if (limeOptions.removeRecommendation.checked && view.getId() == recommendationResId
-                                || limeOptions.removeServiceLabels.checked && view.getId() == serviceNameResId) {
+                        View view = (View) param.thisObject;
+                        int viewId = view.getId();
+                        //String resourceName = getResourceName(view.getContext(), viewId);
+                        //XposedBridge.log("View ID: " + viewId + ", Resource Name: " + resourceName);
+
+                        if (limeOptions.removeRecommendation.checked && viewId == recommendationResId
+                                || limeOptions.removeServiceLabels.checked && viewId == serviceNameResId
+                                || viewId == serviceRowContainerResId
+                                || viewId == serviceIconResId
+                                || viewId == serviceCarouselResId
+                                || viewId == serviceTitleBackgroundResId
+                                || viewId == serviceTitleResId
+                                || viewId == serviceSeeMoreResId
+                                || viewId == serviceSeeMoreBadgeResId) {
                             ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
                             layoutParams.height = 0;
                             view.setLayoutParams(layoutParams);
                             view.setVisibility(View.GONE);
-                        } else if (view.getId() == notificationResId) {
+                        } else if (viewId == notificationResId) {
                             ((View) view.getParent()).setVisibility(View.GONE);
                         }
                     }
                 }
         );
     }
+
+    /*
+    private String getResourceName(Context context, int resourceId) {
+        return context.getResources().getResourceEntryName(resourceId);
+    }
+    */
 }
