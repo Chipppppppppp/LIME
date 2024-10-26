@@ -37,9 +37,7 @@
     <string name="switch_remove_recommendation">おすすめを削除</string>
     <string name="switch_remove_premium_recommendation">LYP プレミアムのおすすめを削除</string>
     <string name="switch_remove_service_labels">サービスのラベルを削除</string>
-    
     <string name="switch_remove_service">サービスの項目を削除</string>
-    
     <string name="switch_remove_reply_mute">通知から \"通知をオフ\" アクションを削除</string>
     <string name="switch_redirect_webview">WebView を既定のブラウザにリダイレクト</string>
     <string name="switch_open_in_browser">ブラウザアプリで開く</string>
