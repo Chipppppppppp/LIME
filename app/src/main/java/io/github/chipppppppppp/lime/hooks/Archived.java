@@ -50,7 +50,7 @@ public class Archived implements IHook {
     }
 
     private void hookMessageDeletion(XC_LoadPackage.LoadPackageParam loadPackageParam, Context context, SQLiteDatabase db, Context moduleContext) {
-        if (!limeOptions.Archived.checked) return;
+        if (!limeOptions.archived.checked) return;
 
         try {
             XposedBridge.hookAllMethods(
