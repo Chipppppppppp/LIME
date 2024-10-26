@@ -23,6 +23,7 @@ public class LimeOptions {
     public Option removeRecommendation = new Option("remove_recommendation", R.string.switch_remove_recommendation, true);
     public Option removePremiumRecommendation = new Option("remove_premium_recommendation", R.string.switch_remove_premium_recommendation, true);
     public Option removeServiceLabels = new Option("remove_service_labels", R.string.switch_remove_service_labels, false);
+    public Option RemoveNotification = new Option("RemoveNotification", R.string.removeNotification, false);
     public Option removeReplyMute = new Option("remove_reply_mute", R.string.switch_remove_reply_mute, true);
     public Option redirectWebView = new Option("redirect_webview", R.string.switch_redirect_webview, true);
     public Option openInBrowser = new Option("open_in_browser", R.string.switch_open_in_browser, false);
@@ -36,6 +37,7 @@ public class LimeOptions {
     public Option archived = new Option("archived_message", R.string.switch_archived, false);
     public Option callTone = new Option("call_tone", R.string.call_tone, false);
     
+    
     public Option[] options = {
             removeVoom,
             removeWallet,
@@ -47,6 +49,7 @@ public class LimeOptions {
             removeRecommendation,
             removePremiumRecommendation,
             removeServiceLabels,
+            removeAllServices
             removeReplyMute,
             redirectWebView,
             openInBrowser,
