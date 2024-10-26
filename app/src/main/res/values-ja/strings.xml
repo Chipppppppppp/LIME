@@ -51,7 +51,7 @@
     <string name="modify_response">レスポンスを改変</string>
     <string name="button_copy">コピー</string>
     <string name="button_paste">ペースト</string>
-
+    <string name="call_tone">着信音を鳴らす（LSPatch用）</string>
     <!-- Menu -->
     <string name="switch_keep_unread">未読のまま閲覧</string>
 
