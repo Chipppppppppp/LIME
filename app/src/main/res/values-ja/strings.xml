@@ -37,6 +37,7 @@
     <string name="switch_remove_recommendation">おすすめを削除</string>
     <string name="switch_remove_premium_recommendation">LYP プレミアムのおすすめを削除</string>
     <string name="switch_remove_service_labels">サービスのラベルを削除</string>
+    <string name="switch_remove_service">サービスの項目を削除</string>
     <string name="switch_remove_reply_mute">通知から \"通知をオフ\" アクションを削除</string>
     <string name="switch_redirect_webview">WebView を既定のブラウザにリダイレクト</string>
     <string name="switch_open_in_browser">ブラウザアプリで開く</string>
@@ -52,6 +53,7 @@
     <string name="button_copy">コピー</string>
     <string name="button_paste">ペースト</string>
     <string name="call_tone">着信音を鳴らす（LSPatch用）</string>
+
     <!-- Menu -->
     <string name="switch_keep_unread">未読のまま閲覧</string>
 
@@ -74,5 +76,5 @@
     <string name="confirm_delete">本当に削除しますか？</string>
     <string name="no_backup_found">何もバックアップされていません</string>
     <string name="no_get_restart_app">正しく取得できませんでした。\nアプリを再起動してください</string>
-    
+
 </resources>

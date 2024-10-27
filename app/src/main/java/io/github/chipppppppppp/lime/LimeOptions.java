@@ -23,6 +23,7 @@ public class LimeOptions {
     public Option removeRecommendation = new Option("remove_recommendation", R.string.switch_remove_recommendation, true);
     public Option removePremiumRecommendation = new Option("remove_premium_recommendation", R.string.switch_remove_premium_recommendation, true);
     public Option removeServiceLabels = new Option("remove_service_labels", R.string.switch_remove_service_labels, false);
+    public Option removeAllServices = new Option("remove_services", R.string.switch_remove_service, false);
     public Option removeReplyMute = new Option("remove_reply_mute", R.string.switch_remove_reply_mute, true);
     public Option redirectWebView = new Option("redirect_webview", R.string.switch_redirect_webview, true);
     public Option openInBrowser = new Option("open_in_browser", R.string.switch_open_in_browser, false);
@@ -37,27 +38,28 @@ public class LimeOptions {
     public Option callTone = new Option("call_tone", R.string.call_tone, false);
     
     public Option[] options = {
-            removeVoom,
-            removeWallet,
-            removeNewsOrCall,
-            distributeEvenly,
-            extendClickableArea,
-            removeIconLabels,
-            removeAds,
-            removeRecommendation,
-            removePremiumRecommendation,
-            removeServiceLabels,
-            removeReplyMute,
-            redirectWebView,
-            openInBrowser,
-            preventMarkAsRead,
-            preventUnsendMessage,
-            archived,
-            sendMuteMessage,
-            removeKeepUnread,
-            blockTracking,
-            stopVersionCheck,
-            outputCommunication,
-            callTone
+        removeVoom,
+        removeWallet,
+        removeNewsOrCall,
+        distributeEvenly,
+        extendClickableArea,
+        removeIconLabels,
+        removeAds,
+        removeRecommendation,
+        removePremiumRecommendation,
+        removeServiceLabels,
+        removeAllServices,
+        removeReplyMute,
+        redirectWebView,
+        openInBrowser,
+        preventMarkAsRead,
+        preventUnsendMessage,
+        archived,
+        sendMuteMessage,
+        removeKeepUnread,
+        blockTracking,
+        stopVersionCheck,
+        outputCommunication,
+        callTone
     };
 }
