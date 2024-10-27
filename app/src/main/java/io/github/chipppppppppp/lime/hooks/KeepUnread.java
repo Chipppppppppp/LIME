@@ -22,7 +22,6 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
 import io.github.chipppppppppp.lime.R;
 
-
 public class KeepUnread implements IHook {
 
     @Override
@@ -59,6 +58,7 @@ public class KeepUnread implements IHook {
                 ((ListView) viewGroup.getChildAt(0)).addFooterView(layout);
             }
         });
+        
         XposedHelpers.findAndHookMethod(
                 loadPackageParam.classLoader.loadClass(Constants.MARK_AS_READ_HOOK.className),
                 Constants.MARK_AS_READ_HOOK.methodName,
@@ -66,7 +66,6 @@ public class KeepUnread implements IHook {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             param.setResult(null);
-
                     }
                 }
         );
