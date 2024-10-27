@@ -48,7 +48,7 @@ public class LimeOptions {
         removeRecommendation,
         removePremiumRecommendation,
         removeServiceLabels,
-        removeAllServices
+        removeAllServices,
         removeReplyMute,
         redirectWebView,
         openInBrowser,
