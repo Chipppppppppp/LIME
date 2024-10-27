@@ -37,29 +37,29 @@ public class LimeOptions {
     public Option archived = new Option("archived_message", R.string.switch_archived, false);
     public Option callTone = new Option("call_tone", R.string.call_tone, false);
     
-        public Option[] options = {
-            removeVoom,
-            removeWallet,
-            removeNewsOrCall,
-            distributeEvenly,
-            extendClickableArea,
-            removeIconLabels,
-            removeAds,
-            removeRecommendation,
-            removePremiumRecommendation,
-            removeServiceLabels,
-            removeAllServices
-            removeReplyMute,
-            redirectWebView,
-            openInBrowser,
-            preventMarkAsRead,
-            preventUnsendMessage,
-            archived,
-            sendMuteMessage,
-            removeKeepUnread,
-            blockTracking,
-            stopVersionCheck,
-            outputCommunication,
-            callTone
+    public Option[] options = {
+        removeVoom,
+        removeWallet,
+        removeNewsOrCall,
+        distributeEvenly,
+        extendClickableArea,
+        removeIconLabels,
+        removeAds,
+        removeRecommendation,
+        removePremiumRecommendation,
+        removeServiceLabels,
+        removeAllServices
+        removeReplyMute,
+        redirectWebView,
+        openInBrowser,
+        preventMarkAsRead,
+        preventUnsendMessage,
+        archived,
+        sendMuteMessage,
+        removeKeepUnread,
+        blockTracking,
+        stopVersionCheck,
+        outputCommunication,
+        callTone
     };
 }
