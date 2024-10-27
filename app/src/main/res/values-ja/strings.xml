@@ -54,7 +54,6 @@
     <string name="button_paste">ペースト</string>
     <string name="call_tone">着信音を鳴らす（LSPatch用）</string>
 
-    
     <!-- Menu -->
     <string name="switch_keep_unread">未読のまま閲覧</string>
 
@@ -78,6 +77,4 @@
     <string name="no_backup_found">何もバックアップされていません</string>
     <string name="no_get_restart_app">正しく取得できませんでした。\nアプリを再起動してください</string>
 
-    
-    
 </resources>
