@@ -15,33 +15,34 @@ import io.github.hiro.lime.LimeOptions;
 import io.github.hiro.lime.R;
 
 public class KeepUnread implements IHook {
-    static boolean keepUnread = false;
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (limeOptions.removeKeepUnread.checked) return;
+
         Class<?> hookTarget;
         hookTarget = loadPackageParam.classLoader.loadClass("jp.naver.line.android.common.view.listview.PopupListView");
         XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+
                 ViewGroup viewGroup = (ViewGroup) param.thisObject;
                 Context context = viewGroup.getContext();
-
+                Context moduleContext = context.getApplicationContext().createPackageContext(Constants.MODULE_NAME, Context.CONTEXT_IGNORE_SECURITY);
+                String textKeepUnread = moduleContext.getResources().getString(R.string.switch_keep_unread);
                 RelativeLayout layout = new RelativeLayout(context);
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                 layout.setLayoutParams(layoutParams);
 
                 Switch switchView = new Switch(context);
-                switchView.setText("未読のまま閲覧"); // スイッチの名前を設定
+                switchView.setText(textKeepUnread); // スイッチの名前を設定
                 RelativeLayout.LayoutParams switchParams = new RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 switchParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 
                 switchView.setChecked(false);
                 switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                    keepUnread = isChecked;
                 });
 
                 layout.addView(switchView, switchParams);
@@ -49,17 +50,14 @@ public class KeepUnread implements IHook {
                 ((ListView) viewGroup.getChildAt(0)).addFooterView(layout);
             }
         });
-
-
         XposedHelpers.findAndHookMethod(
                 loadPackageParam.classLoader.loadClass(Constants.MARK_AS_READ_HOOK.className),
                 Constants.MARK_AS_READ_HOOK.methodName,
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        if (keepUnread) {
                             param.setResult(null);
-                        }
+
                     }
                 }
         );

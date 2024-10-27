@@ -1,6 +1,7 @@
 package io.github.hiro.lime;
 
 import android.content.res.XModuleResources;
+import android.graphics.Color;
 
 
 import androidx.annotation.NonNull;
@@ -9,6 +10,7 @@ import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XSharedPreferences;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -49,7 +51,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
     public static XSharedPreferences xPrefs;
     public static LimeOptions limeOptions = new LimeOptions();
 
-    static final IHook[] hooks = {
+    static final IHook[] hooks = new IHook[]{
             new OutputResponse(),
             new ModifyRequest(),
             new CheckHookTargetVersion(),
@@ -74,7 +76,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new UnsentRec(),
             new Ringtone(),
             new ReadChecker(),
-            new NaviColor()
+            new NaviColor(),
+
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
@@ -103,6 +106,16 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
 
         XModuleResources xModuleResources = XModuleResources.createInstance(modulePath, resparam.res);
 
+        /* 背景色の変更
+        resparam.res.setReplacement(Constants.PACKAGE_NAME, "color", "setting_background", Color.parseColor("#000000")); // 背景デフォルトを白色に設定
+        XposedBridge.log("Replacing color 'background_default' with #FFFFFF");
+
+        resparam.res.setReplacement(Constants.PACKAGE_NAME, "color", "background_material_light", Color.parseColor("#000000")); // 背景ライトを白色に設定
+        XposedBridge.log("Replacing color 'background_material_light' with #FFFFFF");
+         */
+
+
+
         if (limeOptions.removeIconLabels.checked) {
             resparam.res.setReplacement(Constants.PACKAGE_NAME, "dimen", "main_bnb_button_height", xModuleResources.fwd(R.dimen.main_bnb_button_height));
             resparam.res.setReplacement(Constants.PACKAGE_NAME, "dimen", "main_bnb_button_width", xModuleResources.fwd(R.dimen.main_bnb_button_width));
@@ -118,6 +131,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             resparam.res.setReplacement(Constants.PACKAGE_NAME, "dimen", "home_tab_v3_service_icon_size", xModuleResources.fwd(R.dimen.home_tab_v3_service_icon_size));
         }
     }
+
+
 
     @Override
     public void initZygote(@NonNull StartupParam startupParam) throws Throwable {

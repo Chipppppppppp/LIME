@@ -14,7 +14,6 @@ public class RemoveFlexibleContents implements IHook {
     int recommendationResId, serviceNameResId, notificationResId;
     int serviceRowContainerResId, serviceIconResId, serviceCarouselResId;
     int serviceTitleBackgroundResId, serviceTitleResId, serviceSeeMoreResId, serviceSeeMoreBadgeResId;
-    int NotificationProfile;
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
@@ -36,7 +35,6 @@ public class RemoveFlexibleContents implements IHook {
                         serviceTitleResId = getIdByName(context, "home_tab_service_title");
                         serviceSeeMoreResId = getIdByName(context, "home_tab_service_see_more");
                         serviceSeeMoreBadgeResId = getIdByName(context, "home_tab_service_see_more_badge");
-                        NotificationProfile = getIdByName(context, "bg");
                     }
                 }
         );
@@ -51,11 +49,7 @@ public class RemoveFlexibleContents implements IHook {
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         view = (View) param.thisObject;
 
-
                         int viewId = view.getId();
-              //String resourceName = getResourceName(view.getContext(), viewId);
-              //XposedBridge.log("View ID: " + viewId + ", Resource Name: " + resourceName);
-
                         if (limeOptions.removeRecommendation.checked && viewId == recommendationResId
                                 || limeOptions.removeServiceLabels.checked && viewId == serviceNameResId
                                 || limeOptions.removeAllServices.checked && (viewId == serviceRowContainerResId
@@ -64,21 +58,7 @@ public class RemoveFlexibleContents implements IHook {
                                 || viewId == serviceTitleBackgroundResId
                                 || viewId == serviceTitleResId
                                 || viewId == serviceSeeMoreResId
-                                || viewId == serviceSeeMoreBadgeResId)
-
-                             ||  limeOptions.RemoveNotification.checked &&
-                                (viewId == NotificationProfile
-                                || viewId == 2131428240
-                                || viewId == 2131432002
-                                || viewId == 2131428875
-                                || viewId == 2131430191
-                                || viewId == 2131432318
-
-
-
-
-                                ))
-
+                                || viewId == serviceSeeMoreBadgeResId))
                         {
                             ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
                             layoutParams.height = 0;
@@ -96,7 +76,4 @@ public class RemoveFlexibleContents implements IHook {
         return context.getResources().getIdentifier(resourceName, "id", context.getPackageName());
     }
 
-    private String getResourceName(Context context, int resourceId) {
-        return context.getResources().getResourceEntryName(resourceId);
-    }
 }
