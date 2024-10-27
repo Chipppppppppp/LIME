@@ -106,13 +106,13 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
 
         XModuleResources xModuleResources = XModuleResources.createInstance(modulePath, resparam.res);
 
-        /* 背景色の変更
+/*
         resparam.res.setReplacement(Constants.PACKAGE_NAME, "color", "setting_background", Color.parseColor("#000000")); // 背景デフォルトを白色に設定
         XposedBridge.log("Replacing color 'background_default' with #FFFFFF");
 
         resparam.res.setReplacement(Constants.PACKAGE_NAME, "color", "background_material_light", Color.parseColor("#000000")); // 背景ライトを白色に設定
         XposedBridge.log("Replacing color 'background_material_light' with #FFFFFF");
-         */
+*/
 
 
 

@@ -117,11 +117,6 @@ public class Archived implements IHook {
         }
     }
 
-
-
-
-
-
     private void hookSAMethod(XC_LoadPackage.LoadPackageParam loadPackageParam, SQLiteDatabase db, Context context) {
 
         //ChatListViewModel
@@ -290,7 +285,6 @@ public class Archived implements IHook {
     private void updateIsArchived(SQLiteDatabase db, String chatId) {
         String updateQuery = "UPDATE chat SET is_archived = 1 WHERE chat_id = ?";
         updateDatabase(db, updateQuery, chatId);
-
         String selectQuery = "SELECT is_archived FROM chat WHERE chat_id = ?";
         String result = queryDatabase(db, selectQuery, chatId);
         if (result != null) {
