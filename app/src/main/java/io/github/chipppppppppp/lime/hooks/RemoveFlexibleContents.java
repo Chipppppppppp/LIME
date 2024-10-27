@@ -24,16 +24,17 @@ public class RemoveFlexibleContents implements IHook {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         Context context = (Context) param.thisObject;
-                        recommendationResId = context.getResources().getIdentifier("home_tab_contents_recommendation_placement", "id", context.getPackageName());
-                        serviceNameResId = context.getResources().getIdentifier("home_tab_service_name", "id", context.getPackageName());
-                        notificationResId = context.getResources().getIdentifier("notification_hub_row_rolling_view_group", "id", context.getPackageName());
-                        serviceRowContainerResId = context.getResources().getIdentifier("service_row_container", "id", context.getPackageName());
-                        serviceIconResId = context.getResources().getIdentifier("home_tab_service_icon", "id", context.getPackageName());
-                        serviceCarouselResId = context.getResources().getIdentifier("home_tab_service_carousel", "id", context.getPackageName());
-                        serviceTitleBackgroundResId = context.getResources().getIdentifier("home_tab_service_title_background", "id", context.getPackageName());
-                        serviceTitleResId = context.getResources().getIdentifier("home_tab_service_title", "id", context.getPackageName());
-                        serviceSeeMoreResId = context.getResources().getIdentifier("home_tab_service_see_more", "id", context.getPackageName());
-                        serviceSeeMoreBadgeResId = context.getResources().getIdentifier("home_tab_service_see_more_badge", "id", context.getPackageName());
+
+                        recommendationResId = getIdByName(context, "home_tab_contents_recommendation_placement");
+                        serviceNameResId = getIdByName(context, "home_tab_service_name");
+                        notificationResId = getIdByName(context, "notification_hub_row_rolling_view_group");
+                        serviceRowContainerResId = getIdByName(context, "service_row_container");
+                        serviceIconResId = getIdByName(context, "home_tab_service_icon");
+                        serviceCarouselResId = getIdByName(context, "home_tab_service_carousel");
+                        serviceTitleBackgroundResId = getIdByName(context, "home_tab_service_title_background");
+                        serviceTitleResId = getIdByName(context, "home_tab_service_title");
+                        serviceSeeMoreResId = getIdByName(context, "home_tab_service_see_more");
+                        serviceSeeMoreBadgeResId = getIdByName(context, "home_tab_service_see_more_badge");
                     }
                 }
         );
@@ -42,22 +43,23 @@ public class RemoveFlexibleContents implements IHook {
                 View.class,
                 "onAttachedToWindow",
                 new XC_MethodHook() {
+                    View view;
+
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        View view = (View) param.thisObject;
-                        int viewId = view.getId();
-                        //String resourceName = getResourceName(view.getContext(), viewId);
-                        //XposedBridge.log("View ID: " + viewId + ", Resource Name: " + resourceName);
+                        view = (View) param.thisObject;
 
+                        int viewId = view.getId();
                         if (limeOptions.removeRecommendation.checked && viewId == recommendationResId
                                 || limeOptions.removeServiceLabels.checked && viewId == serviceNameResId
-                                || viewId == serviceRowContainerResId
+                                || limeOptions.removeAllServices.checked && (viewId == serviceRowContainerResId
                                 || viewId == serviceIconResId
                                 || viewId == serviceCarouselResId
                                 || viewId == serviceTitleBackgroundResId
                                 || viewId == serviceTitleResId
                                 || viewId == serviceSeeMoreResId
-                                || viewId == serviceSeeMoreBadgeResId) {
+                                || viewId == serviceSeeMoreBadgeResId))
+                        {
                             ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
                             layoutParams.height = 0;
                             view.setLayoutParams(layoutParams);
@@ -70,9 +72,8 @@ public class RemoveFlexibleContents implements IHook {
         );
     }
 
-    /*
-    private String getResourceName(Context context, int resourceId) {
-        return context.getResources().getResourceEntryName(resourceId);
+    private int getIdByName(Context context, String resourceName) {
+        return context.getResources().getIdentifier(resourceName, "id", context.getPackageName());
     }
-    */
+
 }
