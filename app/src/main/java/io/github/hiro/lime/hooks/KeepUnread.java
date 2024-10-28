@@ -19,6 +19,7 @@ public class KeepUnread implements IHook {
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (limeOptions.removeKeepUnread.checked) return;
 
+
         XposedHelpers.findAndHookMethod(
                 "com.linecorp.line.chatlist.view.fragment.ChatListFragment",
                 loadPackageParam.classLoader,
