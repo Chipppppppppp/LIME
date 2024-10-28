@@ -21,7 +21,7 @@ import io.github.hiro.lime.LimeOptions;
 import io.github.hiro.lime.R;
 
 public class KeepUnread implements IHook {
-    private static boolean isChecked = false; // スイッチの状態をメモリ内で保持
+
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (limeOptions.removeKeepUnread.checked) return;
@@ -56,11 +56,11 @@ public class KeepUnread implements IHook {
                                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         switchParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 
-                        switchView.setChecked(isChecked); // メモリ内の状態を使って初期状態を設定
+                        switchView.setChecked(false);
 
-                        // スイッチのリスナーを設定
+
                         switchView.setOnCheckedChangeListener((buttonView, isChecked1) -> {
-                            isChecked = isChecked1; // メモリ内の変数を更新
+
                         });
 
                         // レイアウトにスイッチを追加
