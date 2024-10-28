@@ -21,10 +21,12 @@ import io.github.hiro.lime.LimeOptions;
 import io.github.hiro.lime.R;
 
 public class KeepUnread implements IHook {
-
+    private static boolean isChecked = false; // スイッチの状態をメモリ内で保持
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (limeOptions.removeKeepUnread.checked) return;
+
+
 
         XposedHelpers.findAndHookMethod(
                 "com.linecorp.line.chatlist.view.fragment.ChatListFragment",
@@ -38,17 +40,14 @@ public class KeepUnread implements IHook {
                         Context context = rootView.getContext();
                         Context moduleContext = AndroidAppHelper.currentApplication().createPackageContext(
                                 "io.github.hiro.lime", Context.CONTEXT_IGNORE_SECURITY);
-                       // String textKeepUnread = moduleContext.getResources().getString(R.string.switch_keep_unread);
 
+                        // レイアウトを作成
                         RelativeLayout layout = new RelativeLayout(context);
                         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         layout.setLayoutParams(layoutParams);
 
-
-                        SharedPreferences sharedPreferences = moduleContext.getSharedPreferences("unembed_options", Context.MODE_PRIVATE);
-                        boolean isChecked = sharedPreferences.getBoolean("switch_state", false);
-
+                        // スイッチを作成
                         Switch switchView = new Switch(context);
                         switchView.setText("");
                         switchView.setTextColor(Color.WHITE);
@@ -57,18 +56,17 @@ public class KeepUnread implements IHook {
                                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         switchParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 
-                        switchView.setChecked(isChecked);
+                        switchView.setChecked(isChecked); // メモリ内の状態を使って初期状態を設定
 
-
+                        // スイッチのリスナーを設定
                         switchView.setOnCheckedChangeListener((buttonView, isChecked1) -> {
-
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putBoolean("switch_state", isChecked1);
-                            editor.apply();
+                            isChecked = isChecked1; // メモリ内の変数を更新
                         });
 
+                        // レイアウトにスイッチを追加
                         layout.addView(switchView, switchParams);
 
+                        // 既存のビューにレイアウトを追加
                         if (rootView instanceof ViewGroup) {
                             ViewGroup rootViewGroup = (ViewGroup) rootView;
                             if (rootViewGroup.getChildCount() > 0 && rootViewGroup.getChildAt(0) instanceof ListView) {
