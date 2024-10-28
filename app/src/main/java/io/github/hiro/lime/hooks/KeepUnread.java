@@ -1,11 +1,18 @@
 package io.github.hiro.lime.hooks;
 
+import android.app.AndroidAppHelper;
 import android.content.Context;
 
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -20,47 +27,77 @@ public class KeepUnread implements IHook {
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (limeOptions.removeKeepUnread.checked) return;
 
-        Class<?> hookTarget;
-        hookTarget = loadPackageParam.classLoader.loadClass("jp.naver.line.android.common.view.listview.PopupListView");
-        XposedBridge.hookAllConstructors(hookTarget, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+        XposedHelpers.findAndHookMethod(
+                "com.linecorp.line.chatlist.view.fragment.ChatListPageFragment",
+                loadPackageParam.classLoader,
+                "onCreateView",
+                LayoutInflater.class, ViewGroup.class, android.os.Bundle.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        View rootView = (View) param.getResult();
+                        Context context = rootView.getContext();
+                        Context moduleContext = AndroidAppHelper.currentApplication().createPackageContext(
+                                "io.github.hiro.lime", Context.CONTEXT_IGNORE_SECURITY);
 
-                ViewGroup viewGroup = (ViewGroup) param.thisObject;
-                Context context = viewGroup.getContext();
-                Context moduleContext = context.getApplicationContext().createPackageContext(Constants.MODULE_NAME, Context.CONTEXT_IGNORE_SECURITY);
-                String textKeepUnread = moduleContext.getResources().getString(R.string.switch_keep_unread);
-                RelativeLayout layout = new RelativeLayout(context);
-                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                layout.setLayoutParams(layoutParams);
+                    
+                        String textKeepUnread = moduleContext.getResources().getString(R.string.switch_keep_unread);
 
-                Switch switchView = new Switch(context);
-                switchView.setText(textKeepUnread); // スイッチの名前を設定
-                RelativeLayout.LayoutParams switchParams = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                switchParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 
-                switchView.setChecked(false);
-                switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                });
+                        RelativeLayout layout = new RelativeLayout(context);
+                        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        layout.setLayoutParams(layoutParams);
 
-                layout.addView(switchView, switchParams);
+                
+                        SharedPreferences sharedPreferences = moduleContext.getSharedPreferences("your_pref_name", Context.MODE_PRIVATE);
+                        boolean isChecked = sharedPreferences.getBoolean("switch_state", false); 
+            
+                        Switch switchView = new Switch(context);
+                        switchView.setText(textKeepUnread);
+                        switchView.setTextColor(Color.WHITE); 
 
-                ((ListView) viewGroup.getChildAt(0)).addFooterView(layout);
-            }
-        });
+                        RelativeLayout.LayoutParams switchParams = new RelativeLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        switchParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE); 
+
+                        switchView.setChecked(isChecked); 
+
+        
+                        switchView.setOnCheckedChangeListener((buttonView, isChecked1) -> {
+                        
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putBoolean("switch_state", isChecked1);
+                            editor.apply();
+                        });
+
+                        layout.addView(switchView, switchParams);
+
+                        if (rootView instanceof ViewGroup) {
+                            ViewGroup rootViewGroup = (ViewGroup) rootView;
+                            if (rootViewGroup.getChildCount() > 0 && rootViewGroup.getChildAt(0) instanceof ListView) {
+                                ListView listView = (ListView) rootViewGroup.getChildAt(0);
+                                listView.addFooterView(layout);
+                            } else {
+                                rootViewGroup.addView(layout);
+                            }
+                        }
+                    }
+                }
+        );
+
+
+
         XposedHelpers.findAndHookMethod(
                 loadPackageParam.classLoader.loadClass(Constants.MARK_AS_READ_HOOK.className),
                 Constants.MARK_AS_READ_HOOK.methodName,
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(null);
-
+                        param.setResult(null);
                     }
                 }
+
         );
     }
-
 }
