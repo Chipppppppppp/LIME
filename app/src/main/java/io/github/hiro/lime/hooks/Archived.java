@@ -171,14 +171,13 @@ public class Archived implements IHook {
 
             }
         }
-
-        // ファイル読み込み
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 chatIds.add(line.trim());
             }
         } catch (IOException e) {
+
         }
 
         return chatIds;
