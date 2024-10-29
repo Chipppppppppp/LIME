@@ -257,7 +257,7 @@ public class ReadChecker implements IHook {
                      //       XposedBridge.log(paramValue);
 
                             if (paramValue.contains("type:NOTIFIED_READ_MESSAGE")) {
-                              XposedBridge.log(paramValue);
+                         //     XposedBridge.log(paramValue);
                                 // データを取得してデータベースに保存
                                 fetchDataAndSave(db3, db4,  paramValue); // db5も渡す
                             }
@@ -276,7 +276,7 @@ public class ReadChecker implements IHook {
         String checkedUser = extractCheckedUser(paramValue);
 
         if (serverId == null || groupId == null || checkedUser == null) {
-          XposedBridge.log("Missing parameters: serverId=" + serverId + ", groupId=" + groupId + ", checkedUser=" + checkedUser);
+        //  XposedBridge.log("Missing parameters: serverId=" + serverId + ", groupId=" + groupId + ", checkedUser=" + checkedUser);
             return;
         }
 
