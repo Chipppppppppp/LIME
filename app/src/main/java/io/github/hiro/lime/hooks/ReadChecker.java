@@ -94,6 +94,7 @@ public class ReadChecker implements IHook {
                 if (isGroupExists(chatId)) {
                     shouldHookOnCreate = true;
                     currentGroupId = chatId; // groupIdを保存
+                //    XposedBridge.log(currentGroupId);
                 } else {
                     shouldHookOnCreate = false;
                     currentGroupId = null;
@@ -275,7 +276,7 @@ public class ReadChecker implements IHook {
         String checkedUser = extractCheckedUser(paramValue);
 
         if (serverId == null || groupId == null || checkedUser == null) {
-         //   XposedBridge.log("Missing parameters: serverId=" + serverId + ", groupId=" + groupId + ", checkedUser=" + checkedUser);
+          XposedBridge.log("Missing parameters: serverId=" + serverId + ", groupId=" + groupId + ", checkedUser=" + checkedUser);
             return;
         }
 

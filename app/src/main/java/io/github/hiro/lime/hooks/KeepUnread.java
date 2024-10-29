@@ -1,6 +1,6 @@
 package io.github.hiro.lime.hooks;
-import android.content.Context;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,11 +19,11 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.hiro.lime.LimeOptions;
 
 public class KeepUnread implements IHook {
-    static boolean keepUnread = false;
+    static boolean keepUnread = false; // スイッチの状態を保持する変数
+
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (limeOptions.removeKeepUnread.checked) return;
-
 
         XposedHelpers.findAndHookMethod(
                 "com.linecorp.line.chatlist.view.fragment.ChatListFragment",
@@ -43,7 +43,7 @@ public class KeepUnread implements IHook {
                         layout.setLayoutParams(layoutParams);
 
                         // スイッチの状態をファイルから読み取る
-                        boolean isChecked = readStateFromFile(context); // ファイルから状態を読み込む
+                        keepUnread = readStateFromFile(context); // ファイルから状態を読み込む
 
                         // スイッチを作成
                         Switch switchView = new Switch(context);
@@ -56,11 +56,12 @@ public class KeepUnread implements IHook {
                         switchParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE); // 中央に配置
 
                         // スイッチの状態を設定
-                        switchView.setChecked(isChecked);
+                        switchView.setChecked(keepUnread);
 
                         // スイッチのリスナーを設定
-                        switchView.setOnCheckedChangeListener((buttonView, isChecked1) -> {
-                            saveStateToFile(context, isChecked1); // ファイルに状態を保存
+                        switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                            keepUnread = isChecked; // 状態を更新
+                            saveStateToFile(context, isChecked); // ファイルに状態を保存
                         });
 
                         // レイアウトにスイッチを追加
@@ -106,7 +107,7 @@ public class KeepUnread implements IHook {
                 }
         );
 
-
+        // スイッチがtrueの場合のみフックを実行
         XposedHelpers.findAndHookMethod(
                 loadPackageParam.classLoader.loadClass(Constants.MARK_AS_READ_HOOK.className),
                 Constants.MARK_AS_READ_HOOK.methodName,
@@ -114,11 +115,10 @@ public class KeepUnread implements IHook {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) {
                         if (keepUnread) {
-                            param.setResult(null);
+                            param.setResult(null); // スイッチがtrueのときのみ実行
                         }
                     }
                 }
-
         );
     }
 }
