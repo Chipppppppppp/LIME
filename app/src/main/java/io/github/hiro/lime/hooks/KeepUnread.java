@@ -1,4 +1,27 @@
-@Override
+package io.github.hiro.lime.hooks;
+import android.content.Context;
+
+import android.graphics.Color;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.Switch;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import io.github.hiro.lime.LimeOptions;
+
+public class KeepUnread implements IHook {
+    static boolean keepUnread = false;
+
+ @Override
 public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
     if (limeOptions.removeKeepUnread.checked) return;
 
@@ -13,17 +36,17 @@ public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPa
                     View rootView = (View) param.getResult();
                     Context context = rootView.getContext();
 
-                    keepUnread = readStateFromFile(context);
-                    
+                    keepUnread = readStateFromFile(context); 
+
                     RelativeLayout layout = new RelativeLayout(context);
                     RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                             RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                     layout.setLayoutParams(layoutParams);
 
                     Switch switchView = new Switch(context);
-                    switchView.setText(""); 
+                    switchView.setText("");
                     switchView.setTextColor(Color.WHITE); 
-                    switchView.setChecked(keepUnread);
+                    switchView.setChecked(keepUnread); 
 
                     switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
                         keepUnread = isChecked; 
