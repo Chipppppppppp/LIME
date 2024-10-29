@@ -159,18 +159,26 @@ public class Archived implements IHook {
 
 
 
-    private List<String> readChatIdsFromFile(Context context,Context moduleContext) {
+    private List<String> readChatIdsFromFile(Context context, Context moduleContext) {
         List<String> chatIds = new ArrayList<>();
-        File dir = moduleContext.getFilesDir(); // moduleContextを使用
+        File dir = moduleContext.getFilesDir();
         File file = new File(dir, "hidelist.txt");
 
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+
+            }
+        }
+
+        // ファイル読み込み
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 chatIds.add(line.trim());
             }
         } catch (IOException e) {
-
         }
 
         return chatIds;
