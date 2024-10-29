@@ -257,7 +257,7 @@ public class ReadChecker implements IHook {
                      //       XposedBridge.log(paramValue);
 
                             if (paramValue.contains("type:NOTIFIED_READ_MESSAGE")) {
-                         //       XposedBridge.log(paramValue);
+                              XposedBridge.log(paramValue);
                                 // データを取得してデータベースに保存
                                 fetchDataAndSave(db3, db4,  paramValue); // db5も渡す
                             }
@@ -298,7 +298,8 @@ public class ReadChecker implements IHook {
     }
 
     private String extractGroupId(String paramValue) {
-        Pattern pattern = Pattern.compile("to:([a-zA-Z0-9]+)");
+        // "param1:"に続く値を取得する
+        Pattern pattern = Pattern.compile("param1:([^,]+)");
         Matcher matcher = pattern.matcher(paramValue);
         return matcher.find() ? matcher.group(1) : null;
     }
