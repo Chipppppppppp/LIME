@@ -45,6 +45,8 @@ public class RemoveFlexibleContents implements IHook {
                 new XC_MethodHook() {
                     View view;
 
+
+
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         view = (View) param.thisObject;
@@ -59,6 +61,7 @@ public class RemoveFlexibleContents implements IHook {
                                 || viewId == serviceTitleResId
                                 || viewId == serviceSeeMoreResId
                                 || viewId == serviceSeeMoreBadgeResId))
+
                         {
                             ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
                             layoutParams.height = 0;

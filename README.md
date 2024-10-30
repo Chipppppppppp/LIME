@@ -4,6 +4,9 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 
+# 更新について
+更新内容を記載していないReleaseについては、差分を押してください、必要でない更新でなければ無理して更新を行う必要はありません。
+
 # LsPatchを利用の方へ 
 
  ## 通知が届かないの解決方法

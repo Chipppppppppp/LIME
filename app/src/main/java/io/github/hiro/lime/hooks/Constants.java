@@ -19,8 +19,9 @@ public class Constants {
     static final HookTarget WEBVIEW_CLIENT_HOOK = new HookTarget("VH0.m", "onPageFinished");
     //NOTIFICATION_DISABLED
     static final HookTarget MUTE_MESSAGE_HOOK = new HookTarget("f81.b", "H");
-
-    static final HookTarget MARK_AS_READ_HOOK = new HookTarget("dM.d$c", "run");
-    static final HookTarget REQUEST_HOOK = new HookTarget("org.apache.thrift.k", "b");
-    static final HookTarget RESPONSE_HOOK = new HookTarget("org.apache.thrift.k", "a");
+//PROCESSING
+    static final HookTarget MARK_AS_READ_HOOK = new HookTarget("dM.d$d", "run");
+    static final HookTarget REQUEST_HOOK = new HookTarget("org.apache.thrift.l", "b");
+    static final HookTarget RESPONSE_HOOK = new HookTarget("org.apache.thrift.l", "a");
 }
+
