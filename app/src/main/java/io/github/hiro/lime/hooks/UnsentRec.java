@@ -42,17 +42,11 @@ import io.github.hiro.lime.R;
 public class UnsentRec implements IHook {
 
 
-
     public static final String Main_file = "UNSENT_REC.txt";
     public static final String Main_backup = "BackUpFile.txt";
 
-
-
     SQLiteDatabase db1 = null;
     SQLiteDatabase db2 = null;
-
-
-
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {

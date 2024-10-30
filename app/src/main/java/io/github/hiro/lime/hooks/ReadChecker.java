@@ -21,8 +21,12 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,6 +45,7 @@ public class ReadChecker implements IHook {
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
+        if (!limeOptions.ReadChecker.checked) return;
         XposedHelpers.findAndHookMethod(Application.class, "onCreate", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -90,7 +95,7 @@ public class ReadChecker implements IHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 String chatId = (String) param.getResult();
-           //     XposedBridge.log(chatId);
+                //     XposedBridge.log(chatId);
                 if (isGroupExists(chatId)) {
                     shouldHookOnCreate = true;
                     currentGroupId = chatId; // groupIdを保存
@@ -120,7 +125,7 @@ public class ReadChecker implements IHook {
 
     private boolean isGroupExists(String groupId) {
         if (limeDatabase == null) {
-           // XposedBridge.log("Database is not initialized.");
+            // XposedBridge.log("Database is not initialized.");
             return false;
         }
 
@@ -134,6 +139,16 @@ public class ReadChecker implements IHook {
 
     // ボタンを追加するメソッド
     private void addButton(Activity activity) {
+        if (currentGroupId == null || limeDatabase == null) {
+            return;
+        }
+
+        // group_nameがnullの場合はボタンを作成しない
+        String groupName = queryDatabase(limeDatabase, "SELECT group_name FROM group_messages WHERE group_id=?", currentGroupId);
+        if (groupName == null) {
+            return; // group_nameがnullならボタンを作成しない
+        }
+
         Button button = new Button(activity);
         button.setText("既読データ表示");
 
@@ -160,46 +175,55 @@ public class ReadChecker implements IHook {
 
     private void showDataForGroupId(Activity activity, String groupId) {
         if (limeDatabase == null) {
+            XposedBridge.log("Database is not initialized.");
             return;
         }
 
         // group_idに対応する全てのserver_id, content, created_timeを取得
-        String query = "SELECT server_id, content, created_time FROM group_messages WHERE group_id=? ORDER BY created_time ASC"; // created_timeで並び替え
+        String query = "SELECT server_id, content, created_time FROM group_messages WHERE group_id=? ORDER BY created_time ASC";
         Cursor cursor = limeDatabase.rawQuery(query, new String[]{groupId});
 
-        // server_idごとのデータを保持するリスト
-        List<DataItem> dataItems = new ArrayList<>();
+        Map<String, DataItem> contentMap = new HashMap<>();
 
-        // データをリストに格納
         while (cursor.moveToNext()) {
             String serverId = cursor.getString(0);
             String content = cursor.getString(1);
-            String createdTime = cursor.getString(2); // created_timeを取得
+            String createdTime = cursor.getString(2);
 
-            dataItems.add(new DataItem(serverId, content, createdTime));
+            List<String> talkNameList = getTalkNamesForServerId(serverId);
+
+            if (contentMap.containsKey(content)) {
+                DataItem existingItem = contentMap.get(content);
+                Set<String> uniqueTalkNames = new HashSet<>(existingItem.talkNames);
+                uniqueTalkNames.addAll(talkNameList); // 既読者リストをマージ
+                existingItem.talkNames = new ArrayList<>(uniqueTalkNames); // SetからArrayListに戻す
+            } else {
+                contentMap.put(content, new DataItem(serverId, content, createdTime, new ArrayList<>(talkNameList)));
+            }
         }
         cursor.close();
 
-        // 結果を表示
         StringBuilder resultBuilder = new StringBuilder();
-        for (DataItem item : dataItems) {
+        for (DataItem item : contentMap.values()) {
             resultBuilder.append("Content: ").append(item.content != null ? item.content : "Media").append("\n");
-            resultBuilder.append("Created Time: ").append(item.createdTime).append("\n"); // 時間も表示
-            List<String> talkNameList = getTalkNamesForServerId(item.serverId);
+            resultBuilder.append("Time: ").append(item.createdTime).append("\n");
 
-            if (talkNameList != null && !talkNameList.isEmpty()) {
-                for (String talkName : talkNameList) {
-                    resultBuilder.append("既読者: ").append(talkName).append("\n");
+            List<String> talkNames = item.talkNames;
+            if (!talkNames.isEmpty()) {
+                resultBuilder.append("既読者 (").append(talkNames.size()).append("):\n");
+                for (String talkName : talkNames) {
+                    resultBuilder.append("- ").append(talkName).append("\n"); // リスト形式で表示
                 }
             } else {
-                resultBuilder.append("No talk names found.\n");
+                resultBuilder.append("既読者: なし\n");
             }
-            resultBuilder.append("\n"); // 次のserver_idごとに改行
+            resultBuilder.append("\n"); // 次のcontentごとに改行
         }
 
+        // スクロール可能なレイアウトを作成
         TextView textView = new TextView(activity);
         textView.setText(resultBuilder.toString());
-        textView.setPadding(20, 20, 20, 20); // パディングを追加
+        textView.setPadding(20, 20, 20, 20);
 
         ScrollView scrollView = new ScrollView(activity);
         scrollView.addView(textView);
@@ -211,15 +235,19 @@ public class ReadChecker implements IHook {
         builder.show();
     }
 
+
+    // データ項目を保持するクラス
     private static class DataItem {
         String serverId;
         String content;
         String createdTime;
+        List<String> talkNames;
 
-        DataItem(String serverId, String content, String createdTime) {
+        DataItem(String serverId, String content, String createdTime, List<String> talkNames) {
             this.serverId = serverId;
             this.content = content;
             this.createdTime = createdTime;
+            this.talkNames = talkNames;
         }
     }
 
@@ -268,26 +296,30 @@ public class ReadChecker implements IHook {
         }
     }
 
-    private void fetchDataAndSave(SQLiteDatabase db3, SQLiteDatabase db4,  String paramValue){
-    // param1, param2, param3をそれぞれ抽出
+    private void fetchDataAndSave(SQLiteDatabase db3, SQLiteDatabase db4, String paramValue) {
         String groupId = extractGroupId(paramValue);
         String serverId = extractServerId(paramValue);
         String checkedUser = extractCheckedUser(paramValue);
 
         if (serverId == null || groupId == null || checkedUser == null) {
-         //   XposedBridge.log("Missing parameters: serverId=" + serverId + ", groupId=" + groupId + ", checkedUser=" + checkedUser);
             return;
         }
 
-
         String content = queryDatabase(db3, "SELECT content FROM chat_history WHERE server_id=?", serverId);
         String groupName = queryDatabase(db3, "SELECT name FROM groups WHERE id=?", groupId);
+
+        if (groupName == null) {
+            return;
+        }
+
         String talkName = queryDatabase(db4, "SELECT profile_name FROM contacts WHERE mid=?", checkedUser);
         String timeEpochStr = queryDatabase(db3, "SELECT created_time FROM chat_history WHERE server_id=?", serverId);
         String timeFormatted = formatMessageTime(timeEpochStr);
 
+        // データベースに保存
         saveData(groupId, serverId, checkedUser, groupName, content, talkName, timeFormatted);
     }
+
 
     private String formatMessageTime(String timeEpochStr) {
         if (timeEpochStr == null) return null;

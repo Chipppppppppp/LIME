@@ -21,6 +21,7 @@ import io.github.hiro.lime.hooks.Constants;
 import io.github.hiro.lime.hooks.EmbedOptions;
 import io.github.hiro.lime.hooks.IHook;
 import io.github.hiro.lime.hooks.KeepUnread;
+import io.github.hiro.lime.hooks.KeepUnreadLSpatch;
 import io.github.hiro.lime.hooks.ModifyRequest;
 import io.github.hiro.lime.hooks.ModifyResponse;
 import io.github.hiro.lime.hooks.OutputRequest;
@@ -77,6 +78,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new Ringtone(),
             new ReadChecker(),
             new NaviColor(),
+            new KeepUnreadLSpatch(),
 
     };
 

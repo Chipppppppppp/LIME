@@ -34,7 +34,8 @@
     <string name="switch_prevent_mark_as_read">常に既読をつけない</string>
     <string name="switch_send_mute_message">常にミュートメッセージとして送信</string>
     <string name="switch_prevent_unsend_message">送信取り消しを拒否</string>
-    <string name="switch_remove_keep_unread">トーク画面右上のメニューにある「未読のまま閲覧」スイッチを削除</string>
+    <string name="switch_remove_keep_unread">「未読のまま閲覧」スイッチを削除</string>
+
     <string name="switch_block_tracking">トラッキング通信をブロック</string>
     <string name="switch_stop_version_check">LINE バージョンの確認を停止</string>
     <string name="switch_output_communication">通信内容をログに出力 (開発者用)</string>
@@ -92,5 +93,6 @@
     <string name="switch_archived">非表示にしたチャットの再表示を無効化</string>
     <string name="RemoveService">サービスの項目を削除</string>
     <string name="ReadChecker">送信したメッセージの既読者の確認</string>
+    <string name="switch_KeepUnreadLSpatch">LsPatch用「未読のまま閲覧」スイッチを表示</string>
 
 </resources>

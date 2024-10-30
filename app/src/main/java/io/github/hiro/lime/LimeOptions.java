@@ -29,7 +29,9 @@ public class LimeOptions {
     public Option preventMarkAsRead = new Option("prevent_mark_as_read", R.string.switch_prevent_mark_as_read, false);
     public Option preventUnsendMessage = new Option("prevent_unsend_message", R.string.switch_prevent_unsend_message, false);
     public Option sendMuteMessage = new Option("mute_message", R.string.switch_send_mute_message, false);
+
     public Option removeKeepUnread = new Option("remove_keep_unread", R.string.switch_remove_keep_unread, false);
+    public Option KeepUnreadLSpatch = new Option("remove_keep_unread", R.string.switch_KeepUnreadLSpatch, false);
     public Option blockTracking = new Option("block_tracking", R.string.switch_block_tracking, false);
     public Option stopVersionCheck = new Option("stop_version_check", R.string.switch_stop_version_check, false);
     public Option outputCommunication = new Option("output_communication", R.string.switch_output_communication, false);
@@ -39,6 +41,7 @@ public class LimeOptions {
     public Option ReadChecker = new Option("ReadChecker", R.string.ReadChecker, false);
     public Option RemoveNotification = new Option("RemoveNotification", R.string.removeNotification, false);
     public Option NaviColor = new Option("NaviColor", R.string.NaviColor, false);
+
 
     public Option[] options = {
             removeVoom,
@@ -52,7 +55,7 @@ public class LimeOptions {
             removePremiumRecommendation,
             removeAllServices,
             removeServiceLabels,
-            RemoveNotification,
+            //RemoveNotification,
             removeReplyMute,
             redirectWebView,
             openInBrowser,
@@ -62,6 +65,7 @@ public class LimeOptions {
             Archived,
             ReadChecker,
             removeKeepUnread,
+            KeepUnreadLSpatch,
             blockTracking,
             stopVersionCheck,
             outputCommunication,
