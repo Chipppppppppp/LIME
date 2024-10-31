@@ -43,12 +43,14 @@ LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に
 - 常にミュートメッセージとして送信
   - 送信時「通常メッセージ」を選択すれば通知されます
 - トラッキング通信のブロック
-  - `noop`, `pushRecvReports`, `reportDeviceState`, `reportLocation`, `reportNetworkStatus` がブロックされます
+  - `noop`, `pushRecvReports`, `reportDeviceState`, `reportLocation`, `reportNetworkStatus` をブロック
 - 通信内容をログに出力
 - 通信内容を改変
   - JavaScript で通信内容を改変できます (後述)
 
 ### JavaScript で通信内容を改変する
+
+<details>
 
 設定の「リクエストを改変」、「レスポンスを改変」では、Rhino の JavaScript コードを記述することで自由に通信内容を改変できます。これを利用して新たな機能が実装可能なことを確認済みです (`HOOK_SAMPLE.md`)。
 
@@ -64,13 +66,17 @@ LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に
 リクエスト・レスポンスともに、JavaScript は他の処理より早く実行され、「通信内容にログを出力」は最後に実行されます。
 Rhino の仕様、特に **Java 文字列との比較に `equals` を用いる**必要があることに注意してください。
 
+</details>
+
 ## インストール
 
 初めに、以下のサイトの中から、  
-**LINE 14.16.0** と **LIME 1.10.1** の APK をダウンロードしてください｡
+**LINE** と **LIME** の APK をダウンロードしてください｡  
+バージョンは Releases に書いているものを参照してください。
 
 > [!IMPORTANT]
-> 分割 APK は使用しないでください
+> 分割 APK は使用しないでください。  
+> 無理やり結合せず、必ずオリジナルのAPKを使ってください。
 
 LI**N**E
 - [APKMirror](https://www.apkmirror.com/uploads/?appcategory=line)
@@ -96,6 +102,7 @@ LI**M**E
 > - Google アカウント (ドライブ) を使用したトーク履歴の復元ができない  
 >   ([この方法](https://github.com/Chipppppppppp/LIME/issues/50#issuecomment-2174842592) でログインすれば可能)  
 > - 発/着信音が鳴らない  
+>   疑似着信音の再現機能はあります  
 > - 着信が入るとクラッシュ  
 > - コインの購入が不可  
 > - LINE Pay の一部の機能が使用不可  
