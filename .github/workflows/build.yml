@@ -100,7 +100,7 @@ jobs:
           cat << EOF > conf
           https://github.com/JingMatrix/LSPatch/releases/latest/download/lspatch.jar
             out=lspatch.jar
-          https://d.apkpure.net/b/APK/jp.naver.line.android?versionCode=${{ env.line_ver_code }}&nc=arm64-v8a%2Carmeabi-v7a&sv=28
+          https://line-android-universal-download.line-scdn.net/line-${{ env.line_ver }}.apk
             out=line-${{ env.line_ver }}.apk
           EOF
           echo "Downloading APK..."
