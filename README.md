@@ -20,6 +20,7 @@ https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.3.2-apk
 
 ## 確認済みのバグやエラー
 LsPatch下での、生体認証連携の不可
+既読者が一人しか保存されない
 
 ## トークのバックアップ、リストアについて
 
