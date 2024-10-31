@@ -94,4 +94,5 @@
     <string name="removeNotification">更新されたプロフィールを削除\n</string>
     <string name="NaviColor">ナビゲーションのボタンの色を黒にする</string>
     <string name="switch_KeepUnreadLSpatch">LsPatch用「未読のまま閲覧」スイッチを表示</string>
+    <string name="AutomaticBackup">定期的にバックアップ\n</string>
 </resources>

@@ -133,9 +133,6 @@ public class KeepUnread implements IHook {
                         return new BitmapDrawable(scaledBitmap);
                     }
 
-
-
-
                     private void saveStateToFile(Context context, boolean state) {
                         String filename = "keep_unread_state.txt";
                         try (FileOutputStream fos = context.openFileOutput(filename, Context.MODE_PRIVATE)) {

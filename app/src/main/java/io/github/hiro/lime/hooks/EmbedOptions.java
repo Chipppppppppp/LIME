@@ -2,6 +2,8 @@ package io.github.hiro.lime.hooks;
 
 import static android.content.ContentValues.TAG;
 
+import static io.github.hiro.lime.hooks.AutomaticBackup.KEY_BACKUP_INTERVAL;
+
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -22,12 +24,15 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -225,6 +230,7 @@ public class EmbedOptions implements IHook {
                                 }
                             });
                             layout.addView(restorefolderButton);
+
 
 
                             builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
@@ -463,39 +469,31 @@ public class EmbedOptions implements IHook {
         );
     }
 
-    
-    private void addButton(LinearLayout layout, String buttonText, View.OnClickListener listener) {
-        Button button = new Button(layout.getContext());
-        button.setText(buttonText);
-        button.setOnClickListener(listener);
-        layout.addView(button);
-    }
-
     private void backupChatHistory(Context appContext) {
         File originalDbFile = appContext.getDatabasePath("naver_line");
-        
+
         File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
-        
+
         if (!backupDir.exists()) {
             if (!backupDir.mkdirs()) {
                 Log.e(TAG, "Failed to create backup directory: " + backupDir.getAbsolutePath());
                 return;
             }
         }
-        
+
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String backupFileNameWithTimestamp = "naver_line_backup_" + timeStamp + ".db";
         String backupFileNameFixed = "naver_line_backup.db";
-        
+
         File backupFileWithTimestamp = new File(backupDir, backupFileNameWithTimestamp);
         File backupFileFixed = new File(backupDir, backupFileNameFixed);
-        
+
         try (FileChannel source = new FileInputStream(originalDbFile).getChannel()) {
             try (FileChannel destinationWithTimestamp = new FileOutputStream(backupFileWithTimestamp).getChannel()) {
                 destinationWithTimestamp.transferFrom(source, 0, source.size());
             }
-            
-            source.position(0); 
+
+            source.position(0);
             try (FileChannel destinationFixed = new FileOutputStream(backupFileFixed).getChannel()) {
                 destinationFixed.transferFrom(source, 0, source.size());
             }
