@@ -308,11 +308,14 @@ public class ReadChecker implements IHook {
             // XposedBridge.log("Missing parameters: serverId=" + serverId + ", groupId=" + groupId + ", checkedUser=" + checkedUser);
             return;
         }
-
-
         String groupId = queryDatabase(db3, "SELECT chat_id FROM chat_history WHERE server_id=?", serverId);
-        String content = queryDatabase(db3, "SELECT content FROM chat_history WHERE server_id=?", serverId);
         String groupName = queryDatabase(db3, "SELECT name FROM groups WHERE id=?", groupId);
+        if (groupName == null) {
+            return;
+        }
+
+        String content = queryDatabase(db3, "SELECT content FROM chat_history WHERE server_id=?", serverId);
+
         String talkName = queryDatabase(db4, "SELECT profile_name FROM contacts WHERE mid=?", checkedUser);
         String timeEpochStr = queryDatabase(db3, "SELECT created_time FROM chat_history WHERE server_id=?", serverId);
         String timeFormatted = formatMessageTime(timeEpochStr);
