@@ -106,24 +106,18 @@ public class ReadChecker implements IHook {
         XposedHelpers.findAndHookMethod(chatHistoryActivityClass, "onCreate", Bundle.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-
-
-
-
                 if (shouldHookOnCreate && currentGroupId != null) {
-                    Activity activity = (Activity) param.thisObject;
-                    addButton(activity);
+                    // isNoGroupメソッドを使用して、グループが存在しない場合はボタンを追加しない
+                    if (!isNoGroup(currentGroupId)) {
+                        Activity activity = (Activity) param.thisObject;
+                        addButton(activity);
+                    }
                 }
             }
         });
 
 
-
-
     }
-
-
-
 
     private boolean isGroupExists(String groupId) {
         if (limeDatabase == null) {
@@ -141,6 +135,28 @@ public class ReadChecker implements IHook {
         return exists;
     }
 
+    private boolean isNoGroup(String groupId) {
+        if (limeDatabase == null) {
+            XposedBridge.log("Database is not initialized.");
+            return true; // データベースが初期化されていない場合はグループがないと見なす
+        }
+
+        // グループ名を取得するためのクエリ
+        String query = "SELECT group_name FROM group_messages WHERE group_id = ?";
+        Cursor cursor = limeDatabase.rawQuery(query, new String[]{groupId});
+
+        // グループ名が存在するかどうかのチェック
+        boolean noGroup = true; // 初期値としてグループがないと見なす
+
+        if (cursor.moveToFirst()) {
+            String groupName = cursor.getString(cursor.getColumnIndex("group_name"));
+            // グループ名が存在する場合はnoGroupをfalseに設定
+            noGroup = groupName == null || groupName.isEmpty();
+        }
+
+        cursor.close();
+        return noGroup;
+    }
 
     // ボタンを追加するメソッド
     private void addButton(Activity activity) {
