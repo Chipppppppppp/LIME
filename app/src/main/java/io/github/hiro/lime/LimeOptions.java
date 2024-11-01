@@ -74,7 +74,7 @@ public class LimeOptions {
             outputCommunication,
             calltone,
             NaviColor,
-            AutomaticBackup
+
 
     };
 }

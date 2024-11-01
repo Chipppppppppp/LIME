@@ -1,8 +1,7 @@
 package io.github.hiro.lime.hooks;
 
-import static android.content.ContentValues.TAG;
 
-import static io.github.hiro.lime.hooks.AutomaticBackup.KEY_BACKUP_INTERVAL;
+import static android.content.ContentValues.TAG;
 
 import android.app.AlertDialog;
 import android.content.ClipData;

@@ -295,11 +295,11 @@ public class ReadChecker implements IHook {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             String paramValue = param.args[1].toString();
-                            XposedBridge.log(paramValue);
+                           // XposedBridge.log(paramValue);
 
 
                             if (paramValue.contains("type:NOTIFIED_READ_MESSAGE")) {
-                                XposedBridge.log(paramValue);
+                              //  XposedBridge.log(paramValue);
                                 // Fetch data and save it to the database
                                 fetchDataAndSave(db3, db4, paramValue); // db3とdb4を渡す
                             }
@@ -448,8 +448,8 @@ public class ReadChecker implements IHook {
         limeDatabase.execSQL(insertOrUpdateQuery, new Object[]{groupId, serverId, checkedUser, groupName, content, talkName, createdTime}); // created_timeも追加
 
 
-        XposedBridge.log("Saved to DB: Group_Id: " + groupId + ", Server_id: " + serverId + ", Checked_user: " + checkedUser +
-                ", Group_Name: " + groupName + ", Content: " + content + ", Talk_Name: " + talkName + ", Created_Time: " + createdTime);
+      //  XposedBridge.log("Saved to DB: Group_Id: " + groupId + ", Server_id: " + serverId + ", Checked_user: " + checkedUser +
+        //        ", Group_Name: " + groupName + ", Content: " + content + ", Talk_Name: " + talkName + ", Created_Time: " + createdTime);
     }
 
 
