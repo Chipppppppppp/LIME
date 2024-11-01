@@ -58,7 +58,7 @@ public class LimeOptions {
             removePremiumRecommendation,
             removeAllServices,
             removeServiceLabels,
-            //RemoveNotification,
+            RemoveNotification,
             removeReplyMute,
             redirectWebView,
             openInBrowser,
@@ -74,6 +74,7 @@ public class LimeOptions {
             outputCommunication,
             calltone,
             NaviColor,
+
 
 
     };

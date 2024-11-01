@@ -34,6 +34,7 @@ import io.github.hiro.lime.hooks.RemoveAds;
 import io.github.hiro.lime.hooks.RemoveFlexibleContents;
 import io.github.hiro.lime.hooks.RemoveIconLabels;
 import io.github.hiro.lime.hooks.RemoveIcons;
+import io.github.hiro.lime.hooks.RemoveNotification;
 import io.github.hiro.lime.hooks.RemoveReplyMute;
 import io.github.hiro.lime.hooks.Ringtone;
 import io.github.hiro.lime.hooks.SendMuteMessage;
@@ -80,8 +81,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new ReadChecker(),
             new NaviColor(),
             new KeepUnreadLSpatch(),
-            new AutomaticBackup()
-
+            new AutomaticBackup(),
+            new RemoveNotification()
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
