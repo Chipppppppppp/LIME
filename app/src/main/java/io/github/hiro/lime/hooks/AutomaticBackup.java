@@ -37,11 +37,9 @@ public class AutomaticBackup implements IHook {
                     });
         }
 
-        // Intentの処理を共通化
         private void handleIntent(Intent intent, Object activity) {
             if (intent != null) {
                 String text = intent.getStringExtra(Intent.EXTRA_TEXT);
-                XposedBridge.log("Received text: " + text);
                 if ("バックアップを開始".equals(text)) {
                     backupChatHistory(((Activity) activity).getApplicationContext());
                 }
