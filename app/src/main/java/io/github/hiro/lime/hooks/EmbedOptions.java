@@ -713,26 +713,19 @@ public class EmbedOptions implements IHook {
         }
     }
     private void backupChatsFolder(Context context) {
-
         File originalChatsDir = new File(Environment.getExternalStorageDirectory(), "Android/data/jp.naver.line.android/files/chats");
-
-
         File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
-
 
         if (!backupDir.exists() && !backupDir.mkdirs()) {
             Log.e(TAG, "Failed to create backup directory: " + backupDir.getAbsolutePath());
             return;
         }
 
-
         File backupChatsDir = new File(backupDir, "chats_backup");
         if (!backupChatsDir.exists() && !backupChatsDir.mkdirs()) {
             Log.e(TAG, "Failed to create chats backup directory: " + backupChatsDir.getAbsolutePath());
             return;
         }
-
-
         try {
             copyDirectory(originalChatsDir, backupChatsDir);
             Log.i(TAG, "Chats folder successfully backed up to: " + backupChatsDir.getAbsolutePath());
@@ -742,7 +735,6 @@ public class EmbedOptions implements IHook {
             Toast.makeText(context, "チャットフォルダのバックアップ中にエラーが発生しました", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     private void copyDirectory(File sourceDir, File destDir) throws IOException {
         if (!sourceDir.exists()) {
@@ -758,23 +750,26 @@ public class EmbedOptions implements IHook {
             for (File file : files) {
                 File destFile = new File(destDir, file.getName());
                 if (file.isDirectory()) {
-
                     copyDirectory(file, destFile);
                 } else {
-
+                    // ここで上書きするようにコピーする
                     copyFile(file, destFile);
                 }
             }
         }
     }
 
-
     private void copyFile(File sourceFile, File destFile) throws IOException {
+        if (destFile.exists()) {
+            destFile.delete();
+        }
+
         try (FileChannel sourceChannel = new FileInputStream(sourceFile).getChannel();
              FileChannel destChannel = new FileOutputStream(destFile).getChannel()) {
             destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
         }
     }
+
 
     private void restoreChatsFolder(Context context) {
 

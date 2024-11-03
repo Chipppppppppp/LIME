@@ -1,6 +1,5 @@
 package io.github.hiro.lime.hooks;
 
-import static io.github.hiro.lime.Main.limeOptions;
 
 import android.content.Context;
 import android.graphics.Color;
