@@ -46,7 +46,7 @@ public class AutomaticBackup implements IHook {
             if ("トーク履歴のバックアップを開始".equals(text)) {
                 backupChatHistory(((Activity) activity).getApplicationContext());
             }
-            if ("トークフォルダのバックアップを開始".equals(text)) {
+            if ("トーク画像フォルダのバックアップを開始".equals(text)) {
                 backupChatsFolder(((Activity) activity).getApplicationContext());
             }
             if ("バックアップを開始".equals(text)) {
@@ -93,10 +93,10 @@ public class AutomaticBackup implements IHook {
         try {
             copyDirectory(originalChatsDir, backupChatsDir);
             Log.i(TAG, "Chats folder successfully backed up to: " + backupChatsDir.getAbsolutePath());
-            Toast.makeText(context, "チャットフォルダのバックアップが成功しました", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "トーク画像フォルダのバックアップが成功しました", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             Log.e(TAG, "Error while backing up chats folder", e);
-            Toast.makeText(context, "チャットフォルダのバックアップ中にエラーが発生しました", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "トーク画像フォルダのバックアップ中にエラーが発生しました", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -124,9 +124,9 @@ public class AutomaticBackup implements IHook {
     }
 
     private void copyFile(File sourceFile, File destFile) throws IOException {
-        // もしdestFileが存在する場合は削除
+
         if (destFile.exists()) {
-            destFile.delete();  // 上書きのためにファイルを削除
+            destFile.delete();
         }
 
         try (FileChannel sourceChannel = new FileInputStream(sourceFile).getChannel();
