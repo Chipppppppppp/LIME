@@ -64,7 +64,7 @@ public class AutomaticBackup implements IHook {
         if (!backupDir.exists() && !backupDir.mkdirs()) {
             return;
         }
-        File backupFileWithTimestamp = new File(backupDir, "naver_line_backup_" + ".db");
+        File backupFileWithTimestamp = new File(backupDir,"naver_line_backup.db");
 
         try (FileChannel source = new FileInputStream(originalDbFile).getChannel()) {
             try (FileChannel destinationWithTimestamp = new FileOutputStream(backupFileWithTimestamp).getChannel()) {
