@@ -475,7 +475,6 @@ public class EmbedOptions implements IHook {
 
         if (!backupDir.exists()) {
             if (!backupDir.mkdirs()) {
-                Log.e(TAG, "Failed to create backup directory: " + backupDir.getAbsolutePath());
                 return;
             }
         }
@@ -498,11 +497,9 @@ public class EmbedOptions implements IHook {
             }
 
             Toast.makeText(appContext, "バックアップが成功しました", Toast.LENGTH_SHORT).show();
-            Log.i(TAG, "Backup successfully created: " + backupFileWithTimestamp.getAbsolutePath() + " and " + backupFileFixed.getAbsolutePath());
 
         } catch (IOException e) {
             Toast.makeText(appContext, "バックアップ中にエラーが発生しました: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Error while creating backup", e);
         }
     }
 
@@ -604,7 +601,7 @@ public class EmbedOptions implements IHook {
             restoreChat(context);
         } catch (Exception e) {
             Toast.makeText(context, "リストア中にエラーが発生しました", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "チャット履歴のリストア中にエラーが発生しました", e);
+
         }
 
     }
@@ -702,7 +699,7 @@ public class EmbedOptions implements IHook {
             Toast.makeText(context, "chatテーブルのリストアが成功しました", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Toast.makeText(context, "リストア中にエラーが発生しました", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "chatテーブルのリストア中にエラーが発生しました", e);
+
         } finally {
             if (backupDb != null) {
                 backupDb.close();
@@ -717,21 +714,17 @@ public class EmbedOptions implements IHook {
         File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
 
         if (!backupDir.exists() && !backupDir.mkdirs()) {
-            Log.e(TAG, "Failed to create backup directory: " + backupDir.getAbsolutePath());
             return;
         }
 
         File backupChatsDir = new File(backupDir, "chats_backup");
         if (!backupChatsDir.exists() && !backupChatsDir.mkdirs()) {
-            Log.e(TAG, "Failed to create chats backup directory: " + backupChatsDir.getAbsolutePath());
             return;
         }
         try {
             copyDirectory(originalChatsDir, backupChatsDir);
-            Log.i(TAG, "Chats folder successfully backed up to: " + backupChatsDir.getAbsolutePath());
             Toast.makeText(context, "チャットフォルダのバックアップが成功しました", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
-            Log.e(TAG, "Error while backing up chats folder", e);
             Toast.makeText(context, "チャットフォルダのバックアップ中にエラーが発生しました", Toast.LENGTH_SHORT).show();
         }
     }
@@ -752,7 +745,6 @@ public class EmbedOptions implements IHook {
                 if (file.isDirectory()) {
                     copyDirectory(file, destFile);
                 } else {
-                    // ここで上書きするようにコピーする
                     copyFile(file, destFile);
                 }
             }
@@ -774,30 +766,19 @@ public class EmbedOptions implements IHook {
     private void restoreChatsFolder(Context context) {
 
         File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup/chats_backup");
-
-
         File originalChatsDir = new File(Environment.getExternalStorageDirectory(), "Android/data/jp.naver.line.android/files/chats");
-
         if (!backupDir.exists()) {
-            Log.e(TAG, "Backup directory does not exist: " + backupDir.getAbsolutePath());
             Toast.makeText(context, "バックアップフォルダが見つかりません", Toast.LENGTH_SHORT).show();
             return;
         }
-
-
         if (!originalChatsDir.exists() && !originalChatsDir.mkdirs()) {
-            Log.e(TAG, "Failed to create original chats directory: " + originalChatsDir.getAbsolutePath());
             Toast.makeText(context, "復元先のフォルダの作成に失敗しました", Toast.LENGTH_SHORT).show();
             return;
         }
-
-
         try {
             copyDirectory(backupDir, originalChatsDir);
-            Log.i(TAG, "Chats folder successfully restored to: " + originalChatsDir.getAbsolutePath());
             Toast.makeText(context, "チャットフォルダの復元が成功しました", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
-            Log.e(TAG, "Error while restoring chats folder", e);
             Toast.makeText(context, "チャットフォルダの復元中にエラーが発生しました", Toast.LENGTH_SHORT).show();
         }
     }

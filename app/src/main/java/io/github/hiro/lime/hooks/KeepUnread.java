@@ -4,30 +4,6 @@ import android.app.AndroidAppHelper;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.Switch;
-
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
-import io.github.hiro.lime.LimeOptions;
-import io.github.hiro.lime.R;
-import android.app.AndroidAppHelper;
-import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -37,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.hiro.lime.LimeOptions;
@@ -64,11 +39,9 @@ public class KeepUnread implements IHook {
                         View rootView = (View) param.getResult();
                         Context appContext = rootView.getContext();
 
-                        // XSharedPreferencesを使用して状態を取得
                         XSharedPreferences prefs = new XSharedPreferences("io.github.hiro.lime", PREFS_NAME);
                         keepUnread = prefs.getBoolean(KEY_KEEP_UNREAD, false);
 
-                        // モジュールのContextを取得
                         Context moduleContext = AndroidAppHelper.currentApplication().createPackageContext(
                                 "io.github.hiro.lime", Context.CONTEXT_IGNORE_SECURITY);
 
@@ -77,7 +50,6 @@ public class KeepUnread implements IHook {
                                 RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         layout.setLayoutParams(layoutParams);
 
-                        // ImageViewをスイッチの代わりに使用
                         ImageView imageView = new ImageView(appContext);
                         updateSwitchImage(imageView, keepUnread, moduleContext);
 
@@ -87,15 +59,12 @@ public class KeepUnread implements IHook {
                         imageParams.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
                         imageParams.setMargins(50, 0, 0, 0);
 
-                        // クリックリスナーで状態を切り替え
                         imageView.setOnClickListener(v -> {
                             keepUnread = !keepUnread;
                             updateSwitchImage(imageView, keepUnread, moduleContext);
-                            // XSharedPreferencesに状態を保存
                             prefs.edit().putBoolean(KEY_KEEP_UNREAD, keepUnread).apply();
                         });
 
-                        // 画像をレイアウトに追加
                         layout.addView(imageView, imageParams);
 
                         if (rootView instanceof ViewGroup) {
@@ -110,26 +79,15 @@ public class KeepUnread implements IHook {
                     }
 
                     private void updateSwitchImage(ImageView imageView, boolean isOn, Context moduleContext) {
-                        try {
-                            String imageName = isOn ? "switch_on" : "switch_off";
-                            int imageResource = moduleContext.getResources().getIdentifier(imageName, "drawable", "io.github.hiro.lime");
+                        String imageName = isOn ? "switch_on" : "switch_off";
+                        int imageResource = moduleContext.getResources().getIdentifier(imageName, "drawable", "io.github.hiro.lime");
 
-                            if (imageResource != 0) {
-                                Drawable drawable = moduleContext.getResources().getDrawable(imageResource, null);
-                                if (drawable != null) {
-                                    drawable = scaleDrawable(drawable, 86, 86);
-                                    imageView.setImageDrawable(drawable);
-                                    XposedBridge.log("Drawable loaded successfully: " + (drawable != null));
-                                } else {
-                                    XposedBridge.log("Drawable is null for resource ID: " + imageResource);
-                                }
-                            } else {
-                                XposedBridge.log("Resource not found for " + imageName + " in the specified package.");
+                        if (imageResource != 0) {
+                            Drawable drawable = moduleContext.getResources().getDrawable(imageResource, null);
+                            if (drawable != null) {
+                                drawable = scaleDrawable(drawable, 86, 86);
+                                imageView.setImageDrawable(drawable);
                             }
-                        } catch (Resources.NotFoundException e) {
-                            e.printStackTrace();
-                            XposedBridge.log("Exception occurred while setting image resource.");
-                            imageView.setImageResource(android.R.drawable.ic_dialog_alert);
                         }
                     }
 
@@ -148,7 +106,7 @@ public class KeepUnread implements IHook {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) {
                         if (keepUnread) {
-                            param.setResult(null); // スイッチがtrueのときのみ実行
+                            param.setResult(null);
                         }
                     }
                 }

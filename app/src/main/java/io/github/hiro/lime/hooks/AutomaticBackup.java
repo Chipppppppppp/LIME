@@ -39,7 +39,6 @@ public class AutomaticBackup implements IHook {
                     }
                 });
     }
-
     private void handleIntent(Intent intent, Object activity) {
         if (intent != null) {
             String text = intent.getStringExtra(Intent.EXTRA_TEXT);
@@ -81,21 +80,17 @@ public class AutomaticBackup implements IHook {
         File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
 
         if (!backupDir.exists() && !backupDir.mkdirs()) {
-            Log.e(TAG, "Failed to create backup directory: " + backupDir.getAbsolutePath());
             return;
         }
 
         File backupChatsDir = new File(backupDir, "chats_backup");
         if (!backupChatsDir.exists() && !backupChatsDir.mkdirs()) {
-            Log.e(TAG, "Failed to create chats backup directory: " + backupChatsDir.getAbsolutePath());
             return;
         }
         try {
             copyDirectory(originalChatsDir, backupChatsDir);
-            Log.i(TAG, "Chats folder successfully backed up to: " + backupChatsDir.getAbsolutePath());
             Toast.makeText(context, "トーク画像フォルダのバックアップが成功しました", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
-            Log.e(TAG, "Error while backing up chats folder", e);
             Toast.makeText(context, "トーク画像フォルダのバックアップ中にエラーが発生しました", Toast.LENGTH_SHORT).show();
         }
     }
@@ -116,7 +111,6 @@ public class AutomaticBackup implements IHook {
                 if (file.isDirectory()) {
                     copyDirectory(file, destFile);
                 } else {
-                    // ここで上書きするようにコピーする
                     copyFile(file, destFile);
                 }
             }

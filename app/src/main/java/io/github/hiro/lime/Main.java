@@ -46,6 +46,7 @@ import io.github.hiro.lime.hooks.ReadChecker;
 import io.github.hiro.lime.hooks.NaviColor;
 
 
+
 public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
     public static String modulePath;
 
@@ -82,7 +83,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new NaviColor(),
             new KeepUnreadLSpatch(),
             new AutomaticBackup(),
-            new RemoveNotification()
+            new RemoveNotification(),
+
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {

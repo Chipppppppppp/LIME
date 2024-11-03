@@ -10,7 +10,7 @@ android {
         minSdk 28
         targetSdk 34
         versionCode 15
-        versionName "1.12.5b"
+        versionName "1.12.5btffeesddt"
         multiDexEnabled false
         proguardFiles += 'proguard-rules.pro'
         buildConfigField 'String', 'HOOK_TARGET_VERSION', '"141700420"'
