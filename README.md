@@ -4,6 +4,8 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 
+
+
 # 更新について
 更新内容を記載していないReleaseについては、差分を押してください、必要でない更新でなければ無理して更新を行う必要はありません。
 更新名による判断<br>
@@ -74,6 +76,14 @@ https://egg.5ch.net/test/read.cgi/android/1729438846/
 現在
 以下のファイルの改善、追加をしてくださる方を募集しています。
 お気軽にプルリクエストをお願い致します。
+
+以下で既読機能のログチェックを行なっています。
+協力してくださる方よろしくお願いします
+グループurl
+https://line.me/R/ti/g/zjFmFkTF3c
+
+個人
+https://line.me/ti/p/gpusOPe28N
 
 Github 
 
