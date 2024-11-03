@@ -4,8 +4,15 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 
+
+
 # 更新について
 更新内容を記載していないReleaseについては、差分を押してください、必要でない更新でなければ無理して更新を行う必要はありません。
+更新名による判断<br>
+(例)v1.12.5
+
+v1.12.6 →大幅な仕様変更<br>
+v1.12.5a, v1.12.5a1→些細な仕様変更
 
 # LsPatchを利用の方へ 
 
@@ -61,11 +68,22 @@ https://github.com/AbdurazaaqMohammed/AntiSplit-M
 Icon
 https://github.com/reindex-ot
 
+バグ報告、仕様提案
+5ch User
+https://egg.5ch.net/test/read.cgi/android/1729438846/
 
 ## コラボレーターの募集
 現在
 以下のファイルの改善、追加をしてくださる方を募集しています。
 お気軽にプルリクエストをお願い致します。
+
+以下で既読機能のログチェックを行なっています。
+協力してくださる方よろしくお願いします
+グループurl
+https://line.me/R/ti/g/zjFmFkTF3c
+
+個人
+https://line.me/ti/p/gpusOPe28N
 
 Github 
 
