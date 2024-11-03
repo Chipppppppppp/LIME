@@ -66,6 +66,9 @@ https://github.com/AbdurazaaqMohammed/AntiSplit-M
 Icon
 https://github.com/reindex-ot
 
+バグ報告、仕様提案
+5ch User
+https://egg.5ch.net/test/read.cgi/android/1729438846/
 
 ## コラボレーターの募集
 現在
