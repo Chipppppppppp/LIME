@@ -18,6 +18,7 @@ import io.github.chipppppppppp.lime.hooks.Constants;
 import io.github.chipppppppppp.lime.hooks.EmbedOptions;
 import io.github.chipppppppppp.lime.hooks.IHook;
 import io.github.chipppppppppp.lime.hooks.KeepUnread;
+import io.github.chipppppppppp.lime.hooks.KeepUnreadLSpatch;
 import io.github.chipppppppppp.lime.hooks.ModifyRequest;
 import io.github.chipppppppppp.lime.hooks.ModifyResponse;
 import io.github.chipppppppppp.lime.hooks.OutputRequest;
@@ -67,7 +68,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new OutputRequest(),
             new Archived(),
             new Ringtone(),
-            new UnsentCap()
+            new UnsentCap(),
+            new KeepUnreadLSpatch()
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {

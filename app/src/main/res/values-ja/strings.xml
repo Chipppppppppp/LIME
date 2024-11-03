@@ -56,6 +56,7 @@
 
     <!-- Menu -->
     <string name="switch_keep_unread">未読のまま閲覧</string>
+    <string name="switch_KeepUnreadLSpatch">LsPatch用「未読のまま閲覧」スイッチを表示</string>
 
     <!-- UNSENT CAP -->
     <string name="backup">バックアップ</string>
