@@ -11,10 +11,10 @@
 更新名による判断<br>
 (例)v1.12.5
 
-v1.12.6 →大幅な仕様変更<br>
-v1.12.5a, v1.12.5a1→些細な仕様変更
+v1.12.6 →適応するLINEバージョンの変更<br>
+v1.12.5a, v1.12.5a1→仕様変更
 
-# LsPatchを利用の方へ 
+## LsPatchを利用の方へ 
 
  ## 通知が届かないの解決方法
 下記の、LINE 14.3.2をインストールしパッチを行い、インストールを行って、ログインをしてください。
@@ -28,15 +28,15 @@ https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.3.2-apk
 ## 確認済みのバグやエラー
 既読者が正常に保存されない
 
-## トークのバックアップ、リストアについて
+## トーク履歴のリストアについて
 
 一度アプリをアンインストールした場合以下に従ってください。
 
-①リストアしたいファイルを移動させる
-②LINEを開いてバックアップ
-③移動させたファイルの名前を`naver_line_backup.db`に変更する
-④LIME backup フォルダに入れ替え
-で、移動させる
+①リストアしたいファイルを移動させる<br>
+②LINEを開いてバックアップ<br>
+③移動させたファイルの名前を`naver_line_backup.db`に変更する<br>
+④LIME backup フォルダに入れ替え<br>
+で、移動させる<br>
 ⑤リストアさせる
 
 
@@ -47,6 +47,10 @@ https://play.google.com/store/apps/details?id=me.zhanghai.android.files
 方法が怪しい場合以下の動画を参照してから、リストアを行ってください。(データが上書きされリストアできなくなる恐れがあります)
 https://youtu.be/94JN4NLGdOI
 
+## トーク履歴の自動バックアップについて
+
+Macro SAMPLE<br>
+[SAMPLE](https://drive.usercontent.google.com/u/0/uc?id=1rhZPmoMbti_l1JaX2EbjcRKUePkWlIXU&export=download)
 
 ## 概要
 
