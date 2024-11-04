@@ -74,7 +74,6 @@ public class NaviColor implements IHook {
                 }
         );
     }
-
     private int getIdByName(Context context, String resourceName) {
         return context.getResources().getIdentifier(resourceName, "id", context.getPackageName());
     }
@@ -83,25 +82,22 @@ public class NaviColor implements IHook {
         return context.getResources().getResourceEntryName(resourceId);
     }
 }
-
-
-
         XposedHelpers.findAndHookMethod("android.view.View", loadPackageParam.classLoader, "onAttachedToWindow", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 View view = (View) param.thisObject;
 
                 try {
-                    // View IDからリソース名を取得
+
                     String resourceName = view.getResources().getResourceEntryName(view.getId());
 
-                    // 背景色を取得して条件をチェック
+
                     Drawable background = view.getBackground();
                     if (background instanceof ColorDrawable) {
                         int bgColor = ((ColorDrawable) background).getColor();
                         String hexColor = String.format("#%06X", (0xFFFFFF & bgColor)); // 色を16進数形式に変換
 
-                        // 背景色が#111111または#1F1F1Fの場合、#000000に変更
+
                         if (hexColor.equals("#111111") || hexColor.equals("#1F1F1F")) {
                             ((ColorDrawable) background).setColor(Color.parseColor("#000000"));
                             XposedBridge.log("Changed Background Color of View Resource Name: " + resourceName + " from " + hexColor + " to #000000");
@@ -110,12 +106,11 @@ public class NaviColor implements IHook {
                         }
                     }
 
-                    // テキストビューの場合、テキスト色を取得して条件をチェック
                     if (view instanceof TextView) {
                         int textColor = ((TextView) view).getCurrentTextColor();
                         String hexTextColor = String.format("#%06X", (0xFFFFFF & textColor)); // 色を16進数形式に変換
 
-                        // テキスト色が#111111の場合、#000000に変更
+
                         if (hexTextColor.equals("#111111")) {
                             ((TextView) view).setTextColor(Color.parseColor("#000000"));
                             XposedBridge.log("Changed Text Color of View Resource Name: " + resourceName + " from " + hexTextColor + " to #000000");
@@ -124,14 +119,13 @@ public class NaviColor implements IHook {
                         }
                     }
 
-                    // ボタンの場合、背景色を取得して条件をチェック
                     if (view instanceof Button) {
                         Drawable buttonBackground = view.getBackground();
                         if (buttonBackground instanceof ColorDrawable) {
                             int buttonBgColor = ((ColorDrawable) buttonBackground).getColor();
                             String hexButtonColor = String.format("#%06X", (0xFFFFFF & buttonBgColor)); // 色を16進数形式に変換
 
-                            // 背景色が#111111または#1F1F1Fの場合、#000000に変更
+
                             if (hexButtonColor.equals("#111111") || hexButtonColor.equals("#1F1F1F")) {
                                 ((ColorDrawable) buttonBackground).setColor(Color.parseColor("#000000"));
                                 XposedBridge.log("Changed Button Background Color of Resource Name: " + resourceName + " from " + hexButtonColor + " to #000000");
@@ -142,7 +136,7 @@ public class NaviColor implements IHook {
                     }
 
                 } catch (Resources.NotFoundException e) {
-                    // リソース名が見つからなかった場合の処理
+
                     XposedBridge.log("View ID: " + view.getId() + " - Resource name not found.");
                 }
             }

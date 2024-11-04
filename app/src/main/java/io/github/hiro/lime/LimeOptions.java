@@ -43,7 +43,7 @@ public class LimeOptions {
     public Option NaviColor = new Option("NaviColor", R.string.NaviColor, false);
     public Option AutomaticBackup = new Option("AutomaticBackup", R.string.AutomaticBackup, false);
 
-
+  //  public Option SleepCall = new Option("SleepCall", R.string.SleepCall, false);
 
 
     public Option[] options = {
@@ -74,7 +74,7 @@ public class LimeOptions {
             outputCommunication,
             calltone,
             NaviColor,
-
+         //   SleepCall
 
 
     };

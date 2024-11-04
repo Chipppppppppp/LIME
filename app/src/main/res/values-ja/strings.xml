@@ -94,5 +94,6 @@
     <string name="RemoveService">サービスの項目を削除</string>
     <string name="ReadChecker">送信したメッセージの既読者の確認</string>
     <string name="switch_KeepUnreadLSpatch">LsPatch用「未読のまま閲覧」スイッチを表示</string>
+    <string name="SleepCall">連続で通話がかかってこないとかからないように</string>
 
 </resources>

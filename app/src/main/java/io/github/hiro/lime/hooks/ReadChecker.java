@@ -18,6 +18,8 @@ import android.widget.TextView;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -192,28 +194,22 @@ public class ReadChecker implements IHook {
             return;
         }
 
-        // group_idに対応する全てのserver_id, content, created_timeを取得
         String query = "SELECT server_id, content, created_time FROM group_messages WHERE group_id=? ORDER BY created_time ASC";
         Cursor cursor = limeDatabase.rawQuery(query, new String[]{groupId});
 
-        // server_idごとのデータを保持するマップ
         Map<String, DataItem> dataItemMap = new HashMap<>();
 
-        // データをマップに格納
         while (cursor.moveToNext()) {
             String serverId = cursor.getString(0);
             String content = cursor.getString(1);
             String createdTime = cursor.getString(2);
 
-            // 既読者リストを取得
             List<String> talkNameList = getTalkNamesForServerId(serverId);
 
-            // 既存のデータがある場合は、既読者を追加しないように重複を排除
             if (dataItemMap.containsKey(serverId)) {
                 DataItem existingItem = dataItemMap.get(serverId);
                 existingItem.talkNames.addAll(talkNameList);
             } else {
-                // 新しいDataItemを作成
                 DataItem dataItem = new DataItem(serverId, content, createdTime);
                 dataItem.talkNames.addAll(talkNameList);
                 dataItemMap.put(serverId, dataItem);
@@ -221,9 +217,11 @@ public class ReadChecker implements IHook {
         }
         cursor.close();
 
-        // 結果を表示
+        List<DataItem> sortedDataItems = new ArrayList<>(dataItemMap.values());
+        Collections.sort(sortedDataItems, Comparator.comparing(item -> item.createdTime));
+
         StringBuilder resultBuilder = new StringBuilder();
-        for (DataItem item : dataItemMap.values()) {
+        for (DataItem item : sortedDataItems) {
             resultBuilder.append("Content: ").append(item.content != null ? item.content : "Media").append("\n");
             resultBuilder.append("Created Time: ").append(item.createdTime).append("\n");
 
@@ -238,7 +236,6 @@ public class ReadChecker implements IHook {
             resultBuilder.append("\n");
         }
 
-        // ScrollViewを使って結果を表示
         TextView textView = new TextView(activity);
         textView.setText(resultBuilder.toString());
         textView.setPadding(20, 20, 20, 20);
@@ -247,7 +244,7 @@ public class ReadChecker implements IHook {
         scrollView.addView(textView);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("Group Data");
+        builder.setTitle("READ Data");
         builder.setView(scrollView);
         builder.setPositiveButton("OK", null);
         builder.show();
@@ -266,6 +263,7 @@ public class ReadChecker implements IHook {
             this.talkNames = new HashSet<>();
         }
     }
+
 
     private List<String> getTalkNamesForServerId(String serverId) {
         List<String> talkNames = new ArrayList<>();
@@ -391,13 +389,6 @@ public class ReadChecker implements IHook {
         File dbFile = new File(context.getFilesDir(), "lime_data.db");
         limeDatabase = SQLiteDatabase.openOrCreateDatabase(dbFile, null);
 
-
-        // 既存のテーブルがあれば削除する（デモ用に行いますが、実際のアプリでは注意が必要です）
-        String dropTableIfExists = "DROP TABLE IF EXISTS group_messages;";
-        limeDatabase.execSQL(dropTableIfExists);
-
-
-        // 新しいテーブルを作成
         String createGroupTable = "CREATE TABLE IF NOT EXISTS group_messages (" +
                 "group_id TEXT NOT NULL," +
                 "server_id TEXT NOT NULL," +

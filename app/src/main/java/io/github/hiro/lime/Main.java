@@ -38,6 +38,7 @@ import io.github.hiro.lime.hooks.RemoveNotification;
 import io.github.hiro.lime.hooks.RemoveReplyMute;
 import io.github.hiro.lime.hooks.Ringtone;
 import io.github.hiro.lime.hooks.SendMuteMessage;
+import io.github.hiro.lime.hooks.SleepCall;
 import io.github.hiro.lime.hooks.SpoofAndroidId;
 import io.github.hiro.lime.hooks.SpoofUserAgent;
 import io.github.hiro.lime.hooks.UnsentRec;
@@ -84,7 +85,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new KeepUnreadLSpatch(),
             new AutomaticBackup(),
             new RemoveNotification(),
-
+            new SleepCall()
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
