@@ -28,19 +28,7 @@ https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.3.2-apk
 ## 確認済みのバグやエラー
 既読者が正常に保存されない
 
-## トークのバックアップ、リストアについて
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>ファイルのダウンロード</title>
-</head>
-<body>
-    <a href="https://raw.githubusercontent.com/areteruhiro/LIME-beta-hiro/refs/heads/master/%E3%83%81%E3%83%A3%E3%83%83%E3%83%88%E5%B1%A5%E6%AD%B4%E3%83%90%E3%83%83%E3%82%AF%E3%82%A2%E3%83%83%E3%83%97.macro" download="チャット履歴バックアップ.macro">ファイルをダウンロード</a>
-</body>
-</html>
-
-
+## トーク履歴のリストアについて
 
 一度アプリをアンインストールした場合以下に従ってください。
 
@@ -59,6 +47,10 @@ https://play.google.com/store/apps/details?id=me.zhanghai.android.files
 方法が怪しい場合以下の動画を参照してから、リストアを行ってください。(データが上書きされリストアできなくなる恐れがあります)
 https://youtu.be/94JN4NLGdOI
 
+## トーク履歴の自動バックアップについて
+
+Macro SAMPLE
+https://drive.usercontent.google.com/u/0/uc?id=1rhZPmoMbti_l1JaX2EbjcRKUePkWlIXU&export=download
 
 ## 概要
 
