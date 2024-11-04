@@ -10,7 +10,7 @@ android {
         minSdk 28
         targetSdk 34
         versionCode 15
-        versionName "1.12.5c"
+        versionName "1.12.5c1"
         multiDexEnabled false
         proguardFiles += 'proguard-rules.pro'
         buildConfigField 'String', 'HOOK_TARGET_VERSION', '"141700420"'
@@ -66,7 +66,7 @@ dependencies {
     implementation 'com.android.support:customtabs:23.0.0'
     compileOnly 'de.robv.android.xposed:api:82'
     implementation 'org.mozilla:rhino:1.7.15'
-
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.0' // バージョンはプロジェクトに合わせて調整
 }
 
 tasks.withType(JavaCompile).configureEach {

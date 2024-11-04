@@ -1,7 +1,6 @@
 package io.github.hiro.lime;
 
 import android.content.res.XModuleResources;
-import android.graphics.Color;
 
 
 import androidx.annotation.NonNull;
@@ -10,7 +9,6 @@ import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XSharedPreferences;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -44,7 +42,7 @@ import io.github.hiro.lime.hooks.UnsentRec;
 import io.github.hiro.lime.hooks.Archived;
 import io.github.hiro.lime.hooks.ReadChecker;
 import io.github.hiro.lime.hooks.NaviColor;
-
+import io.github.hiro.lime.hooks.test;
 
 
 public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
@@ -84,6 +82,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new KeepUnreadLSpatch(),
             new AutomaticBackup(),
             new RemoveNotification(),
+          //  new test(),
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
