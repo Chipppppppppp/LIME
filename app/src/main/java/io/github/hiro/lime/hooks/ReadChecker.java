@@ -38,8 +38,8 @@ import io.github.hiro.lime.LimeOptions;
 
 public class ReadChecker implements IHook {
     private SQLiteDatabase limeDatabase;
-    private SQLiteDatabase db3 = null; // クラスフィールドとして宣言
-    private SQLiteDatabase db4 = null; // クラスフィールドとして宣言
+    private SQLiteDatabase db3 = null; 
+    private SQLiteDatabase db4 = null;
     private boolean shouldHookOnCreate = false;
     private String currentGroupId = null;
 
@@ -73,16 +73,12 @@ public class ReadChecker implements IHook {
                     SQLiteDatabase.OpenParams dbParams2 = builder2.build();
 
 
-                    db3 = SQLiteDatabase.openDatabase(dbFile3, dbParams1); // フィールドに代入
-                    db4 = SQLiteDatabase.openDatabase(dbFile4, dbParams2); // フィールドに代入
+                    db3 = SQLiteDatabase.openDatabase(dbFile3, dbParams1);
+                    db4 = SQLiteDatabase.openDatabase(dbFile4, dbParams2);
 
 
-                    // データベースの初期化
                     initializeLimeDatabase(appContext);
-
-
-                    // データの取得
-                    Catcha(loadPackageParam, db3, db4); // ここでフィールドを使って呼び出す
+                    Catcha(loadPackageParam, db3, db4); 
                 }
             }
         });
@@ -96,7 +92,7 @@ public class ReadChecker implements IHook {
                 //XposedBridge.log(chatId);
                 if (isGroupExists(chatId)) {
                     shouldHookOnCreate = true;
-                    currentGroupId = chatId; // groupIdを保存
+                    currentGroupId = chatId;
                 } else {
                     shouldHookOnCreate = false;
                     currentGroupId = null;
@@ -110,7 +106,7 @@ public class ReadChecker implements IHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 if (shouldHookOnCreate && currentGroupId != null) {
-                    // isNoGroupメソッドを使用して、グループが存在しない場合はボタンを追加しない
+                
                     if (!isNoGroup(currentGroupId)) {
                         Activity activity = (Activity) param.thisObject;
                         addButton(activity);
@@ -141,19 +137,17 @@ public class ReadChecker implements IHook {
     private boolean isNoGroup(String groupId) {
         if (limeDatabase == null) {
             XposedBridge.log("Database is not initialized.");
-            return true; // データベースが初期化されていない場合はグループがないと見なす
+            return true;
         }
 
-        // グループ名を取得するためのクエリ
+
         String query = "SELECT group_name FROM group_messages WHERE group_id = ?";
         Cursor cursor = limeDatabase.rawQuery(query, new String[]{groupId});
 
-        // グループ名が存在するかどうかのチェック
-        boolean noGroup = true; // 初期値としてグループがないと見なす
+        boolean noGroup = true;
 
         if (cursor.moveToFirst()) {
             String groupName = cursor.getString(cursor.getColumnIndex("group_name"));
-            // グループ名が存在する場合はnoGroupをfalseに設定
             noGroup = groupName == null || groupName.isEmpty();
         }
 
@@ -161,7 +155,6 @@ public class ReadChecker implements IHook {
         return noGroup;
     }
 
-    // ボタンを追加するメソッド
     private void addButton(Activity activity) {
         Button button = new Button(activity);
         button.setText("既読データ表示");
@@ -180,7 +173,7 @@ public class ReadChecker implements IHook {
             @Override
             public void onClick(View v) {
                 if (currentGroupId != null) {
-                    showDataForGroupId(activity, currentGroupId); // ボタンクリック時にデータを表示
+                    showDataForGroupId(activity, currentGroupId);
                 }
             }
         });
@@ -312,8 +305,6 @@ public class ReadChecker implements IHook {
 
 
     private void fetchDataAndSave(SQLiteDatabase db3, SQLiteDatabase db4, String paramValue) {
-        // param1, param2, param3をそれぞれ抽出
-
 
         String serverId = extractServerId(paramValue);
         String checkedUser = extractCheckedUser(paramValue);
@@ -397,7 +388,7 @@ public class ReadChecker implements IHook {
                 "group_name TEXT," +
                 "content TEXT," +
                 "talk_name TEXT," +
-                "created_time TEXT," + // ここで created_time カラムを追加
+                "created_time TEXT," + 
                 "PRIMARY KEY (group_id, server_id, checked_user)" +
                 ");";
 
@@ -426,7 +417,7 @@ public class ReadChecker implements IHook {
         cursor.close();
 
 
-        // 既存のデータがない場合のみ書き込む
+    
         if (count > 0) {
             //XposedBridge.log("Data already exists for Server_Id: " + serverId + ", Checked_user: " + checkedUser + ". Skipping save.");
             return;
