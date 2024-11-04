@@ -36,8 +36,8 @@ https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.3.2-apk
 ②LINEを開いてバックアップ<br>
 ③移動させたファイルの名前を`naver_line_backup.db`に変更する<br>
 ④LIME backup フォルダに入れ替え<br>
-で、移動させる
-⑤リストアさせる<br>
+で、移動させる<br>
+⑤リストアさせる
 
 
 ファイルエクスプローラーは以下を使用してください（エラーなどの報告に対応しやすくするためです）
