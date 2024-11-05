@@ -1,7 +1,7 @@
 package io.github.hiro.lime;
 
 public class LimeOptions {
-    public class Option {
+    public static class Option {
         public final String name;
         public int id;
         public boolean checked;

@@ -15,6 +15,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.hiro.lime.hooks.AddRegistrationOptions;
 import io.github.hiro.lime.hooks.AutomaticBackup;
 import io.github.hiro.lime.hooks.BlockTracking;
+import io.github.hiro.lime.hooks.CallVolume;
 import io.github.hiro.lime.hooks.CheckHookTargetVersion;
 import io.github.hiro.lime.hooks.Constants;
 import io.github.hiro.lime.hooks.EmbedOptions;
@@ -82,7 +83,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new KeepUnreadLSpatch(),
             new AutomaticBackup(),
             new RemoveNotification(),
-          //  new test(),
+           // new CallVolume(),
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
@@ -110,6 +111,14 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             return;
 
         XModuleResources xModuleResources = XModuleResources.createInstance(modulePath, resparam.res);
+
+/*
+        resparam.res.setReplacement(Constants.PACKAGE_NAME, "color", "setting_background", Color.parseColor("#000000")); // 背景デフォルトを白色に設定
+        XposedBridge.log("Replacing color 'background_default' with #FFFFFF");
+
+        resparam.res.setReplacement(Constants.PACKAGE_NAME, "color", "background_material_light", Color.parseColor("#000000")); // 背景ライトを白色に設定
+        XposedBridge.log("Replacing color 'background_material_light' with #FFFFFF");
+*/
 
 
 

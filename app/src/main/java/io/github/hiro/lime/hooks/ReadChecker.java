@@ -8,6 +8,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -290,10 +291,10 @@ public class ReadChecker implements IHook {
                            // XposedBridge.log(paramValue);
 
 
-                            if (paramValue.contains("type:NOTIFIED_READ_MESSAGE")) {
-                              //  XposedBridge.log(paramValue);
-                                // Fetch data and save it to the database
+                            if (paramValue != null && paramValue.contains("type:NOTIFIED_READ_MESSAGE")) {
                                 fetchDataAndSave(db3, db4, paramValue); // db3とdb4を渡す
+                            } else {
+                                Log.e("ReadChecker", "paramValue is null or does not contain 'type:NOTIFIED_READ_MESSAGE'");
                             }
                         }
                     }
@@ -388,7 +389,7 @@ public class ReadChecker implements IHook {
                 "group_name TEXT," +
                 "content TEXT," +
                 "talk_name TEXT," +
-                "created_time TEXT," + 
+                "created_time TEXT," +
                 "PRIMARY KEY (group_id, server_id, checked_user)" +
                 ");";
 
@@ -417,7 +418,7 @@ public class ReadChecker implements IHook {
         cursor.close();
 
 
-    
+
         if (count > 0) {
             //XposedBridge.log("Data already exists for Server_Id: " + serverId + ", Checked_user: " + checkedUser + ". Skipping save.");
             return;
