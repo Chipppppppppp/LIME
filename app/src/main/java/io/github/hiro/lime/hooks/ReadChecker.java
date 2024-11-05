@@ -314,7 +314,9 @@ public class ReadChecker implements IHook {
     private void fetchDataAndSave(SQLiteDatabase db3, SQLiteDatabase db4, String paramValue) {
         // param1, param2, param3をそれぞれ抽出
 
-
+        if (paramValue == null) {
+            return;
+        }
         String serverId = extractServerId(paramValue);
         String checkedUser = extractCheckedUser(paramValue);
 
