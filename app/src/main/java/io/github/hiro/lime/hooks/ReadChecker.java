@@ -17,6 +17,8 @@ import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +41,7 @@ import io.github.hiro.lime.LimeOptions;
 
 public class ReadChecker implements IHook {
     private SQLiteDatabase limeDatabase;
-    private SQLiteDatabase db3 = null; 
+    private SQLiteDatabase db3 = null;
     private SQLiteDatabase db4 = null;
     private boolean shouldHookOnCreate = false;
     private String currentGroupId = null;
@@ -79,7 +81,7 @@ public class ReadChecker implements IHook {
 
 
                     initializeLimeDatabase(appContext);
-                    Catcha(loadPackageParam, db3, db4); 
+                    Catcha(loadPackageParam, db3, db4, appContext);
                 }
             }
         });
@@ -107,7 +109,7 @@ public class ReadChecker implements IHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 if (shouldHookOnCreate && currentGroupId != null) {
-                
+
                     if (!isNoGroup(currentGroupId)) {
                         Activity activity = (Activity) param.thisObject;
                         addButton(activity);
@@ -279,7 +281,7 @@ public class ReadChecker implements IHook {
     }
 
 
-    private void Catcha(XC_LoadPackage.LoadPackageParam loadPackageParam, SQLiteDatabase db3, SQLiteDatabase db4) {
+    private void Catcha(XC_LoadPackage.LoadPackageParam loadPackageParam, SQLiteDatabase db3, SQLiteDatabase db4, Context appContext) {
         try {
             XposedBridge.hookAllMethods(
                     loadPackageParam.classLoader.loadClass(Constants.RESPONSE_HOOK.className),
@@ -288,11 +290,12 @@ public class ReadChecker implements IHook {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             String paramValue = param.args[1].toString();
-                           // XposedBridge.log(paramValue);
+                            // XposedBridge.log(paramValue);
 
 
                             if (paramValue != null && paramValue.contains("type:NOTIFIED_READ_MESSAGE")) {
-                                fetchDataAndSave(db3, db4, paramValue); // db3とdb4を渡す
+                                fetchDataAndSave(db3, db4, paramValue, appContext); // db3とdb4を渡す
+
                             } else {
                                 Log.e("ReadChecker", "paramValue is null or does not contain 'type:NOTIFIED_READ_MESSAGE'");
                             }
@@ -304,31 +307,84 @@ public class ReadChecker implements IHook {
         }
     }
 
+    private void fetchDataAndSave(SQLiteDatabase db3, SQLiteDatabase db4, String paramValue, Context context) {
+        File dbFile = new File(context.getFilesDir(), "data_log.txt");
 
-    private void fetchDataAndSave(SQLiteDatabase db3, SQLiteDatabase db4, String paramValue) {
+        try {
+            String serverId = extractServerId(paramValue);
+            String checkedUser = extractCheckedUser(paramValue);
 
-        String serverId = extractServerId(paramValue);
-        String checkedUser = extractCheckedUser(paramValue);
+            if (serverId == null || checkedUser == null) {
+                writeToFile(dbFile, "Missing parameters: serverId=" + serverId + ", checkedUser=" + checkedUser);
+                return;
+            }
 
+            String groupId = null;
+            try {
+                groupId = queryDatabase(db3, "SELECT chat_id FROM chat_history WHERE server_id=?", serverId);
+            } catch (Exception e) {
+                Log.e("fetchDataAndSave", "Error querying groupId: ", e);
+                writeToFile(dbFile, "Error querying groupId for serverId=" + serverId);
+                return; // or handle accordingly
+            }
 
-        if (serverId == null ||  checkedUser == null) {
-            // XposedBridge.log("Missing parameters: serverId=" + serverId + ", groupId=" + groupId + ", checkedUser=" + checkedUser);
-            return;
+            String groupName = null;
+            try {
+                groupName = queryDatabase(db3, "SELECT name FROM groups WHERE id=?", groupId);
+            } catch (Exception e) {
+                Log.e("fetchDataAndSave", "Error querying groupName: ", e);
+                writeToFile(dbFile, "Error querying groupName for groupId=" + groupId);
+                return; // or handle accordingly
+            }
+
+            if (groupName == null) {
+                writeToFile(dbFile, "Missing groupName for groupId=" + groupId);
+                return;
+            }
+
+            String content = null;
+            try {
+                content = queryDatabase(db3, "SELECT content FROM chat_history WHERE server_id=?", serverId);
+            } catch (Exception e) {
+                Log.e("fetchDataAndSave", "Error querying content: ", e);
+                writeToFile(dbFile, "Error querying content for serverId=" + serverId);
+            }
+
+            String talkName = null;
+            try {
+                talkName = queryDatabase(db4, "SELECT profile_name FROM contacts WHERE mid=?", checkedUser);
+            } catch (Exception e) {
+                Log.e("fetchDataAndSave", "Error querying talkName: ", e);
+                writeToFile(dbFile, "Error querying talkName for checkedUser=" + checkedUser);
+            }
+
+            String timeEpochStr = null;
+            try {
+                timeEpochStr = queryDatabase(db3, "SELECT created_time FROM chat_history WHERE server_id=?", serverId);
+            } catch (Exception e) {
+                writeToFile(dbFile, "Error querying created time for serverId=" + serverId);
+            }
+
+            String timeFormatted = null;
+            try {
+                timeFormatted = formatMessageTime(timeEpochStr);
+            } catch (Exception e) {
+                writeToFile(dbFile, "Error formatting time for timeEpochStr=" + timeEpochStr);
+            }
+            saveData(groupId, serverId, checkedUser, groupName, content, talkName, timeFormatted, context);
+            writeToFile(dbFile, "Fetched Data - groupId: " + groupId + ", serverId: " + serverId + ", checkedUser: " + checkedUser +
+                    ", groupName: " + groupName + ", content: " + content + ", talkName: " + talkName + ", time: " + timeFormatted + "\n");
+        } catch (Exception e) {
+            Log.e("fetchDataAndSave", "Unexpected error: ", e);
         }
-        String groupId = queryDatabase(db3, "SELECT chat_id FROM chat_history WHERE server_id=?", serverId);
-        String groupName = queryDatabase(db3, "SELECT name FROM groups WHERE id=?", groupId);
-        if (groupName == null) {
-            return;
+    }
+
+    private void writeToFile(File file, String text) {
+        try (FileWriter writer = new FileWriter(file, true)) { // true to append
+            writer.write(text + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        String content = queryDatabase(db3, "SELECT content FROM chat_history WHERE server_id=?", serverId);
-
-        String talkName = queryDatabase(db4, "SELECT profile_name FROM contacts WHERE mid=?", checkedUser);
-        String timeEpochStr = queryDatabase(db3, "SELECT created_time FROM chat_history WHERE server_id=?", serverId);
-        String timeFormatted = formatMessageTime(timeEpochStr);
-
-
-        saveData(groupId, serverId, checkedUser, groupName, content, talkName, timeFormatted);
     }
 
 
@@ -337,13 +393,6 @@ public class ReadChecker implements IHook {
         long timeEpoch = Long.parseLong(timeEpochStr);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         return sdf.format(new Date(timeEpoch));
-    }
-
-
-    private String extractGroupId(String paramValue) {
-        Pattern pattern = Pattern.compile("param1:([a-zA-Z0-9]+)");
-        Matcher matcher = pattern.matcher(paramValue);
-        return matcher.find() ? matcher.group(1) : null;
     }
 
 
@@ -359,8 +408,6 @@ public class ReadChecker implements IHook {
         Matcher matcher = pattern.matcher(paramValue);
         return matcher.find() ? matcher.group(1) : null;
     }
-
-
 
 
     private String queryDatabase(SQLiteDatabase db, String query, String... selectionArgs) {
@@ -399,42 +446,53 @@ public class ReadChecker implements IHook {
     }
 
 
+    private void saveData(String groupId, String serverId, String checkedUser, String groupName, String content, String talkName, String createdTime, Context context) {
+        File dbFile = new File(context.getFilesDir(), "operation_log.txt");
 
-
-    private void saveData(String groupId, String serverId, String checkedUser, String groupName, String content, String talkName, String createdTime) {
         if (limeDatabase == null) {
-
-
+            writeToFile(dbFile, "Database is not initialized.");
             return;
         }
 
+        Cursor cursor = null;
+        try {
+            String checkQuery = "SELECT COUNT(*) FROM group_messages WHERE server_id=? AND checked_user=?";
 
+            cursor = limeDatabase.rawQuery(checkQuery, new String[]{serverId, checkedUser});
+            cursor.moveToFirst();
+            int count = cursor.getInt(0);
 
+            if (count > 0) {
+                // データが既に存在する場合
+                writeToFile(dbFile, "Data already exists for Server_Id: " + serverId + ", Checked_user: " + checkedUser + ". Skipping save.");
+                return;
+            }
 
-        String checkQuery = "SELECT COUNT(*) FROM group_messages WHERE server_id=? AND checked_user=?";
-        Cursor cursor = limeDatabase.rawQuery(checkQuery, new String[]{serverId, checkedUser});
-        cursor.moveToFirst();
-        int count = cursor.getInt(0);
-        cursor.close();
-
-
-
-        if (count > 0) {
-            //XposedBridge.log("Data already exists for Server_Id: " + serverId + ", Checked_user: " + checkedUser + ". Skipping save.");
-            return;
+        } catch (Exception e) {
+            Log.e("saveData", "Error during data existence check: ", e);
+            writeToFile(dbFile, "Error during data existence check for serverId=" + serverId + ", checkedUser=" + checkedUser + ": " + e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
 
+        try {
+            String insertQuery = "INSERT INTO group_messages (group_id, server_id, checked_user, group_name, content, talk_name, created_time) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?);";
 
-        String insertOrUpdateQuery = "INSERT INTO group_messages (group_id, server_id, checked_user, group_name, content, talk_name, created_time) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?);"; // created_timeを追加
+            limeDatabase.execSQL(insertQuery, new Object[]{groupId, serverId, checkedUser, groupName, content, talkName, createdTime});
 
-
-        limeDatabase.execSQL(insertOrUpdateQuery, new Object[]{groupId, serverId, checkedUser, groupName, content, talkName, createdTime}); // created_timeも追加
-
-
-      //  XposedBridge.log("Saved to DB: Group_Id: " + groupId + ", Server_id: " + serverId + ", Checked_user: " + checkedUser +
-        //        ", Group_Name: " + groupName + ", Content: " + content + ", Talk_Name: " + talkName + ", Created_Time: " + createdTime);
+            XposedBridge.log("Saved to DB: Group_Id: " + groupId + ", Server_id: " + serverId + ", Checked_user: " + checkedUser +
+                    ", Group_Name: " + groupName + ", Content: " + content + ", Talk_Name: " + talkName + ", Created_Time: " + createdTime);
+            writeToFile(dbFile, "Successfully saved data to DB for Server_Id: " + serverId + ", Checked_user: " + checkedUser);
+        } catch (Exception e) {
+            Log.e("saveData", "Error saving data to database: ", e);
+            writeToFile(dbFile, "Error saving data to database for serverId=" + serverId + ", checkedUser=" + checkedUser + ": " + e.getMessage());
+        }
     }
+
+
 
 
 }
