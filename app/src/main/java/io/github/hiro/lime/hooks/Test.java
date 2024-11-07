@@ -2,6 +2,7 @@ package io.github.hiro.lime.hooks;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,10 +30,41 @@ public class Test implements IHook {
 
         XposedBridge.log("Hooking package: " + packageName);
       //  hookOnViewAdded(loadPackageParam.classLoader);
-        //  hookAllClasses(loadPackageParam.classLoader, loadPackageParam);
+        hookAllClassesInPackage(loadPackageParam.classLoader, loadPackageParam);
        // hookFragmentOnCreateView(loadPackageParam.classLoader);
         //hookChatHistoryActivity(loadPackageParam.classLoader); // ChatHistoryActivityのフック
         //hookLongClickListeners(loadPackageParam.classLoader); // 長押しリスナーのフック
+    }
+
+
+    private void hookAllClassesInPackage(ClassLoader classLoader, XC_LoadPackage.LoadPackageParam loadPackageParam) {
+        try {
+            String apkPath = loadPackageParam.appInfo.sourceDir;
+            if (apkPath == null) {
+                XposedBridge.log("Could not get APK path.");
+                return;
+            }
+
+            DexFile dexFile = new DexFile(new File(apkPath));
+            Enumeration<String> classNames = dexFile.entries();
+            while (classNames.hasMoreElements()) {
+                String className = classNames.nextElement();
+
+                // 指定されたパッケージで始まるクラスのみをフック
+              //  if (className.startsWith("com.linecorp.line") || className.startsWith("jp.naver.line.android")) {
+                    try {
+                        Class<?> clazz = Class.forName(className, false, classLoader);
+                        hookAllMethods(clazz);
+                    } catch (ClassNotFoundException e) {
+                        XposedBridge.log("Class not found: " + className);
+                    } catch (Throwable e) {
+                        XposedBridge.log("Error loading class " + className + ": " + e.getMessage());
+                    }
+              //  }
+            }
+        } catch (Throwable e) {
+            XposedBridge.log("Error while hooking classes: " + e.getMessage());
+        }
     }
 
     private void hookAllClasses(ClassLoader classLoader, XC_LoadPackage.LoadPackageParam loadPackageParam) {
@@ -60,6 +92,8 @@ public class Test implements IHook {
             XposedBridge.log("Error while hooking classes: " + e.getMessage());
         }
     }
+
+
     private void hookFragmentOnCreateView(ClassLoader classLoader) {
         try {
             Class<?> fragmentClass = Class.forName("androidx.fragment.app.Fragment", false, classLoader);
@@ -212,119 +246,160 @@ public class Test implements IHook {
 
 
 
-
-    // jp.naver.line.android.activity.chathistory.ChatHistoryActivityをフックするメソッドを追加
-    private void hookChatHistoryActivity(ClassLoader classLoader) {
-        try {
-            Class<?> chatHistoryActivityClass = Class.forName("jp.naver.line.android.activity.chathistory.ChatHistoryActivity", false, classLoader);
-            Method onCreateMethod = chatHistoryActivityClass.getDeclaredMethod("onCreate", Bundle.class);
-            XposedBridge.hookMethod(onCreateMethod, new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    XposedBridge.log("ChatHistoryActivity onCreate called");
-                    // 必要に応じて追加の処理を行う
-                }
-            });
-        } catch (ClassNotFoundException e) {
-            XposedBridge.log("Class not found: jp.naver.line.android.activity.chathistory.ChatHistoryActivity");
-        } catch (NoSuchMethodException e) {
-            XposedBridge.log("Method not found: onCreate in ChatHistoryActivity");
-        } catch (Throwable e) {
-            XposedBridge.log("Error hooking onCreate in ChatHistoryActivity: " + e.getMessage());
-        }
-    }
-
-    // 長押しリスナーをフックするメソッドを追加
-    private void hookLongClickListeners(ClassLoader classLoader) {
-        try {
-            // 長押しリスナーを持つビューのクラスを取得
-            Class<?> viewClass = Class.forName("android.view.View", false, classLoader);
-            Method setOnLongClickListenerMethod = viewClass.getDeclaredMethod("setOnLongClickListener", View.OnLongClickListener.class);
-            XposedBridge.hookMethod(setOnLongClickListenerMethod, new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    View.OnLongClickListener listener = (View.OnLongClickListener) param.args[0];
-                    XposedBridge.log("Setting OnLongClickListener: " + listener.getClass().getName());
-                }
-
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    // 実際の長押しイベント処理のための追加処理が必要な場合
-                    XposedBridge.log("OnLongClickListener set on view.");
-                }
-            });
-        } catch (ClassNotFoundException e) {
-            XposedBridge.log("Class not found: android.view.View");
-        } catch (NoSuchMethodException e) {
-            XposedBridge.log("Method not found: setOnLongClickListener in View");
-        } catch (Throwable e) {
-            XposedBridge.log("Error hooking setOnLongClickListener: " + e.getMessage());
-        }
-    }
-
-    private int getIdByName(Context context, String resourceName) {
+   private int getIdByName(Context context, String resourceName) {
         return context.getResources().getIdentifier(resourceName, "id", context.getPackageName());
     }
 
     private void hookAllMethods(Class<?> clazz) {
+        // クラス内のすべてのメソッドを取得
         Method[] methods = clazz.getDeclaredMethods();
+
         for (Method method : methods) {
+            // 抽象メソッドをスキップ
             if (java.lang.reflect.Modifier.isAbstract(method.getModifiers())) {
-                XposedBridge.log("Skipping abstract method: " + method.getName() + " in class: " + clazz.getName());
                 continue;
             }
 
-            if (!isViewRelatedMethod(method)) {
+            // 対象メソッドが特定のビュー関連メソッドであるか確認
+            if (!"invokeSuspend".equals(method.getName()) &&
+                    !"setOnLongClickListener".equals(method.getName()) &&
+                    !"setOnTouchListener".equals(method.getName()) &&
+                    !"setVisibility".equals(method.getName()) &&
+                    !"setAlpha".equals(method.getName()) &&
+                    !"setEnabled".equals(method.getName()) &&
+                    !"setFocusable".equals(method.getName()) &&
+                    !"setOnClickListener".equals(method.getName()) &&
+                    !"setBackgroundColor".equals(method.getName()) &&
+                    !"setPadding".equals(method.getName()) &&
+                    !"setLayoutParams".equals(method.getName()) &&
+                    !"requestLayout".equals(method.getName()) &&
+                    !"invalidate".equals(method.getName()) &&
+                    !"setText".equals(method.getName()) &&  // 新しく追加されたメソッド
+                    !"setTextColor".equals(method.getName()) &&  // 新しく追加されたメソッド
+                    !"setHint".equals(method.getName()) &&  // 新しく追加されたメソッド
+                    !"setHintTextColor".equals(method.getName()) &&  // 新しく追加されたメソッド
+                    !"onStart".equals(method.getName()) &&
+                    !"setCompoundDrawables".equals(method.getName()) &&
+                    !"getActivity".equals(method.getName()) &&  // PendingIntent method
+                    !"getBroadcast".equals(method.getName()) && // PendingIntent method
+                    !"getService".equals(method.getName())) {   // PendingIntent method
                 continue;
             }
+
+            method.setAccessible(true); // アクセス可能に設定
 
             try {
+                // メソッドをフックする
                 XposedBridge.hookMethod(method, new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        String methodName = method.getName();
-                        String className = clazz.getName();
+                        StringBuilder argsString = new StringBuilder("Args: ");
 
-                        Object[] args = param.args;
-                        StringBuilder argsString = new StringBuilder();
-                        for (Object arg : args) {
-                            argsString.append(arg).append(", ");
+                        // 引数が複数の場合、すべてを追加
+                        for (int i = 0; i < param.args.length; i++) {
+                            Object arg = param.args[i];
+                            argsString.append("Arg[").append(i).append("]: ")
+                                    .append(arg != null ? arg.toString() : "null")
+                                    .append(", ");
                         }
-                        XposedBridge.log("Before calling: " + className + "." + methodName + " with args: " + argsString.toString());
+
+// メソッドに応じたログ出力
+                        if ("invokeSuspend".equals(method.getName())) {
+                            XposedBridge.log("Before calling invokeSuspend in class: " + clazz.getName() + " with args: " + argsString);
+                        } else if ("setVisibility".equals(method.getName())) {
+                            XposedBridge.log("Before calling setVisibility in class: " + clazz.getName() + " with args: " + argsString);
+                        } else if ("setAlpha".equals(method.getName())) {
+                            XposedBridge.log("Before calling setAlpha in class: " + clazz.getName() + " with args: " + argsString);
+                        } else if ("setEnabled".equals(method.getName())) {
+                            XposedBridge.log("Before calling setEnabled in class: " + clazz.getName() + " with args: " + argsString);
+                        } else if ("setFocusable".equals(method.getName())) {
+                            XposedBridge.log("Before calling setFocusable in class: " + clazz.getName() + " with args: " + argsString);
+                        } else if ("setOnClickListener".equals(method.getName())) {
+                            XposedBridge.log("Before calling setOnClickListener in class: " + clazz.getName() + " with args: " + argsString);
+                        } else if ("setBackgroundColor".equals(method.getName())) {
+                            XposedBridge.log("Before calling setBackgroundColor in class: " + clazz.getName() + " with args: " + argsString);
+                        } else if ("setPadding".equals(method.getName())) {
+                            XposedBridge.log("Before calling setPadding in class: " + clazz.getName() + " with args: " + argsString);
+                        } else if ("setLayoutParams".equals(method.getName())) {
+                            XposedBridge.log("Before calling setLayoutParams in class: " + clazz.getName() + " with args: " + argsString);
+                        } else if ("requestLayout".equals(method.getName())) {
+                            XposedBridge.log("Before calling requestLayout in class: " + clazz.getName() + " with args: " + argsString);
+                        } else if ("invalidate".equals(method.getName())) {
+                            XposedBridge.log("Before calling invalidate in class: " + clazz.getName() + " with args: " + argsString);
+                        } else if ("setText".equals(method.getName())) {
+                            XposedBridge.log("Before calling setText in class: " + clazz.getName() + " with args: " + argsString);
+                        } else if ("setTextColor".equals(method.getName())) {
+                            XposedBridge.log("Before calling setTextColor in class: " + clazz.getName() + " with args: " + argsString);
+                        } else if ("setHint".equals(method.getName())) {
+                            XposedBridge.log("Before calling setHint in class: " + clazz.getName() + " with args: " + argsString);
+                        } else if ("setHintTextColor".equals(method.getName())) {
+                            XposedBridge.log("Before calling setHintTextColor in class: " + clazz.getName() + " with args: " + argsString);
+                        } else if ("setCompoundDrawables".equals(method.getName())) {
+                            XposedBridge.log("Before calling setCompoundDrawables in class: " + clazz.getName() + " with args: " + argsString);
+                        } else if ("onStart".equals(method.getName())) {
+                            XposedBridge.log("Before calling onStart in class: " + clazz.getName() + " with args: " + argsString);
+                        } else if ("getActivity".equals(method.getName())) {
+                            XposedBridge.log("Before calling getActivity in class: " + clazz.getName() + " with args: " + argsString);
+                        } else if ("getBroadcast".equals(method.getName())) {
+                            XposedBridge.log("Before calling getBroadcast in class: " + clazz.getName() + " with args: " + argsString);
+                        } else if ("getService".equals(method.getName())) {
+                            XposedBridge.log("Before calling getService in class: " + clazz.getName() + " with args: " + argsString);
+                        }
+
                     }
 
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        String methodName = method.getName();
-                        String className = clazz.getName();
-                        XposedBridge.log("Called: " + className + "." + methodName);
-
-                        // View作成メソッドの出力
-                        if (isViewCreationMethod(method)) {
-                            XposedBridge.log("View creation method detected: " + className + "." + methodName);
+                        Object result = param.getResult();
+                        if ("invokeSuspend".equals(method.getName())) {
+                            XposedBridge.log("Before calling invokeSuspend in class: " + clazz.getName() + (result != null ? result.toString() : "null"));
+                        } else if ("setVisibility".equals(method.getName())) {
+                            XposedBridge.log("After calling setVisibility in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
+                        } else if ("setAlpha".equals(method.getName())) {
+                            XposedBridge.log("After calling setAlpha in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
+                        } else if ("setEnabled".equals(method.getName())) {
+                            XposedBridge.log("After calling setEnabled in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
+                        } else if ("setFocusable".equals(method.getName())) {
+                            XposedBridge.log("After calling setFocusable in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
+                        } else if ("setOnClickListener".equals(method.getName())) {
+                            XposedBridge.log("After calling setOnClickListener in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
+                        } else if ("setBackgroundColor".equals(method.getName())) {
+                            XposedBridge.log("After calling setBackgroundColor in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
+                        } else if ("setPadding".equals(method.getName())) {
+                            XposedBridge.log("After calling setPadding in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
+                        } else if ("setLayoutParams".equals(method.getName())) {
+                            XposedBridge.log("After calling setLayoutParams in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
+                        } else if ("requestLayout".equals(method.getName())) {
+                            XposedBridge.log("After calling requestLayout in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
+                        } else if ("invalidate".equals(method.getName())) {
+                            XposedBridge.log("After calling invalidate in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
+                        } else if ("setText".equals(method.getName())) {
+                            XposedBridge.log("After calling setText in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
+                        } else if ("setTextColor".equals(method.getName())) {
+                            XposedBridge.log("After calling setTextColor in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
+                        } else if ("setHint".equals(method.getName())) {
+                            XposedBridge.log("After calling setHint in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
+                        } else if ("setHintTextColor".equals(method.getName())) {
+                            XposedBridge.log("After calling setHintTextColor in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
+                        } else if ("setCompoundDrawables".equals(method.getName())) {
+                            XposedBridge.log("After calling setCompoundDrawables in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
+                        } else if ("onStart".equals(method.getName())) {
+                            XposedBridge.log("Before calling onStart in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
+                        } else if ("getActivity".equals(method.getName())) {
+                            XposedBridge.log("After calling getActivity in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
+                        } else if ("getBroadcast".equals(method.getName())) {
+                            XposedBridge.log("After calling getBroadcast in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
+                        } else if ("getService".equals(method.getName())) {
+                            XposedBridge.log("After calling getService in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
                         }
                     }
                 });
+            } catch (IllegalArgumentException e) {
+                XposedBridge.log("Error hooking method " + method.getName() + " in class " + clazz.getName() + " : " + e.getMessage());
             } catch (Throwable e) {
-                XposedBridge.log("Error hooking method " + method.getName() + " in class " + clazz.getName() + ": " + e.getMessage());
+                XposedBridge.log("Unexpected error hooking method " + method.getName() + " in class " + clazz.getName() + " : " + Log.getStackTraceString(e));
             }
         }
-    }
-
-    private boolean isViewRelatedMethod(Method method) {
-        String methodName = method.getName().toLowerCase();
-
-        String[] viewRelatedTerms = {
-                "view", "onclick", "setvisibility", "setenabled", "settext", "getview", "addview", "removeview"
-        };
-
-        for (String term : viewRelatedTerms) {
-            if (methodName.contains(term)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private boolean isViewCreationMethod(Method method) {

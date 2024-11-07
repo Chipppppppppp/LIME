@@ -10,10 +10,10 @@ android {
         minSdk 28
         targetSdk 34
         versionCode 15
-        versionName "1d1a"
+        versionName "1.13.0_Beta"
         multiDexEnabled false
         proguardFiles += 'proguard-rules.pro'
-        buildConfigField 'String', 'HOOK_TARGET_VERSION', '"141700420"'
+        buildConfigField 'String', 'HOOK_TARGET_VERSION', '"141810325"'
     }
 
     signingConfigs {

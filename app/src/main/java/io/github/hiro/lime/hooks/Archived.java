@@ -120,7 +120,7 @@ public class Archived implements IHook {
     private void hookSAMethod(XC_LoadPackage.LoadPackageParam loadPackageParam, SQLiteDatabase db, Context context) {
 
         //ChatListViewModel
-        Class<?> targetClass = XposedHelpers.findClass("eB.Q", loadPackageParam.classLoader);
+        Class<?> targetClass = XposedHelpers.findClass("iB.P", loadPackageParam.classLoader);
 
         XposedBridge.hookAllMethods(targetClass, "invokeSuspend", new XC_MethodHook() {
             @Override

@@ -7,6 +7,7 @@ import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -160,8 +161,12 @@ public class ReadChecker implements IHook {
 
     private void addButton(Activity activity) {
         Button button = new Button(activity);
-        button.setText("既読データ表示");
+        button.setText("R");
 
+
+        button.setBackgroundColor(Color.BLACK);
+
+        button.setTextColor(Color.WHITE);
 
         FrameLayout.LayoutParams frameParams = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT,
@@ -170,7 +175,6 @@ public class ReadChecker implements IHook {
         frameParams.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
         frameParams.topMargin = 150;
         button.setLayoutParams(frameParams);
-
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,10 +185,10 @@ public class ReadChecker implements IHook {
             }
         });
 
-
         ViewGroup layout = activity.findViewById(android.R.id.content);
         layout.addView(button);
     }
+
 
     private void showDataForGroupId(Activity activity, String groupId) {
         if (limeDatabase == null) {
@@ -244,7 +248,10 @@ public class ReadChecker implements IHook {
         builder.setTitle("READ Data");
         builder.setView(scrollView);
         builder.setPositiveButton("OK", null);
-        builder.show();
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
     }
 
     private static class DataItem {
@@ -260,6 +267,7 @@ public class ReadChecker implements IHook {
             this.talkNames = new HashSet<>();
         }
     }
+
 
 
     private List<String> getTalkNamesForServerId(String serverId) {
@@ -284,13 +292,16 @@ public class ReadChecker implements IHook {
     private void Catcha(XC_LoadPackage.LoadPackageParam loadPackageParam, SQLiteDatabase db3, SQLiteDatabase db4, Context appContext) {
         try {
             XposedBridge.hookAllMethods(
-                    loadPackageParam.classLoader.loadClass(Constants.RESPONSE_HOOK.className),
-                    Constants.RESPONSE_HOOK.methodName,
+                    loadPackageParam.classLoader.loadClass(Constants.NOTIFICATION_READ_HOOK.className),
+                    Constants.NOTIFICATION_READ_HOOK.methodName,
                     new XC_MethodHook() {
+
+
+
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            String paramValue = param.args[1].toString();
-                            // XposedBridge.log(paramValue);
+                            String paramValue = param.args[0].toString();
+                            //XposedBridge.log(paramValue);
 
 
                             if (paramValue != null && paramValue.contains("type:NOTIFIED_READ_MESSAGE")) {
@@ -311,7 +322,7 @@ public class ReadChecker implements IHook {
         File dbFile = new File(context.getFilesDir(), "data_log.txt");
 
         try {
-            String serverId = extractServerId(paramValue);
+            String serverId = extractServerId(paramValue,context);
             String checkedUser = extractCheckedUser(paramValue);
 
             if (serverId == null || checkedUser == null) {
@@ -333,12 +344,12 @@ public class ReadChecker implements IHook {
                 groupName = queryDatabase(db3, "SELECT name FROM groups WHERE id=?", groupId);
             } catch (Exception e) {
                 Log.e("fetchDataAndSave", "Error querying groupName: ", e);
-                writeToFile(dbFile, "Error querying groupName for groupId=" + groupId);
+            //    writeToFile(dbFile, "Error querying groupName for groupId=" + groupId);
                 return; // or handle accordingly
             }
 
             if (groupName == null) {
-                writeToFile(dbFile, "Missing groupName for groupId=" + groupId);
+              //  writeToFile(dbFile, "Missing groupName for groupId=" + groupId);
                 return;
             }
 
@@ -347,7 +358,7 @@ public class ReadChecker implements IHook {
                 content = queryDatabase(db3, "SELECT content FROM chat_history WHERE server_id=?", serverId);
             } catch (Exception e) {
                 Log.e("fetchDataAndSave", "Error querying content: ", e);
-                writeToFile(dbFile, "Error querying content for serverId=" + serverId);
+               // writeToFile(dbFile, "Error querying content for serverId=" + serverId);
             }
 
             String talkName = null;
@@ -355,25 +366,25 @@ public class ReadChecker implements IHook {
                 talkName = queryDatabase(db4, "SELECT profile_name FROM contacts WHERE mid=?", checkedUser);
             } catch (Exception e) {
                 Log.e("fetchDataAndSave", "Error querying talkName: ", e);
-                writeToFile(dbFile, "Error querying talkName for checkedUser=" + checkedUser);
+               // writeToFile(dbFile, "Error querying talkName for checkedUser=" + checkedUser);
             }
 
             String timeEpochStr = null;
             try {
                 timeEpochStr = queryDatabase(db3, "SELECT created_time FROM chat_history WHERE server_id=?", serverId);
             } catch (Exception e) {
-                writeToFile(dbFile, "Error querying created time for serverId=" + serverId);
+            //writeToFile(dbFile, "Error querying created time for serverId=" + serverId);
             }
 
             String timeFormatted = null;
             try {
                 timeFormatted = formatMessageTime(timeEpochStr);
             } catch (Exception e) {
-                writeToFile(dbFile, "Error formatting time for timeEpochStr=" + timeEpochStr);
+                //writeToFile(dbFile, "Error formatting time for timeEpochStr=" + timeEpochStr);
             }
             saveData(groupId, serverId, checkedUser, groupName, content, talkName, timeFormatted, context);
-            writeToFile(dbFile, "Fetched Data - groupId: " + groupId + ", serverId: " + serverId + ", checkedUser: " + checkedUser +
-                    ", groupName: " + groupName + ", content: " + content + ", talkName: " + talkName + ", time: " + timeFormatted + "\n");
+          //  writeToFile(dbFile, "Fetched Data - groupId: " + groupId + ", serverId: " + serverId + ", checkedUser: " + checkedUser +
+                //    ", groupName: " + groupName + ", content: " + content + ", talkName: " + talkName + ", time: " + timeFormatted + "\n");
         } catch (Exception e) {
             Log.e("fetchDataAndSave", "Unexpected error: ", e);
         }
@@ -394,19 +405,41 @@ public class ReadChecker implements IHook {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         return sdf.format(new Date(timeEpoch));
     }
-
-
-    private String extractServerId(String paramValue) {
-        Pattern pattern = Pattern.compile("param3:([0-9]+)");
-        Matcher matcher = pattern.matcher(paramValue);
-        return matcher.find() ? matcher.group(1) : null;
-    }
-
-
     private String extractCheckedUser(String paramValue) {
         Pattern pattern = Pattern.compile("param2:([a-zA-Z0-9]+)");
         Matcher matcher = pattern.matcher(paramValue);
         return matcher.find() ? matcher.group(1) : null;
+    }
+
+        private String extractServerId(String paramValue, Context context) {
+        Pattern pattern = Pattern.compile("param3:([0-9]+)");
+        Matcher matcher = pattern.matcher(paramValue);
+
+        if (matcher.find()) {
+            return matcher.group(1);
+        } else {
+            // serverIdが取得できなかった場合、paramValueをファイルに保存
+            saveParamToFile(paramValue, context);
+            return null;
+        }
+    }
+
+    private void saveParamToFile(String paramValue, Context context) {
+        try {
+            File logFile = new File(context.getFilesDir(), "missing_param_values.txt");
+
+            // Check if the file exists; if not, create it
+            if (!logFile.exists()) {
+                logFile.createNewFile();
+            }
+
+            // Open file in append mode
+            FileWriter writer = new FileWriter(logFile, true);
+            writer.append("Missing serverId in paramValue: ").append(paramValue).append("\n");
+            writer.close();
+        } catch (IOException e) {
+            XposedBridge.log("Error writing paramValue to file: " + e.getMessage());
+        }
     }
 
 
@@ -463,14 +496,13 @@ public class ReadChecker implements IHook {
             int count = cursor.getInt(0);
 
             if (count > 0) {
-                // データが既に存在する場合
-                writeToFile(dbFile, "Data already exists for Server_Id: " + serverId + ", Checked_user: " + checkedUser + ". Skipping save.");
+                //writeToFile(dbFile, "Data already exists for Server_Id: " + serverId + ", Checked_user: " + checkedUser + ". Skipping save.");
                 return;
             }
 
         } catch (Exception e) {
             Log.e("saveData", "Error during data existence check: ", e);
-            writeToFile(dbFile, "Error during data existence check for serverId=" + serverId + ", checkedUser=" + checkedUser + ": " + e.getMessage());
+          //  writeToFile(dbFile, "Error during data existence check for serverId=" + serverId + ", checkedUser=" + checkedUser + ": " + e.getMessage());
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -483,8 +515,8 @@ public class ReadChecker implements IHook {
 
             limeDatabase.execSQL(insertQuery, new Object[]{groupId, serverId, checkedUser, groupName, content, talkName, createdTime});
 
-            XposedBridge.log("Saved to DB: Group_Id: " + groupId + ", Server_id: " + serverId + ", Checked_user: " + checkedUser +
-                    ", Group_Name: " + groupName + ", Content: " + content + ", Talk_Name: " + talkName + ", Created_Time: " + createdTime);
+        //    XposedBridge.log("Saved to DB: Group_Id: " + groupId + ", Server_id: " + serverId + ", Checked_user: " + checkedUser +
+            //        ", Group_Name: " + groupName + ", Content: " + content + ", Talk_Name: " + talkName + ", Created_Time: " + createdTime);
             writeToFile(dbFile, "Successfully saved data to DB for Server_Id: " + serverId + ", Checked_user: " + checkedUser);
         } catch (Exception e) {
             Log.e("saveData", "Error saving data to database: ", e);
