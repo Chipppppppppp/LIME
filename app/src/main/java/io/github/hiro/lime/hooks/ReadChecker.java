@@ -305,11 +305,13 @@ public class ReadChecker implements IHook {
 
 
                             if (paramValue != null && paramValue.contains("type:NOTIFIED_READ_MESSAGE")) {
-                                fetchDataAndSave(db3, db4, paramValue, appContext); // db3とdb4を渡す
+                                List<String> messages = extractMessages(paramValue); // 複数のメッセージを抽出
 
-                            } else {
-                                Log.e("ReadChecker", "paramValue is null or does not contain 'type:NOTIFIED_READ_MESSAGE'");
+                                for (String message : messages) {
+                                    fetchDataAndSave(db3, db4, message, appContext); // 各メッセージに対して処理を行う
+                                }
                             }
+
                         }
                     }
             );
@@ -317,7 +319,17 @@ public class ReadChecker implements IHook {
             throw new RuntimeException(e);
         }
     }
+    private List<String> extractMessages(String paramValue) {
+        List<String> messages = new ArrayList<>();
+        Pattern pattern = Pattern.compile("type:NOTIFIED_READ_MESSAGE.*?(?=type:|$)");
+        Matcher matcher = pattern.matcher(paramValue);
 
+        while (matcher.find()) {
+            messages.add(matcher.group().trim());
+        }
+
+        return messages;
+    }
     private void fetchDataAndSave(SQLiteDatabase db3, SQLiteDatabase db4, String paramValue, Context context) {
         File dbFile = new File(context.getFilesDir(), "data_log.txt");
 
