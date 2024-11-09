@@ -509,7 +509,19 @@ public class ReadChecker implements IHook {
     }
 
     private void initializeLimeDatabase(Context context) {
-        File dbFile = new File(context.getFilesDir(), "lime_data.db");
+        // 旧データベースファイルの確認と削除
+        File oldDbFile = new File(context.getFilesDir(), "lime_data.db");
+        if (oldDbFile.exists()) {
+            boolean deleted = oldDbFile.delete();
+            if (deleted) {
+                XposedBridge.log("Old database file lime_data.db deleted.");
+            } else {
+                XposedBridge.log("Failed to delete old database file lime_data.db.");
+            }
+        }
+
+        // 新しいデータベースファイルの初期化
+        File dbFile = new File(context.getFilesDir(), "lime_checked_data.db");
         limeDatabase = SQLiteDatabase.openOrCreateDatabase(dbFile, null);
 
         String createGroupTable = "CREATE TABLE IF NOT EXISTS group_messages (" +
@@ -524,8 +536,9 @@ public class ReadChecker implements IHook {
                 ");";
 
         limeDatabase.execSQL(createGroupTable);
-       // XposedBridge.log("Database initialized and group_messages table created.");
+        // XposedBridge.log("Database initialized and group_messages table created.");
     }
+
     private void saveData(String groupId, String serverId, String checkedUser, String groupName, String content, String user_name, String createdTime, Context context) {
         File dbFile = new File(context.getFilesDir(), "operation_log.txt");
 
@@ -544,16 +557,18 @@ public class ReadChecker implements IHook {
                 String existingUserName = cursor.getString(1);
 
                 if (count > 0) {
-                    // 既存のレコードがある場合、`user_name`カラムを更新
-                    String updatedUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n")  + user_name;
-                    ContentValues values = new ContentValues();
-                    values.put("user_name", updatedUserName);
+                    // `user_name`にすでに同じ名前がないかチェックし、ない場合のみ追加する
+                    if (!existingUserName.contains(user_name)) {
+                        String updatedUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n") + "-" + user_name;
+                        ContentValues values = new ContentValues();
+                        values.put("user_name", updatedUserName);
 
-                    limeDatabase.update("group_messages", values, "server_id=? AND checked_user=?", new String[]{serverId, checkedUser});
-                   //// XposedBridge.log("User name updated for server_id: " + serverId + ", checked_user: " + checkedUser);
+                        limeDatabase.update("group_messages", values, "server_id=? AND checked_user=?", new String[]{serverId, checkedUser});
+                        // XposedBridge.log("User name updated for server_id: " + serverId + ", checked_user: " + checkedUser);
+                    }
                 } else {
                     // 新しいレコードを挿入
-                    insertNewRecord(groupId, serverId, checkedUser, groupName, content, user_name, createdTime);
+                    insertNewRecord(groupId, serverId, checkedUser, groupName, content, "-" + user_name, createdTime);
                 }
 
                 // 同じ groupId 内の他のレコードの user_name カラムを更新
@@ -579,12 +594,15 @@ public class ReadChecker implements IHook {
                 String serverId = cursor.getString(cursor.getColumnIndex("server_id"));
                 String existingUserName = cursor.getString(cursor.getColumnIndex("user_name"));
 
-                String updatedUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n") + "-" + user_name;
-                ContentValues values = new ContentValues();
-                values.put("user_name", updatedUserName);
+                // `user_name`にすでに同じ名前がないかチェック
+                if (!existingUserName.contains(user_name)) {
+                    String updatedUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n") + "-" + user_name;
+                    ContentValues values = new ContentValues();
+                    values.put("user_name", updatedUserName);
 
-                limeDatabase.update("group_messages", values, "group_id=? AND server_id=?", new String[]{groupId, serverId});
-               // XposedBridge.log("Updated user_name for other records in group_id: " + groupId + ", server_id: " + serverId);
+                    limeDatabase.update("group_messages", values, "group_id=? AND server_id=?", new String[]{groupId, serverId});
+                    // XposedBridge.log("Updated user_name for other records in group_id: " + groupId + ", server_id: " + serverId);
+                }
             }
         } catch (Exception e) {
             Log.e("updateOtherRecordsUserNames", "Error updating other records' user names:", e);
@@ -601,13 +619,12 @@ public class ReadChecker implements IHook {
                     "VALUES(?, ?, ?, ?, ?, ?, ?);";
             limeDatabase.execSQL(insertQuery, new Object[]{groupId, serverId, checkedUser, groupName, content, user_name, createdTime});
 
-           // XposedBridge.log("Saved to DB: Group_Id: " + groupId + ", Server_id: " + serverId + ", Checked_user: " + checkedUser +
-//", Group_Name: " + groupName + ", Content: " + content + ", user_name: " + user_name + ", Created_Time: " + createdTime);
+            // XposedBridge.log("Saved to DB: Group_Id: " + groupId + ", Server_id: " + serverId + ", Checked_user: " + checkedUser +
+            // ", Group_Name: " + groupName + ", Content: " + content + ", user_name: " + user_name + ", Created_Time: " + createdTime);
         } catch (Exception e) {
             Log.e("insertNewRecord", "Error saving data to database:", e);
         }
     }
-
 
 }
 
