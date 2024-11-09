@@ -6,3 +6,6 @@ contact_links:
   - name: Discussions
     url: https://github.com/Chipppppppppp/LIME/discussions/new?category=q-a
     about: 質問等はこちらへ
+  - name: How to fix build error
+    url: https://github.com/orgs/LSPosed/discussions/2444#discussioncomment-7092338
+    about: ビルドに失敗した場合

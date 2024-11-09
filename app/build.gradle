@@ -59,12 +59,18 @@ android {
     aaptOptions {
         additionalParameters '--allow-reserved-package-id', '--package-id', '0x64'
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+    }
 }
 
 dependencies {
+    compileOnly 'de.robv.android.xposed:api:82'
+    compileOnly 'io.github.libxposed:api:100'
     //noinspection GradleCompatible
     implementation 'com.android.support:customtabs:23.0.0'
-    compileOnly 'de.robv.android.xposed:api:82'
     implementation 'org.mozilla:rhino:1.7.15'
 }
 

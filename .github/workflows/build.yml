@@ -2,12 +2,9 @@ name: Build
 
 on:
   push:
-    paths:
-      - '.github/workflows/build.yml'
-      - 'app/**'
-      - 'gradle/**'
-      - '*.gradle'
-      - '*.properties'
+    paths-ignore:
+      - '*.md'
+      - '*.txt'
   pull_request:
   workflow_dispatch:
     inputs:
@@ -55,7 +52,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Get previous version name
-        uses: oprypin/find-latest-tag@v1.1.2
+        uses: oprypin/find-latest-tag@v1
         if: github.event.inputs.release == 'true'
         id: previous
         with:
@@ -81,7 +78,29 @@ jobs:
             exit 1
           fi
 
-      - name: Build with Gradle
+      - name: Cache maven
+        id: maven
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository/
+          key: mvn-${{ hashFiles('.github/workflows/build.yml') }}
+          restore-keys: mvn-
+
+      - name: Checkout libxposed/api
+        if: steps.maven.outputs.cache-hit != 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: libxposed/api
+          ref: 64e29bd657ef4d2540b34402f5a988778f29e676
+          path: libxposed/api
+          fetch-depth: 0
+
+      - name: Build dependency
+        if: steps.maven.outputs.cache-hit != 'true'
+        working-directory: libxposed/api
+        run: ./gradlew :api:publishApiPublicationToMavenLocal
+
+      - name: Build module
         run: |
           if [ "${{ inputs.release }}" == "true" ]; then
             echo "${{ secrets.STORE_FILE }}" | base64 -d > app/release.jks
@@ -108,7 +127,7 @@ jobs:
           echo "Patching LIME..."
           java -jar lspatch.jar "line-${{ env.line_ver }}.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
 
-      - name: Upload Module APK
+      - name: Upload module
         uses: actions/upload-artifact@v4
         if: github.event.inputs.release != 'true'
         with:
@@ -116,7 +135,7 @@ jobs:
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
 
-      - name: Upload Patched LINE APK
+      - name: Upload patched APK
         uses: actions/upload-artifact@v4
         if: github.event.inputs.lspatch == 'true'
         with:
