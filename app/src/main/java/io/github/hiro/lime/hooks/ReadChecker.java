@@ -4,7 +4,9 @@ package io.github.hiro.lime.hooks;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -38,16 +40,13 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.hiro.lime.LimeOptions;
-
-
+import io.github.hiro.lime.R;
 public class ReadChecker implements IHook {
     private SQLiteDatabase limeDatabase;
     private SQLiteDatabase db3 = null;
     private SQLiteDatabase db4 = null;
     private boolean shouldHookOnCreate = false;
     private String currentGroupId = null;
-
-
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (!limeOptions.ReadChecker.checked) return;
@@ -82,7 +81,7 @@ public class ReadChecker implements IHook {
 
 
                     initializeLimeDatabase(appContext);
-                    Catcha(loadPackageParam, db3, db4, appContext);
+                    catchNotification(loadPackageParam, db3, db4, appContext);
                 }
             }
         });
@@ -124,7 +123,7 @@ public class ReadChecker implements IHook {
 
     private boolean isGroupExists(String groupId) {
         if (limeDatabase == null) {
-            XposedBridge.log("Database is not initialized.");
+           // XposedBridge.log("Database is not initialized.");
             return false;
         }
 
@@ -140,7 +139,7 @@ public class ReadChecker implements IHook {
 
     private boolean isNoGroup(String groupId) {
         if (limeDatabase == null) {
-            XposedBridge.log("Database is not initialized.");
+           // XposedBridge.log("Database is not initialized.");
             return true;
         }
 
@@ -205,14 +204,14 @@ public class ReadChecker implements IHook {
             String content = cursor.getString(1);
             String createdTime = cursor.getString(2);
 
-            List<String> talkNameList = getTalkNamesForServerId(serverId);
+            List<String> user_nameList = getuser_namesForServerId(serverId);
 
             if (dataItemMap.containsKey(serverId)) {
                 DataItem existingItem = dataItemMap.get(serverId);
-                existingItem.talkNames.addAll(talkNameList);
+                existingItem.user_names.addAll(user_nameList);
             } else {
                 DataItem dataItem = new DataItem(serverId, content, createdTime);
-                dataItem.talkNames.addAll(talkNameList);
+                dataItem.user_names.addAll(user_nameList);
                 dataItemMap.put(serverId, dataItem);
             }
         }
@@ -226,10 +225,10 @@ public class ReadChecker implements IHook {
             resultBuilder.append("Content: ").append(item.content != null ? item.content : "Media").append("\n");
             resultBuilder.append("Created Time: ").append(item.createdTime).append("\n");
 
-            if (!item.talkNames.isEmpty()) {
-                resultBuilder.append("既読者 (").append(item.talkNames.size()).append("):\n");
-                for (String talkName : item.talkNames) {
-                    resultBuilder.append("- ").append(talkName).append("\n");
+            if (!item.user_names.isEmpty()) {
+                resultBuilder.append("既読者 (").append(item.user_names.size()).append("):\n");
+                for (String user_name : item.user_names) {
+                    resultBuilder.append("- ").append(user_name).append("\n");
                 }
             } else {
                 resultBuilder.append("No talk names found.\n");
@@ -254,64 +253,72 @@ public class ReadChecker implements IHook {
         scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
     }
 
+
+    private List<String> getuser_namesForServerId(String serverId) {
+        if (limeDatabase == null) {
+            return Collections.emptyList();
+        }
+
+        String query = "SELECT user_name FROM group_messages WHERE server_id=?";
+        Cursor cursor = limeDatabase.rawQuery(query, new String[]{serverId});
+        List<String> user_names = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            String userNameStr = cursor.getString(0);
+            if (userNameStr != null) {
+                // 改行で区切ってユーザー名を取得
+                String[] names = userNameStr.split("\n");
+                Collections.addAll(user_names, names);
+            }
+        }
+        cursor.close();
+        return user_names;
+    }
+
     private static class DataItem {
         String serverId;
         String content;
         String createdTime;
-        Set<String> talkNames;
+        Set<String> user_names;
 
         DataItem(String serverId, String content, String createdTime) {
             this.serverId = serverId;
             this.content = content;
             this.createdTime = createdTime;
-            this.talkNames = new HashSet<>();
+            this.user_names = new HashSet<>();
         }
     }
 
-
-
-    private List<String> getTalkNamesForServerId(String serverId) {
-        List<String> talkNames = new ArrayList<>();
-        if (limeDatabase == null) {
-            return talkNames;
-        }
-        String query = "SELECT DISTINCT talk_name FROM group_messages WHERE server_id=?";
-        Cursor cursor = limeDatabase.rawQuery(query, new String[]{serverId});
-
-        while (cursor.moveToNext()) {
-            String talkName = cursor.getString(0);
-            if (talkName != null) {
-                talkNames.add(talkName);
-            }
-        }
-        cursor.close();
-        return talkNames;
-    }
-
-
-    private void Catcha(XC_LoadPackage.LoadPackageParam loadPackageParam, SQLiteDatabase db3, SQLiteDatabase db4, Context appContext) {
+    private void catchNotification(XC_LoadPackage.LoadPackageParam loadPackageParam, SQLiteDatabase db3, SQLiteDatabase db4, Context appContext) {
         try {
             XposedBridge.hookAllMethods(
                     loadPackageParam.classLoader.loadClass(Constants.NOTIFICATION_READ_HOOK.className),
                     Constants.NOTIFICATION_READ_HOOK.methodName,
                     new XC_MethodHook() {
-
-
-
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             String paramValue = param.args[0].toString();
-                            //XposedBridge.log(paramValue);
-
-
-                            if (paramValue != null && paramValue.contains("type:NOTIFIED_READ_MESSAGE")) {
-                                List<String> messages = extractMessages(paramValue); // 複数のメッセージを抽出
-
-                                for (String message : messages) {
-                                    fetchDataAndSave(db3, db4, message, appContext); // 各メッセージに対して処理を行う
-                                }
+                           // XposedBridge.log(paramValue);
+                            if (appContext == null) {
+                               // XposedBridge.log("appContext is null!");
+                                return;
                             }
 
+                            Context moduleContext;
+                            try {
+                                moduleContext = appContext.createPackageContext(
+                                        "io.github.hiro.lime", Context.CONTEXT_IGNORE_SECURITY);
+                            } catch (PackageManager.NameNotFoundException e) {
+                               // XposedBridge.log("Failed to create package context: " + e.getMessage());
+                                return;
+                            }
+
+                            if (paramValue != null && paramValue.contains("type:NOTIFIED_READ_MESSAGE")) {
+                                List<String> messages = extractMessages(paramValue);
+                                for (String message : messages) {
+                                    fetchDataAndSave(db3, db4, message, appContext, moduleContext);
+                                }
+                            }
                         }
                     }
             );
@@ -319,6 +326,7 @@ public class ReadChecker implements IHook {
             throw new RuntimeException(e);
         }
     }
+
     private List<String> extractMessages(String paramValue) {
         List<String> messages = new ArrayList<>();
         Pattern pattern = Pattern.compile("type:NOTIFIED_READ_MESSAGE.*?(?=type:|$)");
@@ -330,11 +338,12 @@ public class ReadChecker implements IHook {
 
         return messages;
     }
-    private void fetchDataAndSave(SQLiteDatabase db3, SQLiteDatabase db4, String paramValue, Context context) {
+
+    private void fetchDataAndSave(SQLiteDatabase db3, SQLiteDatabase db4, String paramValue, Context context, Context moduleContext) {
         File dbFile = new File(context.getFilesDir(), "data_log.txt");
 
         try {
-            String serverId = extractServerId(paramValue,context);
+            String serverId = extractServerId(paramValue, context);
             String checkedUser = extractCheckedUser(paramValue);
 
             if (serverId == null || checkedUser == null) {
@@ -342,74 +351,81 @@ public class ReadChecker implements IHook {
                 return;
             }
 
-            String groupId = null;
-            try {
-                groupId = queryDatabase(db3, "SELECT chat_id FROM chat_history WHERE server_id=?", serverId);
-            } catch (Exception e) {
-                Log.e("fetchDataAndSave", "Error querying groupId: ", e);
-                writeToFile(dbFile, "Error querying groupId for serverId=" + serverId);
-                return; // or handle accordingly
+            String groupId = queryDatabase(db3, "SELECT chat_id FROM chat_history WHERE server_id=?", serverId);
+            String groupName = queryDatabase(db3, "SELECT name FROM groups WHERE id=?", groupId);
+            String content = queryDatabase(db3, "SELECT content FROM chat_history WHERE server_id=?", serverId);
+            String user_name = queryDatabase(db4, "SELECT profile_name FROM contacts WHERE mid=?", checkedUser);
+            String timeEpochStr = queryDatabase(db3, "SELECT created_time FROM chat_history WHERE server_id=?", serverId);
+            String timeFormatted = formatMessageTime(timeEpochStr);
+
+            String media = queryDatabase(db3, "SELECT attachement_type FROM chat_history WHERE server_id=?", serverId);
+            String mediaDescription = "";
+
+            if (media != null) {
+                switch (media) {
+                    case "7":
+                        mediaDescription = moduleContext.getResources().getString(R.string.sticker);
+                        break;
+                    case "1":
+                        mediaDescription = moduleContext.getResources().getString(R.string.picture);
+                        break;
+                    case "2":
+                        mediaDescription = moduleContext.getResources().getString(R.string.video);
+                        break;
+                    default:
+                        mediaDescription = "";
+                        break;
+                }
             }
 
-            String groupName = null;
-            try {
-                groupName = queryDatabase(db3, "SELECT name FROM groups WHERE id=?", groupId);
-            } catch (Exception e) {
-                Log.e("fetchDataAndSave", "Error querying groupName: ", e);
-            //    writeToFile(dbFile, "Error querying groupName for groupId=" + groupId);
-                return; // or handle accordingly
-            }
+            String finalContent = (content != null && !content.isEmpty()) ? content : (!mediaDescription.isEmpty() ? mediaDescription : "No content:" + serverId);
 
-            if (groupName == null) {
-              //  writeToFile(dbFile, "Missing groupName for groupId=" + groupId);
-                return;
-            }
-
-            String content = null;
-            try {
-                content = queryDatabase(db3, "SELECT content FROM chat_history WHERE server_id=?", serverId);
-            } catch (Exception e) {
-                Log.e("fetchDataAndSave", "Error querying content: ", e);
-               // writeToFile(dbFile, "Error querying content for serverId=" + serverId);
-            }
-
-            String talkName = null;
-            try {
-                talkName = queryDatabase(db4, "SELECT profile_name FROM contacts WHERE mid=?", checkedUser);
-            } catch (Exception e) {
-                Log.e("fetchDataAndSave", "Error querying talkName: ", e);
-               // writeToFile(dbFile, "Error querying talkName for checkedUser=" + checkedUser);
-            }
-
-            String timeEpochStr = null;
-            try {
-                timeEpochStr = queryDatabase(db3, "SELECT created_time FROM chat_history WHERE server_id=?", serverId);
-            } catch (Exception e) {
-            //writeToFile(dbFile, "Error querying created time for serverId=" + serverId);
-            }
-
-            String timeFormatted = null;
-            try {
-                timeFormatted = formatMessageTime(timeEpochStr);
-            } catch (Exception e) {
-                //writeToFile(dbFile, "Error formatting time for timeEpochStr=" + timeEpochStr);
-            }
-            saveData(groupId, serverId, checkedUser, groupName, content, talkName, timeFormatted, context);
-          //  writeToFile(dbFile, "Fetched Data - groupId: " + groupId + ", serverId: " + serverId + ", checkedUser: " + checkedUser +
-                //    ", groupName: " + groupName + ", content: " + content + ", talkName: " + talkName + ", time: " + timeFormatted + "\n");
+            saveData(groupId, serverId, checkedUser, groupName, finalContent, user_name, timeFormatted, context);
+            markPreviousMessagesAsRead(groupId, checkedUser, timeEpochStr, context);
         } catch (Exception e) {
-            Log.e("fetchDataAndSave", "Unexpected error: ", e);
+            Log.e("fetchDataAndSave", "Unexpected error:", e);
+        }
+    }
+
+    private void markPreviousMessagesAsRead(String groupId, String checkedUser, String timeEpochStr, Context context) {
+        initializeLimeDatabase(context);
+
+        try {
+            String query = "SELECT server_id, content, created_time, user_name FROM group_messages " +
+                    "WHERE group_id=? AND created_time<? AND user_name NOT LIKE ?";
+            Cursor cursor = limeDatabase.rawQuery(query, new String[]{groupId, timeEpochStr, "%" + checkedUser + "%"});
+
+            while (cursor.moveToNext()) {
+                String previousServerId = cursor.getString(cursor.getColumnIndex("server_id"));
+                String previousContent = cursor.getString(cursor.getColumnIndex("content"));
+                String previousTimeEpochStr = cursor.getString(cursor.getColumnIndex("created_time"));
+                String previousUserName = cursor.getString(cursor.getColumnIndex("user_name"));
+                String previousTimeFormatted = formatMessageTime(previousTimeEpochStr);
+
+                String updatedUserName = previousUserName + (previousUserName.isEmpty() ? "" : "\n") + checkedUser;
+
+                ContentValues values = new ContentValues();
+                values.put("user_name", updatedUserName);
+
+                limeDatabase.update("group_messages", values, "group_id=? AND server_id=?",
+                        new String[]{groupId, previousServerId});
+
+               // XposedBridge.log("Marked as read in lime_data.db: Group_id: " + groupId + ", Server_id: " + previousServerId + ", Updated user_name: " + updatedUserName);
+            }
+            cursor.close();
+
+        } catch (Exception e) {
+            Log.e("markPreviousMessagesAsRead", "Error marking previous messages as read:", e);
         }
     }
 
     private void writeToFile(File file, String text) {
-        try (FileWriter writer = new FileWriter(file, true)) { // true to append
+        try (FileWriter writer = new FileWriter(file, true)) {
             writer.write(text + "\n");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 
     private String formatMessageTime(String timeEpochStr) {
         if (timeEpochStr == null) return null;
@@ -417,20 +433,20 @@ public class ReadChecker implements IHook {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         return sdf.format(new Date(timeEpoch));
     }
+
     private String extractCheckedUser(String paramValue) {
         Pattern pattern = Pattern.compile("param2:([a-zA-Z0-9]+)");
         Matcher matcher = pattern.matcher(paramValue);
         return matcher.find() ? matcher.group(1) : null;
     }
 
-        private String extractServerId(String paramValue, Context context) {
+    private String extractServerId(String paramValue, Context context) {
         Pattern pattern = Pattern.compile("param3:([0-9]+)");
         Matcher matcher = pattern.matcher(paramValue);
 
         if (matcher.find()) {
             return matcher.group(1);
         } else {
-            // serverIdが取得できなかった場合、paramValueをファイルに保存
             saveParamToFile(paramValue, context);
             return null;
         }
@@ -440,24 +456,21 @@ public class ReadChecker implements IHook {
         try {
             File logFile = new File(context.getFilesDir(), "missing_param_values.txt");
 
-            // Check if the file exists; if not, create it
             if (!logFile.exists()) {
                 logFile.createNewFile();
             }
 
-            // Open file in append mode
             FileWriter writer = new FileWriter(logFile, true);
-            writer.append("Missing serverId in paramValue: ").append(paramValue).append("\n");
+            writer.append("Missing serverId in paramValue:").append(paramValue).append("\n");
             writer.close();
         } catch (IOException e) {
-            XposedBridge.log("Error writing paramValue to file: " + e.getMessage());
+           // XposedBridge.log("Error writing paramValue to file: " + e.getMessage());
         }
     }
 
-
     private String queryDatabase(SQLiteDatabase db, String query, String... selectionArgs) {
         if (db == null) {
-            XposedBridge.log("Database is not initialized.");
+           // XposedBridge.log("Database is not initialized.");
             return null;
         }
         Cursor cursor = db.rawQuery(query, selectionArgs);
@@ -469,29 +482,25 @@ public class ReadChecker implements IHook {
         return result;
     }
 
-
     private void initializeLimeDatabase(Context context) {
         File dbFile = new File(context.getFilesDir(), "lime_data.db");
         limeDatabase = SQLiteDatabase.openOrCreateDatabase(dbFile, null);
 
         String createGroupTable = "CREATE TABLE IF NOT EXISTS group_messages (" +
-                "group_id TEXT NOT NULL," +
-                "server_id TEXT NOT NULL," +
-                "checked_user TEXT," +
-                "group_name TEXT," +
-                "content TEXT," +
-                "talk_name TEXT," +
-                "created_time TEXT," +
-                "PRIMARY KEY (group_id, server_id, checked_user)" +
+                "group_id TEXT NOT NULL, " +
+                "server_id TEXT NOT NULL, " +
+                "checked_user TEXT, " +
+                "group_name TEXT, " +
+                "content TEXT, " +
+                "user_name TEXT, " +
+                "created_time TEXT, " +
+                "PRIMARY KEY(group_id, server_id, checked_user)" +
                 ");";
 
-
         limeDatabase.execSQL(createGroupTable);
-        XposedBridge.log("Database initialized and group_messages table created.");
+       // XposedBridge.log("Database initialized and group_messages table created.");
     }
-
-
-    private void saveData(String groupId, String serverId, String checkedUser, String groupName, String content, String talkName, String createdTime, Context context) {
+    private void saveData(String groupId, String serverId, String checkedUser, String groupName, String content, String user_name, String createdTime, Context context) {
         File dbFile = new File(context.getFilesDir(), "operation_log.txt");
 
         if (limeDatabase == null) {
@@ -501,42 +510,76 @@ public class ReadChecker implements IHook {
 
         Cursor cursor = null;
         try {
-            String checkQuery = "SELECT COUNT(*) FROM group_messages WHERE server_id=? AND checked_user=?";
-
+            String checkQuery = "SELECT COUNT(*), user_name FROM group_messages WHERE server_id=? AND checked_user=?";
             cursor = limeDatabase.rawQuery(checkQuery, new String[]{serverId, checkedUser});
-            cursor.moveToFirst();
-            int count = cursor.getInt(0);
 
-            if (count > 0) {
-                //writeToFile(dbFile, "Data already exists for Server_Id: " + serverId + ", Checked_user: " + checkedUser + ". Skipping save.");
-                return;
+            if (cursor.moveToFirst()) {
+                int count = cursor.getInt(0);
+                String existingUserName = cursor.getString(1);
+
+                if (count > 0) {
+                    // 既存のレコードがある場合、`user_name`カラムを更新
+                    String updatedUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n")  + user_name;
+                    ContentValues values = new ContentValues();
+                    values.put("user_name", updatedUserName);
+
+                    limeDatabase.update("group_messages", values, "server_id=? AND checked_user=?", new String[]{serverId, checkedUser});
+                   //// XposedBridge.log("User name updated for server_id: " + serverId + ", checked_user: " + checkedUser);
+                } else {
+                    // 新しいレコードを挿入
+                    insertNewRecord(groupId, serverId, checkedUser, groupName, content, user_name, createdTime);
+                }
+
+                // 同じ groupId 内の他のレコードの user_name カラムを更新
+                updateOtherRecordsUserNames(groupId, user_name);
             }
 
         } catch (Exception e) {
-            Log.e("saveData", "Error during data existence check: ", e);
-          //  writeToFile(dbFile, "Error during data existence check for serverId=" + serverId + ", checkedUser=" + checkedUser + ": " + e.getMessage());
+            Log.e("saveData", "Error during data existence check or update:", e);
         } finally {
             if (cursor != null) {
                 cursor.close();
             }
         }
+    }
 
+    private void updateOtherRecordsUserNames(String groupId, String user_name) {
+        Cursor cursor = null;
         try {
-            String insertQuery = "INSERT INTO group_messages (group_id, server_id, checked_user, group_name, content, talk_name, created_time) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?);";
+            String selectOtherQuery = "SELECT server_id, user_name FROM group_messages WHERE group_id=? AND user_name NOT LIKE ?";
+            cursor = limeDatabase.rawQuery(selectOtherQuery, new String[]{groupId, "%-" + user_name + "%"});
 
-            limeDatabase.execSQL(insertQuery, new Object[]{groupId, serverId, checkedUser, groupName, content, talkName, createdTime});
+            while (cursor.moveToNext()) {
+                String serverId = cursor.getString(cursor.getColumnIndex("server_id"));
+                String existingUserName = cursor.getString(cursor.getColumnIndex("user_name"));
 
-        //    XposedBridge.log("Saved to DB: Group_Id: " + groupId + ", Server_id: " + serverId + ", Checked_user: " + checkedUser +
-            //        ", Group_Name: " + groupName + ", Content: " + content + ", Talk_Name: " + talkName + ", Created_Time: " + createdTime);
-            writeToFile(dbFile, "Successfully saved data to DB for Server_Id: " + serverId + ", Checked_user: " + checkedUser);
+                String updatedUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n") + "-" + user_name;
+                ContentValues values = new ContentValues();
+                values.put("user_name", updatedUserName);
+
+                limeDatabase.update("group_messages", values, "group_id=? AND server_id=?", new String[]{groupId, serverId});
+               // XposedBridge.log("Updated user_name for other records in group_id: " + groupId + ", server_id: " + serverId);
+            }
         } catch (Exception e) {
-            Log.e("saveData", "Error saving data to database: ", e);
-            writeToFile(dbFile, "Error saving data to database for serverId=" + serverId + ", checkedUser=" + checkedUser + ": " + e.getMessage());
+            Log.e("updateOtherRecordsUserNames", "Error updating other records' user names:", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
     }
 
+    private void insertNewRecord(String groupId, String serverId, String checkedUser, String groupName, String content, String user_name, String createdTime) {
+        try {
+            String insertQuery = "INSERT INTO group_messages(group_id, server_id, checked_user, group_name, content, user_name, created_time)" +
+                    "VALUES(?, ?, ?, ?, ?, ?, ?);";
+            limeDatabase.execSQL(insertQuery, new Object[]{groupId, serverId, checkedUser, groupName, content, user_name, createdTime});
 
+           // XposedBridge.log("Saved to DB: Group_Id: " + groupId + ", Server_id: " + serverId + ", Checked_user: " + checkedUser +", Group_Name: " + groupName + ", Content: " + content + ", user_name: " + user_name + ", Created_Time: " + createdTime);
+        } catch (Exception e) {
+            Log.e("insertNewRecord", "Error saving data to database:", e);
+        }
+    }
 
 
 }

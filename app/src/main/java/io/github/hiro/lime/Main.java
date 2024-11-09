@@ -57,7 +57,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
     static final IHook[] hooks = new IHook[]{
             new OutputResponse(),
             new ModifyRequest(),
-           // new Test(),
+           //new Test(),
             new CheckHookTargetVersion(),
             new SpoofAndroidId(),
             new SpoofUserAgent(),

@@ -29,11 +29,14 @@ public class Test implements IHook {
         String packageName = loadPackageParam.packageName;
 
         XposedBridge.log("Hooking package: " + packageName);
-      //  hookOnViewAdded(loadPackageParam.classLoader);
+      hookOnViewAdded(loadPackageParam.classLoader);
         hookAllClassesInPackage(loadPackageParam.classLoader, loadPackageParam);
-       // hookFragmentOnCreateView(loadPackageParam.classLoader);
+      hookFragmentOnCreateView(loadPackageParam.classLoader);
         //hookChatHistoryActivity(loadPackageParam.classLoader); // ChatHistoryActivityのフック
         //hookLongClickListeners(loadPackageParam.classLoader); // 長押しリスナーのフック
+
+
+
     }
 
 
@@ -142,6 +145,8 @@ public class Test implements IHook {
             XposedBridge.log("Error hooking onCreateView: " + e.getMessage());
         }
     }
+
+
     private void hookOnViewAdded(ClassLoader classLoader) {
         try {
             Class<?> constraintLayoutClass = Class.forName("androidx.constraintlayout.widget.ConstraintLayout", false, classLoader);
@@ -281,8 +286,8 @@ public class Test implements IHook {
                     !"onStart".equals(method.getName()) &&
                     !"setCompoundDrawables".equals(method.getName()) &&
                     !"getActivity".equals(method.getName()) &&  // PendingIntent method
-                    !"getBroadcast".equals(method.getName()) && // PendingIntent method
-                    !"getService".equals(method.getName())) {   // PendingIntent method
+                    !"onViewAdded".equals(method.getName()) && // PendingIntent method
+                    !"setState".equals(method.getName())) {   // PendingIntent method
                 continue;
             }
 
@@ -305,7 +310,7 @@ public class Test implements IHook {
 
 // メソッドに応じたログ出力
                         if ("invokeSuspend".equals(method.getName())) {
-                            XposedBridge.log("Before calling invokeSuspend in class: " + clazz.getName() + " with args: " + argsString);
+                      XposedBridge.log("Before calling invokeSuspend in class: " + clazz.getName() + " with args: " + argsString);
                         } else if ("setVisibility".equals(method.getName())) {
                             XposedBridge.log("Before calling setVisibility in class: " + clazz.getName() + " with args: " + argsString);
                         } else if ("setAlpha".equals(method.getName())) {
@@ -340,19 +345,20 @@ public class Test implements IHook {
                             XposedBridge.log("Before calling onStart in class: " + clazz.getName() + " with args: " + argsString);
                         } else if ("getActivity".equals(method.getName())) {
                             XposedBridge.log("Before calling getActivity in class: " + clazz.getName() + " with args: " + argsString);
-                        } else if ("getBroadcast".equals(method.getName())) {
-                            XposedBridge.log("Before calling getBroadcast in class: " + clazz.getName() + " with args: " + argsString);
+                        } else if ("onViewAdded".equals(method.getName())) {
+                            XposedBridge.log("Before calling onViewAdded in class: " + clazz.getName() + " with args: " + argsString);
                         } else if ("getService".equals(method.getName())) {
                             XposedBridge.log("Before calling getService in class: " + clazz.getName() + " with args: " + argsString);
+                        } else if ("setState".equals(method.getName())) {
+                            XposedBridge.log("Before setState invoke in class: " + clazz.getName() + " with args: " + argsString);
                         }
-
                     }
 
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         Object result = param.getResult();
                         if ("invokeSuspend".equals(method.getName())) {
-                            XposedBridge.log("Before calling invokeSuspend in class: " + clazz.getName() + (result != null ? result.toString() : "null"));
+                      XposedBridge.log("Before calling invokeSuspend in class: " + clazz.getName() + (result != null ? result.toString() : "null"));
                         } else if ("setVisibility".equals(method.getName())) {
                             XposedBridge.log("After calling setVisibility in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
                         } else if ("setAlpha".equals(method.getName())) {
@@ -387,10 +393,12 @@ public class Test implements IHook {
                             XposedBridge.log("Before calling onStart in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
                         } else if ("getActivity".equals(method.getName())) {
                             XposedBridge.log("After calling getActivity in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
-                        } else if ("getBroadcast".equals(method.getName())) {
-                            XposedBridge.log("After calling getBroadcast in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
+                        } else if ("onViewAdded".equals(method.getName())) {
+                            XposedBridge.log("After calling onViewAdded in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
                         } else if ("getService".equals(method.getName())) {
                             XposedBridge.log("After calling getService in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
+                        } else if ("setState".equals(method.getName())) {
+                          XposedBridge.log("setState " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
                         }
                     }
                 });
