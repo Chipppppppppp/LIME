@@ -19,6 +19,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -243,16 +245,40 @@ public class ReadChecker implements IHook {
         ScrollView scrollView = new ScrollView(activity);
         scrollView.addView(textView);
 
+        // ダイアログ作成
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("READ Data");
         builder.setView(scrollView);
+
+        // OKボタン
         builder.setPositiveButton("OK", null);
+
+        // 削除ボタン
+        builder.setNegativeButton("削除", (dialog, which) -> {
+            // 削除の確認ダイアログを表示
+            new AlertDialog.Builder(activity)
+                    .setTitle("確認")
+                    .setMessage("本当に削除しますか？")
+                    .setPositiveButton("はい", (confirmDialog, confirmWhich) -> deleteGroupData(groupId,activity))
+                    .setNegativeButton("いいえ", null)
+                    .show();
+        });
+
         AlertDialog dialog = builder.create();
         dialog.show();
 
         scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
     }
 
+    private void deleteGroupData(String groupId,Activity activity) {
+        if (limeDatabase == null) {
+            return;
+        }
+
+        String deleteQuery = "DELETE FROM group_messages WHERE group_id=?";
+        limeDatabase.execSQL(deleteQuery, new String[]{groupId});
+        Toast.makeText(activity, "データが削除されました。", Toast.LENGTH_SHORT).show();
+    }
 
     private List<String> getuser_namesForServerId(String serverId) {
         if (limeDatabase == null) {
@@ -575,7 +601,8 @@ public class ReadChecker implements IHook {
                     "VALUES(?, ?, ?, ?, ?, ?, ?);";
             limeDatabase.execSQL(insertQuery, new Object[]{groupId, serverId, checkedUser, groupName, content, user_name, createdTime});
 
-           // XposedBridge.log("Saved to DB: Group_Id: " + groupId + ", Server_id: " + serverId + ", Checked_user: " + checkedUser +", Group_Name: " + groupName + ", Content: " + content + ", user_name: " + user_name + ", Created_Time: " + createdTime);
+           // XposedBridge.log("Saved to DB: Group_Id: " + groupId + ", Server_id: " + serverId + ", Checked_user: " + checkedUser +
+//", Group_Name: " + groupName + ", Content: " + content + ", user_name: " + user_name + ", Created_Time: " + createdTime);
         } catch (Exception e) {
             Log.e("insertNewRecord", "Error saving data to database:", e);
         }
