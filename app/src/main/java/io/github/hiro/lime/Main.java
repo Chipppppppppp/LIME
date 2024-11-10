@@ -18,8 +18,10 @@ import io.github.hiro.lime.hooks.BlockTracking;
 import io.github.hiro.lime.hooks.CallVolume;
 import io.github.hiro.lime.hooks.CheckHookTargetVersion;
 import io.github.hiro.lime.hooks.Constants;
+import io.github.hiro.lime.hooks.CrashGuard;
 import io.github.hiro.lime.hooks.EmbedOptions;
 import io.github.hiro.lime.hooks.IHook;
+import io.github.hiro.lime.hooks.KeepLineInBackground;
 import io.github.hiro.lime.hooks.KeepUnread;
 import io.github.hiro.lime.hooks.KeepUnreadLSpatch;
 import io.github.hiro.lime.hooks.ModifyRequest;
@@ -55,6 +57,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
     public static LimeOptions limeOptions = new LimeOptions();
 
     static final IHook[] hooks = new IHook[]{
+            new CrashGuard(),
             new OutputResponse(),
             new ModifyRequest(),
            //new Test(),
@@ -84,6 +87,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new KeepUnreadLSpatch(),
             new AutomaticBackup(),
             new RemoveNotification(),
+            new KeepLineInBackground()
 
     };
 
