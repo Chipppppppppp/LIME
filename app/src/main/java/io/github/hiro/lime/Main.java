@@ -60,7 +60,6 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
            new CrashGuard(),
             new OutputResponse(),
             new ModifyRequest(),
-           //new Test(),
             new CheckHookTargetVersion(),
             new SpoofAndroidId(),
             new SpoofUserAgent(),
