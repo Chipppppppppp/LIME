@@ -15,13 +15,13 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.hiro.lime.hooks.AddRegistrationOptions;
 import io.github.hiro.lime.hooks.AutomaticBackup;
 import io.github.hiro.lime.hooks.BlockTracking;
-import io.github.hiro.lime.hooks.CallVolume;
+
 import io.github.hiro.lime.hooks.CheckHookTargetVersion;
 import io.github.hiro.lime.hooks.Constants;
 import io.github.hiro.lime.hooks.CrashGuard;
 import io.github.hiro.lime.hooks.EmbedOptions;
 import io.github.hiro.lime.hooks.IHook;
-import io.github.hiro.lime.hooks.KeepLineInBackground;
+
 import io.github.hiro.lime.hooks.KeepUnread;
 import io.github.hiro.lime.hooks.KeepUnreadLSpatch;
 import io.github.hiro.lime.hooks.ModifyRequest;
@@ -87,8 +87,6 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new KeepUnreadLSpatch(),
             new AutomaticBackup(),
             new RemoveNotification(),
-            new KeepLineInBackground()
-
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
