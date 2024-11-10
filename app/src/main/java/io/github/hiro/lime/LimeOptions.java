@@ -41,7 +41,7 @@ public class LimeOptions {
     public Option ReadChecker = new Option("ReadChecker", R.string.ReadChecker, false);
     public Option RemoveNotification = new Option("RemoveNotification", R.string.removeNotification, false);
     public Option NaviColor = new Option("NaviColor", R.string.NaviColor, false);
-    public Option AutomaticBackup = new Option("AutomaticBackup", R.string.AutomaticBackup, false);
+    public Option CrashGuard = new Option("CrashGuard", R.string.CrashGuard, false);
 
   //  public Option SleepCall = new Option("SleepCall", R.string.SleepCall, false);
 
@@ -74,6 +74,7 @@ public class LimeOptions {
             outputCommunication,
             calltone,
             NaviColor,
+            CrashGuard
          //   SleepCall
 
 

@@ -96,4 +96,5 @@
     <string name="switch_KeepUnreadLSpatch">LsPatch用「未読のまま閲覧」スイッチを表示</string>
     <string name="AutomaticBackup">定期的にバックアップ\n</string>
     <string name="SleepCall">連続で通話がかかってこないとかからないように</string>
+    <string name="CrashGuard">随時キャッシュを削除してクラッシュを予防</string>
 </resources>
