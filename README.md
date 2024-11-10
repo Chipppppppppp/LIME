@@ -210,7 +210,7 @@ LI**M**E
 > - 着信が入るとクラッシュ  
 > - コインの購入が不可  
 > - LINE Pay の一部の機能が使用不可  
-> - Wear OS (スマートウォッチ)での使用不可
+> -　△ Wear OS (スマートウォッチ)での連携
 
 1. [**LSPatch**](https://github.com/LSPosed/LSPatch) をインストール  
   ※フォークで開発されている [**NPatch**](https://github.com/HSSkyBoy/NPatch) では不具合が発生する可能性があります。  
