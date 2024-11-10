@@ -1,42 +1,56 @@
 package io.github.hiro.lime.hooks;
 
+import android.app.Application;
+import android.content.Context;
+import java.io.File;
+import java.lang.reflect.Field;
+
 
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.hiro.lime.LimeOptions;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import io.github.hiro.lime.hooks.IHook;
 
 public class CrashGuard implements IHook {
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
+        XposedBridge.hookAllMethods(Application.class, "onCreate", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                Application appContext = (Application) param.thisObject;
+                clearCache(appContext);
+            }
 
-        try {
-            Class<?> riClass = XposedHelpers.findClass("Ri.b", loadPackageParam.classLoader);
+            private void clearCache(Context context) {
+                try {
+                    File cacheDir = context.getCacheDir();
+                    if (cacheDir != null && cacheDir.isDirectory()) {
+                        deleteDir(cacheDir);
+                        XposedBridge.log("Cache cleared successfully.");
+                    }
+                } catch (Exception e) {
+                    XposedBridge.log("Failed to clear cache: " + e.getMessage());
+                }
+            }
 
-            XposedHelpers.findAndHookMethod(riClass, "f", int.class, byte[].class, new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    Object instance = param.thisObject;
-
-                    // `b`フィールドを取得
-                    Object bField = XposedHelpers.getObjectField(instance, "b");
-
-                    if (bField == null) {
-                        XposedBridge.log("CrashGuard: `receiveSource` (b field) is not set; skipping method call.");
-                        param.setResult(null);
+            private boolean deleteDir(File dir) {
+                if (dir != null && dir.isDirectory()) {
+                    String[] children = dir.list();
+                    if (children != null) {
+                        for (String child : children) {
+                            boolean success = deleteDir(new File(dir, child));
+                            if (!success) {
+                                return false;
+                            }
+                        }
                     }
                 }
-            });
+                return dir.delete();
+            }
+        });
 
-        } catch (XposedHelpers.ClassNotFoundError e) {
-            XposedBridge.log("CrashGuard: Ri.b class not found, cannot hook method.");
-        } catch (NoSuchFieldError e) {
-            XposedBridge.log("CrashGuard: `b` field not found in Ri.b, cannot perform null check.");
-        } catch (Exception e) {
-            XposedBridge.log("CrashGuard: Unexpected error: " + e.getMessage());
-        }
+
     }
 }

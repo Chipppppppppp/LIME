@@ -57,7 +57,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
     public static LimeOptions limeOptions = new LimeOptions();
 
     static final IHook[] hooks = new IHook[]{
-            new CrashGuard(),
+           new CrashGuard(),
             new OutputResponse(),
             new ModifyRequest(),
            //new Test(),
