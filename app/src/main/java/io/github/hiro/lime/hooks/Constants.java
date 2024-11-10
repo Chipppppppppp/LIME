@@ -13,16 +13,15 @@ public class Constants {
             this.methodName = methodName;
         }
     }
-    //TRADITIONAL_CHINESE
-    static final HookTarget USER_AGENT_HOOK = new HookTarget("za1.c", "h");
+
+    static final HookTarget USER_AGENT_HOOK = new HookTarget("n91.c", "h");
     //HANDLED_AND_RETURN_TRUE
-    static final HookTarget WEBVIEW_CLIENT_HOOK = new HookTarget("RI0.m", "onPageFinished");
+    static final HookTarget WEBVIEW_CLIENT_HOOK = new HookTarget("VH0.m", "onPageFinished");
     //NOTIFICATION_DISABLED
-    static final HookTarget MUTE_MESSAGE_HOOK = new HookTarget("r91.b", "H");
-    //PROCESSING
-    static final HookTarget MARK_AS_READ_HOOK = new HookTarget("CM.d$d", "run");
-    //READNOTIFICATION
-    static final HookTarget NOTIFICATION_READ_HOOK = new HookTarget("Ta1.h", "invokeSuspend");
+    static final HookTarget MUTE_MESSAGE_HOOK = new HookTarget("f81.b", "H");
+
+    static final HookTarget MARK_AS_READ_HOOK = new HookTarget("dM.d$c", "run");
+
 
     static final HookTarget Archive = new HookTarget("eB.Q", "invokeSuspend");
 

@@ -318,8 +318,8 @@ public class ReadChecker implements IHook {
     private void catchNotification(XC_LoadPackage.LoadPackageParam loadPackageParam, SQLiteDatabase db3, SQLiteDatabase db4, Context appContext) {
         try {
             XposedBridge.hookAllMethods(
-                    loadPackageParam.classLoader.loadClass(Constants.NOTIFICATION_READ_HOOK.className),
-                    Constants.NOTIFICATION_READ_HOOK.methodName,
+                    loadPackageParam.classLoader.loadClass(Constants.RESPONSE_HOOK.className),
+                    Constants.RESPONSE_HOOK.methodName,
                     new XC_MethodHook() {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
