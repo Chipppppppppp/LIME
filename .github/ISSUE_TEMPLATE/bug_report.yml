@@ -26,13 +26,13 @@ body:
       label: 内容の詳細
       placeholder: 具体的に記述してください
     validations:
-      required: true
+      required: false
   - type: textarea
     attributes:
       label: 再現する手順
       placeholder: 可能な限り具体的に記述してください
     validations:
-      required: true
+      required: false
   - type: dropdown
     attributes:
       label: 有効にしている LIME の設定
@@ -65,4 +65,4 @@ body:
       label: バージョンの確認
       options:
         - label: 私は最新版の LIME を使用しており、それに適合するバージョンの LINE アプリを使用しています
-          required: true
+          required: false
