@@ -21,6 +21,11 @@ public class Constants {
     static final HookTarget MUTE_MESSAGE_HOOK = new HookTarget("f81.b", "H");
 //PROCESSING
     static final HookTarget MARK_AS_READ_HOOK = new HookTarget("dM.d$d", "run");
+    static final HookTarget Archive = new HookTarget("eB.Q", "invokeSuspend");
+
+    //READNOTIFICATION
+    static final HookTarget NOTIFICATION_READ_HOOK = new HookTarget("H91.c", "invokeSuspend");
+
     static final HookTarget REQUEST_HOOK = new HookTarget("org.apache.thrift.l", "b");
     static final HookTarget RESPONSE_HOOK = new HookTarget("org.apache.thrift.l", "a");
 }

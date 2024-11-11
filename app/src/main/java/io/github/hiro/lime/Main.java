@@ -42,7 +42,7 @@ import io.github.hiro.lime.hooks.UnsentRec;
 import io.github.hiro.lime.hooks.Archived;
 import io.github.hiro.lime.hooks.ReadChecker;
 import io.github.hiro.lime.hooks.NaviColor;
-import io.github.hiro.lime.hooks.test;
+
 
 
 public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
@@ -82,7 +82,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new KeepUnreadLSpatch(),
             new AutomaticBackup(),
             new RemoveNotification(),
-          //  new test(),
+
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
