@@ -1,5 +1,5 @@
 package io.github.chipppppppppp.lime;
-//この変更はテストです
+
 public class LimeOptions {
     public class Option {
         public final String name;

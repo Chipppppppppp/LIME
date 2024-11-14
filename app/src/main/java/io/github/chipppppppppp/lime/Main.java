@@ -12,6 +12,7 @@ import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.hooks.AddRegistrationOptions;
 import io.github.chipppppppppp.lime.hooks.Archived;
+import io.github.chipppppppppp.lime.hooks.AutomaticBackup;
 import io.github.chipppppppppp.lime.hooks.BlockTracking;
 import io.github.chipppppppppp.lime.hooks.CheckHookTargetVersion;
 import io.github.chipppppppppp.lime.hooks.Constants;
@@ -71,7 +72,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new Ringtone(),
             new UnsentCap(),
             new KeepUnreadLSpatch(),
-            new NaviColor()
+            new NaviColor(),
+            new AutomaticBackup()
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
