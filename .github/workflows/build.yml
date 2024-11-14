@@ -5,6 +5,8 @@ on:
     paths-ignore:
       - '*.md'
       - '*.txt'
+    tags-ignore:
+      - '*'
   pull_request:
   workflow_dispatch:
     inputs:
@@ -25,6 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      discussions: write
     steps:
 
       - name: Checkout
@@ -33,14 +36,14 @@ jobs:
       - name: Set environments
         run: |
           {
-            echo "version=v$(grep versionName app/build.gradle | awk '{print $2}' | tr -d \")"
-            echo "line_ver_code=$(grep HOOK_TARGET_VERSION app/build.gradle | awk '{print $4}' | tr -d \'\")"
+            echo "packageId=$(grep namespace app/build.gradle | awk '{print $2}' | tr -d \')"
+            echo "versionName=v$(grep versionName app/build.gradle | awk '{print $2}' | tr -d \")"
+            echo "versionCode=$(grep versionCode app/build.gradle | awk '{print $2}')"
+            echo "LINE_versionName=$(echo '${{ env.line_ver_code }}' | awk '{print substr($0,1,2)"."substr($0,3,2)"."int(substr($0,5,1))}')"
+            echo "LINE_versionCode=$(grep HOOK_TARGET_VERSION app/build.gradle | awk '{print $4}' | tr -d \'\")"
             echo "commit=$(echo ${{ github.sha }} | cut -c-7)"
             echo "repo=$(echo ${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/})"
           } >> $GITHUB_ENV
-
-      - name: Set LINE Original Version Name
-        run: echo "line_ver=$(echo '${{ env.line_ver_code }}' | awk '{print substr($0,1,2)"."substr($0,3,2)"."int(substr($0,5,1))}')" >> $GITHUB_ENV
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -71,34 +74,12 @@ jobs:
             echo ""
             exit 1
           fi
-          if [ "${{ steps.previous.outputs.tag }}" == "${{ env.version }}" ]; then
+          if [ "${{ steps.previous.outputs.tag }}" == "${{ env.versionName }}" ]; then
             echo -e "\nERROR!\nThe same tag already exists!\n"
             echo "Please change versionName in build.gradle"
             echo ""
             exit 1
           fi
-
-      - name: Cache maven
-        id: maven
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository/
-          key: mvn-${{ hashFiles('.github/workflows/build.yml') }}
-          restore-keys: mvn-
-
-      - name: Checkout libxposed/api
-        if: steps.maven.outputs.cache-hit != 'true'
-        uses: actions/checkout@v4
-        with:
-          repository: libxposed/api
-          ref: 64e29bd657ef4d2540b34402f5a988778f29e676
-          path: libxposed/api
-          fetch-depth: 0
-
-      - name: Build dependency
-        if: steps.maven.outputs.cache-hit != 'true'
-        working-directory: libxposed/api
-        run: ./gradlew :api:publishApiPublicationToMavenLocal
 
       - name: Build module
         run: |
@@ -108,7 +89,7 @@ jobs:
             export KEY_ALIAS="${{ secrets.KEY_ALIAS }}"
             export KEY_PASSWORD="${{ secrets.KEY_PASSWORD }}"
             ./gradlew assembleRelease --no-daemon --stacktrace
-            cp -f app/build/outputs/apk/release/app-release.apk ${{ env.repo }}-${{ env.version }}.apk
+            cp -f app/build/outputs/apk/release/app-release.apk ${{ env.repo }}-${{ env.versionName }}.apk
           else
             ./gradlew assembleDebug --no-daemon --stacktrace
           fi
@@ -119,19 +100,19 @@ jobs:
           cat << EOF > conf
           https://github.com/JingMatrix/LSPatch/releases/latest/download/lspatch.jar
             out=lspatch.jar
-          https://line-android-universal-download.line-scdn.net/line-${{ env.line_ver }}.apk
-            out=line-${{ env.line_ver }}.apk
+          https://line-android-universal-download.line-scdn.net/line-${{ env.LINE_versionName }}.apk
+            out=line-${{ env.LINE_versionName }}.apk
           EOF
           echo "Downloading APK..."
           aria2c --no-conf -x16 -s16 -R -m0 -V --async-dns=false -iconf
           echo "Patching LIME..."
-          java -jar lspatch.jar "line-${{ env.line_ver }}.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
+          java -jar lspatch.jar "line-${{ env.LINE_versionName }}.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
 
       - name: Upload module
         uses: actions/upload-artifact@v4
         if: github.event.inputs.release != 'true'
         with:
-          name: ${{ env.repo }}-${{ env.version }}@${{ env.commit }}
+          name: ${{ env.repo }}-${{ env.versionName }}@${{ env.commit }}
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
 
@@ -139,23 +120,47 @@ jobs:
         uses: actions/upload-artifact@v4
         if: github.event.inputs.lspatch == 'true'
         with:
-          name: LINE-${{ env.line_ver }}@${{ env.commit }}
-          path: line-${{ env.line_ver }}-*-lspatched.apk
+          name: LINE-${{ env.LINE_versionName }}@${{ env.commit }}
+          path: line-${{ env.LINE_versionName }}-*-lspatched.apk
           if-no-files-found: error
 
-      - name: Release
+      - name: Release original repository
         uses: softprops/action-gh-release@v2
         if: github.event.inputs.release == 'true'
         with:
-          tag_name: ${{ env.version }}
+          tag_name: ${{ env.versionName }}
           draft: false
           prerelease: false
-          files: ${{ env.repo }}-${{ env.version }}.apk
+          make_latest: true
+          discussion_category_name: Announcements
+          generate_release_notes: true
+          files: ${{ env.repo }}-${{ env.versionName }}.apk
+          fail_on_unmatched_files: true
           body: |
             # 更新内容
             
             ## 対応するLINEのバージョン
-            ${{ env.line_ver }}
+            ${{ env.LINE_versionName }}
             
             ### 差分
-            https://github.com/${{ github.repository }}/compare/${{ steps.previous.outputs.tag }}...${{ env.version }}
+            https://github.com/${{ github.repository }}/compare/${{ steps.previous.outputs.tag }}...${{ env.versionName }}
+
+      - name: Release to Xposed repository
+        uses: softprops/action-gh-release@v2
+        if: github.event.inputs.release == 'true'
+        with:
+          repository: Xposed-Modules-Repo/${{ env.packageId }}
+          tag_name: ${{ env.versionCode }}-${{ env.versionName }}
+          draft: false
+          prerelease: false
+          make_latest: true
+          files: ${{ env.repo }}-${{ env.versionName }}.apk
+          body: |
+            ## Details
+            https://github.com/${{ github.repository }}/releases/${{ env.versionName }}
+            
+            ## Supported LINE version
+            ${{ env.LINE_versionName }}
+            
+            ### Diff
+            https://github.com/${{ github.repository }}/compare/${{ steps.previous.outputs.tag }}...${{ env.versionName }}

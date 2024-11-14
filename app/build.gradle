@@ -68,7 +68,7 @@ android {
 
 dependencies {
     compileOnly 'de.robv.android.xposed:api:82'
-    compileOnly 'io.github.libxposed:api:100'
+    compileOnly files('libxposed/api-100.jar')
     //noinspection GradleCompatible
     implementation 'com.android.support:customtabs:23.0.0'
     implementation 'org.mozilla:rhino:1.7.15'
