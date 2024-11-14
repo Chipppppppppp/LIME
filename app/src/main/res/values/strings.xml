@@ -78,4 +78,7 @@
     <string name="no_get_restart_app">Could not get properly.\nPlease restart the app</string>
     <string name="switch_KeepUnreadLSpatch">Show \"Read as unread\" switch for LsPatch</string>
 
+    <string name="NaviColor">ナビゲーションのボタンの色を黒にする</string>
+
+
 </resources>

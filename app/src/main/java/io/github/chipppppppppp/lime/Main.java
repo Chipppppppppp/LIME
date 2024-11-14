@@ -21,6 +21,7 @@ import io.github.chipppppppppp.lime.hooks.KeepUnread;
 import io.github.chipppppppppp.lime.hooks.KeepUnreadLSpatch;
 import io.github.chipppppppppp.lime.hooks.ModifyRequest;
 import io.github.chipppppppppp.lime.hooks.ModifyResponse;
+import io.github.chipppppppppp.lime.hooks.NaviColor;
 import io.github.chipppppppppp.lime.hooks.OutputRequest;
 import io.github.chipppppppppp.lime.hooks.OutputResponse;
 import io.github.chipppppppppp.lime.hooks.PreventMarkAsRead;
@@ -69,7 +70,8 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new Archived(),
             new Ringtone(),
             new UnsentCap(),
-            new KeepUnreadLSpatch()
+            new KeepUnreadLSpatch(),
+            new NaviColor()
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
