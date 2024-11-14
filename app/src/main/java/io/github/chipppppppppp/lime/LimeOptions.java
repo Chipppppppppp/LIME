@@ -38,7 +38,7 @@ public class LimeOptions {
     public Option archived = new Option("archived_message", R.string.switch_archived, false);
     public Option callTone = new Option("call_tone", R.string.call_tone, false);
     public Option NaviColor = new Option("NaviColor", R.string.NaviColor, false);
-
+    public Option ReadChecker = new Option("ReadChecker", R.string.ReadChecker, false);
 
     public Option[] options = {
         removeVoom,
@@ -59,6 +59,7 @@ public class LimeOptions {
         preventUnsendMessage,
         archived,
         sendMuteMessage,
+        ReadChecker,
         removeKeepUnread,
         KeepUnreadLSpatch,
         blockTracking,

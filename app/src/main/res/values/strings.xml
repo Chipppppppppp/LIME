@@ -79,6 +79,7 @@
     <string name="switch_KeepUnreadLSpatch">Show \"Read as unread\" switch for LsPatch</string>
 
     <string name="NaviColor">ナビゲーションのボタンの色を黒にする</string>
+    <string name="ReadChecker"><![CDATA["    <string name=\"ReadChecker\">送信したメッセージの既読者の確認</string>"]]></string>
 
 
 </resources>

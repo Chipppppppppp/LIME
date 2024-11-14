@@ -44,4 +44,7 @@
 
     <!-- Menu -->
     <string name="switch_keep_unread">保持未讀</string>
+
+    <string name="ReadChecker">送信したメッセージの既読者の確認</string>
+
 </resources>

@@ -77,5 +77,6 @@
     <string name="confirm_delete">本当に削除しますか？</string>
     <string name="no_backup_found">何もバックアップされていません</string>
     <string name="no_get_restart_app">正しく取得できませんでした。\nアプリを再起動してください</string>
+    <string name="ReadChecker"><![CDATA["    <string name=\"ReadChecker\">送信したメッセージの既読者の確認</string>"]]></string>
 
 </resources>
