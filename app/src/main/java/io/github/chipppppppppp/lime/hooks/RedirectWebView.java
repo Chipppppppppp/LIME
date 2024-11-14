@@ -37,7 +37,7 @@ public class RedirectWebView implements IHook {
                                     currentUrl.startsWith("https://access.line.me") ||
                                     currentUrl.startsWith("https://id.lylink.yahoo.co.jp/federation/ly/normal/callback/first") ||
                                     currentUrl.startsWith("https://liff.line.me") ||
-                                    curreetUrl.startsWith("https://lin.ee") ||
+                                    currentUrl.startsWith("https://lin.ee") ||
                                     currentUrl.startsWith("https://line.me/R/") ||
                                     currentUrl.startsWith("line://")
                                     )
