@@ -15,8 +15,6 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
 
 public class RedirectWebView implements IHook {
-
-
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (!limeOptions.redirectWebView.checked) return;
@@ -65,7 +63,6 @@ public class RedirectWebView implements IHook {
                 }
         );
     }
-
 
     private WebView findWebView(View view) {
         if (view instanceof WebView) {
