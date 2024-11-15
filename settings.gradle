@@ -4,7 +4,7 @@ pluginManagement {
         mavenCentral()
     }
     plugins {
-        id 'com.android.application' version '8.6.1' apply false
+        id 'com.android.application' version '8.7.2' apply false
     }
 }
 dependencyResolutionManagement {
@@ -12,6 +12,11 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url = "https://api.xposed.info" }
+        mavenLocal {
+            content {
+                includeGroup("io.github.libxposed")
+            }
+        }
     }
 }
 
