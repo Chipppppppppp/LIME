@@ -12,14 +12,17 @@ import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.hooks.AddRegistrationOptions;
 import io.github.chipppppppppp.lime.hooks.Archived;
+import io.github.chipppppppppp.lime.hooks.AutomaticBackup;
 import io.github.chipppppppppp.lime.hooks.BlockTracking;
 import io.github.chipppppppppp.lime.hooks.CheckHookTargetVersion;
 import io.github.chipppppppppp.lime.hooks.Constants;
 import io.github.chipppppppppp.lime.hooks.EmbedOptions;
 import io.github.chipppppppppp.lime.hooks.IHook;
 import io.github.chipppppppppp.lime.hooks.KeepUnread;
+import io.github.chipppppppppp.lime.hooks.KeepUnreadLSpatch;
 import io.github.chipppppppppp.lime.hooks.ModifyRequest;
 import io.github.chipppppppppp.lime.hooks.ModifyResponse;
+import io.github.chipppppppppp.lime.hooks.NaviColor;
 import io.github.chipppppppppp.lime.hooks.OutputRequest;
 import io.github.chipppppppppp.lime.hooks.OutputResponse;
 import io.github.chipppppppppp.lime.hooks.PreventMarkAsRead;
@@ -67,7 +70,10 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new OutputRequest(),
             new Archived(),
             new Ringtone(),
-            new UnsentCap()
+            new UnsentCap(),
+            new KeepUnreadLSpatch(),
+            new NaviColor(),
+            new AutomaticBackup()
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
