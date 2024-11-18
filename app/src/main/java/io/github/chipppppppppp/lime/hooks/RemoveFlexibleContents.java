@@ -58,8 +58,7 @@ public class RemoveFlexibleContents implements IHook {
                                 || viewId == serviceTitleBackgroundResId
                                 || viewId == serviceTitleResId
                                 || viewId == serviceSeeMoreResId
-                                || viewId == serviceSeeMoreBadgeResId))
-                        {
+                                || viewId == serviceSeeMoreBadgeResId)) {
                             ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
                             layoutParams.height = 0;
                             view.setLayoutParams(layoutParams);

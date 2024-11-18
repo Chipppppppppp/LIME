@@ -1,19 +1,10 @@
 package io.github.chipppppppppp.lime.hooks;
 
 import android.content.Context;
-
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
-import android.widget.TextView;
-
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -44,7 +35,7 @@ public class KeepUnread implements IHook {
                 layout.setLayoutParams(layoutParams);
 
                 Switch switchView = new Switch(context);
-                switchView.setText(textKeepUnread); 
+                switchView.setText(textKeepUnread);
                 RelativeLayout.LayoutParams switchParams = new RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 switchParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
@@ -58,14 +49,14 @@ public class KeepUnread implements IHook {
                 ((ListView) viewGroup.getChildAt(0)).addFooterView(layout);
             }
         });
-        
+
         XposedHelpers.findAndHookMethod(
                 loadPackageParam.classLoader.loadClass(Constants.MARK_AS_READ_HOOK.className),
                 Constants.MARK_AS_READ_HOOK.methodName,
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            param.setResult(null);
+                        param.setResult(null);
                     }
                 }
         );

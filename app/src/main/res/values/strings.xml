@@ -1,76 +1,76 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string translatable="false" name="app_name">LIME</string>
-  <!-- General -->
-  <string name="positive_button">OK</string>
-  <string name="negative_button">Cancel</string>
-  <string name="ok">OK</string>
-  <string name="yes">Yes</string>
-  <string name="no">No</string>
-  <string name="cancel">Cancel</string>
-  <string name="sticker">Stickers</string>
-  <string name="video">Videos</string>
-  <string name="picture">Photos</string>
-  <string name="reacquisition">Reacquisition</string>
-  <!-- Xposed API -->
-  <string name="xposed_desc">Clean LINE.</string>
-  <!-- Options -->
-  <string name="module_not_enabled_title">Error</string>
-  <string name="module_not_enabled_text">Module not enabled!</string>
-  <string name="options_title">Options</string>
-  <string name="restarting">Restarting now...</string>
-  <string name="need_refresh">Forced stop and cache clearing are required</string>
-  <string name="switch_spoof_android_id">Spoof Android ID</string>
-  <string name="spoof_android_id_risk">Spoofing Android ID is at your own risk</string>
-  <string name="incompatible_version">Some functions are not available due to version incompatibility</string>
-  <string name="switch_android_secondary">Disguise as the highest version</string>
-  <string name="switch_archived">Disable unhiding hidden chats</string>
-  <string name="switch_unembed_options">Do not embed options in LINE (options will not be synchronized)</string>
-  <string name="switch_remove_voom">Remove the VOOM icon</string>
-  <string name="switch_remove_wallet">Remove the wallet icon</string>
-  <string name="switch_remove_news_or_call">Remove the news or call icon</string>
-  <string name="switch_distribute_evenly">Distribute the icons on the bottom bar evenly</string>
-  <string name="switch_extend_clickable_area">Extend the clickable area of the icons on the bottom bar</string>
-  <string name="switch_remove_icon_labels">Remove the icon labels on the bottom bar</string>
-  <string name="switch_remove_ads">Remove ads</string>
-  <string name="switch_remove_recommendation">Remove recommendations</string>
-  <string name="switch_remove_premium_recommendation">Remove LYP Premium recommendations</string>
-  <string name="switch_remove_service_labels">Remove tbe service labels</string>
-  <string name="switch_remove_service">Remove services item</string>
-  <string name="switch_remove_reply_mute">Remove the \"Mute chat\" action from notifications</string>
-  <string name="switch_redirect_webview">Redirect WebView to the default browser</string>
-  <string name="switch_open_in_browser">Open in the browser app</string>
-  <string name="switch_prevent_mark_as_read">Always prevent marking as read</string>
-  <string name="switch_send_mute_message">Always send mute messages</string>
-  <string name="switch_prevent_unsend_message">Prevent messages from unsending</string>
-  <string name="switch_remove_keep_unread">Remove the \"Keep unread\" switch from the menu in the top right corner of the chat tab</string>
-  <string name="switch_block_tracking">Block tracking communications</string>
-  <string name="switch_stop_version_check">Stop checking LINE version</string>
-  <string name="switch_output_communication">Output communication contents to log (for developers)</string>
-  <string name="modify_request">Modify requests</string>
-  <string name="modify_response">Modify responses</string>
-  <string name="button_copy">Copy</string>
-  <string name="button_paste">Paste</string>
-  <string name="call_tone">Notify ringtone of LSPatch</string>
-  <!-- Menu -->
-  <string name="switch_keep_unread">Keep unread</string>
-  <!-- UNSENT CAP -->
-  <string name="backup">Backup</string>
-  <string name="backup_creation_failed">Failed to create backup</string>
-  <string name="confirm">Confirm</string>
-  <string name="class_not_found">Class not found</string>
-  <string name="confirm_messages">Confirmed messages</string>
-  <string name="delete_messages">Deleted messages</string>
-  <string name="deleted_messages">Deleted messages</string>
-  <string name="content_moved_to_backup">Content moved to backup file</string>
-  <string name="file_content_deleted">File contents deleted</string>
-  <string name="file_creation_failed">Could not create file</string>
-  <string name="file_delete_failed">Failed to delete file</string>
-  <string name="file_move_failed">Failed to move file</string>
-  <string name="file_save_failed">Failed to save file</string>
-  <string name="file_not_found">File not found</string>
-  <string name="failed_read_backup_file">Failed to read %s</string>
-  <string name="confirm_delete">Really want to delete it?</string>
-  <string name="no_backup_found">Nothing backed up</string>
-  <string name="no_get_restart_app">Could not get properly.\nPlease restart the app</string>
+    <string translatable="false" name="app_name">LIME</string>
+    <!-- General -->
+    <string name="positive_button">OK</string>
+    <string name="negative_button">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="cancel">Cancel</string>
+    <string name="sticker">Stickers</string>
+    <string name="video">Videos</string>
+    <string name="picture">Photos</string>
+    <string name="reacquisition">Reacquisition</string>
+    <!-- Xposed API -->
+    <string name="xposed_desc">Clean LINE.</string>
+    <!-- Options -->
+    <string name="module_not_enabled_title">Error</string>
+    <string name="module_not_enabled_text">Module not enabled!</string>
+    <string name="options_title">Options</string>
+    <string name="restarting">Restarting now...</string>
+    <string name="need_refresh">Forced stop and cache clearing are required</string>
+    <string name="switch_spoof_android_id">Spoof Android ID</string>
+    <string name="spoof_android_id_risk">Spoofing Android ID is at your own risk</string>
+    <string name="incompatible_version">Some functions are not available due to version incompatibility</string>
+    <string name="switch_android_secondary">Disguise as the highest version</string>
+    <string name="switch_archived">Disable unhiding hidden chats</string>
+    <string name="switch_unembed_options">Do not embed options in LINE (options will not be synchronized)</string>
+    <string name="switch_remove_voom">Remove the VOOM icon</string>
+    <string name="switch_remove_wallet">Remove the wallet icon</string>
+    <string name="switch_remove_news_or_call">Remove the news or call icon</string>
+    <string name="switch_distribute_evenly">Distribute the icons on the bottom bar evenly</string>
+    <string name="switch_extend_clickable_area">Extend the clickable area of the icons on the bottom bar</string>
+    <string name="switch_remove_icon_labels">Remove the icon labels on the bottom bar</string>
+    <string name="switch_remove_ads">Remove ads</string>
+    <string name="switch_remove_recommendation">Remove recommendations</string>
+    <string name="switch_remove_premium_recommendation">Remove LYP Premium recommendations</string>
+    <string name="switch_remove_service_labels">Remove tbe service labels</string>
+    <string name="switch_remove_service">Remove services item</string>
+    <string name="switch_remove_reply_mute">Remove the \"Mute chat\" action from notifications</string>
+    <string name="switch_redirect_webview">Redirect WebView to the default browser</string>
+    <string name="switch_open_in_browser">Open in the browser app</string>
+    <string name="switch_prevent_mark_as_read">Always prevent marking as read</string>
+    <string name="switch_send_mute_message">Always send mute messages</string>
+    <string name="switch_prevent_unsend_message">Prevent messages from unsending</string>
+    <string name="switch_remove_keep_unread">Remove the \"Keep unread\" switch from the menu in the top right corner of the chat tab</string>
+    <string name="switch_block_tracking">Block tracking communications</string>
+    <string name="switch_stop_version_check">Stop checking LINE version</string>
+    <string name="switch_output_communication">Output communication contents to log (for developers)</string>
+    <string name="modify_request">Modify requests</string>
+    <string name="modify_response">Modify responses</string>
+    <string name="button_copy">Copy</string>
+    <string name="button_paste">Paste</string>
+    <string name="call_tone">Notify ringtone of LSPatch</string>
+    <!-- Menu -->
+    <string name="switch_keep_unread">Keep unread</string>
+    <!-- UNSENT CAP -->
+    <string name="backup">Backup</string>
+    <string name="backup_creation_failed">Failed to create backup</string>
+    <string name="confirm">Confirm</string>
+    <string name="class_not_found">Class not found</string>
+    <string name="confirm_messages">Confirmed messages</string>
+    <string name="delete_messages">Deleted messages</string>
+    <string name="deleted_messages">Deleted messages</string>
+    <string name="content_moved_to_backup">Content moved to backup file</string>
+    <string name="file_content_deleted">File contents deleted</string>
+    <string name="file_creation_failed">Could not create file</string>
+    <string name="file_delete_failed">Failed to delete file</string>
+    <string name="file_move_failed">Failed to move file</string>
+    <string name="file_save_failed">Failed to save file</string>
+    <string name="file_not_found">File not found</string>
+    <string name="failed_read_backup_file">Failed to read %s</string>
+    <string name="confirm_delete">Really want to delete it?</string>
+    <string name="no_backup_found">Nothing backed up</string>
+    <string name="no_get_restart_app">Could not get properly.\nPlease restart the app</string>
 </resources>

@@ -44,7 +44,7 @@ public class Archived implements IHook {
                 SQLiteDatabase db = SQLiteDatabase.openDatabase(dbFile, dbParams);
 
                 hookSAMethod(loadPackageParam, db, appContext);
-                hookMessageDeletion(loadPackageParam, appContext, db, appContext); 
+                hookMessageDeletion(loadPackageParam, appContext, db, appContext);
             }
         });
     }

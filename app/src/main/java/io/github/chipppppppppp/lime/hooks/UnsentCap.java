@@ -20,14 +20,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
-
-import io.github.chipppppppppp.lime.LimeOptions;
-import io.github.chipppppppppp.lime.R;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -39,6 +31,13 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
+import io.github.chipppppppppp.lime.LimeOptions;
+import io.github.chipppppppppp.lime.R;
 
 public class UnsentCap implements IHook {
 
@@ -348,7 +347,7 @@ public class UnsentCap implements IHook {
                             if (db != null) db.close();
                         }
                     });
-        } catch (ClassNotFoundException ignored ) {
+        } catch (ClassNotFoundException ignored) {
         }
     }
 
@@ -363,14 +362,19 @@ public class UnsentCap implements IHook {
             for (String part : parts) {
                 part = part.trim();
                 if (part.startsWith("param1:")) talkId = part.substring("param1:".length()).trim();
-                else if (part.startsWith("param2:")) serverId = part.substring("param2:".length()).trim();
-                else if (part.startsWith("revision:")) revision = part.substring("revision:".length()).trim();
-                else if (part.startsWith("createdTime:")) createdTime = part.substring("createdTime:".length()).trim();
+                else if (part.startsWith("param2:"))
+                    serverId = part.substring("param2:".length()).trim();
+                else if (part.startsWith("revision:"))
+                    revision = part.substring("revision:".length()).trim();
+                else if (part.startsWith("createdTime:"))
+                    createdTime = part.substring("createdTime:".length()).trim();
                 else if (part.startsWith("type:")) type = part.substring("type:".length()).trim();
                 else if (part.startsWith("from:")) from = part.substring("from:".length()).trim();
                 else if (part.startsWith("to:")) to = part.substring("to:".length()).trim();
-                else if (part.startsWith("contentMetadata:")) param12 = part.substring("contentMetadata:".length()).trim();
-                else if (part.startsWith("operationContent:")) operationContent = part.substring("operationContent:".length()).trim();
+                else if (part.startsWith("contentMetadata:"))
+                    param12 = part.substring("contentMetadata:".length()).trim();
+                else if (part.startsWith("operationContent:"))
+                    operationContent = part.substring("operationContent:".length()).trim();
             }
 
             if (serverId == null || talkId == null) continue;
@@ -388,7 +392,8 @@ public class UnsentCap implements IHook {
             String from_mid = null, sender_name = null;
             if (groupName != null) {
                 from_mid = queryDatabase(db1, "SELECT from_mid FROM chat_history WHERE server_id=?", serverId);
-                if (from_mid != null) sender_name = queryDatabase(db2, "SELECT profile_name FROM contacts WHERE mid=?", from_mid);
+                if (from_mid != null)
+                    sender_name = queryDatabase(db2, "SELECT profile_name FROM contacts WHERE mid=?", from_mid);
             }
 
             if (sender_name != null) name = groupName + ": " + sender_name;
@@ -396,9 +401,15 @@ public class UnsentCap implements IHook {
             String mediaDescription = "";
             if (media != null) {
                 switch (media) {
-                    case "7": mediaDescription = moduleContext.getResources().getString(R.string.sticker); break;
-                    case "1": mediaDescription = moduleContext.getResources().getString(R.string.picture); break;
-                    case "2": mediaDescription = moduleContext.getResources().getString(R.string.video); break;
+                    case "7":
+                        mediaDescription = moduleContext.getResources().getString(R.string.sticker);
+                        break;
+                    case "1":
+                        mediaDescription = moduleContext.getResources().getString(R.string.picture);
+                        break;
+                    case "2":
+                        mediaDescription = moduleContext.getResources().getString(R.string.video);
+                        break;
                 }
             }
 
@@ -424,12 +435,14 @@ public class UnsentCap implements IHook {
             while ((line = reader.readLine()) != null) {
                 if (line.equals(newEntry)) return;
             }
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
             writer.write(newEntry);
             writer.newLine();
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
     }
 
     private void resolveUnresolvedIds(XC_LoadPackage.LoadPackageParam loadPackageParam, Context context, SQLiteDatabase db1, SQLiteDatabase db2, Context moduleContext) {
@@ -460,16 +473,23 @@ public class UnsentCap implements IHook {
                 String mediaDescription = "";
                 if (media != null) {
                     switch (media) {
-                        case "7": mediaDescription = moduleContext.getResources().getString(R.string.sticker); break;
-                        case "1": mediaDescription = moduleContext.getResources().getString(R.string.picture); break;
-                        case "2": mediaDescription = moduleContext.getResources().getString(R.string.video); break;
+                        case "7":
+                            mediaDescription = moduleContext.getResources().getString(R.string.sticker);
+                            break;
+                        case "1":
+                            mediaDescription = moduleContext.getResources().getString(R.string.picture);
+                            break;
+                        case "2":
+                            mediaDescription = moduleContext.getResources().getString(R.string.video);
+                            break;
                     }
                 }
 
                 String from_mid = null, sender_name = null;
                 if (groupName != null) {
                     from_mid = queryDatabase(db1, "SELECT from_mid FROM chat_history WHERE server_id=?", serverId);
-                    if (from_mid != null) sender_name = queryDatabase(db2, "SELECT profile_name FROM contacts WHERE mid=?", from_mid);
+                    if (from_mid != null)
+                        sender_name = queryDatabase(db2, "SELECT profile_name FROM contacts WHERE mid=?", from_mid);
                 }
 
                 if (sender_name != null) name = groupName + ": " + sender_name;
@@ -484,6 +504,7 @@ public class UnsentCap implements IHook {
 
         unresolvedFile.delete();
     }
+
     private String formatMessageTime(String timeEpochStr) {
         if (timeEpochStr == null) return null;
         long timeEpoch = Long.parseLong(timeEpochStr);

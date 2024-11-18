@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
@@ -34,17 +33,17 @@ public class RedirectWebView implements IHook {
 
                             if (currentUrl != null && (
                                     currentUrl.startsWith("https://account-center.lylink.yahoo.co.jp") ||
-                                    currentUrl.startsWith("https://access.line.me") ||
-                                    currentUrl.startsWith("https://id.lylink.yahoo.co.jp/federation/ly/normal/callback/first") ||
-                                    currentUrl.startsWith("https://liff.line.me") ||
-                                    currentUrl.startsWith("https://lin.ee") ||
-                                    currentUrl.startsWith("https://line.me/R/") ||
-                                    currentUrl.startsWith("line://")
-                                    )
-                               ) {
+                                            currentUrl.startsWith("https://access.line.me") ||
+                                            currentUrl.startsWith("https://id.lylink.yahoo.co.jp/federation/ly/normal/callback/first") ||
+                                            currentUrl.startsWith("https://liff.line.me") ||
+                                            currentUrl.startsWith("https://lin.ee") ||
+                                            currentUrl.startsWith("https://line.me/R/") ||
+                                            currentUrl.startsWith("line://")
+                            )
+                            ) {
                                 return;
                             }
-                            
+
                             webView.setVisibility(View.GONE);
                             webView.stopLoading();
 
