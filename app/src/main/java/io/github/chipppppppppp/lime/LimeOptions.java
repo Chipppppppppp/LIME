@@ -39,6 +39,8 @@ public class LimeOptions {
     public Option callTone = new Option("call_tone", R.string.call_tone, false);
     public Option NaviColor = new Option("NaviColor", R.string.NaviColor, false);
     public Option ReadChecker = new Option("ReadChecker", R.string.ReadChecker, false);
+    public Option Notif_invalid = new Option("Notif_invalid", R.string.Notif_invalid, false);
+
 
     public Option[] options = {
         removeVoom,
@@ -66,6 +68,8 @@ public class LimeOptions {
         stopVersionCheck,
         outputCommunication,
         callTone,
-        NaviColor
+        NaviColor,
+        Notif_invalid
+
     };
 }

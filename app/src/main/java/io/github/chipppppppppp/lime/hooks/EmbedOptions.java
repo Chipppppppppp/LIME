@@ -23,6 +23,13 @@ import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -249,6 +256,19 @@ public class EmbedOptions implements IHook {
                                 }
                             });
 
+
+                            Button MuteGroups_Button = new Button(context);
+                            MuteGroups_Button.setLayoutParams(buttonParams);
+                            MuteGroups_Button.setText("通知を無効にしているグループ");
+                            MuteGroups_Button.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    MuteGroups_Button(context);
+                                }
+                            });
+                            layout.addView(MuteGroups_Button);
+
+
                             buttonLayout.addView(copyButton);
 
                             Button pasteButton = new Button(context);
@@ -301,6 +321,10 @@ public class EmbedOptions implements IHook {
                                     editText.setText(script);
                                 }
                             });
+
+
+
+
 
                             AlertDialog dialog = builder.create();
 
@@ -394,4 +418,67 @@ public class EmbedOptions implements IHook {
                 }
         );
     }
+
+
+    private void MuteGroups_Button(Context context) {
+        // ファイルパスを指定
+        File dir = context.getFilesDir();  // 例えば内部ストレージのファイルディレクトリ
+        File file = new File(dir, "Notification.txt");
+
+        // ファイルが存在する場合、内容を読み込む
+        StringBuilder fileContent = new StringBuilder();
+        if (file.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    fileContent.append(line).append("\n");
+                }
+            } catch (IOException e) {
+                XposedBridge.log("Error reading the file: " + e.getMessage());
+            }
+        }
+
+        // 新しい内容を編集できるようにEditTextを表示する
+        final EditText editText = new EditText(context);
+        editText.setText(fileContent.toString());
+        editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        editText.setMinLines(10);  // 適切な行数を設定
+        editText.setGravity(Gravity.TOP);  // 上から入力されるように設定
+
+        // ボタン用のレイアウトパラメータを設定
+        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        buttonParams.setMargins(16, 16, 16, 16);  // 任意のマージン設定
+
+        // 保存ボタンを作成
+        Button saveButton = new Button(context);
+        saveButton.setText("Save");
+        saveButton.setLayoutParams(buttonParams);  // レイアウトパラメータを設定
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 編集した内容をファイルに保存
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                    writer.write(editText.getText().toString());
+                    XposedBridge.log("File saved successfully.");
+                } catch (IOException e) {
+                    XposedBridge.log("Error saving the file: " + e.getMessage());
+                }
+            }
+        });
+
+        // 編集画面を表示するためのLayoutに追加
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.addView(editText);
+        layout.addView(saveButton);
+
+        // ダイアログを表示して編集画面を表示する
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("通知を無効にしているグループ");
+        builder.setView(layout);
+        builder.setNegativeButton("キャンセル", null);
+        builder.show();
+    }
+
 }

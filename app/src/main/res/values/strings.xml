@@ -78,4 +78,5 @@
   <string name="switch_KeepUnreadLSpatch">Show \"Read as unread\" switch for LSPatch</string>
   <string name="NaviColor">Set nav color to Black</string>
   <string name="ReadChecker">Check read friends</string>
+  <string name="Notif_invalid">登録しているグループの通知をオフに</string>
 </resources>
