@@ -146,6 +146,20 @@ public class EmbedOptions implements IHook {
                                     }
                                 }
                             });
+                            
+                            Button MuteGroups_Button = new Button(context);
+                            MuteGroups_Button.setLayoutParams(buttonParams);
+                            MuteGroups_Button.setText("通知を無効にしているグループ");
+                            MuteGroups_Button.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    MuteGroups_Button(context);
+                                }
+                            });
+                            
+                            layout.addView(MuteGroups_Button);
+
+                            
 
                             buttonLayout.addView(pasteButton);
 
@@ -159,6 +173,8 @@ public class EmbedOptions implements IHook {
                                     .setTitle(R.string.modify_request);
 
                             builder.setView(scrollView);
+
+                            
 
                             builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
                                 @Override
@@ -394,4 +410,64 @@ public class EmbedOptions implements IHook {
                 }
         );
     }
+
+  private void MuteGroups_Button(Context context) {
+   
+        File dir = context.getFilesDir();
+        File file = new File(dir, "Notification.txt");
+
+        StringBuilder fileContent = new StringBuilder();
+        if (file.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    fileContent.append(line).append("\n");
+                }
+            } catch (IOException e) {
+                XposedBridge.log("Error reading the file: " + e.getMessage());
+            }
+        }
+
+        final EditText editText = new EditText(context);
+        editText.setText(fileContent.toString());
+        editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        editText.setMinLines(10);  
+        editText.setGravity(Gravity.TOP);  
+
+
+        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        buttonParams.setMargins(16, 16, 16, 16);  
+
+
+        Button saveButton = new Button(context);
+        saveButton.setText("Save");
+        saveButton.setLayoutParams(buttonParams); 
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                    writer.write(editText.getText().toString());
+                    XposedBridge.log("File saved successfully.");
+                } catch (IOException e) {
+                    XposedBridge.log("Error saving the file: " + e.getMessage());
+                }
+            }
+        });
+
+
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.addView(editText);
+        layout.addView(saveButton);
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("通知を無効にしているグループ");
+        builder.setView(layout);
+        builder.setNegativeButton("キャンセル", null);
+        builder.show();
+    }
+    
 }
