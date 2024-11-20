@@ -11,7 +11,7 @@ import io.github.hiro.lime.LimeOptions;
 import io.github.hiro.lime.Main;
 
 public class SpoofUserAgent implements IHook {
-    private boolean hasLoggedSpoofedUserAgent = false; 
+    private boolean hasLoggedSpoofedUserAgent = false;
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
@@ -36,7 +36,7 @@ public class SpoofUserAgent implements IHook {
 
                         if (!hasLoggedSpoofedUserAgent) {
                             XposedBridge.log("Spoofed User-Agent: " + spoofedUserAgent);
-                            hasLoggedSpoofedUserAgent = true; 
+                            hasLoggedSpoofedUserAgent = true;
                         }
                     }
                 }

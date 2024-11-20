@@ -96,5 +96,7 @@
     <string name="switch_KeepUnreadLSpatch">LsPatch用「未読のまま閲覧」スイッチを表示</string>
     <string name="SleepCall">連続で通話がかかってこないとかからないように</string>
     <string name="CrashGuard">随時キャッシュを削除してクラッシュを予防</string>
+    <string name="NoMuteMessage">ミュートメッセージの無効化</string>
+    <string name="Notif_invalid">登録しているグループ名の通知をオフにする</string>
 
 </resources>

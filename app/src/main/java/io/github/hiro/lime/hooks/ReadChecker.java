@@ -37,18 +37,21 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.hiro.lime.LimeOptions;
 import io.github.hiro.lime.R;
+
 public class ReadChecker implements IHook {
     private SQLiteDatabase limeDatabase;
     private SQLiteDatabase db3 = null;
     private SQLiteDatabase db4 = null;
     private boolean shouldHookOnCreate = false;
     private String currentGroupId = null;
+
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (!limeOptions.ReadChecker.checked) return;
@@ -94,7 +97,7 @@ public class ReadChecker implements IHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 String chatId = (String) param.getResult();
-               XposedBridge.log(chatId);
+                XposedBridge.log(chatId);
                 if (isGroupExists(chatId)) {
                     shouldHookOnCreate = true;
                     currentGroupId = chatId;
@@ -259,7 +262,7 @@ public class ReadChecker implements IHook {
             new AlertDialog.Builder(activity)
                     .setTitle("確認")
                     .setMessage("本当に削除しますか？")
-                    .setPositiveButton("はい", (confirmDialog, confirmWhich) -> deleteGroupData(groupId,activity))
+                    .setPositiveButton("はい", (confirmDialog, confirmWhich) -> deleteGroupData(groupId, activity))
                     .setNegativeButton("いいえ", null)
                     .show();
         });
@@ -270,7 +273,7 @@ public class ReadChecker implements IHook {
         scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
     }
 
-    private void deleteGroupData(String groupId,Activity activity) {
+    private void deleteGroupData(String groupId, Activity activity) {
         if (limeDatabase == null) {
             return;
         }
@@ -301,20 +304,6 @@ public class ReadChecker implements IHook {
         return user_names;
     }
 
-    private static class DataItem {
-        String serverId;
-        String content;
-        String createdTime;
-        Set<String> user_names;
-
-        DataItem(String serverId, String content, String createdTime) {
-            this.serverId = serverId;
-            this.content = content;
-            this.createdTime = createdTime;
-            this.user_names = new HashSet<>();
-        }
-    }
-
     private void catchNotification(XC_LoadPackage.LoadPackageParam loadPackageParam, SQLiteDatabase db3, SQLiteDatabase db4, Context appContext) {
         try {
             XposedBridge.hookAllMethods(
@@ -326,7 +315,7 @@ public class ReadChecker implements IHook {
                             String paramValue = param.args[0].toString();
                             XposedBridge.log(paramValue);
                             if (appContext == null) {
-                             XposedBridge.log("appContext is null!");
+                                XposedBridge.log("appContext is null!");
                                 return;
                             }
 
@@ -537,6 +526,7 @@ public class ReadChecker implements IHook {
         limeDatabase.execSQL(createGroupTable);
         // XposedBridge.log("Database initialized and group_messages table created.");
     }
+
     private void saveData(String groupId, String serverId, String checkedUser, String groupName, String content, String user_name, String createdTime, Context context) {
         File dbFile = new File(context.getFilesDir(), "operation_log.txt");
 
@@ -617,9 +607,23 @@ public class ReadChecker implements IHook {
             limeDatabase.execSQL(insertQuery, new Object[]{groupId, serverId, checkedUser, groupName, content, user_name, createdTime});
 
             XposedBridge.log("Saved to DB: Group_Id: " + groupId + ", Server_id: " + serverId + ", Checked_user: " + checkedUser +
-             ", Group_Name: " + groupName + ", Content: " + content + ", user_name: " + user_name + ", Created_Time: " + createdTime);
+                    ", Group_Name: " + groupName + ", Content: " + content + ", user_name: " + user_name + ", Created_Time: " + createdTime);
         } catch (Exception e) {
             Log.e("insertNewRecord", "Error saving data to database:", e);
+        }
+    }
+
+    private static class DataItem {
+        String serverId;
+        String content;
+        String createdTime;
+        Set<String> user_names;
+
+        DataItem(String serverId, String content, String createdTime) {
+            this.serverId = serverId;
+            this.content = content;
+            this.createdTime = createdTime;
+            this.user_names = new HashSet<>();
         }
     }
 

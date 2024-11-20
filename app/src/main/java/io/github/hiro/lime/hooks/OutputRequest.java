@@ -16,7 +16,7 @@ public class OutputRequest implements IHook {
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                       XposedBridge.log(new Communication(Communication.Type.REQUEST, param.args[0].toString(), param.args[1]).toString());
+                        XposedBridge.log(new Communication(Communication.Type.REQUEST, param.args[0].toString(), param.args[1]).toString());
                     }
                 }
         );

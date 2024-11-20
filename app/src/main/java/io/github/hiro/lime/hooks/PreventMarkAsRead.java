@@ -19,7 +19,7 @@ public class PreventMarkAsRead implements IHook {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) {
 
-                            param.setResult(null);
+                        param.setResult(null);
 
                     }
                 }

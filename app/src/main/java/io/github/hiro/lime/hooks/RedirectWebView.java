@@ -3,7 +3,6 @@ package io.github.hiro.lime.hooks;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -42,7 +41,7 @@ public class RedirectWebView implements IHook {
 
                                 return;
                             }
-                            
+
                             webView.setVisibility(View.GONE);
                             webView.stopLoading();
 

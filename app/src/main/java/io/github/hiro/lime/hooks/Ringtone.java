@@ -14,6 +14,7 @@ import io.github.hiro.lime.LimeOptions;
 public class Ringtone implements IHook {
     private android.media.Ringtone ringtone = null;
     private boolean isPlaying = false;
+
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
 

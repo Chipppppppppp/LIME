@@ -1,11 +1,6 @@
 package io.github.hiro.lime.hooks;
 
 public class Communication {
-    public enum Type {
-        REQUEST,
-        RESPONSE;
-    }
-
     public Type type;
     public String name;
     public Object value;
@@ -19,5 +14,10 @@ public class Communication {
     @Override
     public String toString() {
         return type.toString() + ": " + name + ", " + value.toString();
+    }
+
+    public enum Type {
+        REQUEST,
+        RESPONSE
     }
 }

@@ -7,6 +7,7 @@ import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -54,7 +55,8 @@ public class Archived implements IHook {
             }
         });
     }
-    private void hookMessageDeletion(XC_LoadPackage.LoadPackageParam loadPackageParam, Context context, SQLiteDatabase db,Context moduleContext) {
+
+    private void hookMessageDeletion(XC_LoadPackage.LoadPackageParam loadPackageParam, Context context, SQLiteDatabase db, Context moduleContext) {
         if (!limeOptions.Archived.checked) return;
         try {
 
@@ -70,7 +72,7 @@ public class Archived implements IHook {
                                 String talkId = extractTalkId(paramValue);
                                 if (talkId != null) {
                                     saveTalkIdToFile(talkId, context);
-                                    updateArchivedChatsFromFile(db, context,moduleContext);
+                                    updateArchivedChatsFromFile(db, context, moduleContext);
                                 }
                             }
                             if (paramValue.contains("hidden:false")) {
@@ -78,7 +80,7 @@ public class Archived implements IHook {
                                 if (talkId != null) {
 
                                     deleteTalkIdFromFile(talkId, context);
-                                    updateArchivedChatsFromFile(db, context,moduleContext);
+                                    updateArchivedChatsFromFile(db, context, moduleContext);
                                 }
                             }
 
@@ -158,7 +160,6 @@ public class Archived implements IHook {
     }
 
 
-
     private List<String> readChatIdsFromFile(Context context, Context moduleContext) {
         List<String> chatIds = new ArrayList<>();
         File dir = moduleContext.getFilesDir();
@@ -215,8 +216,7 @@ public class Archived implements IHook {
     }
 
 
-
-    private void updateArchivedChatsFromFile(SQLiteDatabase db, Context context,Context moduleContext) {
+    private void updateArchivedChatsFromFile(SQLiteDatabase db, Context context, Context moduleContext) {
         File dir = moduleContext.getFilesDir(); // moduleContextを使用
         File file = new File(dir, "hidelist.txt");
 
