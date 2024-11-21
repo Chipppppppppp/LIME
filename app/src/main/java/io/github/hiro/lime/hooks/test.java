@@ -39,6 +39,8 @@ public class test implements IHook {
     }
 
 
+
+
     private void hookAllClassesInPackage(ClassLoader classLoader, XC_LoadPackage.LoadPackageParam loadPackageParam) {
 
 
