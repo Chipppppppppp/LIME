@@ -58,15 +58,11 @@ public class Notif_invalid implements IHook {
 
                     private void saveChatNameToFile(String chatName, File dir) {
                         if (!dir.exists() && !dir.mkdirs()) {
-                            XposedBridge.log("Failed to create directory: " + dir.getPath());
                             return;
                         }
-
                         File file = new File(dir, "Notification.txt");
-
                         try {
                             if (!file.exists() && !file.createNewFile()) {
-                                XposedBridge.log("Failed to create file: " + file.getPath());
                                 return;
                             }
 
@@ -77,21 +73,15 @@ public class Notif_invalid implements IHook {
                                     existingChatNames.add(line.trim());
                                 }
                             } catch (IOException e) {
-                                XposedBridge.log("Error reading file: " + e.getMessage());
+
                             }
 
                             if (!existingChatNames.contains(chatName.trim())) {
                                 try (FileWriter writer = new FileWriter(file, true)) {
                                     writer.write(chatName + "\n");
-                                    XposedBridge.log("Saved chatName: " + chatName);
-                                } catch (IOException e) {
-                                    XposedBridge.log("Error writing to file: " + e.getMessage());
                                 }
-                            } else {
-                                XposedBridge.log("Chat name already exists: " + chatName);
                             }
                         } catch (IOException e) {
-                            XposedBridge.log("Error accessing file: " + e.getMessage());
                         }
                     }
                 });
@@ -104,11 +94,16 @@ public class Notif_invalid implements IHook {
                         int id = (int) param.args[1];
                         Notification notification = (Notification) param.args[2];
 
-                        logNotificationDetails("NotificationManager.notify (with tag)", id, notification);
+                       // logNotificationDetails("NotificationManager.notify (with tag)", id, notification);
                         String subText = notification.extras.getString(Notification.EXTRA_SUB_TEXT);
+
+
+
                         List<String> chatNamesFromFile = loadNamesFromFile();
                         for (String chatName : chatNamesFromFile) {
                             if (subText != null && subText.contains(chatName)) {
+
+
                                 param.setResult(null);
                                 return;
                             }

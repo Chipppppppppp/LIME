@@ -97,7 +97,7 @@ public class ReadChecker implements IHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 String chatId = (String) param.getResult();
-                XposedBridge.log(chatId);
+                //(chatId);
                 if (isGroupExists(chatId)) {
                     shouldHookOnCreate = true;
                     currentGroupId = chatId;
@@ -128,7 +128,7 @@ public class ReadChecker implements IHook {
 
     private boolean isGroupExists(String groupId) {
         if (limeDatabase == null) {
-            // XposedBridge.log("Database is not initialized.");
+           //("Database is not initialized.");
             return false;
         }
 
@@ -144,7 +144,7 @@ public class ReadChecker implements IHook {
 
     private boolean isNoGroup(String groupId) {
         if (limeDatabase == null) {
-            // XposedBridge.log("Database is not initialized.");
+           //("Database is not initialized.");
             return true;
         }
 
@@ -313,9 +313,9 @@ public class ReadChecker implements IHook {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             String paramValue = param.args[0].toString();
-                            XposedBridge.log(paramValue);
+                            //(paramValue);
                             if (appContext == null) {
-                                XposedBridge.log("appContext is null!");
+                                //("appContext is null!");
                                 return;
                             }
 
@@ -324,7 +324,7 @@ public class ReadChecker implements IHook {
                                 moduleContext = appContext.createPackageContext(
                                         "io.github.hiro.lime", Context.CONTEXT_IGNORE_SECURITY);
                             } catch (PackageManager.NameNotFoundException e) {
-                                // XposedBridge.log("Failed to create package context: " + e.getMessage());
+                               //("Failed to create package context: " + e.getMessage());
                                 return;
                             }
 
@@ -425,7 +425,7 @@ public class ReadChecker implements IHook {
                 limeDatabase.update("group_messages", values, "group_id=? AND server_id=?",
                         new String[]{groupId, previousServerId});
 
-                // XposedBridge.log("Marked as read in lime_data.db: Group_id: " + groupId + ", Server_id: " + previousServerId + ", Updated user_name: " + updatedUserName);
+               //("Marked as read in lime_data.db: Group_id: " + groupId + ", Server_id: " + previousServerId + ", Updated user_name: " + updatedUserName);
             }
             cursor.close();
 
@@ -479,13 +479,13 @@ public class ReadChecker implements IHook {
             writer.append("Missing serverId in paramValue:").append(paramValue).append("\n");
             writer.close();
         } catch (IOException e) {
-            // XposedBridge.log("Error writing paramValue to file: " + e.getMessage());
+           //("Error writing paramValue to file: " + e.getMessage());
         }
     }
 
     private String queryDatabase(SQLiteDatabase db, String query, String... selectionArgs) {
         if (db == null) {
-            // XposedBridge.log("Database is not initialized.");
+           //("Database is not initialized.");
             return null;
         }
         Cursor cursor = db.rawQuery(query, selectionArgs);
@@ -503,9 +503,9 @@ public class ReadChecker implements IHook {
         if (oldDbFile.exists()) {
             boolean deleted = oldDbFile.delete();
             if (deleted) {
-                XposedBridge.log("Old database file lime_data.db deleted.");
+                //("Old database file lime_data.db deleted.");
             } else {
-                XposedBridge.log("Failed to delete old database file lime_data.db.");
+                //("Failed to delete old database file lime_data.db.");
             }
         }
         // 新しいデータベースファイルの初期化
@@ -524,7 +524,7 @@ public class ReadChecker implements IHook {
                 ");";
 
         limeDatabase.execSQL(createGroupTable);
-        // XposedBridge.log("Database initialized and group_messages table created.");
+       //XposedBridge.log("Database initialized and group_messages table created.");
     }
 
     private void saveData(String groupId, String serverId, String checkedUser, String groupName, String content, String user_name, String createdTime, Context context) {
@@ -551,7 +551,7 @@ public class ReadChecker implements IHook {
                         ContentValues values = new ContentValues();
                         values.put("user_name", updatedUserName);
                         limeDatabase.update("group_messages", values, "server_id=? AND checked_user=?", new String[]{serverId, checkedUser});
-                        // XposedBridge.log("User name updated for server_id: " + serverId + ", checked_user: " + checkedUser);
+                       //XposedBridge.log("User name updated for server_id: " + serverId + ", checked_user: " + checkedUser);
                     }
                 } else {
                     // 新しいレコードを挿入
@@ -588,7 +588,7 @@ public class ReadChecker implements IHook {
                     values.put("user_name", updatedUserName);
 
                     limeDatabase.update("group_messages", values, "group_id=? AND server_id=?", new String[]{groupId, serverId});
-                    // XposedBridge.log("Updated user_name for other records in group_id: " + groupId + ", server_id: " + serverId);
+                   //XposedBridge.log("Updated user_name for other records in group_id: " + groupId + ", server_id: " + serverId);
                 }
             }
         } catch (Exception e) {
@@ -606,8 +606,8 @@ public class ReadChecker implements IHook {
                     "VALUES(?, ?, ?, ?, ?, ?, ?);";
             limeDatabase.execSQL(insertQuery, new Object[]{groupId, serverId, checkedUser, groupName, content, user_name, createdTime});
 
-            XposedBridge.log("Saved to DB: Group_Id: " + groupId + ", Server_id: " + serverId + ", Checked_user: " + checkedUser +
-                    ", Group_Name: " + groupName + ", Content: " + content + ", user_name: " + user_name + ", Created_Time: " + createdTime);
+            //XposedBridge.log("Saved to DB: Group_Id: " + groupId + ", Server_id: " + serverId + ", Checked_user: " + checkedUser +
+                //    ", Group_Name: " + groupName + ", Content: " + content + ", user_name: " + user_name + ", Created_Time: " + createdTime);
         } catch (Exception e) {
             Log.e("insertNewRecord", "Error saving data to database:", e);
         }

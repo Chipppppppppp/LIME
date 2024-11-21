@@ -231,18 +231,25 @@ public class EmbedOptions implements IHook {
                                 }
                             });
 
-                            layout.addView(restorefolderButton);
 
-                            Button MuteGroups_Button = new Button(context);
-                            MuteGroups_Button.setLayoutParams(buttonParams);
-                            MuteGroups_Button.setText("通知を無効にしているグループ");
-                            MuteGroups_Button.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    MuteGroups_Button(context);
-                                }
-                            });
-                            layout.addView(MuteGroups_Button);
+                            if (limeOptions.Notif_invalid.checked) {
+                                // 条件が満たされた場合にのみボタンを作成
+                                layout.addView(restorefolderButton);
+
+                                Button MuteGroups_Button = new Button(context);
+                                MuteGroups_Button.setLayoutParams(buttonParams);
+                                MuteGroups_Button.setText("通知を無効にしているグループ");
+
+                                MuteGroups_Button.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        MuteGroups_Button(context); // ボタンクリック時の処理
+                                    }
+                                });
+
+                                layout.addView(MuteGroups_Button);
+                            }
+
 
                             builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
                                 @Override
