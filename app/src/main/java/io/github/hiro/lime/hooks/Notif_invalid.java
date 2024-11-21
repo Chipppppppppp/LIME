@@ -109,16 +109,12 @@ public class Notif_invalid implements IHook {
                             }
                         }
 
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            String channelId = notification.getChannelId();
-                            NotificationManager manager = (NotificationManager) AndroidAppHelper.currentApplication().getSystemService(Context.NOTIFICATION_SERVICE);
-                            NotificationChannel channel = manager.getNotificationChannel(channelId);
-
+                    
                             if (channel != null) {
                                 String channelName = channel.getName().toString();
-                                // XposedBridge.log("Notification Channel Name: " + channelName);
+                                 XposedBridge.log("Notification Channel Name: " + channelName);
                             }
-                        }
+                        
                     }
                 });
 
