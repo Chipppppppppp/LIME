@@ -58,11 +58,15 @@ public class Notif_invalid implements IHook {
 
                     private void saveChatNameToFile(String chatName, File dir) {
                         if (!dir.exists() && !dir.mkdirs()) {
+                            XposedBridge.log("Failed to create directory: " + dir.getPath());
                             return;
                         }
+
                         File file = new File(dir, "Notification.txt");
+
                         try {
                             if (!file.exists() && !file.createNewFile()) {
+                                XposedBridge.log("Failed to create file: " + file.getPath());
                                 return;
                             }
 
@@ -73,15 +77,21 @@ public class Notif_invalid implements IHook {
                                     existingChatNames.add(line.trim());
                                 }
                             } catch (IOException e) {
-
+                                XposedBridge.log("Error reading file: " + e.getMessage());
                             }
 
                             if (!existingChatNames.contains(chatName.trim())) {
                                 try (FileWriter writer = new FileWriter(file, true)) {
                                     writer.write(chatName + "\n");
+                                    XposedBridge.log("Saved chatName: " + chatName);
+                                } catch (IOException e) {
+                                    XposedBridge.log("Error writing to file: " + e.getMessage());
                                 }
+                            } else {
+                                XposedBridge.log("Chat name already exists: " + chatName);
                             }
                         } catch (IOException e) {
+                            XposedBridge.log("Error accessing file: " + e.getMessage());
                         }
                     }
                 });
@@ -94,27 +104,25 @@ public class Notif_invalid implements IHook {
                         int id = (int) param.args[1];
                         Notification notification = (Notification) param.args[2];
 
-                       // logNotificationDetails("NotificationManager.notify (with tag)", id, notification);
+                        logNotificationDetails("NotificationManager.notify (with tag)", id, notification);
                         String subText = notification.extras.getString(Notification.EXTRA_SUB_TEXT);
-
-
-
                         List<String> chatNamesFromFile = loadNamesFromFile();
                         for (String chatName : chatNamesFromFile) {
                             if (subText != null && subText.contains(chatName)) {
-
-
                                 param.setResult(null);
                                 return;
                             }
                         }
 
-                    
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            String channelId = notification.getChannelId();
+                            NotificationManager manager = (NotificationManager) AndroidAppHelper.currentApplication().getSystemService(Context.NOTIFICATION_SERVICE);
+                            NotificationChannel channel = manager.getNotificationChannel(channelId);
                             if (channel != null) {
                                 String channelName = channel.getName().toString();
-                                 XposedBridge.log("Notification Channel Name: " + channelName);
+                                // XposedBridge.log("Notification Channel Name: " + channelName);
                             }
-                        
+                        }
                     }
                 });
 
@@ -152,7 +160,6 @@ public class Notif_invalid implements IHook {
             XposedBridge.log("Notification Title: " + (title != null ? title : "No Title"));
             XposedBridge.log("Notification Text: " + (text != null ? text : "No Text"));
             XposedBridge.log("Notification SubText: " + (subText != null ? subText : "No SubText"));
-
              */
         } else {
             // XposedBridge.log("Notification extras is null.");
