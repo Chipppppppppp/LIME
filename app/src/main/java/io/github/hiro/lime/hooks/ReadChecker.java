@@ -415,17 +415,21 @@ public class ReadChecker implements IHook {
                 String previousContent = cursor.getString(cursor.getColumnIndex("content"));
                 String previousTimeEpochStr = cursor.getString(cursor.getColumnIndex("created_time"));
                 String previousUserName = cursor.getString(cursor.getColumnIndex("user_name"));
-                String previousTimeFormatted = formatMessageTime(previousTimeEpochStr);
 
-                String updatedUserName = previousUserName + (previousUserName.isEmpty() ? "" : "\n") + checkedUser;
+                // 現在時刻を取得してフォーマット
+                String currentTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+
+                // updatedUserName を user_name:保存時刻 形式に更新
+                String updatedUserName = previousUserName +
+                        (previousUserName.isEmpty() ? "" : "\n") +
+                        checkedUser + " :" + currentTimestamp;
 
                 ContentValues values = new ContentValues();
                 values.put("user_name", updatedUserName);
 
+                // データベースを更新
                 limeDatabase.update("group_messages", values, "group_id=? AND server_id=?",
                         new String[]{groupId, previousServerId});
-
-               //("Marked as read in lime_data.db: Group_id: " + groupId + ", Server_id: " + previousServerId + ", Updated user_name: " + updatedUserName);
             }
             cursor.close();
 
@@ -544,22 +548,26 @@ public class ReadChecker implements IHook {
                 int count = cursor.getInt(0);
                 String existingUserName = cursor.getString(1);
 
+                // 現在時刻を取得してフォーマット
+                String currentTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+                String updatedUserName = user_name + " :" + currentTimestamp;
+
                 if (count > 0) {
-                    // `user_name`にすでに同じ名前がないかチェックし、ない場合のみ追加する
+                    // `user_name` に既に同じ名前がない場合のみ追加
                     if (!existingUserName.contains(user_name)) {
-                        String updatedUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n") + "-" + user_name;
+                        String newUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n") + "-" + updatedUserName;
                         ContentValues values = new ContentValues();
-                        values.put("user_name", updatedUserName);
+                        values.put("user_name", newUserName);
                         limeDatabase.update("group_messages", values, "server_id=? AND checked_user=?", new String[]{serverId, checkedUser});
-                       //XposedBridge.log("User name updated for server_id: " + serverId + ", checked_user: " + checkedUser);
+                        // XposedBridge.log("User name updated for server_id: " + serverId + ", checked_user: " + checkedUser);
                     }
                 } else {
                     // 新しいレコードを挿入
-                    insertNewRecord(groupId, serverId, checkedUser, groupName, content, "-" + user_name, createdTime);
+                    insertNewRecord(groupId, serverId, checkedUser, groupName, content, "-" + updatedUserName, createdTime);
                 }
 
                 // 同じ groupId 内の他のレコードの user_name カラムを更新
-                updateOtherRecordsUserNames(groupId, user_name);
+                updateOtherRecordsUserNames(groupId, updatedUserName);
             }
 
         } catch (Exception e) {
@@ -570,25 +578,28 @@ public class ReadChecker implements IHook {
             }
         }
     }
-
     private void updateOtherRecordsUserNames(String groupId, String user_name) {
         Cursor cursor = null;
         try {
             String selectOtherQuery = "SELECT server_id, user_name FROM group_messages WHERE group_id=? AND user_name NOT LIKE ?";
             cursor = limeDatabase.rawQuery(selectOtherQuery, new String[]{groupId, "%-" + user_name + "%"});
 
+            // 現在時刻を取得してフォーマット
+            String currentTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+            String updatedUserNameWithTimestamp = user_name + " :" + currentTimestamp;
+
             while (cursor.moveToNext()) {
                 String serverId = cursor.getString(cursor.getColumnIndex("server_id"));
                 String existingUserName = cursor.getString(cursor.getColumnIndex("user_name"));
 
-                // `user_name`にすでに同じ名前がないかチェック
+                // `user_name` にすでに同じ名前がないかチェック
                 if (!existingUserName.contains(user_name)) {
-                    String updatedUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n") + "-" + user_name;
+                    String newUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n") + "-" + updatedUserNameWithTimestamp;
                     ContentValues values = new ContentValues();
-                    values.put("user_name", updatedUserName);
+                    values.put("user_name", newUserName);
 
                     limeDatabase.update("group_messages", values, "group_id=? AND server_id=?", new String[]{groupId, serverId});
-                   //XposedBridge.log("Updated user_name for other records in group_id: " + groupId + ", server_id: " + serverId);
+                    // XposedBridge.log("Updated user_name for other records in group_id: " + groupId + ", server_id: " + serverId);
                 }
             }
         } catch (Exception e) {
@@ -599,6 +610,7 @@ public class ReadChecker implements IHook {
             }
         }
     }
+
 
     private void insertNewRecord(String groupId, String serverId, String checkedUser, String groupName, String content, String user_name, String createdTime) {
         try {
