@@ -98,5 +98,5 @@
     <string name="CrashGuard">随時キャッシュを削除してクラッシュを予防</string>
     <string name="NoMuteMessage">ミュートメッセージの無効化</string>
     <string name="Notif_invalid">登録しているグループ名の通知をオフにする</string>
-
+    <string name="NaviColor">ナビゲーションのボタンの色を黒にする、ダークテーマをピュアダークにする</string>
 </resources>
