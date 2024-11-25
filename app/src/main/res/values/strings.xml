@@ -92,7 +92,7 @@
     <string name="RemoveService">サービスの項目を削除</string>
     <string name="ReadChecker">送信したメッセージの既読者の確認</string>
     <string name="removeNotification">更新されたプロフィールを削除\n</string>
-    <string name="NaviColor">ナビゲーションのボタンの色を黒にする</string>
+    <string name="NaviColor">ナビゲーションのボタンの色を黒にする、ダークテーマをピュアダークにする</string>
     <string name="switch_KeepUnreadLSpatch">LsPatch用「未読のまま閲覧」スイッチを表示</string>
     <string name="AutomaticBackup">定期的にバックアップ\n</string>
     <string name="SleepCall">連続で通話がかかってこないとかからないように</string>
