@@ -39,9 +39,9 @@ public class NaviColor implements IHook {
     String[] excludedResourceNames = {
             "chathistory_message_list",
             "profile_area_binding","fallback_header_background","user_profile_area","common_dialog_edit_text","chat_ui_oa_status_bar_button",
-            "user_profile_cover_dim_layer","status_bar_background_view","default_color_animation_layer","main_tab_search_bar_scanner_icon",
+            "user_profile_cover_dim_layer","status_bar_background_view","default_color_animation_layer","main_tab_search_bar_scanner_icon","header_button_layout",
             "profile_area_binding","social_profile_header_back","user_profile_cover_dim_layer","chat_ui_announcement_unfold_content_unfold_button",
-            "social_profile_link","user_profile_button_area_separator","user_profile_root","content","status_bar_background_view"
+            "social_profile_link","user_profile_button_area_separator","user_profile_root","content","status_bar_background_view","chathistory_oa_status_bar_holder_view"
             ,"chat_ui_fragment_container","chathistory_header_search_box_viewstub","tab_container","no_id","user_profile_status_message_edit_button"
     };
     @Override
@@ -123,45 +123,45 @@ public class NaviColor implements IHook {
 
             // リソース名を取得
             String resourceName = getViewResourceName(view);
-            XposedBridge.log("Resource Name: " + resourceName);
+           // XposedBridge.log("Resource Name: " + resourceName);
 
             // 既に変更済みのリソースかどうかを確認
             if (changedResources.contains(resourceName)) {
-                XposedBridge.log("Skipping Background Color Change for Resource Name: " + resourceName + " (Already Changed)");
+               // XposedBridge.log("Skipping Background Color Change for Resource Name: " + resourceName + " (Already Changed)");
                 return; // 変更済みリソースの場合は処理を終了
             }
 
             // リソース名が変更しないリストに含まれているか確認
             for (String excludedName : excludedResourceNames) {
                 if (resourceName.equals(excludedName)) {
-                    XposedBridge.log("Skipping Background Color Change for Resource Name: " + resourceName);
+                   // XposedBridge.log("Skipping Background Color Change for Resource Name: " + resourceName);
                     return; // 変更しない場合は処理を終了
                 }
             }
 
             // 背景を取得
             Drawable background = view.getBackground();
-
+            
                 // 背景が null でないことを確認
                 if (background != null) {
                     // 背景のクラス名をログに出力
-                    XposedBridge.log("Background Class Name: " + background.getClass().getName());
+                   // XposedBridge.log("Background Class Name: " + background.getClass().getName());
 
                     if (background instanceof ColorDrawable) {
                         ((ColorDrawable) background).setColor(Color.parseColor("#000000"));
 
 
-                        XposedBridge.log("Changed Background Color of Resource Name: " + resourceName + " to #000000");
+                       // XposedBridge.log("Changed Background Color of Resource Name: " + resourceName + " to #000000");
                     } else if (background instanceof BitmapDrawable) {
-                    XposedBridge.log("BitmapDrawable background, cannot change color directly.");
+                   // XposedBridge.log("BitmapDrawable background, cannot change color directly.");
                 } else {
-                    XposedBridge.log("Unknown background type for Resource Name: " + resourceName + ", Class Name: " + background.getClass().getName());
+                   // XposedBridge.log("Unknown background type for Resource Name: " + resourceName + ", Class Name: " + background.getClass().getName());
                 }
             } else {
-                XposedBridge.log("Background is null for Resource Name: " + resourceName);
+               // XposedBridge.log("Background is null for Resource Name: " + resourceName);
             }
         } catch (Resources.NotFoundException e) {
-            XposedBridge.log("Resource name not found for View ID: " + view.getId());
+           // XposedBridge.log("Resource name not found for View ID: " + view.getId());
         } finally {
             isChangingColor = false; // Reset the flag after the method execution
         }
@@ -175,7 +175,7 @@ public class NaviColor implements IHook {
             try {
                 return view.getResources().getResourceEntryName(viewId);
             } catch (Resources.NotFoundException e) {
-                XposedBridge.log("Resource not found for View ID: " + viewId);
+               // XposedBridge.log("Resource not found for View ID: " + viewId);
                 return "unknown";
             }
         }

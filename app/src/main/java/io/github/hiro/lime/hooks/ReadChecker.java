@@ -550,24 +550,24 @@ public class ReadChecker implements IHook {
 
                 // 現在時刻を取得してフォーマット
                 String currentTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-                String updatedUserName = user_name + " :" + currentTimestamp;
+                String newUserNameWithTimestamp = user_name + " :" + currentTimestamp;
 
                 if (count > 0) {
-                    // `user_name` に既に同じ名前がない場合のみ追加
-                    if (!existingUserName.contains(user_name)) {
-                        String newUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n") + "-" + updatedUserName;
+                    // `user_name` に既に保存時刻が含まれていない場合のみ追加
+                    if (!existingUserName.contains(newUserNameWithTimestamp)) {
+                        String updatedUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n") + "-" + newUserNameWithTimestamp;
                         ContentValues values = new ContentValues();
-                        values.put("user_name", newUserName);
+                        values.put("user_name", updatedUserName);
                         limeDatabase.update("group_messages", values, "server_id=? AND checked_user=?", new String[]{serverId, checkedUser});
                         // XposedBridge.log("User name updated for server_id: " + serverId + ", checked_user: " + checkedUser);
                     }
                 } else {
                     // 新しいレコードを挿入
-                    insertNewRecord(groupId, serverId, checkedUser, groupName, content, "-" + updatedUserName, createdTime);
+                    insertNewRecord(groupId, serverId, checkedUser, groupName, content, "-" + newUserNameWithTimestamp, createdTime);
                 }
 
                 // 同じ groupId 内の他のレコードの user_name カラムを更新
-                updateOtherRecordsUserNames(groupId, updatedUserName);
+                updateOtherRecordsUserNames(groupId, newUserNameWithTimestamp);
             }
 
         } catch (Exception e) {
@@ -578,6 +578,7 @@ public class ReadChecker implements IHook {
             }
         }
     }
+
     private void updateOtherRecordsUserNames(String groupId, String user_name) {
         Cursor cursor = null;
         try {
@@ -586,17 +587,17 @@ public class ReadChecker implements IHook {
 
             // 現在時刻を取得してフォーマット
             String currentTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-            String updatedUserNameWithTimestamp = user_name + " :" + currentTimestamp;
+            String newUserNameWithTimestamp = user_name + " :" + currentTimestamp;
 
             while (cursor.moveToNext()) {
                 String serverId = cursor.getString(cursor.getColumnIndex("server_id"));
                 String existingUserName = cursor.getString(cursor.getColumnIndex("user_name"));
 
-                // `user_name` にすでに同じ名前がないかチェック
-                if (!existingUserName.contains(user_name)) {
-                    String newUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n") + "-" + updatedUserNameWithTimestamp;
+                // `user_name` に保存時刻付きの名前が含まれていない場合のみ追加
+                if (!existingUserName.contains(newUserNameWithTimestamp)) {
+                    String updatedUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n") + "-" + newUserNameWithTimestamp;
                     ContentValues values = new ContentValues();
-                    values.put("user_name", newUserName);
+                    values.put("user_name", updatedUserName);
 
                     limeDatabase.update("group_messages", values, "group_id=? AND server_id=?", new String[]{groupId, serverId});
                     // XposedBridge.log("Updated user_name for other records in group_id: " + groupId + ", server_id: " + serverId);
@@ -610,6 +611,7 @@ public class ReadChecker implements IHook {
             }
         }
     }
+
 
 
     private void insertNewRecord(String groupId, String serverId, String checkedUser, String groupName, String content, String user_name, String createdTime) {
