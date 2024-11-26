@@ -58,7 +58,7 @@ public class Notif_invalid implements IHook {
 
                     private void saveChatNameToFile(String chatName, File dir) {
                         if (!dir.exists() && !dir.mkdirs()) {
-                            XposedBridge.log("Failed to create directory: " + dir.getPath());
+                         //   XposedBridge.log("Failed to create directory: " + dir.getPath());
                             return;
                         }
 
@@ -66,7 +66,7 @@ public class Notif_invalid implements IHook {
 
                         try {
                             if (!file.exists() && !file.createNewFile()) {
-                                XposedBridge.log("Failed to create file: " + file.getPath());
+                              //  XposedBridge.log("Failed to create file: " + file.getPath());
                                 return;
                             }
 
@@ -77,21 +77,21 @@ public class Notif_invalid implements IHook {
                                     existingChatNames.add(line.trim());
                                 }
                             } catch (IOException e) {
-                                XposedBridge.log("Error reading file: " + e.getMessage());
+                             //   XposedBridge.log("Error reading file: " + e.getMessage());
                             }
 
                             if (!existingChatNames.contains(chatName.trim())) {
                                 try (FileWriter writer = new FileWriter(file, true)) {
                                     writer.write(chatName + "\n");
-                                    XposedBridge.log("Saved chatName: " + chatName);
+                                 //   XposedBridge.log("Saved chatName: " + chatName);
                                 } catch (IOException e) {
-                                    XposedBridge.log("Error writing to file: " + e.getMessage());
+                                 //   XposedBridge.log("Error writing to file: " + e.getMessage());
                                 }
                             } else {
-                                XposedBridge.log("Chat name already exists: " + chatName);
+                               // XposedBridge.log("Chat name already exists: " + chatName);
                             }
                         } catch (IOException e) {
-                            XposedBridge.log("Error accessing file: " + e.getMessage());
+                         //   XposedBridge.log("Error accessing file: " + e.getMessage());
                         }
                     }
                 });
