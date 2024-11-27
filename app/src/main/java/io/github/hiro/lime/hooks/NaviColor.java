@@ -42,7 +42,7 @@ public class NaviColor implements IHook {
             "user_profile_cover_dim_layer","status_bar_background_view","default_color_animation_layer","main_tab_search_bar_scanner_icon","header_button_layout",
             "profile_area_binding","social_profile_header_back","user_profile_cover_dim_layer","chat_ui_announcement_unfold_content_unfold_button",
             "social_profile_link","user_profile_button_area_separator","user_profile_root","content","status_bar_background_view","chathistory_oa_status_bar_holder_view"
-            ,"chat_ui_fragment_container","chathistory_header_search_box_viewstub","tab_container","no_id","user_profile_status_message_edit_button"
+            ,"chat_ui_fragment_container","chathistory_header_search_box_viewstub","tab_container","no_id","user_profile_status_message_edit_button","notices_background","scrollable_camera_mode_container",
     };
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
