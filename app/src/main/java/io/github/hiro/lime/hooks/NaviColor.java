@@ -37,12 +37,12 @@ import io.github.hiro.lime.LimeOptions;
 
 public class NaviColor implements IHook {
     String[] excludedResourceNames = {
-            "chathistory_message_list","notices_background",
+            "chathistory_message_list",
             "profile_area_binding","fallback_header_background","user_profile_area","common_dialog_edit_text","chat_ui_oa_status_bar_button",
             "user_profile_cover_dim_layer","status_bar_background_view","default_color_animation_layer","main_tab_search_bar_scanner_icon","header_button_layout",
             "profile_area_binding","social_profile_header_back","user_profile_cover_dim_layer","chat_ui_announcement_unfold_content_unfold_button",
             "social_profile_link","user_profile_button_area_separator","user_profile_root","content","status_bar_background_view","chathistory_oa_status_bar_holder_view"
-            ,"chat_ui_fragment_container","chathistory_header_search_box_viewstub","tab_container","no_id","user_profile_status_message_edit_button","notices_background","scrollable_camera_mode_container",
+            ,"chat_ui_fragment_container","chathistory_header_search_box_viewstub","tab_container","no_id","user_profile_status_message_edit_button"
     };
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
@@ -108,71 +108,49 @@ public class NaviColor implements IHook {
 
     }
 
-    private Set<String> changedResources = new HashSet<>();  // 変更済みリソースを保存するセット
 
-    private boolean isChangingColor = false;
+    private void checkAndChangeBackgroundColor(View view) {
+        try {
 
-private void checkAndChangeBackgroundColor(View view) {
-    try {
-        // Prevent recursion
-        if (isChangingColor) {
-            return; // Exit if we're already changing the color
-        }
-        isChangingColor = true;
 
-        // リソース名を取得
-        String resourceName = getViewResourceName(view);
+            // リソース名を取得
+            String resourceName = getViewResourceName(view);
+             //XposedBridge("Resource Name: " + resourceName);
 
-        // 既に変更済みのリソースかどうかを確認
-        if (changedResources.contains(resourceName)) {
-            return; // 変更済みリソースの場合は処理を終了
-        }
 
-        // リソース名が変更しないリストに含まれているか確認
-        for (String excludedName : excludedResourceNames) {
-            if (resourceName.equals(excludedName)) {
-                return; // 変更しない場合は処理を終了
-            }
-        }
+            // 背景を取得
+            Drawable background = view.getBackground();
 
-        // 背景を取得
-        Drawable background = view.getBackground();
+            // 背景が null でないことを確認
+            if (background != null) {
+                // 背景のクラス名をログに出力
+                 //XposedBridge("Background Class Name: " + background.getClass().getName());
 
-        // 背景が null でないことを確認
-        if (background != null) {
-            if (background instanceof ColorDrawable) {
-                // 現在の背景色を取得
-                int currentColor = ((ColorDrawable) background).getColor();
+                if (background instanceof ColorDrawable) {
+                    // 現在の背景色を取得
+                    int currentColor = ((ColorDrawable) background).getColor();
 
-                // 特定の色と一致する場合に背景色を変更
-                if (currentColor == Color.parseColor("#111111") || "statusBarBackground".equals(resourceName)
-                   || "navigationBarBackground".equals(resourceName)
-                || currentColor == Color.parseColor("#1A1A1A")) {
-                    ((ColorDrawable) background).setColor(Color.parseColor("#000000"));
-                    changedResources.add(resourceName); // リソースを変更済みリストに追加
-
-                    // ログ
-                    String newColor = "#000000";
-                    XposedBridge.log("Changed Background Color of Resource Name: " + resourceName + " from " 
-                        + String.format("#%06X", (0xFFFFFF & currentColor)) + " to " + newColor);
+                    // 色が指定された条件に一致する場合、#000000 に変更
+                    if (currentColor == Color.parseColor("#111111") || currentColor == Color.parseColor("#1A1A1A")) {
+                        ((ColorDrawable) background).setColor(Color.parseColor("#000000"));
+                         //XposedBridge("Changed Background Color of Resource Name: " + resourceName + " to #000000");
+                    }
+                } else if (background instanceof BitmapDrawable) {
+                     //XposedBridge("BitmapDrawable background, cannot change color directly.");
+                } else {
+                     //XposedBridge("Unknown background type for Resource Name: " + resourceName + ", Class Name: " + background.getClass().getName());
                 }
-            } else if (background instanceof BitmapDrawable) {
-                XposedBridge.log("BitmapDrawable background, cannot change color directly.");
             } else {
-                XposedBridge.log("Unknown background type for Resource Name: " + resourceName + ", Class Name: " 
-                    + background.getClass().getName());
+                 //XposedBridge("Background is null for Resource Name: " + resourceName);
             }
-        } else {
-            XposedBridge.log("Background is null for Resource Name: " + resourceName);
-        }
-    } catch (Resources.NotFoundException e) {
-        XposedBridge.log("Resource name not found for View ID: " + view.getId());
-    } finally {
-        isChangingColor = false; // Reset the flag after the method execution
-    }
-}
+        } catch (Resources.NotFoundException e) {
+             //XposedBridge("Resource name not found for View ID: " + view.getId());
+        } finally {
 
-    
+        }
+    }
+
+
     // リソース名を取得するためのメソッド
     private String getViewResourceName(View view) {
         int viewId = view.getId();
@@ -180,7 +158,7 @@ private void checkAndChangeBackgroundColor(View view) {
             try {
                 return view.getResources().getResourceEntryName(viewId);
             } catch (Resources.NotFoundException e) {
-               // XposedBridge.log("Resource not found for View ID: " + viewId);
+                //XposedBridge("Resource not found for View ID: " + viewId);
                 return "unknown";
             }
         }
