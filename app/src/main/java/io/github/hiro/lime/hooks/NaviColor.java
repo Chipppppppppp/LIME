@@ -145,7 +145,9 @@ private void checkAndChangeBackgroundColor(View view) {
                 int currentColor = ((ColorDrawable) background).getColor();
 
                 // 特定の色と一致する場合に背景色を変更
-                if (currentColor == Color.parseColor("#111111") || currentColor == Color.parseColor("#1A1A1A")) {
+                if (currentColor == Color.parseColor("#111111") || "statusBarBackground".equals(resourceName)
+                   || "navigationBarBackground".equals(resourceName)
+                || currentColor == Color.parseColor("#1A1A1A")) {
                     ((ColorDrawable) background).setColor(Color.parseColor("#000000"));
                     changedResources.add(resourceName); // リソースを変更済みリストに追加
 
