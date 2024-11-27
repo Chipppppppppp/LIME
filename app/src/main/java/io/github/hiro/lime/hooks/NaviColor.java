@@ -112,62 +112,65 @@ public class NaviColor implements IHook {
 
     private boolean isChangingColor = false;
 
-
-    private void checkAndChangeBackgroundColor(View view) {
-        try {
-            // Prevent recursion
-            if (isChangingColor) {
-                return; // Exit if we're already changing the color
-            }
-            isChangingColor = true;
-
-            // リソース名を取得
-            String resourceName = getViewResourceName(view);
-           // XposedBridge.log("Resource Name: " + resourceName);
-
-            // 既に変更済みのリソースかどうかを確認
-            if (changedResources.contains(resourceName)) {
-               // XposedBridge.log("Skipping Background Color Change for Resource Name: " + resourceName + " (Already Changed)");
-                return; // 変更済みリソースの場合は処理を終了
-            }
-
-            // リソース名が変更しないリストに含まれているか確認
-            for (String excludedName : excludedResourceNames) {
-                if (resourceName.equals(excludedName)) {
-                   // XposedBridge.log("Skipping Background Color Change for Resource Name: " + resourceName);
-                    return; // 変更しない場合は処理を終了
-                }
-            }
-
-            // 背景を取得
-            Drawable background = view.getBackground();
-            
-                // 背景が null でないことを確認
-                if (background != null) {
-                    // 背景のクラス名をログに出力
-                   // XposedBridge.log("Background Class Name: " + background.getClass().getName());
-
-                    if (background instanceof ColorDrawable) {
-                        ((ColorDrawable) background).setColor(Color.parseColor("#000000"));
-
-
-                       // XposedBridge.log("Changed Background Color of Resource Name: " + resourceName + " to #000000");
-                    } else if (background instanceof BitmapDrawable) {
-                   // XposedBridge.log("BitmapDrawable background, cannot change color directly.");
-                } else {
-                   // XposedBridge.log("Unknown background type for Resource Name: " + resourceName + ", Class Name: " + background.getClass().getName());
-                }
-            } else {
-               // XposedBridge.log("Background is null for Resource Name: " + resourceName);
-            }
-        } catch (Resources.NotFoundException e) {
-           // XposedBridge.log("Resource name not found for View ID: " + view.getId());
-        } finally {
-            isChangingColor = false; // Reset the flag after the method execution
+private void checkAndChangeBackgroundColor(View view) {
+    try {
+        // Prevent recursion
+        if (isChangingColor) {
+            return; // Exit if we're already changing the color
         }
+        isChangingColor = true;
+
+        // リソース名を取得
+        String resourceName = getViewResourceName(view);
+
+        // 既に変更済みのリソースかどうかを確認
+        if (changedResources.contains(resourceName)) {
+            return; // 変更済みリソースの場合は処理を終了
+        }
+
+        // リソース名が変更しないリストに含まれているか確認
+        for (String excludedName : excludedResourceNames) {
+            if (resourceName.equals(excludedName)) {
+                return; // 変更しない場合は処理を終了
+            }
+        }
+
+        // 背景を取得
+        Drawable background = view.getBackground();
+
+        // 背景が null でないことを確認
+        if (background != null) {
+            if (background instanceof ColorDrawable) {
+                // 現在の背景色を取得
+                int currentColor = ((ColorDrawable) background).getColor();
+
+                // 特定の色と一致する場合に背景色を変更
+                if (currentColor == Color.parseColor("#111111") || currentColor == Color.parseColor("#1A1A1A")) {
+                    ((ColorDrawable) background).setColor(Color.parseColor("#000000"));
+                    changedResources.add(resourceName); // リソースを変更済みリストに追加
+
+                    // ログ
+                    String newColor = "#000000";
+                    XposedBridge.log("Changed Background Color of Resource Name: " + resourceName + " from " 
+                        + String.format("#%06X", (0xFFFFFF & currentColor)) + " to " + newColor);
+                }
+            } else if (background instanceof BitmapDrawable) {
+                XposedBridge.log("BitmapDrawable background, cannot change color directly.");
+            } else {
+                XposedBridge.log("Unknown background type for Resource Name: " + resourceName + ", Class Name: " 
+                    + background.getClass().getName());
+            }
+        } else {
+            XposedBridge.log("Background is null for Resource Name: " + resourceName);
+        }
+    } catch (Resources.NotFoundException e) {
+        XposedBridge.log("Resource name not found for View ID: " + view.getId());
+    } finally {
+        isChangingColor = false; // Reset the flag after the method execution
     }
+}
 
-
+    
     // リソース名を取得するためのメソッド
     private String getViewResourceName(View view) {
         int viewId = view.getId();
