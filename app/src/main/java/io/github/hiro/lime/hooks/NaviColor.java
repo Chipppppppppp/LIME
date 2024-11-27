@@ -37,7 +37,7 @@ import io.github.hiro.lime.LimeOptions;
 
 public class NaviColor implements IHook {
     String[] excludedResourceNames = {
-            "chathistory_message_list",
+            "chathistory_message_list","notices_background",
             "profile_area_binding","fallback_header_background","user_profile_area","common_dialog_edit_text","chat_ui_oa_status_bar_button",
             "user_profile_cover_dim_layer","status_bar_background_view","default_color_animation_layer","main_tab_search_bar_scanner_icon","header_button_layout",
             "profile_area_binding","social_profile_header_back","user_profile_cover_dim_layer","chat_ui_announcement_unfold_content_unfold_button",
