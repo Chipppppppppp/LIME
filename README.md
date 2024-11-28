@@ -59,7 +59,8 @@ Macro SAMPLE<br>
 
 Thank you 
 
-LIME  開発者
+
+LIME  開発者（コラボレーター）
 https://github.com/Chipppppppppp
 
 コラボレーター
