@@ -79,10 +79,10 @@ public class NaviColor implements IHook {
 //XposedBridge.log("Unknown background type for Resource Name: " + resourceName + ", Class Name: " + background.getClass().getName());
                 }
             } else {
-                XposedBridge.log("Background is null for Resource Name: " + resourceName);
+              //  XposedBridge.log("Background is null for Resource Name: " + resourceName);
             }
         } catch (Resources.NotFoundException e) {
-            XposedBridge.log("Resource name not found for View ID: " + view.getId());
+       //     XposedBridge.log("Resource name not found for View ID: " + view.getId());
         }
     }
 
