@@ -63,7 +63,7 @@ public class RemoveAds implements IHook {
                     }
                 }
         );
-   
+
         XposedHelpers.findAndHookMethod(
                 ViewGroup.class,
                 "addView",
@@ -73,8 +73,8 @@ public class RemoveAds implements IHook {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         View view = (View) param.args[0];
-                        String className = view.getClass().getName();                     
-                        if (className.contains("Ad") ) {
+                        String className = view.getClass().getName();
+                        if (className.contains("Ad")) {
                             if (!adClassNames.contains(className)) {
                                 adClassNames.add(className);
                             }
@@ -83,7 +83,7 @@ public class RemoveAds implements IHook {
                     }
                 }
         );
- 
+
         for (String adClassName : adClassNames) {
             XposedBridge.hookAllConstructors(
                     loadPackageParam.classLoader.loadClass(adClassName),

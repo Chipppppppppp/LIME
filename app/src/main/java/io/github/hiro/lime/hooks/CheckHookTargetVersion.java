@@ -25,7 +25,7 @@ public class CheckHookTargetVersion implements IHook {
                         Context context = (Context) param.thisObject;
                         PackageManager pm = context.getPackageManager();
                         long versionCode = pm.getPackageInfo(loadPackageParam.packageName, 0).getLongVersionCode();
-                        String versionCodeStr = String.valueOf(versionCode); 
+                        String versionCodeStr = String.valueOf(versionCode);
 
                         if (!BuildConfig.HOOK_TARGET_VERSION.equals(versionCodeStr)) {
                             Utils.addModuleAssetPath(context);

@@ -23,20 +23,21 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
@@ -217,6 +218,7 @@ public class EmbedOptions implements IHook {
                                     backupChatsFolder(context);
                                 }
                             });
+
                             layout.addView(backupfolderButton);
 
                             Button restorefolderButton = new Button(context);
@@ -228,8 +230,25 @@ public class EmbedOptions implements IHook {
                                     restoreChatsFolder(context);
                                 }
                             });
-                            layout.addView(restorefolderButton);
 
+
+                            if (limeOptions.Notif_invalid.checked) {
+                                // 条件が満たされた場合にのみボタンを作成
+                                layout.addView(restorefolderButton);
+
+                                Button MuteGroups_Button = new Button(context);
+                                MuteGroups_Button.setLayoutParams(buttonParams);
+                                MuteGroups_Button.setText("通知を無効にしているグループ");
+
+                                MuteGroups_Button.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        MuteGroups_Button(context); // ボタンクリック時の処理
+                                    }
+                                });
+
+                                layout.addView(MuteGroups_Button);
+                            }
 
 
                             builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
@@ -468,6 +487,69 @@ public class EmbedOptions implements IHook {
         );
     }
 
+
+    private void MuteGroups_Button(Context context) {
+        // ファイルパスを指定
+        File dir = context.getFilesDir();  // 例えば内部ストレージのファイルディレクトリ
+        File file = new File(dir, "Notification.txt");
+
+        // ファイルが存在する場合、内容を読み込む
+        StringBuilder fileContent = new StringBuilder();
+        if (file.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    fileContent.append(line).append("\n");
+                }
+            } catch (IOException e) {
+                XposedBridge.log("Error reading the file: " + e.getMessage());
+            }
+        }
+
+        // 新しい内容を編集できるようにEditTextを表示する
+        final EditText editText = new EditText(context);
+        editText.setText(fileContent.toString());
+        editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        editText.setMinLines(10);  // 適切な行数を設定
+        editText.setGravity(Gravity.TOP);  // 上から入力されるように設定
+
+        // ボタン用のレイアウトパラメータを設定
+        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        buttonParams.setMargins(16, 16, 16, 16);  // 任意のマージン設定
+
+        // 保存ボタンを作成
+        Button saveButton = new Button(context);
+        saveButton.setText("Save");
+        saveButton.setLayoutParams(buttonParams);  // レイアウトパラメータを設定
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 編集した内容をファイルに保存
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                    writer.write(editText.getText().toString());
+                    XposedBridge.log("File saved successfully.");
+                } catch (IOException e) {
+                    XposedBridge.log("Error saving the file: " + e.getMessage());
+                }
+            }
+        });
+
+        // 編集画面を表示するためのLayoutに追加
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.addView(editText);
+        layout.addView(saveButton);
+
+        // ダイアログを表示して編集画面を表示する
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("通知を無効にしているグループ");
+        builder.setView(layout);
+        builder.setNegativeButton("キャンセル", null);
+        builder.show();
+    }
+
+
     private void backupChatHistory(Context appContext) {
         File originalDbFile = appContext.getDatabasePath("naver_line");
 
@@ -502,13 +584,6 @@ public class EmbedOptions implements IHook {
             Toast.makeText(appContext, "バックアップ中にエラーが発生しました: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-
-
-
-
-
-
-
 
 
     private void restoreChatHistory(Context context) {
@@ -605,7 +680,6 @@ public class EmbedOptions implements IHook {
         }
 
     }
-
 
 
     private void restoreChat(Context context) {
@@ -709,6 +783,7 @@ public class EmbedOptions implements IHook {
             }
         }
     }
+
     private void backupChatsFolder(Context context) {
         File originalChatsDir = new File(Environment.getExternalStorageDirectory(), "Android/data/jp.naver.line.android/files/chats");
         File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");

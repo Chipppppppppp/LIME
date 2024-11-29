@@ -69,7 +69,6 @@ public class UnsentRec implements IHook {
                         container.setLayoutParams(containerParams);
 
 
-
                         Button openFileButton = new Button(appContext);
                         openFileButton.setText(moduleContext.getResources().getString(R.string.confirm_messages));
 
@@ -177,7 +176,6 @@ public class UnsentRec implements IHook {
         );
 
 
-
         XposedHelpers.findAndHookMethod(
 
 
@@ -200,7 +198,7 @@ public class UnsentRec implements IHook {
                                 originalFile.createNewFile();
                             } catch (IOException e) {
                                 e.printStackTrace();
-                                Toast.makeText(context,  moduleContext.getResources().getString(R.string.file_creation_failed), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, moduleContext.getResources().getString(R.string.file_creation_failed), Toast.LENGTH_SHORT).show();
                                 return;
                             }
                         }
@@ -254,7 +252,6 @@ public class UnsentRec implements IHook {
                                         }
 
 
-
                                         // カスタムViewを作成
                                         HorizontalScrollView horizontalScrollView = new HorizontalScrollView(context); // 横スクロール用のScrollView
                                         ScrollView verticalScrollView = new ScrollView(context); // 縦スクロール用のScrollView
@@ -273,7 +270,7 @@ public class UnsentRec implements IHook {
 
 // AlertDialogを作成
                                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                        builder.setTitle( moduleContext.getResources().getString(R.string.deleted_messages))
+                                        builder.setTitle(moduleContext.getResources().getString(R.string.deleted_messages))
                                                 .setView(verticalScrollView)  // カスタムビューをセット
                                                 .setPositiveButton("ok", (dialog, which) -> {
                                                     try {
@@ -287,7 +284,7 @@ public class UnsentRec implements IHook {
                                                         clearWriter.close();
 
                                                         Toast.makeText(context,
-                                                                moduleContext.getResources().getString(R.string.content_moved_to_backup),Toast.LENGTH_SHORT).show();
+                                                                moduleContext.getResources().getString(R.string.content_moved_to_backup), Toast.LENGTH_SHORT).show();
 
                                                         // フラグをリセット
                                                         SharedPreferences.Editor editor = prefs.edit();
@@ -296,7 +293,7 @@ public class UnsentRec implements IHook {
 
                                                     } catch (IOException e) {
                                                         e.printStackTrace();
-                                                        Toast.makeText(context,  moduleContext.getResources().getString(R.string.file_move_failed), Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(context, moduleContext.getResources().getString(R.string.file_move_failed), Toast.LENGTH_SHORT).show();
                                                     }
 
                                                     // ボタンの親からボタンを削除
@@ -310,7 +307,7 @@ public class UnsentRec implements IHook {
 
                                     } catch (IOException e) {
                                         e.printStackTrace();
-                                        Toast.makeText(context,  moduleContext.getResources().getString(R.string.read_BackUpFile_failed), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, moduleContext.getResources().getString(R.string.read_BackUpFile_failed), Toast.LENGTH_SHORT).show();
                                     }
                                 });
 
@@ -328,7 +325,6 @@ public class UnsentRec implements IHook {
                     }
                 }
         );
-
 
 
         XposedBridge.hookAllMethods(Application.class, "onCreate", new XC_MethodHook() {
@@ -371,8 +367,8 @@ public class UnsentRec implements IHook {
                     SQLiteDatabase db2 = SQLiteDatabase.openDatabase(dbFile2, dbParams2);
 
 
-                    hookMessageDeletion(loadPackageParam, appContext,db1, db2);
-                    resolveUnresolvedIds(loadPackageParam, appContext,db1, db2,moduleContext);
+                    hookMessageDeletion(loadPackageParam, appContext, db1, db2);
+                    resolveUnresolvedIds(loadPackageParam, appContext, db1, db2, moduleContext);
                 }
             }
         });
@@ -407,10 +403,11 @@ public class UnsentRec implements IHook {
         }
         return count;
     }
+
     private void hookMessageDeletion(XC_LoadPackage.LoadPackageParam loadPackageParam, Context context, SQLiteDatabase db1, SQLiteDatabase db2) {
         try {
             XposedBridge.hookAllMethods(
-            loadPackageParam.classLoader.loadClass(Constants.RESPONSE_HOOK.className),
+                    loadPackageParam.classLoader.loadClass(Constants.RESPONSE_HOOK.className),
                     Constants.RESPONSE_HOOK.methodName,
 
                     new XC_MethodHook() {
@@ -425,8 +422,7 @@ public class UnsentRec implements IHook {
                                         "io.github.hiro.lime", Context.CONTEXT_IGNORE_SECURITY);
 
 
-
-                                processMessage(paramValue, moduleContext, db1, db2,context);
+                                processMessage(paramValue, moduleContext, db1, db2, context);
                             }
                         }
                     });
@@ -548,6 +544,7 @@ public class UnsentRec implements IHook {
 
         }
     }
+
     private void saveUnresolvedIds(String serverId, String talkId, String filePath) {
         String newEntry = "serverId:" + serverId + ",talkId:" + talkId;
 
@@ -574,8 +571,7 @@ public class UnsentRec implements IHook {
     }
 
 
-
-    private void resolveUnresolvedIds(XC_LoadPackage.LoadPackageParam loadPackageParam, Context context, SQLiteDatabase db1, SQLiteDatabase db2,Context moduleContext) {
+    private void resolveUnresolvedIds(XC_LoadPackage.LoadPackageParam loadPackageParam, Context context, SQLiteDatabase db1, SQLiteDatabase db2, Context moduleContext) {
         String unresolvedFilePath = context.getFilesDir() + "/UnresolvedIds.txt";
 
         File unresolvedFile = new File(unresolvedFilePath);
@@ -647,7 +643,6 @@ public class UnsentRec implements IHook {
             }
 
 
-
             try (BufferedWriter clearWriter = new BufferedWriter(new FileWriter(unresolvedFile))) {
                 clearWriter.write("");
             }
@@ -658,15 +653,12 @@ public class UnsentRec implements IHook {
     }
 
 
-
-
     private String formatMessageTime(String timeEpochStr) {
         if (timeEpochStr == null) return null;
         long timeEpoch = Long.parseLong(timeEpochStr);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         return sdf.format(new Date(timeEpoch));
     }
-
 
 
 }

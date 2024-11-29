@@ -23,6 +23,7 @@ import io.github.hiro.lime.hooks.KeepUnread;
 import io.github.hiro.lime.hooks.KeepUnreadLSpatch;
 import io.github.hiro.lime.hooks.ModifyRequest;
 import io.github.hiro.lime.hooks.ModifyResponse;
+import io.github.hiro.lime.hooks.Notif_invalid;
 import io.github.hiro.lime.hooks.OutputRequest;
 import io.github.hiro.lime.hooks.OutputResponse;
 import io.github.hiro.lime.hooks.PreventMarkAsRead;
@@ -42,7 +43,6 @@ import io.github.hiro.lime.hooks.UnsentRec;
 import io.github.hiro.lime.hooks.Archived;
 import io.github.hiro.lime.hooks.ReadChecker;
 import io.github.hiro.lime.hooks.NaviColor;
-
 
 
 public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
@@ -82,7 +82,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new KeepUnreadLSpatch(),
             new AutomaticBackup(),
             new RemoveNotification(),
-
+            new Notif_invalid(),
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {

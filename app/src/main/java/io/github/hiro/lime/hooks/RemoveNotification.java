@@ -2,6 +2,7 @@ package io.github.hiro.lime.hooks;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -43,7 +44,8 @@ public class RemoveNotification implements IHook {
                                     typeField.set(operation, type.getClass().getMethod("valueOf", String.class).invoke(type, "DUMMY"));
                                 }
                             }
-                        } catch (NoSuchFieldException | IllegalAccessException | IllegalArgumentException e) {
+                        } catch (NoSuchFieldException | IllegalAccessException |
+                                 IllegalArgumentException e) {
                             XposedBridge.log("RemoveNotification: Error accessing fields - " + e.getMessage());
                         } catch (Exception e) {
                             XposedBridge.log("RemoveNotification: Unexpected error - " + e.getMessage());

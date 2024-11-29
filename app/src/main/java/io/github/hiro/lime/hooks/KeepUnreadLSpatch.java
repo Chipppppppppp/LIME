@@ -23,6 +23,7 @@ import io.github.hiro.lime.LimeOptions;
 public class KeepUnreadLSpatch implements IHook {
 
     static boolean keepUnread = false;
+
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (!limeOptions.KeepUnreadLSpatch.checked) return;

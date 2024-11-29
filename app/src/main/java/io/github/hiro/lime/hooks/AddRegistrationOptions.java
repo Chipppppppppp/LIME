@@ -22,7 +22,7 @@ import io.github.hiro.lime.Utils;
 
 public class AddRegistrationOptions implements IHook {
 
-    private Switch switchAndroidSecondary; 
+    private Switch switchAndroidSecondary;
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
@@ -85,6 +85,7 @@ public class AddRegistrationOptions implements IHook {
                 }
         );
     }
+
     private void showSpoofVersionIdDialog(Activity activity, SharedPreferences prefs) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity)
                 .setTitle(R.string.options_title);
@@ -96,22 +97,22 @@ public class AddRegistrationOptions implements IHook {
         TextView textView = new TextView(activity);
         textView.setText(R.string.spoof_version_id_risk);
         layout.addView(textView);
-        
+
         EditText editTextDeviceName = new EditText(activity);
         editTextDeviceName.setHint(R.string.spoof_device_name);
         editTextDeviceName.setText(prefs.getString("device_name", "ANDROID"));
-        layout.addView(editTextDeviceName); // ここでlayoutに追加
-        
+        layout.addView(editTextDeviceName);
+
         EditText editTextOsName = new EditText(activity);
         editTextOsName.setHint(R.string.spoof_os_name);
         editTextOsName.setText(prefs.getString("os_name", "Android OS"));
         layout.addView(editTextOsName);
-        
+
         EditText editTextOsVersion = new EditText(activity);
         editTextOsVersion.setHint(R.string.spoof_os_version);
         editTextOsVersion.setText(prefs.getString("os_version", "14"));
         layout.addView(editTextOsVersion);
-        
+
         EditText editTextAndroidVersion = new EditText(activity);
         editTextAndroidVersion.setHint(R.string.spoof_android_version);
         editTextAndroidVersion.setText(prefs.getString("android_version", "14.16.0"));
@@ -136,7 +137,6 @@ public class AddRegistrationOptions implements IHook {
         builder.setNegativeButton(R.string.negative_button, null);
         builder.show();
     }
-
 
 
     private void showSpoofAndroidIdDialog(Activity activity, SharedPreferences prefs) {

@@ -29,9 +29,9 @@ public class test implements IHook {
         String packageName = loadPackageParam.packageName;
 
         XposedBridge.log("Hooking package: " + packageName);
-        hookOnViewAdded(loadPackageParam.classLoader);
+      hookOnViewAdded(loadPackageParam.classLoader);
         hookAllClassesInPackage(loadPackageParam.classLoader, loadPackageParam);
-        hookFragmentOnCreateView(loadPackageParam.classLoader);
+      hookFragmentOnCreateView(loadPackageParam.classLoader);
         //hookChatHistoryActivity(loadPackageParam.classLoader); // ChatHistoryActivityのフック
         //hookLongClickListeners(loadPackageParam.classLoader); // 長押しリスナーのフック
 
@@ -54,16 +54,16 @@ public class test implements IHook {
                 String className = classNames.nextElement();
 
                 // 指定されたパッケージで始まるクラスのみをフック
-                //  if (className.startsWith("com.linecorp.line") || className.startsWith("jp.naver.line.android")) {
-                try {
-                    Class<?> clazz = Class.forName(className, false, classLoader);
-                    hookAllMethods(clazz);
-                } catch (ClassNotFoundException e) {
-                    XposedBridge.log("Class not found: " + className);
-                } catch (Throwable e) {
-                    XposedBridge.log("Error loading class " + className + ": " + e.getMessage());
-                }
-                //  }
+              //  if (className.startsWith("com.linecorp.line") || className.startsWith("jp.naver.line.android")) {
+                    try {
+                        Class<?> clazz = Class.forName(className, false, classLoader);
+                        hookAllMethods(clazz);
+                    } catch (ClassNotFoundException e) {
+                        XposedBridge.log("Class not found: " + className);
+                    } catch (Throwable e) {
+                        XposedBridge.log("Error loading class " + className + ": " + e.getMessage());
+                    }
+              //  }
             }
         } catch (Throwable e) {
             XposedBridge.log("Error while hooking classes: " + e.getMessage());
@@ -251,7 +251,7 @@ public class test implements IHook {
 
 
 
-    private int getIdByName(Context context, String resourceName) {
+   private int getIdByName(Context context, String resourceName) {
         return context.getResources().getIdentifier(resourceName, "id", context.getPackageName());
     }
 
@@ -310,7 +310,7 @@ public class test implements IHook {
 
 // メソッドに応じたログ出力
                         if ("invokeSuspend".equals(method.getName())) {
-                            XposedBridge.log("Before calling invokeSuspend in class: " + clazz.getName() + " with args: " + argsString);
+                      XposedBridge.log("Before calling invokeSuspend in class: " + clazz.getName() + " with args: " + argsString);
                         } else if ("setVisibility".equals(method.getName())) {
                             XposedBridge.log("Before calling setVisibility in class: " + clazz.getName() + " with args: " + argsString);
                         } else if ("setAlpha".equals(method.getName())) {
@@ -358,7 +358,7 @@ public class test implements IHook {
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         Object result = param.getResult();
                         if ("invokeSuspend".equals(method.getName())) {
-                            XposedBridge.log("Before calling invokeSuspend in class: " + clazz.getName() + (result != null ? result.toString() : "null"));
+                      XposedBridge.log("Before calling invokeSuspend in class: " + clazz.getName() + (result != null ? result.toString() : "null"));
                         } else if ("setVisibility".equals(method.getName())) {
                             XposedBridge.log("After calling setVisibility in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
                         } else if ("setAlpha".equals(method.getName())) {
@@ -398,7 +398,7 @@ public class test implements IHook {
                         } else if ("getService".equals(method.getName())) {
                             XposedBridge.log("After calling getService in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
                         } else if ("setState".equals(method.getName())) {
-                            XposedBridge.log("setState " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
+                          XposedBridge.log("setState " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
                         }
                     }
                 });

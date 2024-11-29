@@ -53,7 +53,7 @@ public class RemoveIcons implements IHook {
 
                         if (limeOptions.extendClickableArea.checked) {
                             int mainTabContainerResId = activity.getResources().getIdentifier("main_tab_container", "id", activity.getPackageName());
-                            ViewGroup mainTabContainer = (ViewGroup) activity.findViewById(mainTabContainerResId);
+                            ViewGroup mainTabContainer = activity.findViewById(mainTabContainerResId);
                             for (int i = 2; i < mainTabContainer.getChildCount(); i += 2) {
                                 ViewGroup icon = (ViewGroup) mainTabContainer.getChildAt(i);
                                 ViewGroup.LayoutParams layoutParams = icon.getLayoutParams();

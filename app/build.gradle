@@ -4,16 +4,16 @@ plugins {
 
 android {
     namespace 'io.github.hiro.lime'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         minSdk 28
-        targetSdk 34
+        targetSdk 35
         versionCode 15
-        versionName "1.12.5e"
+        versionName "1.14.1"
         multiDexEnabled false
         proguardFiles += 'proguard-rules.pro'
-        buildConfigField 'String', 'HOOK_TARGET_VERSION', '"141700420"'
+        buildConfigField 'String', 'HOOK_TARGET_VERSION', '"141910383"'
     }
 
     signingConfigs {
@@ -67,6 +67,7 @@ dependencies {
     compileOnly 'de.robv.android.xposed:api:82'
     implementation 'org.mozilla:rhino:1.7.15'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.0' // バージョンはプロジェクトに合わせて調整
+    implementation "androidx.work:work-runtime:2.10.0"
 }
 
 tasks.withType(JavaCompile).configureEach {
