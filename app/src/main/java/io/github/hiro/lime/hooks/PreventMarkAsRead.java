@@ -3,6 +3,7 @@ package io.github.hiro.lime.hooks;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -65,17 +66,30 @@ public class PreventMarkAsRead implements IHook {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         Field field = param.thisObject.getClass().getDeclaredField("b");
-                        field.setAccessible(true); // private フィールドにアクセス可能にする
-
-                        Object receiveSource = field.get(param.thisObject); // フィールドの値を取得
-
+                        field.setAccessible(true);
+                        Object receiveSource = field.get(param.thisObject);
                         if (receiveSource == null) {
                             XposedBridge.log("receiveSource is not set. Skipping method call.");
-                            param.setResult(0); // メソッド呼び出しをスキップして安全に終了
+                            param.setResult(0);
                         }
                     }
                 }
         );
+        XposedHelpers.findAndHookMethod(
+                "jp.naver.line.android.thrift.client.impl.LegacyTalkServiceClientImpl",
+                loadPackageParam.classLoader,
+                "S2",
+                HashMap.class, HashMap.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        param.setResult(null);
+                    }
+
+                }
+        );
+
+
 
     }
 }

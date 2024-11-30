@@ -102,7 +102,7 @@ public class KeepUnreadLSpatch implements IHook {
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) {
-                       
+
                         if (keepUnread) {
                             param.setResult(null); // 既読処理を無効化
                         }
