@@ -1,11 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name:X
+  - name: X
     url: https://twitter.com/intent/user?screen_name=Chi_p
-    about: LIME開発者のプロフィールです
-
-- name: X
+    about: LIME開発者のプロフィールです。
+  - name: X
     url: https://twitter.com/intent/user?screen_name=areteruhiro
-
     about: Beta開発者のXのプロフィールです。質問や仕様変更等を受け付けています。
- 
