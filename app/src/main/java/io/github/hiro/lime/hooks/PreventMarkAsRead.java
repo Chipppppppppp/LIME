@@ -1,5 +1,9 @@
 package io.github.hiro.lime.hooks;
 
+import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
+
+import java.lang.reflect.Field;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
@@ -12,7 +16,7 @@ public class PreventMarkAsRead implements IHook {
         if (!limeOptions.preventMarkAsRead.checked) return;
 
 
-        XposedHelpers.findAndHookMethod(
+        findAndHookMethod(
                 loadPackageParam.classLoader.loadClass(Constants.MARK_AS_READ_HOOK.className),
                 Constants.MARK_AS_READ_HOOK.methodName,
                 new XC_MethodHook() {
@@ -24,6 +28,8 @@ public class PreventMarkAsRead implements IHook {
                     }
                 }
         );
+
+
 
         XposedBridge.hookAllMethods(
                 loadPackageParam.classLoader.loadClass(Constants.REQUEST_HOOK.className),
@@ -50,6 +56,26 @@ public class PreventMarkAsRead implements IHook {
                 }
         );
 
+        findAndHookMethod(
+                "cj.b",
+                loadPackageParam.classLoader,
+                "f",
+                int.class, byte[].class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        Field field = param.thisObject.getClass().getDeclaredField("b");
+                        field.setAccessible(true); // private フィールドにアクセス可能にする
+
+                        Object receiveSource = field.get(param.thisObject); // フィールドの値を取得
+
+                        if (receiveSource == null) {
+                            XposedBridge.log("receiveSource is not set. Skipping method call.");
+                            param.setResult(0); // メソッド呼び出しをスキップして安全に終了
+                        }
+                    }
+                }
+        );
 
     }
 }

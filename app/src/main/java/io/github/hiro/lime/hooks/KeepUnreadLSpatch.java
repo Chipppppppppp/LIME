@@ -22,11 +22,12 @@ import io.github.hiro.lime.LimeOptions;
 
 public class KeepUnreadLSpatch implements IHook {
 
-    static boolean keepUnread = false;
+    static boolean keepUnread = false; // 既読抑制フラグ
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (!limeOptions.KeepUnreadLSpatch.checked) return;
+
         XposedHelpers.findAndHookMethod(
                 "com.linecorp.line.chatlist.view.fragment.ChatListFragment",
                 loadPackageParam.classLoader,
@@ -51,21 +52,21 @@ public class KeepUnreadLSpatch implements IHook {
                                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         switchParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 
-                        // デフォルトのスイッチ状態をファイルの存在によって設定
                         File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
                         File logFile = new File(backupDir, "no_read.txt");
 
-                        // ディレクトリが存在しない場合は作成
                         if (!backupDir.exists()) {
                             backupDir.mkdirs();
                         }
 
-                        // ファイルの存在状態でスイッチの状態を設定
-                        switchView.setChecked(logFile.exists());
+
+                        keepUnread = logFile.exists();
+                        switchView.setChecked(keepUnread);
 
                         switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                            keepUnread = isChecked;
                             if (isChecked) {
-                                // スイッチが有効になった場合、ファイルを作成
+
                                 try {
                                     if (!logFile.exists()) {
                                         logFile.createNewFile();
@@ -95,22 +96,24 @@ public class KeepUnreadLSpatch implements IHook {
                     }
                 }
         );
-
-
         XposedHelpers.findAndHookMethod(
                 loadPackageParam.classLoader.loadClass(Constants.MARK_AS_READ_HOOK.className),
                 Constants.MARK_AS_READ_HOOK.methodName,
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) {
+                       
                         if (keepUnread) {
-                            param.setResult(null);
+                            param.setResult(null); // 既読処理を無効化
                         }
                     }
                 }
         );
+
     }
 }
+
+
 
 
 

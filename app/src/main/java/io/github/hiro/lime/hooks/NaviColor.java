@@ -57,7 +57,7 @@ public class NaviColor implements IHook {
     private void checkAndChangeBackgroundColor(View view) {
         try {
             String resourceName = getViewResourceName(view);
-            XposedBridge.log("Resource Name: " + resourceName);
+          //  XposedBridge.log("Resource Name: " + resourceName);
 
             Drawable background = view.getBackground();
 
