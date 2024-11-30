@@ -60,7 +60,7 @@ https://youtu.be/94JN4NLGdOI
 
 このアプリで追加されている機能は、いずれPRするものがおおいですが、機能の追加を優先しているため、修正が必要なものが多く、このような形で公開させていただいております。
 
-LIME開発者様（以下Chipさん、S1204ITさんとは連絡を取り合っています）開発環境整備、LIME開発に感謝しています。
+LIME開発者様 感謝しています
 
 
 ## Thank you
@@ -70,6 +70,8 @@ https://github.com/Chipppppppppp
 
 コラボレーター
 https://github.com/s1204IT
+
+
 
 apks→apk
 
