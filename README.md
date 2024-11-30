@@ -72,7 +72,13 @@ https://github.com/Chipppppppppp
 https://github.com/s1204IT
 
 apks→apk
+
+①AntiSplit<br>
 https://github.com/AbdurazaaqMohammed/AntiSplit-M
+
+
+②M apk tool<br>
+https://maximoff.su/apktool/?lang=en
 
 Icon
 https://github.com/reindex-ot
@@ -82,7 +88,6 @@ https://github.com/reindex-ot
 https://egg.5ch.net/test/read.cgi/android/1729438846/
 
 
-LINE を掃除する Xposed Module です。
 
 ## 使用方法
 LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に入り、右上の｢**LIME**｣のボタンより開けます。また、Root ユーザーは LI**M**E アプリから設定することも可能です。クローンアプリなどでは LI**M**E 側からしか設定できない場合があるようです。
