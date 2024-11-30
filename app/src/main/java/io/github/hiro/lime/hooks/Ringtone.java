@@ -37,20 +37,31 @@ public class Ringtone implements IHook {
                                 ringtone.play();
                                 isPlaying = true;
                             }
-
                             if (paramValue.contains("RESULT=REJECTED,") ||
                                     paramValue.contains("RESULT=REJECTED,")) {
                                 if (ringtone != null && ringtone.isPlaying()) {
                                     ringtone.stop();
                                     isPlaying = false;
 
+                                }
+                                }
+                            }
+
+                        if (paramValue.contains("contentType:CALL,") ) {
+                            // Handle notification sound for "NORMAL" result
+                            if (paramValue.contains("RESULT=NORMAL")) {
+                                Context context = AndroidAppHelper.currentApplication().getApplicationContext();
+                                if (context != null) {
+                                    Uri notificationUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                    android.media.Ringtone notificationRingtone = RingtoneManager.getRingtone(context, notificationUri);
+                                    notificationRingtone.play();
 
                                 }
                             }
                         }
                     }
-                });
 
+                });
         Class<?> voIPBaseFragmentClass = loadPackageParam.classLoader.loadClass("com.linecorp.voip2.common.base.VoIPBaseFragment");
         XposedBridge.hookAllMethods(voIPBaseFragmentClass, "onCreate", new XC_MethodHook() {
             @Override
@@ -61,5 +72,5 @@ public class Ringtone implements IHook {
                 }
             }
         });
-    }
-}
+   }
+ }
