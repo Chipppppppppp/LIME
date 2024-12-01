@@ -14,8 +14,7 @@ https://t.me/+PHw9DhVhhkMyZTI1
 
 https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.3.2-apk
 
-パッチ済み(ローカルパッチ)<br>
-https://drive.google.com/drive/folders/15qarYyBKzD3OMPSpDAAijD1wzc0o9iWY?usp=sharing
+https://t.me/+PHw9DhVhhkMyZTI1
 
 推奨LsPatch<br>
 https://github.com/JingMatrix/LSPatch/actions
