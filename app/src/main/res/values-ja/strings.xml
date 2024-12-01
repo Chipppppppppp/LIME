@@ -36,7 +36,7 @@
     <string name="switch_prevent_unsend_message">送信取り消しを拒否</string>
     <string name="switch_remove_keep_unread">「未読のまま閲覧」スイッチを削除</string>
 
-    <string name="switch_block_tracking">トラッキング通信をブロック</string>
+    <string name="switch_block_tracking">トラッキング通信をブロック(この機能はクラッシュを引き起こす可能性があります)</string>
     <string name="switch_stop_version_check">LINE バージョンの確認を停止</string>
     <string name="switch_output_communication">通信内容をログに出力 (開発者用)</string>
     <string name="modify_request">リクエストを改変</string>
