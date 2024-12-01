@@ -3,9 +3,6 @@
 # Support
 https://t.me/+PHw9DhVhhkMyZTI1
 
-[![Latest Release](https://img.shields.io/github/v/release/Chipppppppppp/LIME?label=latest)](https://github.com/Chipppppppppp/LIME/releases/latest)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-
  ## 通知が届かないの解決方法
 下記の、LINE 14.3.2をインストールしパッチを行い、インストールを行って、ログインをしてください。
 
