@@ -28,10 +28,9 @@ v1.12.5a, v1.12.5a1→仕様変更
 ## LsPatchを利用の方へ 
 
 
-
-
 ## 確認済みのバグやエラー
-既読者が正常に保存されない
+アプリがクラッシュする→トラッキング通信をブロックするを無効にしてください
+
 
 ## トーク履歴のリストアについて
 
@@ -52,18 +51,19 @@ https://play.google.com/store/apps/details?id=me.zhanghai.android.files
 方法が怪しい場合以下の動画を参照してから、リストアを行ってください。(データが上書きされリストアできなくなる恐れがあります)
 https://youtu.be/94JN4NLGdOI
 
+
 ## トーク履歴の自動バックアップについて
 
-Macro SAMPLE<br>
-[SAMPLE](https://drive.usercontent.google.com/u/0/uc?id=1rhZPmoMbti_l1JaX2EbjcRKUePkWlIXU&export=download)
+[Macro SAMPLE](https://drive.usercontent.google.com/u/0/uc?id=1rhZPmoMbti_l1JaX2EbjcRKUePkWlIXU&export=download)
 
 ## 概要
 
-
 このアプリで追加されている機能は、いずれPRするものがおおいですが、機能の追加を優先しているため、修正が必要なものが多く、このような形で公開させていただいております。
 
-Thank you 
+LIME開発者様 感謝しています
 
+
+## Thank you
 
 LIME  開発者（コラボレーター）
 https://github.com/Chipppppppppp
@@ -71,8 +71,16 @@ https://github.com/Chipppppppppp
 コラボレーター
 https://github.com/s1204IT
 
+
+
 apks→apk
+
+①AntiSplit<br>
 https://github.com/AbdurazaaqMohammed/AntiSplit-M
+
+
+②M apk tool<br>
+https://maximoff.su/apktool/?lang=en
 
 Icon
 https://github.com/reindex-ot
@@ -81,35 +89,7 @@ https://github.com/reindex-ot
 5チャンネラー
 https://egg.5ch.net/test/read.cgi/android/1729438846/
 
-## コラボレーターの募集
-現在
-以下のファイルの改善、追加をしてくださる方を募集しています。
-お気軽にプルリクエストをお願い致します。
 
-以下で既読機能のログチェックを行なっています。
-協力してくださる方よろしくお願いします
-グループurl
-https://line.me/R/ti/g/zjFmFkTF3c
-
-個人
-https://line.me/ti/p/gpusOPe28N
-
-Github 
-
-READ
-
-https://github.com/areteruhiro/LIME-beta-hiro/blob/master/README.md <br> 
-
-バグレポート<br> 
-https://github.com/areteruhiro/LIME-beta-hiro/blob/master/.github/ISSUE_TEMPLATE/bug_report.yml
-
-App Code　
-
-Translation assistance<br> 
-https://github.com/areteruhiro/LIME-beta-hiro/tree/master/app/src/main/res/values
-
-
-LINE を掃除する Xposed Module です。
 
 ## 使用方法
 LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に入り、右上の｢**LIME**｣のボタンより開けます。また、Root ユーザーは LI**M**E アプリから設定することも可能です。クローンアプリなどでは LI**M**E 側からしか設定できない場合があるようです。
@@ -120,7 +100,7 @@ LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に
 
 </details>
 
-また、トーク画面右上の <kbd>⁝</kbd> からスイッチをオンにすると**未読のまま閲覧**できます。(このスイッチは設定で削除可能です）
+また、トーク画面上の <kbd>トグル又は✉️ボタン</kbd> からスイッチをオン（緑）にすると**未読のまま閲覧**できます。(このスイッチは設定で削除可能です）
 
 ※返信すると未読が解除されてしまうのでご注意ください
 
@@ -149,19 +129,10 @@ LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に
 - 通信内容をログに出力
 - 通信内容を改変
   - JavaScript で通信内容を改変できます (後述)
-
 - ナビゲーションバーを黒色に固定化
 - 非表示にしたチャットの再表示を無効化
 - LsPatch用　着信音を鳴らす
-
-
-# 以下からβ機能
-
-
-
 - サービスの項目の削除
-
-
 - トークのバックアップ、リストア
 - 既読者の確認
 
@@ -181,23 +152,6 @@ LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に
 また、`console.log` で `XposedBridge` にログを出力できます。エラーが発生した場合もここに出力されます。
 リクエスト・レスポンスともに、JavaScript は他の処理より早く実行され、「通信内容にログを出力」は最後に実行されます。
 Rhino の仕様、特に **Java 文字列との比較に `equals` を用いる**必要があることに注意してください。
-
-## インストール
-
-初めに、以下のサイトの中から、  
-**LINE 14.16.0** と **LIME 1.10.1** の APK をダウンロードしてください｡
-
-> [!IMPORTANT]
-> 分割 APK は使用しないでください
-
-LI**N**E
-- [APKMirror](https://www.apkmirror.com/uploads/?appcategory=line)
-- [APKPure](https://apkpure.net/jp/line-calls-messages/jp.naver.line.android/versions)
-- [APKCombo](https://apkcombo.com/ja/line/jp.naver.line.android/old-versions/)
-- [Uptodown](https://line.jp.uptodown.com/android/versions)
-
-LI**M**E
-- [Release](https://github.com/Chipppppppppp/LIME/releases/latest)
 
 ### Root 端末 (Magisk)
 
@@ -262,7 +216,7 @@ LI**M**E
 
 ## 問題の報告
 
-新たなバグや修正方法を見つけた場合は、[報告](https://github.com/Chipppppppppp/LIME/issues/new/choose)をお願いします。
+新たなバグや修正方法を見つけた場合は、報告 をお願いします。
 
 > [!NOTE]
 > 日本語がわかる場合は日本語で記述してください。
