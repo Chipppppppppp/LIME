@@ -1,8 +1,5 @@
 # <img src="app/src/main/ic_launcher-playstore.png" width="60px"> LIME: Adkiller for Beta LINEs
 
-# Support
-https://t.me/+PHw9DhVhhkMyZTI1
-
  ## 通知が届かないの解決方法
 下記の、LINE 14.3.2をインストールしパッチを行い、インストールを行って、ログインをしてください。
 
@@ -11,6 +8,8 @@ https://t.me/+PHw9DhVhhkMyZTI1
 
 https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.3.2-apk
 
+
+???
 https://t.me/+PHw9DhVhhkMyZTI1
 
 推奨LsPatch<br>
