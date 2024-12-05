@@ -46,9 +46,9 @@ public class RemoveNotification implements IHook {
                             }
                         } catch (NoSuchFieldException | IllegalAccessException |
                                  IllegalArgumentException e) {
-                            XposedBridge.log("RemoveNotification: Error accessing fields - " + e.getMessage());
+                       //     XposedBridge.log("RemoveNotification: Error accessing fields - " + e.getMessage());
                         } catch (Exception e) {
-                            XposedBridge.log("RemoveNotification: Unexpected error - " + e.getMessage());
+                       //     XposedBridge.log("RemoveNotification: Unexpected error - " + e.getMessage());
                         }
                     }
                 }

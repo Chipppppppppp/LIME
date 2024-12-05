@@ -148,7 +148,6 @@ public class Notif_invalid implements IHook {
 
     // 通知の詳細をログに記録するヘルパーメソッド
     private void logNotificationDetails(String method, int id, Notification notification) {
-        XposedBridge.log(method + " called. ID: " + id);
 
         if (notification.extras != null) {
 

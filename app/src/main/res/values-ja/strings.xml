@@ -99,4 +99,5 @@
     <string name="NoMuteMessage">ミュートメッセージの無効化</string>
     <string name="Notif_invalid">登録しているグループ名の通知をオフにする</string>
     <string name="NaviColor">ナビゲーションのボタンの色を黒にする、ダークテーマをピュアダークにする</string>
+    <string name="switch_BlockUpdateProfileNotification">プロフィールの更新を通知しない</string>
 </resources>

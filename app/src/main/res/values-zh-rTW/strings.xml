@@ -46,4 +46,5 @@
     <string name="switch_keep_unread">保持未讀</string>
     <string name="NoMuteMessage">ミュートメッセージの無効化</string>
     <string name="Notif_invalid">登録しているグループ名の通知をオフにする</string>
+    <string name="switch_BlockUpdateProfileNotification">プロフィールの更新を通知しない</string>
 </resources>
