@@ -3,7 +3,6 @@
 ## 以下に準じます
 https://github.com/Chipppppppppp/LIME
 
-
  ## 通知が届かないの解決方法
 下記の、LINE 14.3.2をインストールしパッチを行い、インストールを行って、ログインをしてください。
 
@@ -68,7 +67,6 @@ https://github.com/Chipppppppppp
 
 コラボレーター
 https://github.com/s1204IT
-
 
 
 apks→apk
