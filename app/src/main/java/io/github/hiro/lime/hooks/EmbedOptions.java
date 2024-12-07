@@ -230,12 +230,8 @@ public class EmbedOptions implements IHook {
                                     restoreChatsFolder(context);
                                 }
                             });
-
-
-                            if (limeOptions.Notif_invalid.checked) {
-                                // 条件が満たされた場合にのみボタンを作成
                                 layout.addView(restorefolderButton);
-
+                            if (limeOptions.Notif_invalid.checked) {
                                 Button MuteGroups_Button = new Button(context);
                                 MuteGroups_Button.setLayoutParams(buttonParams);
                                 MuteGroups_Button.setText("通知を無効にしているグループ");

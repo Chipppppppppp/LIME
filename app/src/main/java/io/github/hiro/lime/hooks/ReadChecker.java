@@ -592,13 +592,15 @@ public class ReadChecker implements IHook {
                 String serverId = cursor.getString(cursor.getColumnIndex("server_id"));
                 String existingUserName = cursor.getString(cursor.getColumnIndex("user_name"));
 
-                if (!existingUserName.contains(":" + currentTimestamp)) {
+                // `user_name` に保存時刻付きの名前が含まれていない場合のみ追加
+                if (!existingUserName.contains(newUserNameWithTimestamp)) {
                     String updatedUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n") + "-" + newUserNameWithTimestamp;
                     ContentValues values = new ContentValues();
                     values.put("user_name", updatedUserName);
-                    limeDatabase.update("group_messages", values, "group_id=? AND server_id=?", new String[]{groupId, serverId});
-                }
 
+                    limeDatabase.update("group_messages", values, "group_id=? AND server_id=?", new String[]{groupId, serverId});
+                    // XposedBridge.log("Updated user_name for other records in group_id: " + groupId + ", server_id: " + serverId);
+                }
             }
         } catch (Exception e) {
             Log.e("updateOtherRecordsUserNames", "Error updating other records' user names:", e);
