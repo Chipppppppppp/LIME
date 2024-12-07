@@ -12,10 +12,6 @@ https://github.com/Chipppppppppp/LIME
 
 https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.3.2-apk
 
-
-???
-https://t.me/+PHw9DhVhhkMyZTI1
-
 推奨LsPatch<br>
 https://github.com/JingMatrix/LSPatch/actions
 
