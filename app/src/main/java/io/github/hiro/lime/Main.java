@@ -23,6 +23,7 @@ import io.github.hiro.lime.hooks.KeepUnread;
 import io.github.hiro.lime.hooks.KeepUnreadLSpatch;
 import io.github.hiro.lime.hooks.ModifyRequest;
 import io.github.hiro.lime.hooks.ModifyResponse;
+import io.github.hiro.lime.hooks.PhotoAddNotification;
 import io.github.hiro.lime.hooks.Notif_invalid;
 import io.github.hiro.lime.hooks.OutputRequest;
 import io.github.hiro.lime.hooks.OutputResponse;
@@ -83,6 +84,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new AutomaticBackup(),
             new RemoveNotification(),
             new Notif_invalid(),
+            new PhotoAddNotification()
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {

@@ -33,6 +33,9 @@ public class LimeOptions {
     public Option removeKeepUnread = new Option("remove_keep_unread", R.string.switch_remove_keep_unread, false);
     public Option KeepUnreadLSpatch = new Option("Keep_UnreadLSpatch", R.string.switch_KeepUnreadLSpatch, false);
     public Option blockTracking = new Option("block_tracking", R.string.switch_block_tracking, false);
+
+    public Option BlockUpdateProfileNotification = new Option("BlockUpdateProfileNotification", R.string.switch_BlockUpdateProfileNotification, false);
+
     public Option stopVersionCheck = new Option("stop_version_check", R.string.switch_stop_version_check, false);
     public Option outputCommunication = new Option("output_communication", R.string.switch_output_communication, false);
     public Option Archived = new Option("Archived_message", R.string.switch_archived, false);
@@ -43,6 +46,7 @@ public class LimeOptions {
     public Option NaviColor = new Option("NaviColor", R.string.NaviColor, false);
     public Option NoMuteMessage = new Option("NoMuteMessage", R.string.NoMuteMessage, false);
     public Option Notif_invalid = new Option("Notif_invalid", R.string.Notif_invalid, false);
+    public Option PhotoAddNotification = new Option("PhotoAddNotification", R.string.PhotoAddNotification, false);
     public Option[] options = {
             removeVoom,
             removeWallet,
@@ -71,7 +75,8 @@ public class LimeOptions {
             outputCommunication,
             calltone,
             NaviColor,
-            Notif_invalid
+            Notif_invalid,
+            PhotoAddNotification
 
 
     };

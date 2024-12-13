@@ -96,6 +96,9 @@ public class Notif_invalid implements IHook {
                     }
                 });
 
+
+
+
         XposedHelpers.findAndHookMethod(NotificationManager.class, "notify",
                 String.class, int.class, Notification.class, new XC_MethodHook() {
                     @Override

@@ -20,7 +20,6 @@ import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -37,21 +36,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.hiro.lime.LimeOptions;
 import io.github.hiro.lime.R;
-
 public class ReadChecker implements IHook {
     private SQLiteDatabase limeDatabase;
     private SQLiteDatabase db3 = null;
     private SQLiteDatabase db4 = null;
     private boolean shouldHookOnCreate = false;
     private String currentGroupId = null;
-
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (!limeOptions.ReadChecker.checked) return;
@@ -97,7 +93,7 @@ public class ReadChecker implements IHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 String chatId = (String) param.getResult();
-                //(chatId);
+                //XposedBridge.log(chatId);
                 if (isGroupExists(chatId)) {
                     shouldHookOnCreate = true;
                     currentGroupId = chatId;
@@ -114,7 +110,6 @@ public class ReadChecker implements IHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 if (shouldHookOnCreate && currentGroupId != null) {
-
                     if (!isNoGroup(currentGroupId)) {
                         Activity activity = (Activity) param.thisObject;
                         addButton(activity);
@@ -128,7 +123,7 @@ public class ReadChecker implements IHook {
 
     private boolean isGroupExists(String groupId) {
         if (limeDatabase == null) {
-           //("Database is not initialized.");
+            // //XposedBridge.log("Database is not initialized.");
             return false;
         }
 
@@ -144,7 +139,7 @@ public class ReadChecker implements IHook {
 
     private boolean isNoGroup(String groupId) {
         if (limeDatabase == null) {
-           //("Database is not initialized.");
+            // //XposedBridge.log("Database is not initialized.");
             return true;
         }
 
@@ -166,8 +161,6 @@ public class ReadChecker implements IHook {
     private void addButton(Activity activity) {
         Button button = new Button(activity);
         button.setText("R");
-
-
         button.setBackgroundColor(Color.BLACK);
 
         button.setTextColor(Color.WHITE);
@@ -192,7 +185,6 @@ public class ReadChecker implements IHook {
         ViewGroup layout = activity.findViewById(android.R.id.content);
         layout.addView(button);
     }
-
 
     private void showDataForGroupId(Activity activity, String groupId) {
         if (limeDatabase == null) {
@@ -252,7 +244,6 @@ public class ReadChecker implements IHook {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("READ Data");
         builder.setView(scrollView);
-
         // OKボタン
         builder.setPositiveButton("OK", null);
 
@@ -262,18 +253,17 @@ public class ReadChecker implements IHook {
             new AlertDialog.Builder(activity)
                     .setTitle("確認")
                     .setMessage("本当に削除しますか？")
-                    .setPositiveButton("はい", (confirmDialog, confirmWhich) -> deleteGroupData(groupId, activity))
+                    .setPositiveButton("はい", (confirmDialog, confirmWhich) -> deleteGroupData(groupId,activity))
                     .setNegativeButton("いいえ", null)
                     .show();
         });
 
         AlertDialog dialog = builder.create();
         dialog.show();
-
         scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
     }
 
-    private void deleteGroupData(String groupId, Activity activity) {
+    private void deleteGroupData(String groupId,Activity activity) {
         if (limeDatabase == null) {
             return;
         }
@@ -282,12 +272,10 @@ public class ReadChecker implements IHook {
         limeDatabase.execSQL(deleteQuery, new String[]{groupId});
         Toast.makeText(activity, "データが削除されました。", Toast.LENGTH_SHORT).show();
     }
-
     private List<String> getuser_namesForServerId(String serverId) {
         if (limeDatabase == null) {
             return Collections.emptyList();
         }
-
         String query = "SELECT user_name FROM group_messages WHERE server_id=?";
         Cursor cursor = limeDatabase.rawQuery(query, new String[]{serverId});
         List<String> user_names = new ArrayList<>();
@@ -304,6 +292,19 @@ public class ReadChecker implements IHook {
         return user_names;
     }
 
+    private static class DataItem {
+        String serverId;
+        String content;
+        String createdTime;
+        Set<String> user_names;
+
+        DataItem(String serverId, String content, String createdTime) {
+            this.serverId = serverId;
+            this.content = content;
+            this.createdTime = createdTime;
+            this.user_names = new HashSet<>();
+        }
+    }
     private void catchNotification(XC_LoadPackage.LoadPackageParam loadPackageParam, SQLiteDatabase db3, SQLiteDatabase db4, Context appContext) {
         try {
             XposedBridge.hookAllMethods(
@@ -313,9 +314,9 @@ public class ReadChecker implements IHook {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             String paramValue = param.args[0].toString();
-                            //(paramValue);
+                            //XposedBridge.log(paramValue);
                             if (appContext == null) {
-                                //("appContext is null!");
+                                //XposedBridge.log("appContext is null!");
                                 return;
                             }
 
@@ -324,7 +325,7 @@ public class ReadChecker implements IHook {
                                 moduleContext = appContext.createPackageContext(
                                         "io.github.hiro.lime", Context.CONTEXT_IGNORE_SECURITY);
                             } catch (PackageManager.NameNotFoundException e) {
-                               //("Failed to create package context: " + e.getMessage());
+                                // //XposedBridge.log("Failed to create package context: " + e.getMessage());
                                 return;
                             }
 
@@ -360,22 +361,18 @@ public class ReadChecker implements IHook {
         try {
             String serverId = extractServerId(paramValue, context);
             String checkedUser = extractCheckedUser(paramValue);
-
             if (serverId == null || checkedUser == null) {
                 writeToFile(dbFile, "Missing parameters: serverId=" + serverId + ", checkedUser=" + checkedUser);
                 return;
             }
-
             String groupId = queryDatabase(db3, "SELECT chat_id FROM chat_history WHERE server_id=?", serverId);
             String groupName = queryDatabase(db3, "SELECT name FROM groups WHERE id=?", groupId);
             String content = queryDatabase(db3, "SELECT content FROM chat_history WHERE server_id=?", serverId);
             String user_name = queryDatabase(db4, "SELECT profile_name FROM contacts WHERE mid=?", checkedUser);
             String timeEpochStr = queryDatabase(db3, "SELECT created_time FROM chat_history WHERE server_id=?", serverId);
             String timeFormatted = formatMessageTime(timeEpochStr);
-
             String media = queryDatabase(db3, "SELECT attachement_type FROM chat_history WHERE server_id=?", serverId);
             String mediaDescription = "";
-
             if (media != null) {
                 switch (media) {
                     case "7":
@@ -392,11 +389,9 @@ public class ReadChecker implements IHook {
                         break;
                 }
             }
-
             String finalContent = (content != null && !content.isEmpty()) ? content : (!mediaDescription.isEmpty() ? mediaDescription : "No content:" + serverId);
-
             saveData(groupId, serverId, checkedUser, groupName, finalContent, user_name, timeFormatted, context);
-            markPreviousMessagesAsRead(groupId, checkedUser, timeEpochStr, context);
+         //   markPreviousMessagesAsRead(groupId, checkedUser, timeEpochStr, context);
         } catch (Exception e) {
             Log.e("fetchDataAndSave", "Unexpected error:", e);
         }
@@ -409,30 +404,22 @@ public class ReadChecker implements IHook {
             String query = "SELECT server_id, content, created_time, user_name FROM group_messages " +
                     "WHERE group_id=? AND created_time<? AND user_name NOT LIKE ?";
             Cursor cursor = limeDatabase.rawQuery(query, new String[]{groupId, timeEpochStr, "%" + checkedUser + "%"});
-
             while (cursor.moveToNext()) {
                 String previousServerId = cursor.getString(cursor.getColumnIndex("server_id"));
                 String previousContent = cursor.getString(cursor.getColumnIndex("content"));
                 String previousTimeEpochStr = cursor.getString(cursor.getColumnIndex("created_time"));
                 String previousUserName = cursor.getString(cursor.getColumnIndex("user_name"));
-
-                // 現在時刻を取得してフォーマット
-                String currentTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-
-                // updatedUserName を user_name:保存時刻 形式に更新
-                String updatedUserName = previousUserName +
-                        (previousUserName.isEmpty() ? "" : "\n") +
-                        checkedUser + " :" + currentTimestamp;
-
+                String previousTimeFormatted = formatMessageTime(previousTimeEpochStr);
+                String updatedUserName = previousUserName + (previousUserName.isEmpty() ? "" : "\n") + checkedUser;
                 ContentValues values = new ContentValues();
                 values.put("user_name", updatedUserName);
 
-                // データベースを更新
                 limeDatabase.update("group_messages", values, "group_id=? AND server_id=?",
                         new String[]{groupId, previousServerId});
+
+                // //XposedBridge.log("Marked as read in lime_data.db: Group_id: " + groupId + ", Server_id: " + previousServerId + ", Updated user_name: " + updatedUserName);
             }
             cursor.close();
-
         } catch (Exception e) {
             Log.e("markPreviousMessagesAsRead", "Error marking previous messages as read:", e);
         }
@@ -483,13 +470,13 @@ public class ReadChecker implements IHook {
             writer.append("Missing serverId in paramValue:").append(paramValue).append("\n");
             writer.close();
         } catch (IOException e) {
-           //("Error writing paramValue to file: " + e.getMessage());
+            // //XposedBridge.log("Error writing paramValue to file: " + e.getMessage());
         }
     }
 
     private String queryDatabase(SQLiteDatabase db, String query, String... selectionArgs) {
         if (db == null) {
-           //("Database is not initialized.");
+            // //XposedBridge.log("Database is not initialized.");
             return null;
         }
         Cursor cursor = db.rawQuery(query, selectionArgs);
@@ -507,9 +494,9 @@ public class ReadChecker implements IHook {
         if (oldDbFile.exists()) {
             boolean deleted = oldDbFile.delete();
             if (deleted) {
-                //("Old database file lime_data.db deleted.");
+                //XposedBridge.log("Old database file lime_data.db deleted.");
             } else {
-                //("Failed to delete old database file lime_data.db.");
+                //XposedBridge.log("Failed to delete old database file lime_data.db.");
             }
         }
         // 新しいデータベースファイルの初期化
@@ -528,45 +515,38 @@ public class ReadChecker implements IHook {
                 ");";
 
         limeDatabase.execSQL(createGroupTable);
-       //XposedBridge.log("Database initialized and group_messages table created.");
+        // //XposedBridge.log("Database initialized and group_messages table created.");
     }
-
     private void saveData(String groupId, String serverId, String checkedUser, String groupName, String content, String user_name, String createdTime, Context context) {
-        File dbFile = new File(context.getFilesDir(), "operation_log.txt");
-
-        if (limeDatabase == null) {
-            writeToFile(dbFile, "Database is not initialized.");
+        if (groupName == null) {
+            Log.w("saveData", "group_name is null. Skipping save operation.");
             return;
         }
-
         Cursor cursor = null;
         try {
             String checkQuery = "SELECT COUNT(*), user_name FROM group_messages WHERE server_id=? AND checked_user=?";
             cursor = limeDatabase.rawQuery(checkQuery, new String[]{serverId, checkedUser});
-
             if (cursor.moveToFirst()) {
                 int count = cursor.getInt(0);
                 String existingUserName = cursor.getString(1);
-
-                // 現在時刻を取得してフォーマット
-                String currentTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-                String newUserNameWithTimestamp = user_name + " :" + currentTimestamp;
+                String currentTime = getCurrentTime(); // 現在時刻を取得
 
                 if (count > 0) {
-                    if (!existingUserName.contains(":" + currentTimestamp)) {
-                        String updatedUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n") + "-" + newUserNameWithTimestamp;
+                    // `user_name`にすでに同じ名前がないかチェックし、ない場合のみ追加する
+                    if (!existingUserName.contains(user_name)) {
+                        String updatedUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n") + "-" + user_name + " [" + currentTime + "]";
                         ContentValues values = new ContentValues();
                         values.put("user_name", updatedUserName);
                         limeDatabase.update("group_messages", values, "server_id=? AND checked_user=?", new String[]{serverId, checkedUser});
+                        // //XposedBridge.log("User name updated for server_id: " + serverId + ", checked_user: " + checkedUser);
                     }
-
                 } else {
                     // 新しいレコードを挿入
-                    insertNewRecord(groupId, serverId, checkedUser, groupName, content, "-" + newUserNameWithTimestamp, createdTime);
+                    insertNewRecord(groupId, serverId, checkedUser, groupName, content, "-" + user_name + " [" + currentTime + "]", createdTime);
                 }
 
                 // 同じ groupId 内の他のレコードの user_name カラムを更新
-                updateOtherRecordsUserNames(groupId, newUserNameWithTimestamp);
+                updateOtherRecordsUserNames(groupId, user_name, currentTime);
             }
 
         } catch (Exception e) {
@@ -578,28 +558,24 @@ public class ReadChecker implements IHook {
         }
     }
 
-    private void updateOtherRecordsUserNames(String groupId, String user_name) {
+    private void updateOtherRecordsUserNames(String groupId, String user_name, String currentTime) {
         Cursor cursor = null;
         try {
             String selectOtherQuery = "SELECT server_id, user_name FROM group_messages WHERE group_id=? AND user_name NOT LIKE ?";
             cursor = limeDatabase.rawQuery(selectOtherQuery, new String[]{groupId, "%-" + user_name + "%"});
 
-            // 現在時刻を取得してフォーマット
-            String currentTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-            String newUserNameWithTimestamp = user_name + " :" + currentTimestamp;
-
             while (cursor.moveToNext()) {
                 String serverId = cursor.getString(cursor.getColumnIndex("server_id"));
                 String existingUserName = cursor.getString(cursor.getColumnIndex("user_name"));
 
-                // `user_name` に保存時刻付きの名前が含まれていない場合のみ追加
-                if (!existingUserName.contains(newUserNameWithTimestamp)) {
-                    String updatedUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n") + "-" + newUserNameWithTimestamp;
+                // `user_name`にすでに同じ名前がないかチェック
+                if (!existingUserName.contains(user_name)) {
+                    String updatedUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n") + "-" + user_name + " [" + currentTime + "]";
                     ContentValues values = new ContentValues();
                     values.put("user_name", updatedUserName);
 
                     limeDatabase.update("group_messages", values, "group_id=? AND server_id=?", new String[]{groupId, serverId});
-                    // XposedBridge.log("Updated user_name for other records in group_id: " + groupId + ", server_id: " + serverId);
+                    // //XposedBridge.log("Updated user_name for other records in group_id: " + groupId + ", server_id: " + serverId);
                 }
             }
         } catch (Exception e) {
@@ -611,32 +587,17 @@ public class ReadChecker implements IHook {
         }
     }
 
-
+    private String getCurrentTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        return sdf.format(new Date());
+    }
 
     private void insertNewRecord(String groupId, String serverId, String checkedUser, String groupName, String content, String user_name, String createdTime) {
         try {
             String insertQuery = "INSERT INTO group_messages(group_id, server_id, checked_user, group_name, content, user_name, created_time)" +
                     "VALUES(?, ?, ?, ?, ?, ?, ?);";
             limeDatabase.execSQL(insertQuery, new Object[]{groupId, serverId, checkedUser, groupName, content, user_name, createdTime});
-
-            //XposedBridge.log("Saved to DB: Group_Id: " + groupId + ", Server_id: " + serverId + ", Checked_user: " + checkedUser +
-                //    ", Group_Name: " + groupName + ", Content: " + content + ", user_name: " + user_name + ", Created_Time: " + createdTime);
         } catch (Exception e) {
-            Log.e("insertNewRecord", "Error saving data to database:", e);
-        }
-    }
-
-    private static class DataItem {
-        String serverId;
-        String content;
-        String createdTime;
-        Set<String> user_names;
-
-        DataItem(String serverId, String content, String createdTime) {
-            this.serverId = serverId;
-            this.content = content;
-            this.createdTime = createdTime;
-            this.user_names = new HashSet<>();
         }
     }
 

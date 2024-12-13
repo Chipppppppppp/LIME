@@ -100,4 +100,5 @@
     <string name="NoMuteMessage">ミュートメッセージの無効化</string>
     <string name="Notif_invalid">登録しているグループ名の通知をオフにする</string>
     <string name="switch_BlockUpdateProfileNotification">プロフィールの更新を通知しない</string>
+    <string name="PhotoAddNotification">画像通知の際画像を添付します⚠3秒受信が遅延します</string>
 </resources>
