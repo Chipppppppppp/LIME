@@ -3,8 +3,6 @@
 ## 以下に準じます
 https://github.com/Chipppppppppp/LIME 
 
-## あなたのSTARが支えになります。
-
 # 更新について
 更新内容を記載していないReleaseについては、差分を押してください、必要でない更新でなければ無理して更新を行う必要はありません。
 更新名による判断<br>
@@ -53,6 +51,11 @@ https://youtu.be/94JN4NLGdOI
 ## トーク履歴の自動バックアップについて
 
 [Macro SAMPLE](https://drive.usercontent.google.com/u/0/uc?id=1rhZPmoMbti_l1JaX2EbjcRKUePkWlIXU&export=download)
+
+# 寄付
+［100円 PayPay］(https://qr.paypay.ne.jp/p2p01_qIqiHEfm7jWiXaKd)
+［300円 PayPay］(https://qr.paypay.ne.jp/p2p01_oc9qTsEoIg8kn8Gy)
+
 
 ## 概要
 
