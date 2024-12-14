@@ -3,7 +3,7 @@
 ## 以下に準じます
 https://github.com/Chipppppppppp/LIME 
 
- あなたのSTARが支えになります。
+# あなたのSTARが支えになります。
 
 ログイン後、LIMEに適応するバージョンのLINEにパッチを行って、**更新**するようにしてください。
 
