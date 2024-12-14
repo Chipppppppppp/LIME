@@ -5,13 +5,6 @@ https://github.com/Chipppppppppp/LIME
 
 ## あなたのSTARが支えになります。
 
-ログイン後、LIMEに適応するバージョンのLINEにパッチを行って、**更新**するようにしてください。
-
-https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.3.2-apk
-
-推奨LsPatch<br>
-https://github.com/JingMatrix/LSPatch/actions
-
 # 更新について
 更新内容を記載していないReleaseについては、差分を押してください、必要でない更新でなければ無理して更新を行う必要はありません。
 更新名による判断<br>
@@ -22,14 +15,20 @@ v1.12.5a, v1.12.5a1→仕様変更
 
 ## LsPatchを利用の方へ 
 
-## 確認済みのバグやエラー
+確認済みのバグやエラー
 アプリがクラッシュする→トラッキング通信をブロックするを無効にしてください
 
 
-## 通知が届かないの解決方法
+通知が届かないの解決方法
 下記の、LINE 14.3.2をインストールしパッチを行い、インストールを行って、ログインをしてください。
 
 
+ログイン後、LIMEに適応するバージョンのLINEにパッチを行って、**更新**するようにしてください。
+
+https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.3.2-apk
+
+推奨LsPatch<br>
+https://github.com/JingMatrix/LSPatch/actions
 
 ## トーク履歴のリストアについて
 
