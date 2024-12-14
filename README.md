@@ -53,8 +53,9 @@ https://youtu.be/94JN4NLGdOI
 [Macro SAMPLE](https://drive.usercontent.google.com/u/0/uc?id=1rhZPmoMbti_l1JaX2EbjcRKUePkWlIXU&export=download)
 
 # 寄付
-［100円 PayPay］(https://qr.paypay.ne.jp/p2p01_qIqiHEfm7jWiXaKd)
-［300円 PayPay］(https://qr.paypay.ne.jp/p2p01_oc9qTsEoIg8kn8Gy)
+[100円 PayPay](https://qr.paypay.ne.jp/p2p01_qIqiHEfm7jWiXaKd)
+[300円
+PayPay](https://qr.paypay.ne.jp/p2p01_oc9qTsEoIg8kn8Gy)
 
 
 ## 概要
