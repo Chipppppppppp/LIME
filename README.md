@@ -1,11 +1,9 @@
 # <img src="app/src/main/ic_launcher-playstore.png" width="60px"> LIME: Adkiller for Beta LINEs
 
 ## 以下に準じます
-https://github.com/Chipppppppppp/LIME
+https://github.com/Chipppppppppp/LIME 
 
- ## 通知が届かないの解決方法
-下記の、LINE 14.3.2をインストールしパッチを行い、インストールを行って、ログインをしてください。
-
+ あなたのSTARが支えになります。
 
 ログイン後、LIMEに適応するバージョンのLINEにパッチを行って、**更新**するようにしてください。
 
@@ -24,9 +22,13 @@ v1.12.5a, v1.12.5a1→仕様変更
 
 ## LsPatchを利用の方へ 
 
-
 ## 確認済みのバグやエラー
 アプリがクラッシュする→トラッキング通信をブロックするを無効にしてください
+
+
+# 通知が届かないの解決方法
+下記の、LINE 14.3.2をインストールしパッチを行い、インストールを行って、ログインをしてください。
+
 
 
 ## トーク履歴のリストアについて
