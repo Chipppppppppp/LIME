@@ -29,7 +29,7 @@
     <string name="switch_remove_premium_recommendation">LYP プレミアムのおすすめを削除</string>
     <string name="switch_remove_service_labels">サービスのラベルを削除</string>
     <string name="switch_remove_reply_mute">通知から \"通知をオフ\" アクションを削除</string>
-    <string name="switch_redirect_webview">WebView を既定のブラウザにリダイレクト</string>
+    <string name="switch_redirect_webview">WebView をデフォルトのブラウザにリダイレクト</string>
     <string name="switch_open_in_browser">ブラウザアプリで開く</string>
     <string name="switch_prevent_mark_as_read">常に既読をつけない</string>
     <string name="switch_send_mute_message">常にミュートメッセージとして送信</string>
@@ -80,7 +80,7 @@
 
 
     <string name="no_backup_found">何もバックアップされていません</string>
-    <string name="no_get_restart_app">正しく取得できませんでした。アプリを再起動してください</string>
+    <string name="no_get_restart_app">正しく取得できませんでした。\nアプリを再起動してください</string>
     <string name="ok">ok</string>
 
     <string name="yes">はい</string>
