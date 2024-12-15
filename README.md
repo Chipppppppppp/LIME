@@ -1,18 +1,7 @@
 # <img src="app/src/main/ic_launcher-playstore.png" width="60px"> LIME: Adkiller for Beta LINEs
 
 ## 以下に準じます
-https://github.com/Chipppppppppp/LIME
-
- ## 通知が届かないの解決方法
-下記の、LINE 14.3.2をインストールしパッチを行い、インストールを行って、ログインをしてください。
-
-
-ログイン後、LIMEに適応するバージョンのLINEにパッチを行って、**更新**するようにしてください。
-
-https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.3.2-apk
-
-推奨LsPatch<br>
-https://github.com/JingMatrix/LSPatch/actions
+https://github.com/Chipppppppppp/LIME 
 
 # 更新について
 更新内容を記載していないReleaseについては、差分を押してください、必要でない更新でなければ無理して更新を行う必要はありません。
@@ -24,10 +13,20 @@ v1.12.5a, v1.12.5a1→仕様変更
 
 ## LsPatchを利用の方へ 
 
-
-## 確認済みのバグやエラー
+確認済みのバグやエラー
 アプリがクラッシュする→トラッキング通信をブロックするを無効にしてください
 
+
+通知が届かないの解決方法
+下記の、LINE 14.3.2をインストールしパッチを行い、インストールを行って、ログインをしてください。
+
+
+ログイン後、LIMEに適応するバージョンのLINEにパッチを行って、**更新**するようにしてください。
+
+https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.3.2-apk
+
+推奨LsPatch<br>
+https://github.com/JingMatrix/LSPatch/actions
 
 ## トーク履歴のリストアについて
 
@@ -52,6 +51,12 @@ https://youtu.be/94JN4NLGdOI
 ## トーク履歴の自動バックアップについて
 
 [Macro SAMPLE](https://drive.usercontent.google.com/u/0/uc?id=1rhZPmoMbti_l1JaX2EbjcRKUePkWlIXU&export=download)
+
+# 寄付
+[100円 PayPay](https://qr.paypay.ne.jp/p2p01_qIqiHEfm7jWiXaKd)
+[300円
+PayPay](https://qr.paypay.ne.jp/p2p01_oc9qTsEoIg8kn8Gy)
+
 
 ## 概要
 
