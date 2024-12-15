@@ -10,14 +10,14 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
 
-public class Ringtone implements IHook {
+public class RingTone implements IHook {
     private android.media.Ringtone ringtone = null;
     private boolean isPlaying = false;
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
 
-        if (!limeOptions.callTone.checked) return;
+        if (!limeOptions.call_tone.checked) return;
 
         XposedBridge.hookAllMethods(
                 loadPackageParam.classLoader.loadClass(Constants.RESPONSE_HOOK.className),

@@ -22,6 +22,7 @@ import io.github.chipppppppppp.lime.hooks.ModifyRequest;
 import io.github.chipppppppppp.lime.hooks.ModifyResponse;
 import io.github.chipppppppppp.lime.hooks.OutputRequest;
 import io.github.chipppppppppp.lime.hooks.OutputResponse;
+import io.github.chipppppppppp.lime.hooks.PhotoAddNotification;
 import io.github.chipppppppppp.lime.hooks.PreventMarkAsRead;
 import io.github.chipppppppppp.lime.hooks.PreventUnsendMessage;
 import io.github.chipppppppppp.lime.hooks.RedirectWebView;
@@ -30,7 +31,7 @@ import io.github.chipppppppppp.lime.hooks.RemoveFlexibleContents;
 import io.github.chipppppppppp.lime.hooks.RemoveIconLabels;
 import io.github.chipppppppppp.lime.hooks.RemoveIcons;
 import io.github.chipppppppppp.lime.hooks.RemoveReplyMute;
-import io.github.chipppppppppp.lime.hooks.Ringtone;
+import io.github.chipppppppppp.lime.hooks.RingTone;
 import io.github.chipppppppppp.lime.hooks.SendMuteMessage;
 import io.github.chipppppppppp.lime.hooks.SpoofAndroidId;
 import io.github.chipppppppppp.lime.hooks.SpoofUserAgent;
@@ -66,8 +67,9 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new ModifyResponse(),
             new OutputRequest(),
             new Archived(),
-            new Ringtone(),
-            new UnsentCap()
+            new RingTone(),
+            new UnsentCap(),
+            new PhotoAddNotification()
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {

@@ -1,19 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string translatable="false" name="app_name">LIME</string>
+﻿<resources>
+    <string name="app_name" translatable="false">LIMEs</string>
     <!-- General -->
     <string name="positive_button">OK</string>
     <string name="negative_button">Cancel</string>
-    <string name="ok">OK</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-    <string name="cancel">Cancel</string>
-    <string name="sticker">Stickers</string>
-    <string name="video">Videos</string>
-    <string name="picture">Photos</string>
-    <string name="reacquisition">Reacquisition</string>
+
     <!-- Xposed API -->
     <string name="xposed_desc">Clean LINE.</string>
+
     <!-- Options -->
     <string name="module_not_enabled_title">Error</string>
     <string name="module_not_enabled_text">Module not enabled!</string>
@@ -24,7 +17,6 @@
     <string name="spoof_android_id_risk">Spoofing Android ID is at your own risk</string>
     <string name="incompatible_version">Some functions are not available due to version incompatibility</string>
     <string name="switch_android_secondary">Disguise as the highest version</string>
-    <string name="switch_archived">Disable unhiding hidden chats</string>
     <string name="switch_unembed_options">Do not embed options in LINE (options will not be synchronized)</string>
     <string name="switch_remove_voom">Remove the VOOM icon</string>
     <string name="switch_remove_wallet">Remove the wallet icon</string>
@@ -35,29 +27,44 @@
     <string name="switch_remove_ads">Remove ads</string>
     <string name="switch_remove_recommendation">Remove recommendations</string>
     <string name="switch_remove_premium_recommendation">Remove LYP Premium recommendations</string>
-    <string name="switch_remove_service_labels">Remove tbe service labels</string>
-    <string name="switch_remove_service">Remove services item</string>
-    <string name="switch_remove_reply_mute">Remove the \"Mute chat\" action from notifications</string>
+    <string name="switch_remove_service_labels">Remove the service labels</string>
+    <string name="switch_remove_reply_mute">Remove the "Mute chat" action from notifications</string>
     <string name="switch_redirect_webview">Redirect WebView to the default browser</string>
     <string name="switch_open_in_browser">Open in the browser app</string>
     <string name="switch_prevent_mark_as_read">Always prevent marking as read</string>
     <string name="switch_send_mute_message">Always send mute messages</string>
     <string name="switch_prevent_unsend_message">Prevent messages from unsending</string>
-    <string name="switch_remove_keep_unread">Remove the \"Keep unread\" switch from the menu in the top right corner of the chat tab</string>
+    <string name="switch_remove_keep_unread">Remove the "Keep unread" switch from the menu in the top right corner of the chat tab</string>
     <string name="switch_block_tracking">Block tracking communications</string>
     <string name="switch_stop_version_check">Stop checking LINE version</string>
     <string name="switch_output_communication">Output communication contents to log (for developers)</string>
+    <string name="switch_BlockUpdateProfileNotification">Do not notify of profile updates</string>
+
+    <string name="call_tone">For LsPatch Ringtones</string>
+    <string name="RemoveService">Remove service item</string>
+    <string name="ReadChecker">Check the readership of sent messages</string>
+    <string name="removeNotification">Remove updated profiles\n</string>
+    <string name="DarkColor">Make navigation button color black, dark theme pure dark</string>
+    <string name="switch_KeepUnreadLSpatch">Show "Keep Unread" switch for LsPatch</string>
+    <string name="AutomaticBackup">Recurring backups\n</string>
+
+
     <string name="modify_request">Modify requests</string>
     <string name="modify_response">Modify responses</string>
     <string name="button_copy">Copy</string>
     <string name="button_paste">Paste</string>
-    <string name="call_tone">Notify ringtone of LSPatch</string>
+
+    <string name="NoMuteMessage">Disable mute messages</string>
+    <string name="MuteGroup">Mute notifications for your subscribed groups</string>
+
+    <string name="PhotoAddNotification">Attach an image when sending an image notification&#10;⚠There will be a 1~3 second delay in receiving image notifications</string>
+
     <!-- Menu -->
     <string name="switch_keep_unread">Keep unread</string>
-    <!-- UNSENT CAP -->
+
     <string name="backup">Backup</string>
     <string name="backup_creation_failed">Failed to create backup</string>
-    <string name="confirm">Confirm</string>
+    <string name="check">Confirm</string>
     <string name="class_not_found">Class not found</string>
     <string name="confirm_messages">Confirmed messages</string>
     <string name="delete_messages">Deleted messages</string>
@@ -69,8 +76,61 @@
     <string name="file_move_failed">Failed to move file</string>
     <string name="file_save_failed">Failed to save file</string>
     <string name="file_not_found">File not found</string>
-    <string name="failed_read_backup_file">Failed to read %s</string>
-    <string name="confirm_delete">Really want to delete it?</string>
+    <string name="read_BackUpFile_failed">Failed to read BackUpFile.txt</string>
+    <string name="really_delete">Are you sure you want to delete</string>
     <string name="no_backup_found">Nothing backed up</string>
-    <string name="no_get_restart_app">Could not get properly.\nPlease restart the app</string>
+    <string name="no_get_restart_app">Could not get properly. Please restart the app</string>
+    <string name="ok">OK</string>
+    <string name="set_id">Set ID</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="cancel">Cancel</string>
+    <string name="sticker">Stickers</string>
+    <string name="video">Videos</string>
+    <string name="picture">Photos</string>
+    <string name="reacquisition">Reacquire</string>
+
+    <string name="switch_archived">Disable unhiding hidden chats</string>
+
+    <!-- Device info -->
+
+    <string name="spoof_device_name">Device Name</string>
+    <string name="spoof_version_id_risk">Spoofing LINE Version is at your own risk</string>
+    <string name="spoof_os_name">OS name</string>
+    <string name="spoof_os_version">OS version</string>
+    <string name="spoof_android_version">App version</string>
+
+
+
+
+
+    <string name="Talk_Back_up">Start backup of talk history</string>
+    <string name="Talk_Picture_Back_up">Start backup of talk picture folder</string>
+    <string name="BackUp_Stat">Start backup</string>
+    <string name="Talk_Picture_Back_up_Error">Error occurred while backing up the talk picture folder</string>
+    <string name="Back_Up">Backup</string>
+    <string name="Restore">Restore</string>
+    <string name="Picure_Restore">Restore talk image</string>
+    <string name="Mute_Group">Group on mute</string>
+    <string name="Talk_Back_up_Success">Backup was successful</string>
+    <string name="Talk_Back_up_Error">Error occurred during backup</string>
+    <string name="Backup_file_not_found">Backup file not found</string>
+    <string name="Restore_Success">Restore succeeded</string>
+    <string name="Restore_Error">Error occurred during restore</string>
+    <string name="Restore_Chat_Table_Success">Chat table restored successfully</string>
+    <string name="Restore_Chat_Table_Error">Chat table restoration failed</string>
+    <string name="BackUp_Chat_Photo_Success">Backup of talk picture folder succeeded</string>
+    <string name="BackUp_Chat_Photo_Error">Error occurred while backing up the talk picture folder</string>
+    <string name="Restore_Chat_Photo_Not_Folder">The backup folder for the talk picture folder was not found</string>
+    <string name="Restore_Create_Failed_Chat_Photo_Folder">Failure to create folder for talk picture folder</string>
+    <string name="Restore_Chat_Photo_Success">Restore talk picture folder succeeded</string>
+    <string name="Restore_Chat_Photo_Error">Error occurred while restoring the talk picture folder</string>
+
+
+    <string name="Reader">Reader</string>
+    <string name="Delete">delete</string>
+    <string name="Reader_Data_Delete_Success">Read data has been deleted</string>
+    <string name="Talk_Auto_Back_up_Success">Automatic backup succeeded</string>
+    <string name="Talk_Auto_Back_up_Error">Error occurred during automatic backup</string>
+    <string name="Talk_Picture_Back_up_Success">The talk picture folder was successfully backed up</string>
 </resources>

@@ -1,10 +1,11 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<resources>
+﻿<resources>
     <!-- General -->
     <string name="positive_button">確定</string>
     <string name="negative_button">取消</string>
+
     <!-- Xposed API -->
     <string name="xposed_desc">整潔的 LINE</string>
+
     <!-- Options -->
     <string name="module_not_enabled_title">錯誤</string>
     <string name="module_not_enabled_text">模組未啟用！</string>
@@ -40,6 +41,87 @@
     <string name="modify_response">修改回應</string>
     <string name="button_copy">複製</string>
     <string name="button_paste">貼上</string>
+
     <!-- Menu -->
+    <string name="spoof_version_id_risk">欺騙 LINE 版本的風險由您自行承擔</string>
+    <string name="spoof_os_name">作業系統名稱</string>
+    <string name="spoof_os_version">作業系統版本</string>
+    <string name="spoof_android_version">應用程式版本</string>
+    <string name="spoof_device_name">設備名稱</string>
     <string name="switch_keep_unread">保持未讀</string>
+
+
+    <string name="NoMuteMessage">停用靜音訊息</string>
+    <string name="Talk_Back_up">開始備份通話記錄</string>
+    <string name="Talk_Picture_Back_up">開始備份談話圖片資料夾</string>
+    <string name="BackUp_Stat">開始備份</string>
+    <string name="Talk_Auto_Back_up_Success">自動備份成功</string>
+    <string name="Talk_Auto_Back_up_Error">自動備份時發生錯誤</string>
+    <string name="Talk_Picture_Back_up_Success">談話圖片資料夾已成功備份</string>
+    <string name="Talk_Picture_Back_up_Error">備份談話圖片資料夾時出錯</string>
+    <string name="Back_Up">備份</string>
+    <string name="Restore">恢復</string>
+    <string name="Picure_Restore">恢復談話影像</string>
+    <string name="Mute_Group">群組靜音</string>
+    <string name="Talk_Back_up_Success">備份成功</string>
+    <string name="Talk_Back_up_Error">備份時發生錯誤</string>
+    <string name="Backup_file_not_found">找不到備份文件</string>
+    <string name="Restore_Success">恢復成功</string>
+    <string name="Restore_Error">恢復期間發生錯誤</string>
+    <string name="Restore_Chat_Table_Success">聊天表恢復成功</string>
+    <string name="Restore_Chat_Table_Error">聊天表恢復失敗</string>
+    <string name="BackUp_Chat_Photo_Success">談話圖片資料夾備份成功</string>
+    <string name="BackUp_Chat_Photo_Error">備份談話圖片資料夾時出錯</string>
+    <string name="Restore_Chat_Photo_Not_Folder">找不到談話圖片資料夾的備份資料夾</string>
+    <string name="Restore_Create_Failed_Chat_Photo_Folder">無法為談話圖片資料夾建立資料夾</string>
+    <string name="Restore_Chat_Photo_Success">恢復談話圖片資料夾成功</string>
+    <string name="Restore_Chat_Photo_Error">恢復談話圖片資料夾時出錯</string>
+    <string name="Reader">讀者</string>
+    <string name="Delete">刪除</string>
+    <string name="Reader_Data_Delete_Success">讀取資料已被刪除</string>
+    <string name="MuteGroup">將您訂閱的群組的通知靜音</string>
+
+    <string name="PhotoAddNotification">發送圖片通知時附上圖片⚠接收圖片通知會有1~3秒的延遲</string>
+
+
+    <string name="backup">Backup</string>
+    <string name="backup_creation_failed">建立備份失敗</string>
+    <string name="check">確認</string>
+    <string name="class_not_found">找不到類別</string>
+    <string name="confirm_messages">已確認訊息</string>
+    <string name="delete_messages">已刪除的訊息</string>
+    <string name="deleted_messages">已刪除的訊息</string>
+    <string name="content_moved_to_backup">內容移至備份文件</string>
+    <string name="file_content_deleted">文件內容已刪除</string>
+    <string name="file_creation_failed">無法建立文件</string>
+    <string name="file_delete_failed">刪除檔案失敗</string>
+    <string name="file_move_failed">移動文件失敗</string>
+    <string name="file_save_failed">儲存檔案失敗</string>
+    <string name="file_not_found">找不到文件</string>
+    <string name="read_BackUpFile_failed">無法讀取 BackUpFile.txt</string>
+    <string name="really_delete">您確定要刪除嗎</string>
+    <string name="no_backup_found">沒有任何備份</string>
+    <string name="no_get_restart_app">無法正常獲取。請重新啟動應用程式</string>
+    <string name="ok">好的</string>
+    <string name="set_id">設定ID</string>
+    <string name="yes">是的</string>
+    <string name="no">不</string>
+    <string name="cancel">取消</string>
+    <string name="sticker">貼紙</string>
+    <string name="video">影片</string>
+    <string name="picture">照片</string>
+    <string name="reacquisition">重新獲得</string>
+
+    <string name="switch_archived">停用取消隱藏隱藏聊天</string>
+
+    <string name="switch_BlockUpdateProfileNotification">不通知個人資料更新</string>
+
+    <string name="call_tone">對於 LsPatch 鈴聲</string>
+    <string name="RemoveService">刪除服務項目</string>
+    <string name="ReadChecker">檢查已發送訊息的讀者人數</string>
+    <string name="removeNotification">刪除更新的設定文件</string>
+    <string name="DarkColor">使導航按鈕顏色為黑色，深色主題純深色</string>
+    <string name="switch_KeepUnreadLSpatch">顯示 LsPatch 的保留未讀開關</string>
+    <string name="AutomaticBackup">將您訂閱的群組的通知靜音</string>
+
 </resources>

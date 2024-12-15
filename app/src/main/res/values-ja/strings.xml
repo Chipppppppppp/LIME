@@ -3,16 +3,10 @@
     <!-- General -->
     <string name="positive_button">OK</string>
     <string name="negative_button">キャンセル</string>
-    <string name="ok">OK</string>
-    <string name="yes">はい</string>
-    <string name="no">いいえ</string>
-    <string name="cancel">キャンセル</string>
-    <string name="sticker">スタンプ</string>
-    <string name="video">動画</string>
-    <string name="picture">写真</string>
-    <string name="reacquisition">再取得</string>
+
     <!-- Xposed API -->
     <string name="xposed_desc">LINE をクリーンに。</string>
+
     <!-- Options -->
     <string name="module_not_enabled_title">エラー</string>
     <string name="module_not_enabled_text">モジュールが有効化されていません！</string>
@@ -23,7 +17,6 @@
     <string name="spoof_android_id_risk">Android ID の偽装は自己責任です</string>
     <string name="incompatible_version">バージョン不適合のため一部機能が利用できません</string>
     <string name="switch_android_secondary">最大バージョンに偽装</string>
-    <string name="switch_archived">非表示にしたチャットの再表示を無効化</string>
     <string name="switch_unembed_options">設定を LINE に埋め込まない (設定は同期されません)</string>
     <string name="switch_remove_voom">VOOM アイコンを削除</string>
     <string name="switch_remove_wallet">ウォレットアイコンを削除</string>
@@ -35,41 +28,106 @@
     <string name="switch_remove_recommendation">おすすめを削除</string>
     <string name="switch_remove_premium_recommendation">LYP プレミアムのおすすめを削除</string>
     <string name="switch_remove_service_labels">サービスのラベルを削除</string>
-    <string name="switch_remove_service">サービスの項目を削除</string>
     <string name="switch_remove_reply_mute">通知から \"通知をオフ\" アクションを削除</string>
-    <string name="switch_redirect_webview">WebView をデフォルトのブラウザにリダイレクト</string>
+    <string name="switch_redirect_webview">WebView を既定のブラウザにリダイレクト</string>
     <string name="switch_open_in_browser">ブラウザアプリで開く</string>
     <string name="switch_prevent_mark_as_read">常に既読をつけない</string>
     <string name="switch_send_mute_message">常にミュートメッセージとして送信</string>
     <string name="switch_prevent_unsend_message">送信取り消しを拒否</string>
-    <string name="switch_remove_keep_unread">トーク画面右上のメニューにある「未読のまま閲覧」スイッチを削除</string>
-    <string name="switch_block_tracking">トラッキング通信をブロック</string>
+    <string name="switch_remove_keep_unread">「未読のまま閲覧」スイッチを削除</string>
+
+    <string name="switch_block_tracking">トラッキング通信をブロック(この機能はクラッシュを引き起こす可能性があります)</string>
     <string name="switch_stop_version_check">LINE バージョンの確認を停止</string>
     <string name="switch_output_communication">通信内容をログに出力 (開発者用)</string>
     <string name="modify_request">リクエストを改変</string>
     <string name="modify_response">レスポンスを改変</string>
     <string name="button_copy">コピー</string>
-    <string name="button_paste">貼り付け</string>
-    <string name="call_tone">着信音を鳴らす（LSPatch用）</string>
+    <string name="button_paste">ペースト</string>
+
+
+    <string name="spoof_version_id_risk">LINEバージョンの偽装は自己責任です</string>
+    <string name="spoof_os_name" >OS 名</string>
+    <string name="spoof_os_version" >OS バージョン</string>
+    <string name="spoof_android_version" >LINEバージョン</string>
+
+    <string name="spoof_device_name">デバイス名</string>
     <!-- Menu -->
     <string name="switch_keep_unread">未読のまま閲覧</string>
-    <!-- UNSENT CAP -->
+
+
+
+    <!-- UNSENT REC -->
+
+
     <string name="backup">バックアップ</string>
     <string name="backup_creation_failed">バックアップの作成に失敗しました</string>
-    <string name="confirm">確認</string>
+    <string name="check">確認</string>
     <string name="class_not_found">クラスが見つかりません</string>
+
     <string name="confirm_messages">確認済みのメッセージ</string>
     <string name="delete_messages">メッセージを削除</string>
     <string name="deleted_messages">削除されたメッセージ</string>
     <string name="content_moved_to_backup">内容がバックアップファイルに移動されました</string>
+
     <string name="file_content_deleted">ファイルの内容が削除されました</string>
     <string name="file_creation_failed">ファイルを作成できませんでした</string>
     <string name="file_delete_failed">ファイルの削除に失敗しました</string>
     <string name="file_move_failed">ファイルの移動に失敗しました</string>
     <string name="file_save_failed">ファイルの保存に失敗しました</string>
     <string name="file_not_found">ファイルが見つかりません</string>
-    <string name="failed_read_backup_file">%s の読み取りに失敗しました</string>
-    <string name="confirm_delete">本当に削除しますか？</string>
+    <string name="read_BackUpFile_failed">BackUpFile.txtの読み取りに失敗しました</string>
+    <string name="really_delete">本当に削除しますか</string>
+
+
     <string name="no_backup_found">何もバックアップされていません</string>
-    <string name="no_get_restart_app">正しく取得できませんでした。\nアプリを再起動してください</string>
+    <string name="no_get_restart_app">正しく取得できませんでした。アプリを再起動してください</string>
+    <string name="ok">ok</string>
+
+    <string name="yes">はい</string>
+    <string name="no">いいえ</string>
+    <string name="cancel">キャンセル</string>
+    <string name="sticker">スタンプ</string>
+    <string name="video">動画</string>
+    <string name="picture">写真</string>
+    <string name="reacquisition">再取得</string>
+    <string name="switch_archived">非表示にしたチャットの再表示を無効化</string>
+    <string name="RemoveService">サービスの項目を削除</string>
+    <string name="ReadChecker">送信したメッセージの既読者の確認</string>
+    <string name="switch_KeepUnreadLSpatch">LsPatch用「未読のまま閲覧」スイッチを表示</string>
+    <string name="NoMuteMessage">ミュートメッセージの無効化</string>
+    <string name="MuteGroup">登録しているグループ名の通知をオフにする</string>
+    <string name="DarkColor">ナビゲーションのボタンの色を黒にする、ダークテーマをピュアダークにする</string>
+    <string name="switch_BlockUpdateProfileNotification">プロフィールの更新を通知しない</string>
+    <string name="PhotoAddNotification">画像通知の際画像を添付します⚠3秒受信が遅延します</string>
+    <string name="Talk_Back_up">トーク履歴のバックアップを開始</string>
+    <string name="Talk_Picture_Back_up">トーク画像フォルダのバックアップを開始</string>
+    <string name="BackUp_Stat">バックアップを開始</string>
+    <string name="Talk_Auto_Back_up_Success">自動バックアップが成功しました</string>
+    <string name="Talk_Auto_Back_up_Error">自動バックアップ中にエラーが発生しました</string>
+    <string name="Talk_Picture_Back_up_Success">トーク画像フォルダのバックアップが成功しました</string>
+    <string name="Talk_Picture_Back_up_Error">トーク画像フォルダのバックアップ中にエラーが発生しました</string>
+    <string name="Back_Up">バックアップ</string>
+    <string name="Restore">リストア</string>
+    <string name="Picure_Restore">トーク画像のリストア</string>
+    <string name="Mute_Group">ミュート中のグループ</string>
+    <string name="Talk_Back_up_Success">バックアップが成功しました</string>
+    <string name="Talk_Back_up_Error">バックアップ中にエラーが発生しました</string>
+    <string name="Backup_file_not_found">バックアップファイルが見つかりません</string>
+    <string name="Restore_Success">リストアが成功しました</string>
+    <string name="Restore_Error">リストア中にエラーが発生しました</string>
+    <string name="Restore_Chat_Table_Success">chatテーブルのリストアが成功しました</string>
+    <string name="Restore_Chat_Table_Error">chatテーブルのリストアが失敗しました</string>
+    <string name="BackUp_Chat_Photo_Success">トーク画像フォルダのバックアップが成功しました</string>
+    <string name="BackUp_Chat_Photo_Error">トーク画像フォルダのバックアップ中にエラーが発生しました</string>
+    <string name="Restore_Chat_Photo_Not_Folder">トーク画像フォルダのバックアップフォルダが見つかりません</string>
+    <string name="Restore_Create_Failed_Chat_Photo_Folder">トーク画像フォルダのフォルダの作成に失敗しました</string>
+    <string name="Restore_Chat_Photo_Success">トーク画像フォルダの復元が成功しました</string>
+    <string name="Restore_Chat_Photo_Error">トーク画像フォルダの復元中にエラーが発生しました</string>
+    <string name="Reader">既読者</string>
+    <string name="Delete">削除</string>
+    <string name="Reader_Data_Delete_Success">既読データが削除されました。</string>
+    <string name="call_tone">LsPatch用　着信音を鳴らす</string>
+    <string name="removeNotification">更新されたプロフィールを削除</string>
+    <string name="AutomaticBackup">定期的にバックアップ</string>
+    <string name="set_id">Set ID</string>
 </resources>
