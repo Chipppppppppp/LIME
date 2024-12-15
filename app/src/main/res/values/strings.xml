@@ -78,7 +78,6 @@
     <string name="file_not_found">File not found</string>
     <string name="failed_read_backup_file">Failed to read %s</string>
     <string name="confirm_delete">Really want to delete it?</string>
-    <string name="confirm_delete">Are you sure you want to delete</string>
     <string name="no_backup_found">Nothing backed up</string>
     <string name="no_get_restart_app">Could not get properly. Please restart the app</string>
     <string name="ok">OK</string>
