@@ -116,7 +116,7 @@ public class UnsentRec implements IHook {
                                             .create()
                                             .show();
                                 } catch (IOException ignored) {
-                                    Toast.makeText(appContext, moduleContext.getResources().getString(R.string.read_BackUpFile_failed), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(appContext, moduleContext.getResources().getString(R.string.failed_read_backup_file), Toast.LENGTH_SHORT).show();
                                 }
                             } else {
                                 Toast.makeText(appContext, moduleContext.getResources().getString(R.string.no_backup_found), Toast.LENGTH_SHORT).show();
@@ -250,7 +250,7 @@ public class UnsentRec implements IHook {
                                                 .show();
 
                                     } catch (IOException ignored) {
-                                        Toast.makeText(context, moduleContext.getResources().getString(R.string.read_BackUpFile_failed), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, moduleContext.getResources().getString(R.string.failed_read_backup_file), Toast.LENGTH_SHORT).show();
                                     }
                                 });
                                 if (rootView instanceof ViewGroup) {

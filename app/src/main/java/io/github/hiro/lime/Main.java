@@ -85,6 +85,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new RemoveNotification(),
             new Disabled_Group_notification(),
             new PhotoAddNotification()
+
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {

@@ -10,9 +10,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Set;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -29,6 +31,20 @@ public class PhotoAddNotification implements IHook {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 Application appContext = (Application) param.thisObject;
+
+                if (appContext == null) {
+                    // XposedBridge.log("Application context is null!");
+                    return;
+                }
+
+                Context moduleContext;
+                try {
+                    moduleContext = appContext.createPackageContext(
+                            "io.github.hiro.lime", Context.CONTEXT_IGNORE_SECURITY);
+                } catch (PackageManager.NameNotFoundException ignored) {
+                    // XposedBridge.log("Failed to create package context: " + e.getMessage());
+                    return;
+                }
                 File dbFile1 = appContext.getDatabasePath("naver_line");
                 File dbFile2 = appContext.getDatabasePath("contact");
 
@@ -49,6 +65,7 @@ public class PhotoAddNotification implements IHook {
             }
         });
     }
+
     private void hookNotificationMethods(XC_LoadPackage.LoadPackageParam loadPackageParam,
                                          Context context, SQLiteDatabase dbGroups, SQLiteDatabase dbContacts) {
         XposedHelpers.findAndHookMethod(NotificationManager.class, "notify",
@@ -68,81 +85,130 @@ public class PhotoAddNotification implements IHook {
                 });
     }
 
+    private static boolean isHandlingNotification = false;
     private void handleNotificationHook(Context context, SQLiteDatabase dbGroups, SQLiteDatabase dbContacts, XC_MethodHook.MethodHookParam param, boolean hasTag) {
-        Notification notification = hasTag ? (Notification) param.args[2] : (Notification) param.args[1];
-        String title = getNotificationTitle(notification);
 
-        if (title == null) {
-           // XposedBridge.log("Notification title is null. Skipping.");
+        if (isHandlingNotification) {
             return;
         }
 
-        // 通知の本文を取得
-        String originalText = getNotificationText(notification);
-        if (originalText != null && (originalText.contains("写真を送信しました") || originalText.contains("sent a photo"))) { // "写真を送信しました" または "sent a photo" が含まれている場合のみ処理
-           // XposedBridge.log("Target notification detected: " + originalText);
+        isHandlingNotification = true;
 
-            String chatId = resolveChatId(dbGroups, dbContacts, notification);
-            if (chatId == null) {
-               // XposedBridge.log("Chat ID not found for title: " + title);
+        try {
+            Notification originalNotification = hasTag ? (Notification) param.args[2] : (Notification) param.args[1];
+            String title = getNotificationTitle(originalNotification);
+
+            if (title == null) {
+
                 return;
             }
 
-            File latestFile = getLatestMessageFile(chatId);
-            if (latestFile == null) {
-               // XposedBridge.log("No latest message file found for chat ID: " + chatId);
-                return;
+            String originalText = getNotificationText(originalNotification);
+            Notification newNotification = originalNotification;
+
+            if (originalText != null && (originalText.contains("写真を送信しました") || originalText.contains("sent a photo"))) {
+                String chatId = resolveChatId(dbGroups, dbContacts, originalNotification);
+                if (chatId == null) {
+                    return;
+                }
+
+                File latestFile = getLatestMessageFile(chatId);
+                if (latestFile == null) {
+                    return;
+                }
+
+                Bitmap bitmap = loadBitmapFromFile(latestFile);
+                if (bitmap == null) {
+                    return;
+                }
+
+                newNotification = createNotificationWithImageFromFile(context, originalNotification, latestFile, originalText);
+
+
+                if (hasTag) {
+                    param.args[2] = newNotification;
+                } else {
+                    param.args[1] = newNotification;
+                }
+
+                param.setResult(null);
             }
 
-            Bitmap bitmap = loadBitmapFromFile(latestFile);
-            if (bitmap == null) {
-               // XposedBridge.log("Failed to load bitmap from file: " + latestFile.getAbsolutePath());
-                return;
+            int randomNotificationId = (int) System.currentTimeMillis();
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            if (notificationManager != null) {
+                if (hasTag) {
+                    String tag = (String) param.args[0];
+                    notificationManager.notify(tag, randomNotificationId, newNotification);
+                } else {
+                    notificationManager.notify(randomNotificationId, newNotification);
+                }
             }
 
-            Notification newNotification = createNotificationWithImageFromFile(context, notification, latestFile, originalText);
+            param.setResult(null);
 
-            if (hasTag) {
-                param.args[2] = newNotification;
-            } else {
-                param.args[1] = newNotification;
-            }
-
-            logNotificationDetails("Modified NotificationManager.notify", hasTag ? (int) param.args[1] : -1, newNotification, hasTag ? (String) param.args[0] : null);
+        } finally {
+            isHandlingNotification = false;
         }
     }
 
 
     private String resolveChatId(SQLiteDatabase dbGroups, SQLiteDatabase dbContacts, Notification notification) {
+        Set<String> keys = notification.extras.keySet();
+        Log.d("NotificationKeys", "Notification Extras Keys: " + keys);
+
+        String title = notification.extras.getString(Notification.EXTRA_TITLE);
+        String text = notification.extras.getString(Notification.EXTRA_TEXT);
         String subText = notification.extras.getString(Notification.EXTRA_SUB_TEXT);
+
+        Log.d("ResolveChatId", "Notification Title: " + title);
+        Log.d("ResolveChatId", "Notification Text: " + text);
+        Log.d("ResolveChatId", "Notification SubText: " + subText);
+
         if (subText != null) {
             String groupId = queryDatabase(dbGroups, "SELECT id FROM groups WHERE name =?", subText);
             if (groupId != null) {
                 return groupId;
             }
             String talkId = queryDatabase(dbContacts, "SELECT mid FROM contacts WHERE profile_name =?", subText);
+            if (talkId != null) {
+            }
+            return talkId;
+        } else {
+
+            // Use title if subText is null
+            String groupId = queryDatabase(dbGroups, "SELECT id FROM groups WHERE name =?", title);
+            if (groupId != null) {
+
+                return groupId;
+            }
+            String talkId = queryDatabase(dbContacts, "SELECT mid FROM contacts WHERE profile_name =?", title);
+            if (talkId != null) {
+            }
             return talkId;
         }
-        return null;
     }
+
+
+
 
     private File getLatestMessageFile(String chatId) {
         File messagesDir = new File(Environment.getExternalStorageDirectory(),
                 "/Android/data/jp.naver.line.android/files/chats/" + chatId + "/messages");
         if (!messagesDir.exists() || !messagesDir.isDirectory()) {
-           // XposedBridge.log("Messages directory does not exist: " + messagesDir.getAbsolutePath());
+            // XposedBridge.log("Messages directory does not exist: " + messagesDir.getAbsolutePath());
             return null;
         }
 
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
-           // XposedBridge.log("Sleep interrupted: " + e.getMessage());
+            // XposedBridge.log("Sleep interrupted: " + e.getMessage());
         }
 
         File[] files = messagesDir.listFiles((dir, name) -> !name.endsWith(".thumb") && !name.endsWith(".downloading"));
         if (files == null || files.length == 0) {
-           // XposedBridge.log("No files found in messages directory: " + messagesDir.getAbsolutePath());
+            // XposedBridge.log("No files found in messages directory: " + messagesDir.getAbsolutePath());
             return null;
         }
 
@@ -196,14 +262,14 @@ public class PhotoAddNotification implements IHook {
     }
 
     private void logNotificationDetails(String method, int id, Notification notification, String tag) {
-       // XposedBridge.log(method + " called. ID: " + id + (tag != null ? ", Tag: " + tag : ""));
+      //  XposedBridge.log(method + " called. ID: " + id + (tag != null ? ", Tag: " + tag : ""));
         if (notification.extras != null) {
             String title = notification.extras.getString(Notification.EXTRA_TITLE);
             String text = notification.extras.getString(Notification.EXTRA_TEXT);
-           // XposedBridge.log("Notification Title: " + (title != null ? title : "No Title"));
-           // XposedBridge.log("Notification Text: " + (text != null ? text : "No Text"));
+            // XposedBridge.log("Notification Title: " + (title != null ? title : "No Title"));
+            // XposedBridge.log("Notification Text: " + (text != null ? text : "No Text"));
         } else {
-           // XposedBridge.log("Notification has no extras.");
+            // XposedBridge.log("Notification has no extras.");
         }
     }
 }

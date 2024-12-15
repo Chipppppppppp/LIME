@@ -75,7 +75,7 @@
     <string name="file_move_failed">ファイルの移動に失敗しました</string>
     <string name="file_save_failed">ファイルの保存に失敗しました</string>
     <string name="file_not_found">ファイルが見つかりません</string>
-    <string name="read_BackUpFile_failed">BackUpFile.txtの読み取りに失敗しました</string>
+    <string name="failed_read_backup_file">%s の読み取りに失敗しました</string>
     <string name="really_delete">本当に削除しますか</string>
 
 
