@@ -37,7 +37,7 @@ public class LimeOptions {
     public Option archived = new Option("archived_message", R.string.switch_archived, false);
     public Option call_tone = new Option("call_tone", R.string.call_tone, false);
     public Option PhotoAddNotification = new Option("PhotoAddNotification", R.string.PhotoAddNotification, false);
-
+    public Option DarkColor = new Option("DarkColor", R.string.DarkColor, false);
 
     public Option[] options = {
             removeVoom,
@@ -63,6 +63,7 @@ public class LimeOptions {
             stopVersionCheck,
             outputCommunication,
             call_tone,
-            PhotoAddNotification
+            PhotoAddNotification,
+            DarkColor
     };
 }
