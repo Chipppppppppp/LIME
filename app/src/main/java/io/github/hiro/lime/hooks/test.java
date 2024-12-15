@@ -1,10 +1,7 @@
 package io.github.hiro.lime.hooks;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Camera;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
-import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import dalvik.system.DexFile;
 import io.github.hiro.lime.LimeOptions;
@@ -27,39 +22,16 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
 
-public class Test implements IHook {
+public class test implements IHook {
     private boolean isButtonAdded = false; // ボタンが追加されたかどうかを追跡するフラグ
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
+        String packageName = loadPackageParam.packageName;
 
-        Class<?> hookTarget;
-        hookTarget = loadPackageParam.classLoader.loadClass("le1.E0");
-        XposedBridge.hookAllMethods(hookTarget, "read", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                param.thisObject.getClass().getDeclaredField("q").set(param.thisObject, true);
-            }
-        });
-
-        hookTarget = loadPackageParam.classLoader.loadClass("dQ0.B0");
-        XposedBridge.hookAllMethods(hookTarget, "read", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                param.thisObject.getClass().getDeclaredField("a").set(param.thisObject, null);
-            }
-        });
-
-        hookTarget = loadPackageParam.classLoader.loadClass("le1.R0");
-        XposedBridge.hookAllMethods(hookTarget, "read", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                param.thisObject.getClass().getDeclaredField("a").set(param.thisObject, true);
-            }
-        });
-
-    //  hookOnViewAdded(loadPackageParam.classLoader);
-//hookAllClassesInPackage(loadPackageParam.classLoader, loadPackageParam);
-     // hookFragmentOnCreateView(loadPackageParam.classLoader);
+        XposedBridge.log("Hooking package: " + packageName);
+      hookOnViewAdded(loadPackageParam.classLoader);
+        hookAllClassesInPackage(loadPackageParam.classLoader, loadPackageParam);
+      hookFragmentOnCreateView(loadPackageParam.classLoader);
         //hookChatHistoryActivity(loadPackageParam.classLoader); // ChatHistoryActivityのフック
         //hookLongClickListeners(loadPackageParam.classLoader); // 長押しリスナーのフック
 
@@ -315,7 +287,6 @@ public class Test implements IHook {
                     !"setCompoundDrawables".equals(method.getName()) &&
                     !"getActivity".equals(method.getName()) &&  // PendingIntent method
                     !"onViewAdded".equals(method.getName()) && // PendingIntent method
-                    !"onCreate".equals(method.getName()) && // PendingIntent method
                     !"setState".equals(method.getName())) {   // PendingIntent method
                 continue;
             }
@@ -378,8 +349,6 @@ public class Test implements IHook {
                             XposedBridge.log("Before calling onViewAdded in class: " + clazz.getName() + " with args: " + argsString);
                         } else if ("getService".equals(method.getName())) {
                             XposedBridge.log("Before calling getService in class: " + clazz.getName() + " with args: " + argsString);
-                        } else if ("onCreate".equals(method.getName())) {
-                            XposedBridge.log("Before calling onCreate in class: " + clazz.getName() + " with args: " + argsString);
                         } else if ("setState".equals(method.getName())) {
                             XposedBridge.log("Before setState invoke in class: " + clazz.getName() + " with args: " + argsString);
                         }
@@ -428,8 +397,6 @@ public class Test implements IHook {
                             XposedBridge.log("After calling onViewAdded in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
                         } else if ("getService".equals(method.getName())) {
                             XposedBridge.log("After calling getService in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
-                        } else if ("onCreate".equals(method.getName())) {
-                            XposedBridge.log("After calling onCreate in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
                         } else if ("setState".equals(method.getName())) {
                           XposedBridge.log("setState " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
                         }
