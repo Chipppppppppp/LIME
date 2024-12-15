@@ -1,9 +1,8 @@
 package io.github.hiro.lime.hooks;
 
 
-import static android.content.ContentValues.TAG;
-
 import android.app.AlertDialog;
+import android.app.AndroidAppHelper;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentValues;
@@ -19,7 +18,6 @@ import android.os.Process;
 import android.text.InputType;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Base64;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,10 +60,12 @@ public class EmbedOptions implements IHook {
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+
+                        Context moduleContext = AndroidAppHelper.currentApplication().createPackageContext(
+                                "io.github.hiro.lime", Context.CONTEXT_IGNORE_SECURITY);
                         ViewGroup viewGroup = ((ViewGroup) param.args[0]);
                         Context context = viewGroup.getContext();
                         Utils.addModuleAssetPath(context);
-
                         SharedPreferences prefs = context.getSharedPreferences(Constants.MODULE_NAME + "-options", Context.MODE_PRIVATE);
 
                         LinearLayout layout = new LinearLayout(context);
@@ -171,78 +171,63 @@ public class EmbedOptions implements IHook {
                             });
 
                             buttonLayout.addView(pasteButton);
-
                             layoutModifyRequest.addView(buttonLayout);
-
                             ScrollView scrollView = new ScrollView(context);
-
                             scrollView.addView(layoutModifyRequest);
-
                             AlertDialog.Builder builder = new AlertDialog.Builder(context)
                                     .setTitle(R.string.modify_request);
-
                             builder.setView(scrollView);
-
                             Button backupButton = new Button(context);
-
                             buttonParams.topMargin = Utils.dpToPx(20, context);
                             backupButton.setLayoutParams(buttonParams);
-                            backupButton.setText("バックアップ");
+                            backupButton.setText(moduleContext.getResources().getString(R.string.Back_Up));
                             backupButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    backupChatHistory(context);
-
-
+                                    backupChatHistory(context,moduleContext);
                                 }
                             });
                             layout.addView(backupButton);
-
                             Button restoreButton = new Button(context);
                             restoreButton.setLayoutParams(buttonParams);
-                            restoreButton.setText("リストア");
+                            restoreButton.setText(moduleContext.getResources().getString(R.string.Restore));
                             restoreButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    restoreChatHistory(context);
+                                    restoreChatHistory(context,moduleContext);
                                 }
                             });
                             layout.addView(restoreButton);
-
                             Button backupfolderButton = new Button(context);
                             backupfolderButton.setLayoutParams(buttonParams);
-                            backupfolderButton.setText("トーク画像のバックアップ");
+                            backupfolderButton.setText(moduleContext.getResources().getString(R.string.Talk_Picture_Back_up));
                             backupfolderButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    backupChatsFolder(context);
+                                    backupChatsFolder(context,moduleContext);
                                 }
                             });
-
                             layout.addView(backupfolderButton);
-
                             Button restorefolderButton = new Button(context);
                             restorefolderButton.setLayoutParams(buttonParams);
-                            restorefolderButton.setText("トーク画像のリストア");
+                            restorefolderButton.setText(moduleContext.getResources().getString(R.string.Picure_Restore));
                             restorefolderButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    restoreChatsFolder(context);
+                                    restoreChatsFolder(context,moduleContext);
                                 }
                             });
                                 layout.addView(restorefolderButton);
-                            if (limeOptions.Notif_invalid.checked) {
+                            if (limeOptions.MuteGroup.checked) {
                                 Button MuteGroups_Button = new Button(context);
                                 MuteGroups_Button.setLayoutParams(buttonParams);
-                                MuteGroups_Button.setText("通知を無効にしているグループ");
-
+                                MuteGroups_Button.setText(moduleContext.getResources().getString(R.string.Mute_Group));
                                 MuteGroups_Button.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        MuteGroups_Button(context); // ボタンクリック時の処理
+                                        MuteGroups_Button(context,moduleContext);
                                     }
                                 });
-
                                 layout.addView(MuteGroups_Button);
                             }
 
@@ -270,7 +255,6 @@ public class EmbedOptions implements IHook {
                             });
 
                             AlertDialog dialog = builder.create();
-
                             Button button = new Button(context);
                             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                                     LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -278,14 +262,12 @@ public class EmbedOptions implements IHook {
                             params.topMargin = Utils.dpToPx(20, context);
                             button.setLayoutParams(params);
                             button.setText(R.string.modify_request);
-
                             button.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     dialog.show();
                                 }
                             });
-
                             layout.addView(button);
                         }
 
@@ -298,7 +280,6 @@ public class EmbedOptions implements IHook {
                                     LinearLayout.LayoutParams.MATCH_PARENT));
                             layoutModifyResponse.setOrientation(LinearLayout.VERTICAL);
                             layoutModifyResponse.setPadding(Utils.dpToPx(20, context), Utils.dpToPx(20, context), Utils.dpToPx(20, context), Utils.dpToPx(20, context));
-
                             EditText editText = new EditText(context);
                             editText.setLayoutParams(new LinearLayout.LayoutParams(
                                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -314,9 +295,7 @@ public class EmbedOptions implements IHook {
                             editText.setVerticalScrollBarEnabled(true);
                             editText.setHorizontalScrollBarEnabled(true);
                             editText.setText(script);
-
                             layoutModifyResponse.addView(editText);
-
                             LinearLayout buttonLayout = new LinearLayout(context);
                             LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
                                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -356,18 +335,12 @@ public class EmbedOptions implements IHook {
 
 
                             buttonLayout.addView(pasteButton);
-
                             layoutModifyResponse.addView(buttonLayout);
-
                             ScrollView scrollView = new ScrollView(context);
-
                             scrollView.addView(layoutModifyResponse);
-
                             AlertDialog.Builder builder = new AlertDialog.Builder(context)
                                     .setTitle(R.string.modify_response);
-
                             builder.setView(scrollView);
-
                             builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -389,9 +362,7 @@ public class EmbedOptions implements IHook {
                                     editText.setText(script);
                                 }
                             });
-
                             AlertDialog dialog = builder.create();
-
                             Button button = new Button(context);
                             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                                     LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -399,7 +370,6 @@ public class EmbedOptions implements IHook {
                             params.topMargin = Utils.dpToPx(20, context);
                             button.setLayoutParams(params);
                             button.setText(R.string.modify_response);
-
                             button.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -411,14 +381,10 @@ public class EmbedOptions implements IHook {
                         }
 
                         ScrollView scrollView = new ScrollView(context);
-
                         scrollView.addView(layout);
-
                         AlertDialog.Builder builder = new AlertDialog.Builder(context)
                                 .setTitle(R.string.options_title);
-
                         builder.setView(scrollView);
-
                         builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -452,7 +418,6 @@ public class EmbedOptions implements IHook {
                         });
 
                         AlertDialog dialog = builder.create();
-
                         Button button = new Button(context);
                         button.setText(R.string.app_name);
                         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
@@ -462,34 +427,19 @@ public class EmbedOptions implements IHook {
                         layoutParams.rightMargin = Utils.dpToPx(10, context);
                         layoutParams.topMargin = Utils.dpToPx(5, context);
                         button.setLayoutParams(layoutParams);
-
                         button.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 dialog.show();
-                            }
-                        });
-
+                            }});
                         FrameLayout frameLayout = new FrameLayout(context);
-                        frameLayout.setLayoutParams(new ViewGroup.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.MATCH_PARENT));
-
+                        frameLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                         frameLayout.addView(button);
-
                         viewGroup.addView(frameLayout);
-                    }
-                }
-        );
-    }
-
-
-    private void MuteGroups_Button(Context context) {
-        // ファイルパスを指定
-        File dir = context.getFilesDir();  // 例えば内部ストレージのファイルディレクトリ
+                    }});}
+    private void MuteGroups_Button(Context context,Context moduleContext) {
+        File dir = context.getFilesDir();
         File file = new File(dir, "Notification.txt");
-
-        // ファイルが存在する場合、内容を読み込む
         StringBuilder fileContent = new StringBuilder();
         if (file.exists()) {
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -497,70 +447,53 @@ public class EmbedOptions implements IHook {
                 while ((line = reader.readLine()) != null) {
                     fileContent.append(line).append("\n");
                 }
-            } catch (IOException e) {
-                XposedBridge.log("Error reading the file: " + e.getMessage());
+            } catch (IOException ignored) {
             }
         }
-
-        // 新しい内容を編集できるようにEditTextを表示する
         final EditText editText = new EditText(context);
         editText.setText(fileContent.toString());
         editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-        editText.setMinLines(10);  // 適切な行数を設定
-        editText.setGravity(Gravity.TOP);  // 上から入力されるように設定
-
-        // ボタン用のレイアウトパラメータを設定
+        editText.setMinLines(10);
+        editText.setGravity(Gravity.TOP);
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        buttonParams.setMargins(16, 16, 16, 16);  // 任意のマージン設定
-
-        // 保存ボタンを作成
+        buttonParams.setMargins(16, 16, 16, 16);
         Button saveButton = new Button(context);
         saveButton.setText("Save");
-        saveButton.setLayoutParams(buttonParams);  // レイアウトパラメータを設定
+        saveButton.setLayoutParams(buttonParams);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 編集した内容をファイルに保存
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                     writer.write(editText.getText().toString());
-                    XposedBridge.log("File saved successfully.");
-                } catch (IOException e) {
-                    XposedBridge.log("Error saving the file: " + e.getMessage());
+                } catch (IOException ignored) {
                 }
             }
         });
 
-        // 編集画面を表示するためのLayoutに追加
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.addView(editText);
         layout.addView(saveButton);
-
-        // ダイアログを表示して編集画面を表示する
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("通知を無効にしているグループ");
+
+        builder.setTitle(moduleContext.getResources().getString(R.string.Mute_Group));
         builder.setView(layout);
-        builder.setNegativeButton("キャンセル", null);
+        builder.setNegativeButton(moduleContext.getResources().getString(R.string.cancel), null);
         builder.show();
     }
 
 
-    private void backupChatHistory(Context appContext) {
+    private void backupChatHistory(Context appContext,Context moduleContext) {
         File originalDbFile = appContext.getDatabasePath("naver_line");
-
         File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
-
         if (!backupDir.exists()) {
             if (!backupDir.mkdirs()) {
-                return;
-            }
-        }
+            return;}}
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String backupFileNameWithTimestamp = "naver_line_backup_" + timeStamp + ".db";
         String backupFileNameFixed = "naver_line_backup.db";
-
         File backupFileWithTimestamp = new File(backupDir, backupFileNameWithTimestamp);
         File backupFileFixed = new File(backupDir, backupFileNameFixed);
 
@@ -568,75 +501,61 @@ public class EmbedOptions implements IHook {
             try (FileChannel destinationWithTimestamp = new FileOutputStream(backupFileWithTimestamp).getChannel()) {
                 destinationWithTimestamp.transferFrom(source, 0, source.size());
             }
-
             source.position(0);
             try (FileChannel destinationFixed = new FileOutputStream(backupFileFixed).getChannel()) {
                 destinationFixed.transferFrom(source, 0, source.size());
             }
-
-            Toast.makeText(appContext, "バックアップが成功しました", Toast.LENGTH_SHORT).show();
-
-        } catch (IOException e) {
-            Toast.makeText(appContext, "バックアップ中にエラーが発生しました: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(appContext,moduleContext.getResources().getString(R.string.Talk_Back_up_Success), Toast.LENGTH_SHORT).show();
+        } catch (IOException ignored) {
+            Toast.makeText(appContext,moduleContext.getResources().getString(R.string.Talk_Back_up_Error), Toast.LENGTH_SHORT).show();
         }
     }
-
-
-    private void restoreChatHistory(Context context) {
+    private void restoreChatHistory(Context context,Context moduleContext) {
         File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
         File backupDbFile = new File(backupDir, "naver_line_backup.db");
 
         if (!backupDbFile.exists()) {
-            Toast.makeText(context, "バックアップファイルが見つかりません", Toast.LENGTH_SHORT).show();
-            Log.w(TAG, "バックアップファイルが存在しません。処理を終了します。");
+            Toast.makeText(context,moduleContext.getResources().getString(R.string.Backup_file_not_found), Toast.LENGTH_SHORT).show();
             return;
         }
-
         SQLiteDatabase backupDb = null;
         SQLiteDatabase originalDb = null;
         try {
             backupDb = SQLiteDatabase.openDatabase(backupDbFile.getPath(), null, SQLiteDatabase.OPEN_READONLY);
             originalDb = context.openOrCreateDatabase("naver_line", Context.MODE_PRIVATE, null);
-
             Cursor cursor = backupDb.rawQuery("SELECT * FROM chat_history", null);
             if (cursor.moveToFirst()) {
                 do {
-                    String serverId = cursor.getString(cursor.getColumnIndex("server_id"));
-                    Integer type = cursor.isNull(cursor.getColumnIndex("type")) ? null : cursor.getInt(cursor.getColumnIndex("type"));
-                    String chatId = cursor.getString(cursor.getColumnIndex("chat_id"));
-                    String fromMid = cursor.getString(cursor.getColumnIndex("from_mid"));
-                    String content = cursor.getString(cursor.getColumnIndex("content"));
-                    String createdTime = cursor.getString(cursor.getColumnIndex("created_time"));
-                    String deliveredTime = cursor.getString(cursor.getColumnIndex("delivered_time"));
-                    Integer status = cursor.isNull(cursor.getColumnIndex("status")) ? null : cursor.getInt(cursor.getColumnIndex("status"));
-                    Integer sentCount = cursor.isNull(cursor.getColumnIndex("sent_count")) ? null : cursor.getInt(cursor.getColumnIndex("sent_count"));
-                    Integer readCount = cursor.isNull(cursor.getColumnIndex("read_count")) ? null : cursor.getInt(cursor.getColumnIndex("read_count"));
-                    String locationName = cursor.getString(cursor.getColumnIndex("location_name"));
-                    String locationAddress = cursor.getString(cursor.getColumnIndex("location_address"));
-                    String locationPhone = cursor.getString(cursor.getColumnIndex("location_phone"));
-                    Integer locationLatitude = cursor.isNull(cursor.getColumnIndex("location_latitude")) ? null : cursor.getInt(cursor.getColumnIndex("location_latitude"));
-                    Integer locationLongitude = cursor.isNull(cursor.getColumnIndex("location_longitude")) ? null : cursor.getInt(cursor.getColumnIndex("location_longitude"));
-                    Integer attachmentImage = cursor.isNull(cursor.getColumnIndex("attachement_image")) ? null : cursor.getInt(cursor.getColumnIndex("attachement_image"));
-                    Integer attachmentImageHeight = cursor.isNull(cursor.getColumnIndex("attachement_image_height")) ? null : cursor.getInt(cursor.getColumnIndex("attachement_image_height"));
-                    Integer attachmentImageWidth = cursor.isNull(cursor.getColumnIndex("attachement_image_width")) ? null : cursor.getInt(cursor.getColumnIndex("attachement_image_width"));
-                    Integer attachmentImageSize = cursor.isNull(cursor.getColumnIndex("attachement_image_size")) ? null : cursor.getInt(cursor.getColumnIndex("attachement_image_size"));
-                    Integer attachmentType = cursor.isNull(cursor.getColumnIndex("attachement_type")) ? null : cursor.getInt(cursor.getColumnIndex("attachement_type"));
-                    String attachmentLocalUri = cursor.getString(cursor.getColumnIndex("attachement_local_uri"));
-                    String parameter = cursor.getString(cursor.getColumnIndex("parameter"));
-                    byte[] chunks = cursor.getBlob(cursor.getColumnIndex("chunks"));
+                    String serverId = cursor.getString(cursor.getColumnIndexOrThrow("server_id"));
+                    Integer type = cursor.isNull(cursor.getColumnIndexOrThrow("type")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("type"));
+                    String chatId = cursor.getString(cursor.getColumnIndexOrThrow("chat_id"));
+                    String fromMid = cursor.getString(cursor.getColumnIndexOrThrow("from_mid"));
+                    String content = cursor.getString(cursor.getColumnIndexOrThrow("content"));
+                    String createdTime = cursor.getString(cursor.getColumnIndexOrThrow("created_time"));
+                    String deliveredTime = cursor.getString(cursor.getColumnIndexOrThrow("delivered_time"));
+                    Integer status = cursor.isNull(cursor.getColumnIndexOrThrow("status")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("status"));
+                    Integer sentCount = cursor.isNull(cursor.getColumnIndexOrThrow("sent_count")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("sent_count"));
+                    Integer readCount = cursor.isNull(cursor.getColumnIndexOrThrow("read_count")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("read_count"));
+                    String locationName = cursor.getString(cursor.getColumnIndexOrThrow("location_name"));
+                    String locationAddress = cursor.getString(cursor.getColumnIndexOrThrow("location_address"));
+                    String locationPhone = cursor.getString(cursor.getColumnIndexOrThrow("location_phone"));
+                    Integer locationLatitude = cursor.isNull(cursor.getColumnIndexOrThrow("location_latitude")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("location_latitude"));
+                    Integer locationLongitude = cursor.isNull(cursor.getColumnIndexOrThrow("location_longitude")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("location_longitude"));
+                    Integer attachmentImage = cursor.isNull(cursor.getColumnIndexOrThrow("attachement_image")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("attachement_image"));
+                    Integer attachmentImageHeight = cursor.isNull(cursor.getColumnIndexOrThrow("attachement_image_height")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("attachement_image_height"));
+                    Integer attachmentImageWidth = cursor.isNull(cursor.getColumnIndexOrThrow("attachement_image_width")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("attachement_image_width"));
+                    Integer attachmentImageSize = cursor.isNull(cursor.getColumnIndexOrThrow("attachement_image_size")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("attachement_image_size"));
+                    Integer attachmentType = cursor.isNull(cursor.getColumnIndexOrThrow("attachement_type")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("attachement_type"));
+                    String attachmentLocalUri = cursor.getString(cursor.getColumnIndexOrThrow("attachement_local_uri"));
+                    String parameter = cursor.getString(cursor.getColumnIndexOrThrow("parameter"));
+                    byte[] chunks = cursor.getBlob(cursor.getColumnIndexOrThrow("chunks"));
 
-                    if (serverId == null) {
-                        continue;
-                    }
-
+                    if (serverId == null) {continue;}
                     Cursor existingCursor = originalDb.rawQuery("SELECT 1 FROM chat_history WHERE server_id = ?", new String[]{serverId});
                     boolean recordExists = existingCursor.moveToFirst();
                     existingCursor.close();
 
-                    if (recordExists) {
-                        continue;
-                    }
-
+                    if (recordExists) {continue;}
 
                     ContentValues values = new ContentValues();
                     values.put("server_id", serverId);
@@ -667,24 +586,18 @@ public class EmbedOptions implements IHook {
                 } while (cursor.moveToNext());
             }
             cursor.close();
-
-            Toast.makeText(context, "リストアが成功しました", Toast.LENGTH_SHORT).show();
-            restoreChat(context);
-        } catch (Exception e) {
-            Toast.makeText(context, "リストア中にエラーが発生しました", Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(context,moduleContext.getResources().getString(R.string.Restore_Success), Toast.LENGTH_SHORT).show();
+            restoreChat(context,moduleContext);
+        } catch (Exception ignored) {
+            Toast.makeText(context,moduleContext.getResources().getString(R.string.Restore_Error), Toast.LENGTH_SHORT).show();
         }
 
     }
-
-
-    private void restoreChat(Context context) {
+    private void restoreChat(Context context,Context moduleContext) {
         File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
         File backupDbFile = new File(backupDir, "naver_line_backup.db");
-
         if (!backupDbFile.exists()) {
-            Toast.makeText(context, "バックアップファイルが見つかりません", Toast.LENGTH_SHORT).show();
-            Log.w(TAG, "バックアップファイルが存在しません。処理を終了します。");
+            Toast.makeText(context,moduleContext.getResources().getString(R.string.Backup_file_not_found), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -697,38 +610,36 @@ public class EmbedOptions implements IHook {
             Cursor cursor = backupDb.rawQuery("SELECT * FROM chat", null);
             if (cursor.moveToFirst()) {
                 do {
-                    String chatId = cursor.getString(cursor.getColumnIndex("chat_id"));
-                    String chatName = cursor.getString(cursor.getColumnIndex("chat_name"));
-                    String ownerMid = cursor.getString(cursor.getColumnIndex("owner_mid"));
-                    String lastFromMid = cursor.getString(cursor.getColumnIndex("last_from_mid"));
-                    String lastMessage = cursor.getString(cursor.getColumnIndex("last_message"));
-                    String lastCreatedTime = cursor.getString(cursor.getColumnIndex("last_created_time"));
-                    Integer messageCount = cursor.isNull(cursor.getColumnIndex("message_count")) ? null : cursor.getInt(cursor.getColumnIndex("message_count"));
-                    Integer readMessageCount = cursor.isNull(cursor.getColumnIndex("read_message_count")) ? null : cursor.getInt(cursor.getColumnIndex("read_message_count"));
-                    Integer latestMentionedPosition = cursor.isNull(cursor.getColumnIndex("latest_mentioned_position")) ? null : cursor.getInt(cursor.getColumnIndex("latest_mentioned_position"));
-                    Integer type = cursor.isNull(cursor.getColumnIndex("type")) ? null : cursor.getInt(cursor.getColumnIndex("type"));
-                    Integer isNotification = cursor.isNull(cursor.getColumnIndex("is_notification")) ? null : cursor.getInt(cursor.getColumnIndex("is_notification"));
-                    String skinKey = cursor.getString(cursor.getColumnIndex("skin_key"));
-                    String inputText = cursor.getString(cursor.getColumnIndex("input_text"));
-                    String inputTextMetadata = cursor.getString(cursor.getColumnIndex("input_text_metadata"));
-                    Integer hideMember = cursor.isNull(cursor.getColumnIndex("hide_member")) ? null : cursor.getInt(cursor.getColumnIndex("hide_member"));
-                    Integer pTimer = cursor.isNull(cursor.getColumnIndex("p_timer")) ? null : cursor.getInt(cursor.getColumnIndex("p_timer"));
-                    String lastMessageDisplayTime = cursor.getString(cursor.getColumnIndex("last_message_display_time"));
-                    String midP = cursor.getString(cursor.getColumnIndex("mid_p"));
-                    Integer isArchived = cursor.isNull(cursor.getColumnIndex("is_archived")) ? null : cursor.getInt(cursor.getColumnIndex("is_archived"));
-                    String readUp = cursor.getString(cursor.getColumnIndex("read_up"));
-                    Integer isGroupCalling = cursor.isNull(cursor.getColumnIndex("is_groupcalling")) ? null : cursor.getInt(cursor.getColumnIndex("is_groupcalling"));
-                    Integer latestAnnouncementSeq = cursor.isNull(cursor.getColumnIndex("latest_announcement_seq")) ? null : cursor.getInt(cursor.getColumnIndex("latest_announcement_seq"));
-                    Integer announcementViewStatus = cursor.isNull(cursor.getColumnIndex("announcement_view_status")) ? null : cursor.getInt(cursor.getColumnIndex("announcement_view_status"));
-                    String lastMessageMetaData = cursor.getString(cursor.getColumnIndex("last_message_meta_data"));
-                    String chatRoomBgmData = cursor.getString(cursor.getColumnIndex("chat_room_bgm_data"));
-                    Integer chatRoomBgmChecked = cursor.isNull(cursor.getColumnIndex("chat_room_bgm_checked")) ? null : cursor.getInt(cursor.getColumnIndex("chat_room_bgm_checked"));
-                    Integer chatRoomShouldShowBgmBadge = cursor.isNull(cursor.getColumnIndex("chat_room_should_show_bgm_badge")) ? null : cursor.getInt(cursor.getColumnIndex("chat_room_should_show_bgm_badge"));
-                    String unreadTypeAndCount = cursor.getString(cursor.getColumnIndex("unread_type_and_count"));
+                    String chatId = cursor.getString(cursor.getColumnIndexOrThrow("chat_id"));
+                    String chatName = cursor.getString(cursor.getColumnIndexOrThrow("chat_name"));
+                    String ownerMid = cursor.getString(cursor.getColumnIndexOrThrow("owner_mid"));
+                    String lastFromMid = cursor.getString(cursor.getColumnIndexOrThrow("last_from_mid"));
+                    String lastMessage = cursor.getString(cursor.getColumnIndexOrThrow("last_message"));
+                    String lastCreatedTime = cursor.getString(cursor.getColumnIndexOrThrow("last_created_time"));
+                    Integer messageCount = cursor.isNull(cursor.getColumnIndexOrThrow("message_count")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("message_count"));
+                    Integer readMessageCount = cursor.isNull(cursor.getColumnIndexOrThrow("read_message_count")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("read_message_count"));
+                    Integer latestMentionedPosition = cursor.isNull(cursor.getColumnIndexOrThrow("latest_mentioned_position")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("latest_mentioned_position"));
+                    Integer type = cursor.isNull(cursor.getColumnIndexOrThrow("type")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("type"));
+                    Integer isNotification = cursor.isNull(cursor.getColumnIndexOrThrow("is_notification")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("is_notification"));
+                    String skinKey = cursor.getString(cursor.getColumnIndexOrThrow("skin_key"));
+                    String inputText = cursor.getString(cursor.getColumnIndexOrThrow("input_text"));
+                    String inputTextMetadata = cursor.getString(cursor.getColumnIndexOrThrow("input_text_metadata"));
+                    Integer hideMember = cursor.isNull(cursor.getColumnIndexOrThrow("hide_member")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("hide_member"));
+                    Integer pTimer = cursor.isNull(cursor.getColumnIndexOrThrow("p_timer")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("p_timer"));
+                    String lastMessageDisplayTime = cursor.getString(cursor.getColumnIndexOrThrow("last_message_display_time"));
+                    String midP = cursor.getString(cursor.getColumnIndexOrThrow("mid_p"));
+                    Integer isArchived = cursor.isNull(cursor.getColumnIndexOrThrow("is_archived")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("is_archived"));
+                    String readUp = cursor.getString(cursor.getColumnIndexOrThrow("read_up"));
+                    Integer isGroupCalling = cursor.isNull(cursor.getColumnIndexOrThrow("is_groupcalling")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("is_groupcalling"));
+                    Integer latestAnnouncementSeq = cursor.isNull(cursor.getColumnIndexOrThrow("latest_announcement_seq")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("latest_announcement_seq"));
+                    Integer announcementViewStatus = cursor.isNull(cursor.getColumnIndexOrThrow("announcement_view_status")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("announcement_view_status"));
+                    String lastMessageMetaData = cursor.getString(cursor.getColumnIndexOrThrow("last_message_meta_data"));
+                    String chatRoomBgmData = cursor.getString(cursor.getColumnIndexOrThrow("chat_room_bgm_data"));
+                    Integer chatRoomBgmChecked = cursor.isNull(cursor.getColumnIndexOrThrow("chat_room_bgm_checked")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("chat_room_bgm_checked"));
+                    Integer chatRoomShouldShowBgmBadge = cursor.isNull(cursor.getColumnIndexOrThrow("chat_room_should_show_bgm_badge")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("chat_room_should_show_bgm_badge"));
+                    String unreadTypeAndCount = cursor.getString(cursor.getColumnIndexOrThrow("unread_type_and_count"));
 
-                    if (chatId == null) {
-                        continue;
-                    }
+                    if (chatId == null) {continue;}
 
 
                     ContentValues values = new ContentValues();
@@ -766,9 +677,9 @@ public class EmbedOptions implements IHook {
             }
             cursor.close();
 
-            Toast.makeText(context, "chatテーブルのリストアが成功しました", Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Toast.makeText(context, "リストア中にエラーが発生しました", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,moduleContext.getResources().getString(R.string.Restore_Chat_Table_Success), Toast.LENGTH_SHORT).show();
+        } catch (Exception ignored) {
+            Toast.makeText(context,moduleContext.getResources().getString(R.string.Restore_Chat_Table_Error), Toast.LENGTH_SHORT).show();
 
         } finally {
             if (backupDb != null) {
@@ -780,30 +691,24 @@ public class EmbedOptions implements IHook {
         }
     }
 
-    private void backupChatsFolder(Context context) {
+    private void backupChatsFolder(Context context,Context moduleContext) {
         File originalChatsDir = new File(Environment.getExternalStorageDirectory(), "Android/data/jp.naver.line.android/files/chats");
         File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
 
-        if (!backupDir.exists() && !backupDir.mkdirs()) {
-            return;
-        }
+        if (!backupDir.exists() && !backupDir.mkdirs()) {return;}
 
         File backupChatsDir = new File(backupDir, "chats_backup");
-        if (!backupChatsDir.exists() && !backupChatsDir.mkdirs()) {
-            return;
-        }
+        if (!backupChatsDir.exists() && !backupChatsDir.mkdirs()) {return;}
         try {
             copyDirectory(originalChatsDir, backupChatsDir);
-            Toast.makeText(context, "チャットフォルダのバックアップが成功しました", Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            Toast.makeText(context, "チャットフォルダのバックアップ中にエラーが発生しました", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,moduleContext.getResources().getString(R.string.BackUp_Chat_Photo_Success), Toast.LENGTH_SHORT).show();
+        } catch (IOException ignored) {
+            Toast.makeText(context,moduleContext.getResources().getString(R.string.BackUp_Chat_Photo_Error), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void copyDirectory(File sourceDir, File destDir) throws IOException {
-        if (!sourceDir.exists()) {
-            throw new IOException("Source directory does not exist: " + sourceDir.getAbsolutePath());
-        }
+        if (!sourceDir.exists()) {return;}
 
         if (!destDir.exists()) {
             destDir.mkdirs();
@@ -821,7 +726,6 @@ public class EmbedOptions implements IHook {
             }
         }
     }
-
     private void copyFile(File sourceFile, File destFile) throws IOException {
         if (destFile.exists()) {
             destFile.delete();
@@ -834,23 +738,23 @@ public class EmbedOptions implements IHook {
     }
 
 
-    private void restoreChatsFolder(Context context) {
+    private void restoreChatsFolder(Context context,Context moduleContext) {
 
         File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup/chats_backup");
         File originalChatsDir = new File(Environment.getExternalStorageDirectory(), "Android/data/jp.naver.line.android/files/chats");
         if (!backupDir.exists()) {
-            Toast.makeText(context, "バックアップフォルダが見つかりません", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,moduleContext.getResources().getString(R.string.Restore_Chat_Photo_Not_Folder), Toast.LENGTH_SHORT).show();
             return;
         }
         if (!originalChatsDir.exists() && !originalChatsDir.mkdirs()) {
-            Toast.makeText(context, "復元先のフォルダの作成に失敗しました", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,moduleContext.getResources().getString(R.string.Restore_Create_Failed_Chat_Photo_Folder), Toast.LENGTH_SHORT).show();
             return;
         }
         try {
             copyDirectory(backupDir, originalChatsDir);
-            Toast.makeText(context, "チャットフォルダの復元が成功しました", Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            Toast.makeText(context, "チャットフォルダの復元中にエラーが発生しました", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,moduleContext.getResources().getString(R.string.Restore_Chat_Photo_Success), Toast.LENGTH_SHORT).show();
+        } catch (IOException ignored) {
+            Toast.makeText(context,moduleContext.getResources().getString(R.string.Restore_Chat_Photo_Error), Toast.LENGTH_SHORT).show();
         }
     }
 

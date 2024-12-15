@@ -43,9 +43,9 @@ public class LimeOptions {
     public Option calltone = new Option("calltone", R.string.calltone, false);
     public Option ReadChecker = new Option("ReadChecker", R.string.ReadChecker, false);
     public Option RemoveNotification = new Option("RemoveNotification", R.string.removeNotification, false);
-    public Option NaviColor = new Option("NaviColor", R.string.NaviColor, false);
+    public Option DarkColor = new Option("DarkColor", R.string.DarkColor, false);
     public Option NoMuteMessage = new Option("NoMuteMessage", R.string.NoMuteMessage, false);
-    public Option Notif_invalid = new Option("Notif_invalid", R.string.Notif_invalid, false);
+    public Option MuteGroup = new Option("Disabled_Group_notification", R.string.MuteGroup, false);
     public Option PhotoAddNotification = new Option("PhotoAddNotification", R.string.PhotoAddNotification, false);
     public Option[] options = {
             removeVoom,
@@ -74,8 +74,8 @@ public class LimeOptions {
             stopVersionCheck,
             outputCommunication,
             calltone,
-            NaviColor,
-            Notif_invalid,
+            DarkColor,
+            MuteGroup,
             PhotoAddNotification
 
 

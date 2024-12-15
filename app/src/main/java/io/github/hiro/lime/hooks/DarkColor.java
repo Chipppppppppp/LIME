@@ -9,15 +9,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.hiro.lime.LimeOptions;
 
-public class NaviColor implements IHook {
+public class DarkColor implements IHook {
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-        if (!limeOptions.NaviColor.checked) return;
+        if (!limeOptions.DarkColor.checked) return;
         XposedHelpers.findAndHookMethod("android.view.View", loadPackageParam.classLoader, "onAttachedToWindow", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -39,19 +38,15 @@ public class NaviColor implements IHook {
         try {
             if (view instanceof TextView) {
                 TextView textView = (TextView) view;
-
                 int currentTextColor = textView.getCurrentTextColor();
                 String resourceName = getViewResourceName(view); // リソース名を取得
-
                 if (currentTextColor == Color.parseColor("#111111")) {
                     textView.setTextColor(Color.parseColor("#FFFFFF"));
 //XposedBridge.log("Changed Text Color of Resource Name: " + resourceName + " to #FFFFFF");
                 } else {
 //XposedBridge.log("Text Color of Resource Name: " + resourceName + " is not #111111 (Current: " + convertToHexColor(currentTextColor) + ")");
-                }
-            }
-        } catch (Resources.NotFoundException e) {
-            XposedBridge.log("Resource name not found for View ID: " + view.getId());
+                }}
+        } catch (Resources.NotFoundException ignored) {
         }
     }
     private void checkAndChangeBackgroundColor(View view) {
@@ -81,7 +76,7 @@ public class NaviColor implements IHook {
             } else {
               //  XposedBridge.log("Background is null for Resource Name: " + resourceName);
             }
-        } catch (Resources.NotFoundException e) {
+        } catch (Resources.NotFoundException ignored) {
        //     XposedBridge.log("Resource name not found for View ID: " + view.getId());
         }
     }
@@ -98,8 +93,6 @@ public class NaviColor implements IHook {
         }
         return "no_id";
     }
-
-
 }
 
 

@@ -100,8 +100,7 @@ public class KeepUnread implements IHook {
                         String filename = "keep_unread_state.txt";
                         try (FileOutputStream fos = context.openFileOutput(filename, Context.MODE_PRIVATE)) {
                             fos.write((state ? "1" : "0").getBytes());
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        } catch (IOException ignored) {
                         }
                     }
 
@@ -114,8 +113,7 @@ public class KeepUnread implements IHook {
                                 sb.append((char) c);
                             }
                             return "1".equals(sb.toString());
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        } catch (IOException ignored) {
                             return false;
                         }
                     }

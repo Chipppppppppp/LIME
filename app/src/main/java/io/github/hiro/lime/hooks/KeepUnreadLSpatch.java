@@ -71,8 +71,8 @@ public class KeepUnreadLSpatch implements IHook {
                                     if (!logFile.exists()) {
                                         logFile.createNewFile();
                                     }
-                                } catch (IOException e) {
-                                    XposedBridge.log("Error creating file: " + e.getMessage());
+                                } catch (IOException ignored) {
+                                    XposedBridge.log("Error creating file: ");
                                 }
                             } else {
                                 // スイッチが無効になった場合、ファイルを削除

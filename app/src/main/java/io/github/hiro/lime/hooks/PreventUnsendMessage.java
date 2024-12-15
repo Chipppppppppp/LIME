@@ -48,8 +48,7 @@ public class PreventUnsendMessage implements IHook {
                                     }
                                 }
                             }
-                        } catch (Exception e) {
-                            XposedBridge.log("PreventUnsendMessage: Exception occurred - " + e.getMessage());
+                        } catch (Exception ignored) {
                         }
                     }
                 }

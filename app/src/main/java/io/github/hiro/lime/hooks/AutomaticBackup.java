@@ -1,6 +1,7 @@
 package io.github.hiro.lime.hooks;
 
 import android.app.Activity;
+import android.app.AndroidAppHelper;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.hiro.lime.LimeOptions;
+import io.github.hiro.lime.R;
 
 public class AutomaticBackup implements IHook {
     @Override
@@ -27,31 +29,34 @@ public class AutomaticBackup implements IHook {
                 loadPackageParam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        Context moduleContext = AndroidAppHelper.currentApplication().createPackageContext(
+                                "io.github.hiro.lime", Context.CONTEXT_IGNORE_SECURITY);
                         Intent intent = ((Activity) param.thisObject).getIntent();
-                        XposedBridge.log("onCreate Intent action: " + intent.getAction());
-                        handleIntent(intent, param.thisObject);
+                        handleIntent(intent, param.thisObject,moduleContext);
                     }
                 });
     }
 
-    private void handleIntent(Intent intent, Object activity) {
+    private void handleIntent(Intent intent, Object activity,Context moduleContext) {
         if (intent != null) {
             String text = intent.getStringExtra(Intent.EXTRA_TEXT);
-            if ("トーク履歴のバックアップを開始".equals(text)) {
-                backupChatHistory(((Activity) activity).getApplicationContext());
+
+            if (moduleContext.getResources().getString(R.string.Talk_Back_up).equals(text)) {
+                backupChatHistory(((Activity) activity).getApplicationContext(),moduleContext);
             }
-            if ("トーク画像フォルダのバックアップを開始".equals(text)) {
-                backupChatsFolder(((Activity) activity).getApplicationContext());
+            if (moduleContext.getResources().getString(R.string.Talk_Picture_Back_up).equals(text)) {
+                backupChatsFolder(((Activity) activity).getApplicationContext(),moduleContext);
             }
-            if ("バックアップを開始".equals(text)) {
-                backupChatHistory(((Activity) activity).getApplicationContext());
-                backupChatsFolder(((Activity) activity).getApplicationContext());
+
+            if (moduleContext.getResources().getString(R.string.BackUp_Stat).equals(text)) {
+                backupChatHistory(((Activity) activity).getApplicationContext(),moduleContext);
+                backupChatsFolder(((Activity) activity).getApplicationContext(),moduleContext);
             }
         }
     }
 
 
-    private void backupChatHistory(Context appContext) {
+    private void backupChatHistory(Context appContext,Context moduleContext) {
         File originalDbFile = appContext.getDatabasePath("naver_line");
         File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
         if (!backupDir.exists() && !backupDir.mkdirs()) {
@@ -63,30 +68,29 @@ public class AutomaticBackup implements IHook {
             try (FileChannel destinationWithTimestamp = new FileOutputStream(backupFileWithTimestamp).getChannel()) {
                 destinationWithTimestamp.transferFrom(source, 0, source.size());
             }
-            showToast(appContext, "自動バックアップが成功しました"); // トーストをUIスレッドで表示
+            showToast(appContext,moduleContext.getResources().getString(R.string.Talk_Auto_Back_up_Success)); // トーストをUIスレッドで表示
 
-        } catch (IOException e) {
-            showToast(appContext, "自動バックアップ中にエラーが発生しました: " + e.getMessage());
+        } catch (IOException ignored) {
+            showToast(appContext, moduleContext.getResources().getString(R.string.Talk_Auto_Back_up_Error));
         }
     }
-
-    private void backupChatsFolder(Context context) {
+    private void backupChatsFolder(Context context,Context moduleContext) {
         File originalChatsDir = new File(Environment.getExternalStorageDirectory(), "Android/data/jp.naver.line.android/files/chats");
         File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
 
         if (!backupDir.exists() && !backupDir.mkdirs()) {
             return;
         }
-
         File backupChatsDir = new File(backupDir, "chats_backup");
         if (!backupChatsDir.exists() && !backupChatsDir.mkdirs()) {
             return;
         }
         try {
             copyDirectory(originalChatsDir, backupChatsDir);
-            Toast.makeText(context, "トーク画像フォルダのバックアップが成功しました", Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            Toast.makeText(context, "トーク画像フォルダのバックアップ中にエラーが発生しました", Toast.LENGTH_SHORT).show();
+
+            Toast.makeText(context,moduleContext.getResources().getString(R.string.Talk_Picture_Back_up_Success), Toast.LENGTH_SHORT).show();
+        } catch (IOException ignored) {
+            Toast.makeText(context, moduleContext.getResources().getString(R.string.Talk_Picture_Back_up_Error), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -98,7 +102,6 @@ public class AutomaticBackup implements IHook {
         if (!destDir.exists()) {
             destDir.mkdirs();
         }
-
         File[] files = sourceDir.listFiles();
         if (files != null) {
             for (File file : files) {
@@ -111,19 +114,15 @@ public class AutomaticBackup implements IHook {
             }
         }
     }
-
     private void copyFile(File sourceFile, File destFile) throws IOException {
-
         if (destFile.exists()) {
             destFile.delete();
         }
-
         try (FileChannel sourceChannel = new FileInputStream(sourceFile).getChannel();
              FileChannel destChannel = new FileOutputStream(destFile).getChannel()) {
             destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
         }
     }
-
     private void showToast(final Context context, final String message) {
         new android.os.Handler(context.getMainLooper()).post(() ->
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()

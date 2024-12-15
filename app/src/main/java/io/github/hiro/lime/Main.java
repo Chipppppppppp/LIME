@@ -17,6 +17,7 @@ import io.github.hiro.lime.hooks.AutomaticBackup;
 import io.github.hiro.lime.hooks.BlockTracking;
 import io.github.hiro.lime.hooks.CheckHookTargetVersion;
 import io.github.hiro.lime.hooks.Constants;
+import io.github.hiro.lime.hooks.Disabled_Group_notification;
 import io.github.hiro.lime.hooks.EmbedOptions;
 import io.github.hiro.lime.hooks.IHook;
 import io.github.hiro.lime.hooks.KeepUnread;
@@ -24,7 +25,6 @@ import io.github.hiro.lime.hooks.KeepUnreadLSpatch;
 import io.github.hiro.lime.hooks.ModifyRequest;
 import io.github.hiro.lime.hooks.ModifyResponse;
 import io.github.hiro.lime.hooks.PhotoAddNotification;
-import io.github.hiro.lime.hooks.Notif_invalid;
 import io.github.hiro.lime.hooks.OutputRequest;
 import io.github.hiro.lime.hooks.OutputResponse;
 import io.github.hiro.lime.hooks.PreventMarkAsRead;
@@ -43,7 +43,7 @@ import io.github.hiro.lime.hooks.SpoofUserAgent;
 import io.github.hiro.lime.hooks.UnsentRec;
 import io.github.hiro.lime.hooks.Archived;
 import io.github.hiro.lime.hooks.ReadChecker;
-import io.github.hiro.lime.hooks.NaviColor;
+import io.github.hiro.lime.hooks.DarkColor;
 
 
 public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
@@ -79,11 +79,11 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new UnsentRec(),
             new Ringtone(),
             new ReadChecker(),
-            new NaviColor(),
+            new DarkColor(),
             new KeepUnreadLSpatch(),
             new AutomaticBackup(),
             new RemoveNotification(),
-            new Notif_invalid(),
+            new Disabled_Group_notification(),
             new PhotoAddNotification()
     };
 

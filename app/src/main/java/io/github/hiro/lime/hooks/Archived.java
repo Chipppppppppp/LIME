@@ -24,8 +24,6 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.hiro.lime.LimeOptions;
 
 public class Archived implements IHook {
-
-
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (!limeOptions.Archived.checked) return;
@@ -38,16 +36,12 @@ public class Archived implements IHook {
                     return;
                 }
                 Context moduleContext = appContext;
-
                 File dbFile = appContext.getDatabasePath("naver_line");
-
                 if (dbFile.exists()) {
                     SQLiteDatabase.OpenParams.Builder builder = new SQLiteDatabase.OpenParams.Builder();
                     builder.addOpenFlags(SQLiteDatabase.OPEN_READWRITE);
                     SQLiteDatabase.OpenParams dbParams = builder.build();
-
                     SQLiteDatabase db = SQLiteDatabase.openDatabase(dbFile, dbParams);
-
                     hookSAMethod(loadPackageParam, db, appContext);
                     hookMessageDeletion(loadPackageParam, appContext, db, moduleContext); // moduleContextを渡す
                 } else {
@@ -59,8 +53,6 @@ public class Archived implements IHook {
     private void hookMessageDeletion(XC_LoadPackage.LoadPackageParam loadPackageParam, Context context, SQLiteDatabase db, Context moduleContext) {
         if (!limeOptions.Archived.checked) return;
         try {
-
-
             XposedBridge.hookAllMethods(
                     loadPackageParam.classLoader.loadClass(Constants.REQUEST_HOOK.className),
                     Constants.REQUEST_HOOK.methodName,
@@ -113,27 +105,22 @@ public class Archived implements IHook {
                     writer.newLine();
                 }
                 writer.close();
-            } catch (IOException e) {
+            } catch (IOException ignored) {
             }
-        } else {
         }
     }
 
     private void hookSAMethod(XC_LoadPackage.LoadPackageParam loadPackageParam, SQLiteDatabase db, Context context) {
-
         //ChatListViewModel
         Class<?> targetClass = XposedHelpers.findClass(Constants.Archive.className, loadPackageParam.classLoader);
 
         XposedBridge.hookAllMethods(targetClass, "invokeSuspend", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-
-
                 Context appContext = AndroidAppHelper.currentApplication();
                 if (appContext == null) {
                     return;
                 }
-
                 File dbFile = appContext.getDatabasePath("naver_line");
                 SQLiteDatabase db = null;
 
@@ -151,7 +138,6 @@ public class Archived implements IHook {
                         updateIsArchived(db, chatId);
                     }
                 }
-
                 if (db != null) {
                     db.close();
                 }
@@ -168,7 +154,7 @@ public class Archived implements IHook {
         if (!file.exists()) {
             try {
                 file.createNewFile();
-            } catch (IOException e) {
+            } catch (IOException ignored) {
 
             }
         }
@@ -177,10 +163,8 @@ public class Archived implements IHook {
             while ((line = reader.readLine()) != null) {
                 chatIds.add(line.trim());
             }
-        } catch (IOException e) {
-
+        } catch (IOException ignored) {
         }
-
         return chatIds;
     }
 
@@ -204,20 +188,18 @@ public class Archived implements IHook {
                 while ((line = reader.readLine()) != null) {
                     existingIds.add(line.trim());
                 }
-            } catch (IOException e) {
+            } catch (IOException ignored) {
             }
             if (!existingIds.contains(talkId.trim())) {
                 try (FileWriter writer = new FileWriter(file, true)) {
                     writer.write(talkId + "\n");
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
     }
-
-
     private void updateArchivedChatsFromFile(SQLiteDatabase db, Context context, Context moduleContext) {
-        File dir = moduleContext.getFilesDir(); // moduleContextを使用
+        File dir = moduleContext.getFilesDir();
         File file = new File(dir, "hidelist.txt");
 
         if (!file.exists()) {
@@ -232,8 +214,7 @@ public class Archived implements IHook {
                     updateIsArchived(db, chatId);
                 }
             }
-        } catch (IOException e) {
-
+        } catch (IOException ignored) {
         }
     }
 
@@ -253,11 +234,8 @@ public class Archived implements IHook {
 
             }
         }
-
         if (talkId == null) {
-
         }
-
         return talkId;
     }
 
@@ -270,11 +248,10 @@ public class Archived implements IHook {
             if (cursor.moveToFirst()) {
                 return cursor.getString(0);
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return null;
     }
-
     private void updateDatabase(SQLiteDatabase db, String query, Object... bindArgs) {
         if (db == null) {
             return;
@@ -283,12 +260,11 @@ public class Archived implements IHook {
             db.beginTransaction();
             db.execSQL(query, bindArgs);
             db.setTransactionSuccessful();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         } finally {
             db.endTransaction();
         }
     }
-
     private void updateIsArchived(SQLiteDatabase db, String chatId) {
         String updateQuery = "UPDATE chat SET is_archived = 1 WHERE chat_id = ?";
         updateDatabase(db, updateQuery, chatId);

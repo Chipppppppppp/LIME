@@ -29,20 +29,6 @@ public class PhotoAddNotification implements IHook {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 Application appContext = (Application) param.thisObject;
-
-                if (appContext == null) {
-                    XposedBridge.log("Application context is null!");
-                    return;
-                }
-
-                Context moduleContext;
-                try {
-                    moduleContext = appContext.createPackageContext(
-                            "io.github.hiro.lime", Context.CONTEXT_IGNORE_SECURITY);
-                } catch (PackageManager.NameNotFoundException e) {
-                    XposedBridge.log("Failed to create package context: " + e.getMessage());
-                    return;
-                }
                 File dbFile1 = appContext.getDatabasePath("naver_line");
                 File dbFile2 = appContext.getDatabasePath("contact");
 
@@ -63,7 +49,6 @@ public class PhotoAddNotification implements IHook {
             }
         });
     }
-
     private void hookNotificationMethods(XC_LoadPackage.LoadPackageParam loadPackageParam,
                                          Context context, SQLiteDatabase dbGroups, SQLiteDatabase dbContacts) {
         XposedHelpers.findAndHookMethod(NotificationManager.class, "notify",
@@ -88,30 +73,30 @@ public class PhotoAddNotification implements IHook {
         String title = getNotificationTitle(notification);
 
         if (title == null) {
-            XposedBridge.log("Notification title is null. Skipping.");
+           // XposedBridge.log("Notification title is null. Skipping.");
             return;
         }
 
         // 通知の本文を取得
         String originalText = getNotificationText(notification);
         if (originalText != null && (originalText.contains("写真を送信しました") || originalText.contains("sent a photo"))) { // "写真を送信しました" または "sent a photo" が含まれている場合のみ処理
-            XposedBridge.log("Target notification detected: " + originalText);
+           // XposedBridge.log("Target notification detected: " + originalText);
 
             String chatId = resolveChatId(dbGroups, dbContacts, notification);
             if (chatId == null) {
-                XposedBridge.log("Chat ID not found for title: " + title);
+               // XposedBridge.log("Chat ID not found for title: " + title);
                 return;
             }
 
             File latestFile = getLatestMessageFile(chatId);
             if (latestFile == null) {
-                XposedBridge.log("No latest message file found for chat ID: " + chatId);
+               // XposedBridge.log("No latest message file found for chat ID: " + chatId);
                 return;
             }
 
             Bitmap bitmap = loadBitmapFromFile(latestFile);
             if (bitmap == null) {
-                XposedBridge.log("Failed to load bitmap from file: " + latestFile.getAbsolutePath());
+               // XposedBridge.log("Failed to load bitmap from file: " + latestFile.getAbsolutePath());
                 return;
             }
 
@@ -145,19 +130,19 @@ public class PhotoAddNotification implements IHook {
         File messagesDir = new File(Environment.getExternalStorageDirectory(),
                 "/Android/data/jp.naver.line.android/files/chats/" + chatId + "/messages");
         if (!messagesDir.exists() || !messagesDir.isDirectory()) {
-            XposedBridge.log("Messages directory does not exist: " + messagesDir.getAbsolutePath());
+           // XposedBridge.log("Messages directory does not exist: " + messagesDir.getAbsolutePath());
             return null;
         }
 
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
-            XposedBridge.log("Sleep interrupted: " + e.getMessage());
+           // XposedBridge.log("Sleep interrupted: " + e.getMessage());
         }
 
         File[] files = messagesDir.listFiles((dir, name) -> !name.endsWith(".thumb") && !name.endsWith(".downloading"));
         if (files == null || files.length == 0) {
-            XposedBridge.log("No files found in messages directory: " + messagesDir.getAbsolutePath());
+           // XposedBridge.log("No files found in messages directory: " + messagesDir.getAbsolutePath());
             return null;
         }
 
@@ -211,14 +196,14 @@ public class PhotoAddNotification implements IHook {
     }
 
     private void logNotificationDetails(String method, int id, Notification notification, String tag) {
-        XposedBridge.log(method + " called. ID: " + id + (tag != null ? ", Tag: " + tag : ""));
+       // XposedBridge.log(method + " called. ID: " + id + (tag != null ? ", Tag: " + tag : ""));
         if (notification.extras != null) {
             String title = notification.extras.getString(Notification.EXTRA_TITLE);
             String text = notification.extras.getString(Notification.EXTRA_TEXT);
-            XposedBridge.log("Notification Title: " + (title != null ? title : "No Title"));
-            XposedBridge.log("Notification Text: " + (text != null ? text : "No Text"));
+           // XposedBridge.log("Notification Title: " + (title != null ? title : "No Title"));
+           // XposedBridge.log("Notification Text: " + (text != null ? text : "No Text"));
         } else {
-            XposedBridge.log("Notification has no extras.");
+           // XposedBridge.log("Notification has no extras.");
         }
     }
 }

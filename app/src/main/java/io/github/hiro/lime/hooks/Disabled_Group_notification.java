@@ -21,10 +21,10 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.hiro.lime.LimeOptions;
 
-public class Notif_invalid implements IHook {
+public class Disabled_Group_notification implements IHook {
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-        if (!limeOptions.Notif_invalid.checked) return;
+        if (!limeOptions.MuteGroup.checked) return;
         XposedBridge.hookAllMethods(
                 loadPackageParam.classLoader.loadClass(Constants.RESPONSE_HOOK.className),
                 Constants.RESPONSE_HOOK.methodName,
@@ -69,28 +69,26 @@ public class Notif_invalid implements IHook {
                               //  XposedBridge.log("Failed to create file: " + file.getPath());
                                 return;
                             }
-
                             List<String> existingChatNames = new ArrayList<>();
                             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                                 String line;
                                 while ((line = reader.readLine()) != null) {
                                     existingChatNames.add(line.trim());
                                 }
-                            } catch (IOException e) {
+                            } catch (IOException ignored) {
                              //   XposedBridge.log("Error reading file: " + e.getMessage());
                             }
-
                             if (!existingChatNames.contains(chatName.trim())) {
                                 try (FileWriter writer = new FileWriter(file, true)) {
                                     writer.write(chatName + "\n");
                                  //   XposedBridge.log("Saved chatName: " + chatName);
-                                } catch (IOException e) {
+                                } catch (IOException ignored) {
                                  //   XposedBridge.log("Error writing to file: " + e.getMessage());
                                 }
                             } else {
                                // XposedBridge.log("Chat name already exists: " + chatName);
                             }
-                        } catch (IOException e) {
+                        } catch (IOException ignored) {
                          //   XposedBridge.log("Error accessing file: " + e.getMessage());
                         }
                     }
@@ -183,7 +181,7 @@ public class Notif_invalid implements IHook {
             while ((line = reader.readLine()) != null) {
                 names.add(line.trim());
             }
-        } catch (IOException e) {
+        } catch (IOException ignored) {
             //     XposedBridge.log("Error reading names from file: " + e.getMessage());
         }
 

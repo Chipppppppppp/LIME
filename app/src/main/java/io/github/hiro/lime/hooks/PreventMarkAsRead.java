@@ -29,9 +29,6 @@ public class PreventMarkAsRead implements IHook {
                     }
                 }
         );
-
-
-
         XposedBridge.hookAllMethods(
                 loadPackageParam.classLoader.loadClass(Constants.REQUEST_HOOK.className),
                 Constants.REQUEST_HOOK.methodName,
@@ -88,8 +85,6 @@ public class PreventMarkAsRead implements IHook {
 
                 }
         );
-
-
 
     }
 }
