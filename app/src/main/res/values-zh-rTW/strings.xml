@@ -86,7 +86,7 @@
 
     <string name="backup">Backup</string>
     <string name="backup_creation_failed">建立備份失敗</string>
-    <string name="check">確認</string>
+    <string name="confirm">確認</string>
     <string name="class_not_found">找不到類別</string>
     <string name="confirm_messages">已確認訊息</string>
     <string name="delete_messages">已刪除的訊息</string>
@@ -98,8 +98,8 @@
     <string name="file_move_failed">移動文件失敗</string>
     <string name="file_save_failed">儲存檔案失敗</string>
     <string name="file_not_found">找不到文件</string>
-    <string name="read_BackUpFile_failed">無法讀取 BackUpFile.txt</string>
-    <string name="really_delete">您確定要刪除嗎</string>
+    <string name="failed_read_backup_file">無法讀取 %s</string>
+    <string name="confirm_delete">您確定要刪除嗎</string>
     <string name="no_backup_found">沒有任何備份</string>
     <string name="no_get_restart_app">無法正常獲取。請重新啟動應用程式</string>
     <string name="ok">好的</string>

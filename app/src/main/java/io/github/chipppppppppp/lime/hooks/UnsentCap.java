@@ -125,7 +125,7 @@ public class UnsentCap implements IHook {
                                             .create()
                                             .show();
                                 } catch (IOException ignored) {
-                                    Toast.makeText(appContext, moduleContext.getResources().getString(R.string.failed_read_backup_file, Main_backup), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(appContext, moduleContext.getResources().getString(R.string.failed_read_backup_file), Toast.LENGTH_SHORT).show();
                                 }
                             } else {
                                 Toast.makeText(appContext, moduleContext.getResources().getString(R.string.no_backup_found), Toast.LENGTH_SHORT).show();

@@ -61,7 +61,7 @@
 
     <string name="backup">バックアップ</string>
     <string name="backup_creation_failed">バックアップの作成に失敗しました</string>
-    <string name="check">確認</string>
+    <string name="confirm">確認</string>
     <string name="class_not_found">クラスが見つかりません</string>
 
     <string name="confirm_messages">確認済みのメッセージ</string>
@@ -75,8 +75,8 @@
     <string name="file_move_failed">ファイルの移動に失敗しました</string>
     <string name="file_save_failed">ファイルの保存に失敗しました</string>
     <string name="file_not_found">ファイルが見つかりません</string>
-    <string name="read_BackUpFile_failed">BackUpFile.txtの読み取りに失敗しました</string>
-    <string name="really_delete">本当に削除しますか</string>
+    <string name="failed_read_backup_file">%s の読み取りに失敗しました</string>
+    <string name="confirm_delete">本当に削除しますか</string>
 
 
     <string name="no_backup_found">何もバックアップされていません</string>

@@ -64,7 +64,7 @@
 
     <string name="backup">Backup</string>
     <string name="backup_creation_failed">Failed to create backup</string>
-    <string name="check">Confirm</string>
+    <string name="confirm">Confirm</string>
     <string name="class_not_found">Class not found</string>
     <string name="confirm_messages">Confirmed messages</string>
     <string name="delete_messages">Deleted messages</string>
@@ -76,8 +76,9 @@
     <string name="file_move_failed">Failed to move file</string>
     <string name="file_save_failed">Failed to save file</string>
     <string name="file_not_found">File not found</string>
-    <string name="read_BackUpFile_failed">Failed to read BackUpFile.txt</string>
-    <string name="really_delete">Are you sure you want to delete</string>
+    <string name="failed_read_backup_file">Failed to read %s</string>
+    <string name="confirm_delete">Really want to delete it?</string>
+    <string name="confirm_delete">Are you sure you want to delete</string>
     <string name="no_backup_found">Nothing backed up</string>
     <string name="no_get_restart_app">Could not get properly. Please restart the app</string>
     <string name="ok">OK</string>
