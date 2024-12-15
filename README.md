@@ -53,10 +53,12 @@ https://youtu.be/94JN4NLGdOI
 [Macro SAMPLE](https://drive.usercontent.google.com/u/0/uc?id=1rhZPmoMbti_l1JaX2EbjcRKUePkWlIXU&export=download)
 
 # 寄付
-[100円 PayPay](https://qr.paypay.ne.jp/p2p01_qIqiHEfm7jWiXaKd)
-[300円
+*[100円 PayPay]<br>(https://qr.paypay.ne.jp/p2p01_qIqiHEfm7jWiXaKd)
+*[300円
 PayPay](https://qr.paypay.ne.jp/p2p01_oc9qTsEoIg8kn8Gy)
 
+* [Amazon Gift Card](https://www.amazon.co.jp/gp/product/B004N3APGO) Send to (limebeta.dev@gmail.com)
+* [GitHub Sponsors](https://github.com/sponsors/areteruhiro)
 
 ## 概要
 
