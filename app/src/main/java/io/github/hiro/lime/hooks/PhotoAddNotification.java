@@ -107,9 +107,8 @@ public class PhotoAddNotification implements IHook {
 
             String originalText = getNotificationText(originalNotification);
             Notification newNotification = originalNotification;
-            // スキップ条件を追加
             if (originalText.contains("LINE音声通話を着信中") || originalText.contains("Incoming LINE voice call")|| originalText.contains("LINE語音通話來電中")) {
-                XposedBridge.log("Skipping notification: " + originalText);
+               // XposedBridge.log("Skipping notification: " + originalText);
                 return;
             }
 
@@ -163,16 +162,16 @@ public class PhotoAddNotification implements IHook {
 
     private String resolveChatId(SQLiteDatabase dbGroups, SQLiteDatabase dbContacts, Notification notification) {
         Set<String> keys = notification.extras.keySet();
-        Log.d("NotificationKeys", "Notification Extras Keys: " + keys);
+      //  Log.d("NotificationKeys", "Notification Extras Keys: " + keys);
 
         String title = notification.extras.getString(Notification.EXTRA_TITLE);
         String text = notification.extras.getString(Notification.EXTRA_TEXT);
         String subText = notification.extras.getString(Notification.EXTRA_SUB_TEXT);
 
-        Log.d("ResolveChatId", "Notification Title: " + title);
+      /*  Log.d("ResolveChatId", "Notification Title: " + title);
         Log.d("ResolveChatId", "Notification Text: " + text);
         Log.d("ResolveChatId", "Notification SubText: " + subText);
-
+*/
         if (subText != null) {
             String groupId = queryDatabase(dbGroups, "SELECT id FROM groups WHERE name =?", subText);
             if (groupId != null) {
