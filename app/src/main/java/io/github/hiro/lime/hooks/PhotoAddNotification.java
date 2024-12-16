@@ -94,6 +94,8 @@ public class PhotoAddNotification implements IHook {
 
         isHandlingNotification = true;
 
+
+
         try {
             Notification originalNotification = hasTag ? (Notification) param.args[2] : (Notification) param.args[1];
             String title = getNotificationTitle(originalNotification);
@@ -105,8 +107,14 @@ public class PhotoAddNotification implements IHook {
 
             String originalText = getNotificationText(originalNotification);
             Notification newNotification = originalNotification;
+            // スキップ条件を追加
+            if (originalText.contains("LINE音声通話を着信中") || originalText.contains("Incoming LINE voice call")|| originalText.contains("LINE語音通話來電中")) {
+                XposedBridge.log("Skipping notification: " + originalText);
+                return;
+            }
 
-            if (originalText != null && (originalText.contains("写真を送信しました") || originalText.contains("sent a photo"))) {
+
+            if (originalText != null && (originalText.contains("写真を送信しました") || originalText.contains("sent a photo")|| originalText.contains("傳送了照片"))) {
                 String chatId = resolveChatId(dbGroups, dbContacts, originalNotification);
                 if (chatId == null) {
                     return;
