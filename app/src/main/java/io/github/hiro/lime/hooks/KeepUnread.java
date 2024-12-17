@@ -53,9 +53,9 @@ public class KeepUnread implements IHook {
 
                         RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                        imageParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE); // 垂直中央に配置
-                        imageParams.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE); // 水平中央に配置
-                        imageParams.setMargins(50, 0, 0, 0); // 水平に50ピクセル右に移動（必要に応じて調整）
+                        //imageParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE); // 垂直中央に配置
+                        //imageParams.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE); // 水平中央に配置
+                        imageParams.setMargins(580, 40, 0, 0); // 水平に50ピクセル右に移動（必要に応じて調整）
 
                         imageView.setOnClickListener(v -> {
                             keepUnread = !keepUnread;

@@ -50,7 +50,8 @@ public class KeepUnreadLSpatch implements IHook {
 
                         RelativeLayout.LayoutParams switchParams = new RelativeLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                        switchParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+                        switchParams.setMargins(500, 40, 0, 0);
+                        //switchParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 
                         File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
                         File logFile = new File(backupDir, "no_read.txt");
