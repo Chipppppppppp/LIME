@@ -29,8 +29,8 @@ public class test implements IHook {
         String packageName = loadPackageParam.packageName;
 
         XposedBridge.log("Hooking package: " + packageName);
-      hookOnViewAdded(loadPackageParam.classLoader);
-        hookAllClassesInPackage(loadPackageParam.classLoader, loadPackageParam);
+   hookOnViewAdded(loadPackageParam.classLoader);
+      hookAllClassesInPackage(loadPackageParam.classLoader, loadPackageParam);
       hookFragmentOnCreateView(loadPackageParam.classLoader);
         //hookChatHistoryActivity(loadPackageParam.classLoader); // ChatHistoryActivityのフック
         //hookLongClickListeners(loadPackageParam.classLoader); // 長押しリスナーのフック
@@ -267,7 +267,7 @@ public class test implements IHook {
 
             // 対象メソッドが特定のビュー関連メソッドであるか確認
             if (!"invokeSuspend".equals(method.getName()) &&
-                    !"setOnLongClickListener".equals(method.getName()) &&
+                    !"run".equals(method.getName()) &&
                     !"setOnTouchListener".equals(method.getName()) &&
                     !"setVisibility".equals(method.getName()) &&
                     !"setAlpha".equals(method.getName()) &&
@@ -311,8 +311,8 @@ public class test implements IHook {
 // メソッドに応じたログ出力
                         if ("invokeSuspend".equals(method.getName())) {
                       XposedBridge.log("Before calling invokeSuspend in class: " + clazz.getName() + " with args: " + argsString);
-                        } else if ("setVisibility".equals(method.getName())) {
-                            XposedBridge.log("Before calling setVisibility in class: " + clazz.getName() + " with args: " + argsString);
+                        } else if ("run".equals(method.getName())) {
+                            XposedBridge.log("Before calling run in class: " + clazz.getName() + " with args: " + argsString);
                         } else if ("setAlpha".equals(method.getName())) {
                             XposedBridge.log("Before calling setAlpha in class: " + clazz.getName() + " with args: " + argsString);
                         } else if ("setEnabled".equals(method.getName())) {
@@ -359,8 +359,8 @@ public class test implements IHook {
                         Object result = param.getResult();
                         if ("invokeSuspend".equals(method.getName())) {
                       XposedBridge.log("Before calling invokeSuspend in class: " + clazz.getName() + (result != null ? result.toString() : "null"));
-                        } else if ("setVisibility".equals(method.getName())) {
-                            XposedBridge.log("After calling setVisibility in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
+                        } else if ("run".equals(method.getName())) {
+                            XposedBridge.log("After calling run in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
                         } else if ("setAlpha".equals(method.getName())) {
                             XposedBridge.log("After calling setAlpha in class: " + clazz.getName() + " with result: " + (result != null ? result.toString() : "null"));
                         } else if ("setEnabled".equals(method.getName())) {

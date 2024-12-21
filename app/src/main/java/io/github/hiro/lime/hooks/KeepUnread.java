@@ -17,12 +17,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.hiro.lime.LimeOptions;
 
 public class KeepUnread implements IHook {
-    static boolean keepUnread = false;
+    static boolean keepUnread = true;
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
@@ -132,5 +133,19 @@ public class KeepUnread implements IHook {
                     }
                 }
         );
+
+        XposedBridge.hookAllMethods(
+                loadPackageParam.classLoader.loadClass(Constants.RESPONSE_HOOK.className),
+                Constants.RESPONSE_HOOK.methodName,
+                new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        if (param.args[0] != null && param.args[0].toString().equals("sendChatChecked")) {
+                            param.setResult(null);
+                        }
+                    }
+                }
+        );
+
     }
 }

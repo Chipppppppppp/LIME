@@ -286,22 +286,22 @@ public class ReadChecker implements IHook {
         if (limeDatabase == null) {
             return Collections.emptyList();
         }
-        String query = "SELECT user_name FROM group_messages WHERE server_id=?";
-        Cursor cursor = limeDatabase.rawQuery(query, new String[]{serverId});
-        List<String> user_names = new ArrayList<>();
 
-        if (cursor.moveToFirst()) {
+        // user_name のすべてのエントリを取得する
+        String query = "SELECT user_name FROM group_messages WHERE server_id=? ORDER BY created_time ASC";
+        Cursor cursor = limeDatabase.rawQuery(query, new String[]{serverId});
+        List<String> userNames = new ArrayList<>();
+
+        while (cursor.moveToNext()) {
             String userNameStr = cursor.getString(0);
             if (userNameStr != null) {
-
-                String[] names = userNameStr.split("\n");
-                Collections.addAll(user_names, names);
+                // user_nameをそのままリストに追加
+                userNames.add(userNameStr);
             }
         }
         cursor.close();
-        return user_names;
+        return userNames;
     }
-
     private static class DataItem {
         String serverId;
         String content;

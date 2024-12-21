@@ -46,6 +46,7 @@ import io.github.hiro.lime.hooks.ReadChecker;
 import io.github.hiro.lime.hooks.DarkColor;
 
 
+
 public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResources, IXposedHookZygoteInit {
     public static String modulePath;
 
@@ -84,7 +85,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new AutomaticBackup(),
             new RemoveNotification(),
             new Disabled_Group_notification(),
-            new PhotoAddNotification()
+            new PhotoAddNotification(),
 
     };
 

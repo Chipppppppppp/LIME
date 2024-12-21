@@ -22,7 +22,7 @@ import io.github.hiro.lime.LimeOptions;
 
 public class KeepUnreadLSpatch implements IHook {
 
-    static boolean keepUnread = false; // 既読抑制フラグ
+    static boolean keepUnread = true;
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
@@ -53,7 +53,7 @@ public class KeepUnreadLSpatch implements IHook {
                         switchParams.setMargins(500, 40, 0, 0);
                         //switchParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 
-                        File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
+                        File backupDir = new File(context.getFilesDir(), "LimeBackup");
                         File logFile = new File(backupDir, "no_read.txt");
 
                         if (!backupDir.exists()) {
@@ -76,7 +76,6 @@ public class KeepUnreadLSpatch implements IHook {
                                     XposedBridge.log("Error creating file: ");
                                 }
                             } else {
-                                // スイッチが無効になった場合、ファイルを削除
                                 if (logFile.exists()) {
                                     logFile.delete();
                                 }
