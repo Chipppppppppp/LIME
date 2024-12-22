@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,11 +53,16 @@ public class KeepUnread implements IHook {
                         ImageView imageView = new ImageView(appContext);
                         updateSwitchImage(imageView, keepUnread, moduleContext);
 
+                        DisplayMetrics displayMetrics = appContext.getResources().getDisplayMetrics();
+                        int screenWidth = displayMetrics.widthPixels;
+                        int screenHeight = displayMetrics.heightPixels;
+
+                        int horizontalMargin = (int) (screenWidth * 0.5);
+                        int verticalMargin = (int) (screenHeight * 0.015);
+
                         RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                        //imageParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE); // 垂直中央に配置
-                        //imageParams.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE); // 水平中央に配置
-                        imageParams.setMargins(580, 40, 0, 0); // 水平に50ピクセル右に移動（必要に応じて調整）
+                        imageParams.setMargins(horizontalMargin, verticalMargin, 0, 0); // 動的に計算されたマージンを設定
 
                         imageView.setOnClickListener(v -> {
                             keepUnread = !keepUnread;
@@ -76,7 +82,6 @@ public class KeepUnread implements IHook {
                             }
                         }
                     }
-
                     private void updateSwitchImage(ImageView imageView, boolean isOn, Context moduleContext) {
 
                         String imageName = isOn ? "switch_on" : "switch_off";
