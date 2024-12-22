@@ -123,5 +123,6 @@
     <string name="DarkColor">使導航按鈕顏色為黑色，深色主題純深色</string>
     <string name="switch_KeepUnreadLSpatch">顯示 LsPatch 的保留未讀開關</string>
     <string name="AutomaticBackup">將您訂閱的群組的通知靜音</string>
+    <string name="RemoveVoiceRecord">禁用音訊按鈕</string>
 
 </resources>

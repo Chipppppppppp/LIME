@@ -47,6 +47,8 @@ public class LimeOptions {
     public Option NoMuteMessage = new Option("NoMuteMessage", R.string.NoMuteMessage, false);
     public Option MuteGroup = new Option("Disabled_Group_notification", R.string.MuteGroup, false);
     public Option PhotoAddNotification = new Option("PhotoAddNotification", R.string.PhotoAddNotification, false);
+    public Option RemoveVoiceRecord = new Option("RemoveVoiceRecord", R.string.RemoveVoiceRecord, false);
+
     public Option[] options = {
             removeVoom,
             removeWallet,
@@ -76,7 +78,8 @@ public class LimeOptions {
             calltone,
             DarkColor,
             MuteGroup,
-            PhotoAddNotification
+            PhotoAddNotification,
+            RemoveVoiceRecord
 
 
     };

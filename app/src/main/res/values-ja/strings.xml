@@ -130,4 +130,5 @@
     <string name="removeNotification">更新されたプロフィールを削除</string>
     <string name="AutomaticBackup">定期的にバックアップ</string>
     <string name="set_id">Set ID</string>
+    <string name="RemoveVoiceRecord">音声ボタンを無効化</string>
 </resources>

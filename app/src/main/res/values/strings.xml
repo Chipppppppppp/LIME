@@ -133,4 +133,5 @@
     <string name="Talk_Auto_Back_up_Success">Automatic backup succeeded</string>
     <string name="Talk_Auto_Back_up_Error">Error occurred during automatic backup</string>
     <string name="Talk_Picture_Back_up_Success">The talk picture folder was successfully backed up</string>
+    <string name="RemoveVoiceRecord">Enable audio button</string>
 </resources>
