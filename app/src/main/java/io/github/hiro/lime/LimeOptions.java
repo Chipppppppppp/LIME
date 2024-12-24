@@ -42,6 +42,9 @@ public class LimeOptions {
     public Option removeAllServices = new Option("remove_Services", R.string.RemoveService, false);
     public Option calltone = new Option("calltone", R.string.calltone, false);
     public Option ReadChecker = new Option("ReadChecker", R.string.ReadChecker, false);
+    public Option MySendMessage = new Option("MySendMessage", R.string.MySendMessage, false);
+
+
     public Option RemoveNotification = new Option("RemoveNotification", R.string.removeNotification, false);
     public Option DarkColor = new Option("DarkColor", R.string.DarkColor, false);
     public Option NoMuteMessage = new Option("NoMuteMessage", R.string.NoMuteMessage, false);
@@ -69,7 +72,7 @@ public class LimeOptions {
             preventUnsendMessage,
             sendMuteMessage,
             Archived,
-            ReadChecker,
+            ReadChecker,MySendMessage,
             removeKeepUnread,
             KeepUnreadLSpatch,
             blockTracking,
@@ -83,4 +86,5 @@ public class LimeOptions {
 
 
     };
+
 }

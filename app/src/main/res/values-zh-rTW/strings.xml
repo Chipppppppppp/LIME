@@ -125,4 +125,6 @@
     <string name="AutomaticBackup">將您訂閱的群組的通知靜音</string>
     <string name="RemoveVoiceRecord">禁用音訊按鈕</string>
 
+    <string name="MySendMessage">（讀取功能）請勿儲存您自己以外的信息</string>
+
 </resources>
