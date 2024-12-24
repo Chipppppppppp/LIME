@@ -1,8 +1,5 @@
 # <img src="app/src/main/ic_launcher-playstore.png" width="60px"> LIME: Adkiller for Beta LINEs
 
-## 以下に準じます
-https://github.com/Chipppppppppp/LIME 
-
 # 更新について
 更新内容を記載していないReleaseについては、差分を押してください、必要でない更新でなければ無理して更新を行う必要はありません。
 更新名による判断<br>
