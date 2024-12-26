@@ -104,7 +104,7 @@ public class ReadChecker implements IHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 String chatId = (String) param.getResult();
-                ////XposedBridge.log(chatId);
+                //XposedBridge.log(chatId);
                 if (isGroupExists(chatId)) {
                     shouldHookOnCreate = true;
                     currentGroupId = chatId;
@@ -130,7 +130,7 @@ public class ReadChecker implements IHook {
                         Context systemContext = (Context) XposedHelpers.callMethod(param.thisObject, "getApplicationContext");
                         moduleContext = systemContext.createPackageContext("io.github.hiro.lime", Context.CONTEXT_IGNORE_SECURITY);
                     } catch (Exception e) {
-                        //XposedBridge.log("Failed to get module context: " + e.getMessage());
+                        XposedBridge.log("Failed to get module context: " + e.getMessage());
                     }
                 }
             }
@@ -139,7 +139,7 @@ public class ReadChecker implements IHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 if (moduleContext == null) {
-                    //XposedBridge.log("Module context is null. Skipping hook.");
+                    XposedBridge.log("Module context is null. Skipping hook.");
                     return;
                 }
 
@@ -163,7 +163,7 @@ public class ReadChecker implements IHook {
 
     private boolean isGroupExists(String groupId) {
         if (limeDatabase == null) {
-            // ////XposedBridge.log("Database is not initialized.");
+            // //XposedBridge.log("Database is not initialized.");
             return false;
         }
         String query = "SELECT 1 FROM group_messages WHERE group_id = ?";
@@ -176,7 +176,7 @@ public class ReadChecker implements IHook {
 
     private boolean isNoGroup(String groupId) {
         if (limeDatabase == null) {
-            // ////XposedBridge.log("Database is not initialized.");
+            // //XposedBridge.log("Database is not initialized.");
             return true;
         }
         String query = "SELECT group_name FROM group_messages WHERE group_id = ?";
@@ -346,22 +346,20 @@ public class ReadChecker implements IHook {
         if (limeDatabase == null) {
             return Collections.emptyList();
         }
-        String query = "SELECT user_name FROM group_messages WHERE server_id=?";
+        // user_name のすべてのエントリを取得する
+        String query = "SELECT user_name FROM group_messages WHERE server_id=? ORDER BY created_time ASC";
         Cursor cursor = limeDatabase.rawQuery(query, new String[]{serverId});
-        List<String> user_names = new ArrayList<>();
+        List<String> userNames = new ArrayList<>();
 
-
-        if (cursor.moveToFirst()) {
+        while (cursor.moveToNext()) {
             String userNameStr = cursor.getString(0);
             if (userNameStr != null) {
-
-
-                String[] names = userNameStr.split("\n");
-                Collections.addAll(user_names, names);
+                // user_nameをそのままリストに追加
+                userNames.add(userNameStr);
             }
         }
         cursor.close();
-        return user_names;
+        return userNames;
     }
 
 
@@ -415,7 +413,7 @@ public class ReadChecker implements IHook {
                                 moduleContext = appContext.createPackageContext(
                                         "io.github.hiro.lime", Context.CONTEXT_IGNORE_SECURITY);
                             } catch (PackageManager.NameNotFoundException e) {
-                             ////XposedBridge.log("Failed to create package context: " + e.getMessage());
+                                // //XposedBridge.log("Failed to create package context: " + e.getMessage());
                                 return;
                             }
 
@@ -494,37 +492,6 @@ public class ReadChecker implements IHook {
     }
 
 
-    private void markPreviousMessagesAsRead(String groupId, String checkedUser, String timeEpochStr, Context context) {
-        initializeLimeDatabase(context);
-
-
-        try {
-            String query = "SELECT server_id, content, created_time, user_name FROM group_messages " +
-                    "WHERE group_id=? AND created_time<? AND user_name NOT LIKE ?";
-            Cursor cursor = limeDatabase.rawQuery(query, new String[]{groupId, timeEpochStr, "%" + checkedUser + "%"});
-            while (cursor.moveToNext()) {
-                String previousServerId = cursor.getString(cursor.getColumnIndexOrThrow("server_id"));
-                String previousContent = cursor.getString(cursor.getColumnIndexOrThrow("content"));
-                String previousTimeEpochStr = cursor.getString(cursor.getColumnIndexOrThrow("created_time"));
-                String previousUserName = cursor.getString(cursor.getColumnIndexOrThrow("user_name"));
-                String previousTimeFormatted = formatMessageTime(previousTimeEpochStr);
-                String updatedUserName = previousUserName + (previousUserName.isEmpty() ? "" : "\n") + checkedUser;
-                ContentValues values = new ContentValues();
-                values.put("user_name", updatedUserName);
-
-
-                limeDatabase.update("group_messages", values, "group_id=? AND server_id=?",
-                        new String[]{groupId, previousServerId});
-
-
-                // ////XposedBridge.log("Marked as read in lime_data.db: Group_id: " + groupId + ", Server_id: " + previousServerId + ", Updated user_name: " + updatedUserName);
-            }
-            cursor.close();
-        } catch (Exception e) {
-            Log.e("markPreviousMessagesAsRead", "Error marking previous messages as read:", e);
-        }
-    }
-
 
     private void writeToFile(File file, String text) {
         try (FileWriter writer = new FileWriter(file, true)) {
@@ -556,7 +523,7 @@ public class ReadChecker implements IHook {
     private String extractServerId(String paramValue, Context context) {
         Pattern pattern = Pattern.compile("param3:([0-9]+)");
         Matcher matcher = pattern.matcher(paramValue);
-        //XposedBridge.log(paramValue);
+        XposedBridge.log(paramValue);
         if (matcher.find()) {
             return matcher.group(1);
 
@@ -582,14 +549,14 @@ public class ReadChecker implements IHook {
             writer.append("Missing serverId in paramValue:").append(paramValue).append("\n");
             writer.close();
         } catch (IOException ignored) {
-            // ////XposedBridge.log("Error writing paramValue to file: " + e.getMessage());
+            // //XposedBridge.log("Error writing paramValue to file: " + e.getMessage());
         }
     }
 
 
     private String queryDatabase(SQLiteDatabase db, String query, String... selectionArgs) {
         if (db == null) {
-            // ////XposedBridge.log("Database is not initialized.");
+            // //XposedBridge.log("Database is not initialized.");
             return null;
         }
         Cursor cursor = db.rawQuery(query, selectionArgs);
@@ -609,9 +576,9 @@ public class ReadChecker implements IHook {
         if (oldDbFile.exists()) {
             boolean deleted = oldDbFile.delete();
             if (deleted) {
-                ////XposedBridge.log("Old database file lime_data.db deleted.");
+                //XposedBridge.log("Old database file lime_data.db deleted.");
             } else {
-                ////XposedBridge.log("Failed to delete old database file lime_data.db.");
+                //XposedBridge.log("Failed to delete old database file lime_data.db.");
             }
         }
         // 新しいデータベースファイルの初期化
@@ -632,7 +599,7 @@ public class ReadChecker implements IHook {
 
 
         limeDatabase.execSQL(createGroupTable);
-        // ////XposedBridge.log("Database initialized and group_messages table created.");
+        // //XposedBridge.log("Database initialized and group_messages table created.");
     }
 
 
@@ -658,7 +625,7 @@ public class ReadChecker implements IHook {
                         ContentValues values = new ContentValues();
                         values.put("user_name", updatedUserName);
                         limeDatabase.update("group_messages", values, "server_id=? AND checked_user=?", new String[]{serverId, checkedUser});
-                        // ////XposedBridge.log("User name updated for server_id: " + serverId + ", checked_user: " + checkedUser);
+                        // //XposedBridge.log("User name updated for server_id: " + serverId + ", checked_user: " + checkedUser);
                     }
                 } else {
                     insertNewRecord(SendUser, groupId, serverId, checkedUser, groupName, content, "-" + user_name + " [" + currentTime + "]", createdTime);
@@ -695,7 +662,7 @@ public class ReadChecker implements IHook {
 
 
                     limeDatabase.update("group_messages", values, "group_id=? AND server_id=?", new String[]{groupId, serverId});
-                    // ////XposedBridge.log("Updated user_name for other records in group_id: " + groupId + ", server_id: " + serverId);
+                    // //XposedBridge.log("Updated user_name for other records in group_id: " + groupId + ", server_id: " + serverId);
                 }
             }
         } catch (Exception e) {
@@ -718,10 +685,6 @@ public class ReadChecker implements IHook {
         String insertQuery = "INSERT INTO group_messages(group_id, server_id, checked_user, group_name, content, user_name, created_time)" +
                 " VALUES(?, ?, ?, ?, ?, ?, ?);";
         if (!limeOptions.MySendMessage.checked) {
-            limeDatabase.execSQL(insertQuery, new Object[]{groupId, serverId, checkedUser, groupName, content, user_name, createdTime});
-            return;
-        }
-        if (SendUser == null) {
             try {
                 limeDatabase.beginTransaction();
                 limeDatabase.execSQL(insertQuery, new Object[]{groupId, serverId, checkedUser, groupName, content, user_name, createdTime});
@@ -731,8 +694,21 @@ public class ReadChecker implements IHook {
             } finally {
                 limeDatabase.endTransaction();
             }
-        } else {
+            return;
+        }
+
+        if (SendUser != null) {
+            try {
+                limeDatabase.beginTransaction();
+                limeDatabase.execSQL(insertQuery, new Object[]{groupId, serverId, checkedUser, groupName, content, user_name, createdTime});
+                limeDatabase.setTransactionSuccessful();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                limeDatabase.endTransaction();
+            }
         }
     }
+
 }
 
