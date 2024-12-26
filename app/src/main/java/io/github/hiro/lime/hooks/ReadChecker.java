@@ -282,7 +282,7 @@ public class ReadChecker implements IHook {
                 resultBuilder.append(moduleContext.getResources().getString(R.string.Reader))
                         .append(" (").append(item.user_names.size() + newlineCount).append("):\n");
                 for (String user_name : item.user_names) {
-                    resultBuilder.append("- ").append(user_name).append("\n");
+                    resultBuilder.append("").append(user_name).append("\n");
                 }
             } else {
                 resultBuilder.append("No talk names found.\n");
@@ -295,13 +295,8 @@ public class ReadChecker implements IHook {
         textView.setText(resultBuilder.toString());
         textView.setPadding(20, 20, 20, 20);
 
-
         ScrollView scrollView = new ScrollView(activity);
         scrollView.addView(textView);
-
-
-
-
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("READ Data");
         builder.setView(scrollView);
@@ -684,6 +679,8 @@ public class ReadChecker implements IHook {
     private void insertNewRecord(String SendUser, String groupId, String serverId, String checkedUser, String groupName, String content, String user_name, String createdTime) {
         String insertQuery = "INSERT INTO group_messages(group_id, server_id, checked_user, group_name, content, user_name, created_time)" +
                 " VALUES(?, ?, ?, ?, ?, ?, ?);";
+
+        // limeOptions.MySendMessage.checkedがオフの場合
         if (!limeOptions.MySendMessage.checked) {
             try {
                 limeDatabase.beginTransaction();
@@ -697,7 +694,8 @@ public class ReadChecker implements IHook {
             return;
         }
 
-        if (SendUser != null) {
+        // limeOptions.MySendMessage.checkedがオンの場合、SendUserがnullのときのみ書き込む
+        if (SendUser == null) {
             try {
                 limeDatabase.beginTransaction();
                 limeDatabase.execSQL(insertQuery, new Object[]{groupId, serverId, checkedUser, groupName, content, user_name, createdTime});
@@ -708,7 +706,8 @@ public class ReadChecker implements IHook {
                 limeDatabase.endTransaction();
             }
         }
-    }
+    
+}
 
 }
 
