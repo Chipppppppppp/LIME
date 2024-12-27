@@ -68,12 +68,12 @@ public class PreventMarkAsRead implements IHook {
                     toggleButton.setBackgroundColor(Color.BLACK);
                     toggleButton.setTextColor(Color.WHITE);
                     toggleButton.setTextSize(12);
-                    int width = 200;
+                    int width = 180;
                     int height = 80;
                     FrameLayout.LayoutParams frameParams = new FrameLayout.LayoutParams(width, height);
 
                     frameParams.gravity = Gravity.TOP | Gravity.END;
-                    frameParams.topMargin = 250;
+                    frameParams.topMargin = 150;
                     frameParams.rightMargin = 300;
                     toggleButton.setLayoutParams(frameParams);
 
