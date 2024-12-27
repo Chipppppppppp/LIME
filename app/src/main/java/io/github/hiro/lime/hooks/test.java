@@ -29,9 +29,9 @@ public class test implements IHook {
         String packageName = loadPackageParam.packageName;
 
         XposedBridge.log("Hooking package: " + packageName);
-   hookOnViewAdded(loadPackageParam.classLoader);
+ //  hookOnViewAdded(loadPackageParam.classLoader);
       hookAllClassesInPackage(loadPackageParam.classLoader, loadPackageParam);
-      hookFragmentOnCreateView(loadPackageParam.classLoader);
+      //hookFragmentOnCreateView(loadPackageParam.classLoader);
         //hookChatHistoryActivity(loadPackageParam.classLoader); // ChatHistoryActivityのフック
         //hookLongClickListeners(loadPackageParam.classLoader); // 長押しリスナーのフック
 
@@ -269,24 +269,16 @@ public class test implements IHook {
             if (!"invokeSuspend".equals(method.getName()) &&
                     !"run".equals(method.getName()) &&
                     !"setOnTouchListener".equals(method.getName()) &&
-                    !"setVisibility".equals(method.getName()) &&
+
                     !"setAlpha".equals(method.getName()) &&
                     !"setEnabled".equals(method.getName()) &&
                     !"setFocusable".equals(method.getName()) &&
-                    !"setOnClickListener".equals(method.getName()) &&
                     !"setBackgroundColor".equals(method.getName()) &&
-                    !"setPadding".equals(method.getName()) &&
-                    !"setLayoutParams".equals(method.getName()) &&
-                    !"requestLayout".equals(method.getName()) &&
-                    !"invalidate".equals(method.getName()) &&
-                    !"setText".equals(method.getName()) &&  // 新しく追加されたメソッド
-                    !"setTextColor".equals(method.getName()) &&  // 新しく追加されたメソッド
-                    !"setHint".equals(method.getName()) &&  // 新しく追加されたメソッド
+
                     !"setHintTextColor".equals(method.getName()) &&  // 新しく追加されたメソッド
                     !"onStart".equals(method.getName()) &&
                     !"setCompoundDrawables".equals(method.getName()) &&
                     !"getActivity".equals(method.getName()) &&  // PendingIntent method
-                    !"onViewAdded".equals(method.getName()) && // PendingIntent method
                     !"setState".equals(method.getName())) {   // PendingIntent method
                 continue;
             }
@@ -327,8 +319,6 @@ public class test implements IHook {
                             XposedBridge.log("Before calling setPadding in class: " + clazz.getName() + " with args: " + argsString);
                         } else if ("setLayoutParams".equals(method.getName())) {
                             XposedBridge.log("Before calling setLayoutParams in class: " + clazz.getName() + " with args: " + argsString);
-                        } else if ("requestLayout".equals(method.getName())) {
-                            XposedBridge.log("Before calling requestLayout in class: " + clazz.getName() + " with args: " + argsString);
                         } else if ("invalidate".equals(method.getName())) {
                             XposedBridge.log("Before calling invalidate in class: " + clazz.getName() + " with args: " + argsString);
                         } else if ("setText".equals(method.getName())) {

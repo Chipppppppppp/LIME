@@ -10,7 +10,7 @@ android {
         minSdk 28
         targetSdk 35
         versionCode 15
-        versionName "1.14.7.1_beta"
+        versionName "1.14.7.3"
         multiDexEnabled false
         proguardFiles += 'proguard-rules.pro'
         buildConfigField 'String', 'HOOK_TARGET_VERSION', '"141910383"'
@@ -62,11 +62,10 @@ android {
 }
 
 dependencies {
-    //noinspection GradleCompatible
     implementation 'com.android.support:customtabs:23.0.0'
     compileOnly 'de.robv.android.xposed:api:82'
     implementation 'org.mozilla:rhino:1.7.15'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.0' // バージョンはプロジェクトに合わせて調整
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
     implementation "androidx.work:work-runtime:2.10.0"
 }
 

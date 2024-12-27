@@ -2,25 +2,32 @@
 package io.github.hiro.lime.hooks;
 
 
+import android.app.Activity;
 import android.app.AndroidAppHelper;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ToggleButton;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.hiro.lime.LimeOptions;
@@ -136,15 +143,6 @@ public class KeepUnread implements IHook {
                     }
 
 
-                    private void saveStateToFile(Context context, boolean state) {
-                        String filename = "keep_unread_state.txt";
-                        try (FileOutputStream fos = context.openFileOutput(filename, Context.MODE_PRIVATE)) {
-                            fos.write((state ? "1" : "0").getBytes());
-                        } catch (IOException ignored) {
-                        }
-                    }
-
-
                     private boolean readStateFromFile(Context context) {
                         String filename = "keep_unread_state.txt";
                         try (FileInputStream fis = context.openFileInput(filename)) {
@@ -171,9 +169,19 @@ public class KeepUnread implements IHook {
                         if (keepUnread) {
                             param.setResult(null);
                         }
+
                     }
                 }
         );
+    }
+
+
+    private void saveStateToFile(Context context, boolean state) {
+        String filename = "keep_unread_state.txt";
+        try (FileOutputStream fos = context.openFileOutput(filename, Context.MODE_PRIVATE)) {
+            fos.write((state ? "1" : "0").getBytes());
+        } catch (IOException ignored) {
+        }
     }
 }
 
