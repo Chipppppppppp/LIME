@@ -5,6 +5,8 @@ import android.content.Context;
 import android.media.RingtoneManager;
 import android.net.Uri;
 
+import java.lang.reflect.Method;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -60,17 +62,35 @@ import io.github.hiro.lime.LimeOptions;
                             }
                         });
 
-                // Hook the onCreate method of VoIPBaseFragment to stop the ringtone when needed
-                Class<?> voIPBaseFragmentClass = loadPackageParam.classLoader.loadClass("com.linecorp.voip2.common.base.VoIPBaseFragment");
-                XposedBridge.hookAllMethods(voIPBaseFragmentClass, "onCreate", new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        if (ringtone != null && ringtone.isPlaying()) {
-                            ringtone.stop();
-                            isPlaying = false;
-                        }
-                    }
-                });
-            }
 
+                Class<?> targetClass = loadPackageParam.classLoader.loadClass("com.linecorp.andromeda.audio.AudioManager");
+                Method[] methods = targetClass.getDeclaredMethods();
+
+                for (Method method : methods) {
+                    XposedBridge.hookMethod(method, new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            Object result = param.getResult();
+                            // XposedBridge.log("Method called: " + method.getName() + " returned: " + result);
+                            if (method.getName().equals("stop")) {
+                                if (ringtone != null && ringtone.isPlaying()) {
+                                    ringtone.stop();
+                                    isPlaying = false;
+                                }
+                            }
+                        }
+
+                    });
+                    Class<?> voIPBaseFragmentClass = loadPackageParam.classLoader.loadClass("com.linecorp.voip2.common.base.VoIPBaseFragment");
+                    XposedBridge.hookAllMethods(voIPBaseFragmentClass, "onCreate", new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            if (ringtone != null && ringtone.isPlaying()) {
+                                ringtone.stop();
+                                isPlaying = false;
+                            }
+                        }
+                    });
+                }
+            }
     }

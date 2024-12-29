@@ -447,16 +447,16 @@ public class ReadChecker implements IHook {
 
         try {
             String serverId = extractServerId(paramValue, context);
-            String checkedUser = extractCheckedUser(paramValue);
-            if (serverId == null || checkedUser == null) {
-                writeToFile(dbFile, "Missing parameters: serverId=" + serverId + ", checkedUser=" + checkedUser);
+            String SentUser = extractSentUser(paramValue);
+            if (serverId == null || SentUser == null) {
+                writeToFile(dbFile, "Missing parameters: serverId=" + serverId + ", SentUser=" + SentUser);
                 return;
             }
             String SendUser = queryDatabase(db3, "SELECT from_mid FROM chat_history WHERE server_id=?", serverId);
             String groupId = queryDatabase(db3, "SELECT chat_id FROM chat_history WHERE server_id=?", serverId);
             String groupName = queryDatabase(db3, "SELECT name FROM groups WHERE id=?", groupId);
             String content = queryDatabase(db3, "SELECT content FROM chat_history WHERE server_id=?", serverId);
-            String user_name = queryDatabase(db4, "SELECT profile_name FROM contacts WHERE mid=?", checkedUser);
+            String user_name = queryDatabase(db4, "SELECT profile_name FROM contacts WHERE mid=?", SentUser);
             String timeEpochStr = queryDatabase(db3, "SELECT created_time FROM chat_history WHERE server_id=?", serverId);
             String timeFormatted = formatMessageTime(timeEpochStr);
             String media = queryDatabase(db3, "SELECT attachement_type FROM chat_history WHERE server_id=?", serverId);
@@ -478,7 +478,7 @@ public class ReadChecker implements IHook {
                 }
             }
             String finalContent = (content != null && !content.isEmpty()) ? content : (!mediaDescription.isEmpty() ? mediaDescription : "No content:" + serverId);
-            saveData(SendUser, groupId, serverId, checkedUser, groupName, finalContent, user_name, timeFormatted, context);
+            saveData(SendUser, groupId, serverId, SentUser, groupName, finalContent, user_name, timeFormatted, context);
         } catch (Exception e) {
         }
     }
@@ -501,7 +501,7 @@ public class ReadChecker implements IHook {
     }
 
 
-    private String extractCheckedUser(String paramValue) {
+    private String extractSentUser(String paramValue) {
         Pattern pattern = Pattern.compile("param2:([a-zA-Z0-9]+)");
         Matcher matcher = pattern.matcher(paramValue);
 
@@ -564,7 +564,7 @@ public class ReadChecker implements IHook {
     private void initializeLimeDatabase(Context context) {
 
 
-        File oldDbFile = new File(context.getFilesDir(), "lime_data.db");
+        File oldDbFile = new File(context.getFilesDir(), "lime_checked_data.db");
         if (oldDbFile.exists()) {
             boolean deleted = oldDbFile.delete();
             if (deleted) {
@@ -573,19 +573,19 @@ public class ReadChecker implements IHook {
                 //XposedBridge.log("Failed to delete old database file lime_data.db.");
             }
         }
-        File dbFile = new File(context.getFilesDir(), "lime_checked_data.db");
+        File dbFile = new File(context.getFilesDir(), "checked_data.db");
         limeDatabase = SQLiteDatabase.openOrCreateDatabase(dbFile, null);
 
 
         String createGroupTable = "CREATE TABLE IF NOT EXISTS group_messages (" +
                 "group_id TEXT NOT NULL, " +
                 "server_id TEXT NOT NULL, " +
-                "checked_user TEXT, " +
+                "Sent_User TEXT, " +
                 "group_name TEXT, " +
                 "content TEXT, " +
                 "user_name TEXT, " +
                 "created_time TEXT, " +
-                "PRIMARY KEY(group_id, server_id, checked_user)" +
+                "PRIMARY KEY(group_id, server_id, Sent_User)" +
                 ");";
 
 
@@ -594,7 +594,7 @@ public class ReadChecker implements IHook {
     }
 
 
-    private void saveData( String SendUser, String groupId, String serverId, String checkedUser, String groupName, String content, String user_name, String createdTime, Context context) {
+    private void saveData( String SendUser, String groupId, String serverId, String SentUser, String groupName, String content, String user_name, String createdTime, Context context) {
         if (groupName == null) {
 
 
@@ -602,8 +602,8 @@ public class ReadChecker implements IHook {
         }
         Cursor cursor = null;
         try {
-            String checkQuery = "SELECT COUNT(*), user_name FROM group_messages WHERE server_id=? AND checked_user=?";
-            cursor = limeDatabase.rawQuery(checkQuery, new String[]{serverId, checkedUser});
+            String checkQuery = "SELECT COUNT(*), user_name FROM group_messages WHERE server_id=? AND Sent_User=?";
+            cursor = limeDatabase.rawQuery(checkQuery, new String[]{serverId});
             if (cursor.moveToFirst()) {
                 int count = cursor.getInt(0);
                 String existingUserName = cursor.getString(1);
@@ -615,11 +615,11 @@ public class ReadChecker implements IHook {
                         String updatedUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n") + "-" + user_name + " [" + currentTime + "]";
                         ContentValues values = new ContentValues();
                         values.put("user_name", updatedUserName);
-                        limeDatabase.update("group_messages", values, "server_id=? AND checked_user=?", new String[]{serverId, checkedUser});
-                        //XposedBridge.log("User name updated for server_id: " + serverId + ", checked_user: " + checkedUser);
+                        limeDatabase.update("group_messages", values, "server_id=? AND Sent_User=?", new String[]{serverId});
+                        //XposedBridge.log("User name updated for server_id: " + serverId + ", Sent_User: " + SentUser);
                     }
                 } else {
-                    insertNewRecord(SendUser, groupId, serverId, checkedUser, groupName, content, "-" + user_name + " [" + currentTime + "]", createdTime);
+                    insertNewRecord(SendUser, groupId, serverId, SentUser, groupName, content, "-" + user_name + " [" + currentTime + "]", createdTime);
                 }
                 updateOtherRecordsUserNames(groupId, user_name, currentTime);
             }
@@ -672,15 +672,13 @@ public class ReadChecker implements IHook {
     }
 
 
-    private void insertNewRecord(String SendUser, String groupId, String serverId, String checkedUser, String groupName, String content, String user_name, String createdTime) {
-        String insertQuery = "INSERT INTO group_messages(group_id, server_id, checked_user, group_name, content, user_name, created_time)" +
+    private void insertNewRecord(String SendUser, String groupId, String serverId, String SentUser, String groupName, String content, String user_name, String createdTime) {
+        String insertQuery = "INSERT INTO group_messages(group_id, server_id, Sent_User, group_name, content, user_name, created_time)" +
                 " VALUES(?, ?, ?, ?, ?, ?, ?);";
 
         if (!limeOptions.MySendMessage.checked) {
             try {
-                limeDatabase.beginTransaction();
-                limeDatabase.execSQL(insertQuery, new Object[]{groupId, serverId, checkedUser, groupName, content, user_name, createdTime});
-                limeDatabase.setTransactionSuccessful();
+                limeDatabase.execSQL(insertQuery, new Object[]{groupId, serverId, SentUser, groupName, content, user_name, createdTime});
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
@@ -691,9 +689,7 @@ public class ReadChecker implements IHook {
 
         if (SendUser == null) {
             try {
-                limeDatabase.beginTransaction();
-                limeDatabase.execSQL(insertQuery, new Object[]{groupId, serverId, checkedUser, groupName, content, user_name, createdTime});
-                limeDatabase.setTransactionSuccessful();
+                limeDatabase.execSQL(insertQuery, new Object[]{groupId, serverId, SentUser, groupName, content, user_name, createdTime});
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {

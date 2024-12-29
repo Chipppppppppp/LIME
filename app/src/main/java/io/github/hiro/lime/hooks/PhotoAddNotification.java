@@ -12,7 +12,11 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -86,6 +90,7 @@ public class PhotoAddNotification implements IHook {
     }
 
     private static boolean isHandlingNotification = false;
+
     private void handleNotificationHook(Context context, SQLiteDatabase dbGroups, SQLiteDatabase dbContacts, XC_MethodHook.MethodHookParam param, boolean hasTag) {
 
         if (isHandlingNotification) {
@@ -94,26 +99,26 @@ public class PhotoAddNotification implements IHook {
 
         isHandlingNotification = true;
 
-
-
         try {
             Notification originalNotification = hasTag ? (Notification) param.args[2] : (Notification) param.args[1];
             String title = getNotificationTitle(originalNotification);
 
             if (title == null) {
-
                 return;
             }
 
             String originalText = getNotificationText(originalNotification);
             Notification newNotification = originalNotification;
-            if (originalText.contains("LINE音声通話を着信中") || originalText.contains("Incoming LINE voice call")|| originalText.contains("LINE語音通話來電中")) {
-               // XposedBridge.log("Skipping notification: " + originalText);
+            if (originalText.contains("LINE音声通話を着信中") ||
+                    originalText.contains("Incoming LINE voice call") ||
+                    originalText.contains("LINE語音通話來電中")) {
                 return;
             }
+            if (originalText != null &&
+                    (originalText.contains("写真を送信しました") ||
+                            originalText.contains("sent a photo") ||
+                            originalText.contains("傳送了照片"))) {
 
-
-            if (originalText != null && (originalText.contains("写真を送信しました") || originalText.contains("sent a photo")|| originalText.contains("傳送了照片"))) {
                 String chatId = resolveChatId(dbGroups, dbContacts, originalNotification);
                 if (chatId == null) {
                     return;
@@ -129,16 +134,17 @@ public class PhotoAddNotification implements IHook {
                     return;
                 }
 
+
                 newNotification = createNotificationWithImageFromFile(context, originalNotification, latestFile, originalText);
 
+
+                param.setResult(null);
 
                 if (hasTag) {
                     param.args[2] = newNotification;
                 } else {
                     param.args[1] = newNotification;
                 }
-
-                param.setResult(null);
             }
 
             int randomNotificationId = (int) System.currentTimeMillis();
@@ -203,19 +209,41 @@ public class PhotoAddNotification implements IHook {
         File messagesDir = new File(Environment.getExternalStorageDirectory(),
                 "/Android/data/jp.naver.line.android/files/chats/" + chatId + "/messages");
         if (!messagesDir.exists() || !messagesDir.isDirectory()) {
-            // XposedBridge.log("Messages directory does not exist: " + messagesDir.getAbsolutePath());
             return null;
         }
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            // XposedBridge.log("Sleep interrupted: " + e.getMessage());
+        // バックアップ用ディレクトリとファイル
+        File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
+        if (!backupDir.exists() && !backupDir.mkdirs()) {
+            return null; // ディレクトリ作成失敗
+        }
+        File waitTimeFile = new File(backupDir, "wait_time.txt");
+
+        long waitTimeMillis = 1000; // デフォルトの待機時間（1秒）
+        if (!waitTimeFile.exists()) {
+            try (FileWriter writer = new FileWriter(waitTimeFile)) {
+                writer.write(String.valueOf(waitTimeMillis)); // デフォルト値を書き込む
+            } catch (IOException e) {
+                return null; // ファイル作成失敗
+            }
+        } else {
+            try (BufferedReader reader = new BufferedReader(new FileReader(waitTimeFile))) {
+                String line = reader.readLine();
+                waitTimeMillis = Long.parseLong(line); // ファイルから待機時間を取得
+            } catch (IOException | NumberFormatException e) {
+                return null; // 読み込みまたは解析失敗
+            }
         }
 
-        File[] files = messagesDir.listFiles((dir, name) -> !name.endsWith(".thumb") && !name.endsWith(".downloading"));
+        // 待機
+        try {
+            Thread.sleep(waitTimeMillis);
+        } catch (InterruptedException e) {
+            return null; // スレッド中断
+        }
+
+        File[] files = messagesDir.listFiles((dir, name) ->  !name.endsWith(".downloading"));
         if (files == null || files.length == 0) {
-            // XposedBridge.log("No files found in messages directory: " + messagesDir.getAbsolutePath());
             return null;
         }
 
