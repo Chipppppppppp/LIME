@@ -4,7 +4,7 @@ import android.app.AndroidAppHelper;
 import android.content.Context;
 import android.media.RingtoneManager;
 import android.net.Uri;
-
+import java.lang.reflect.Method;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
