@@ -47,7 +47,20 @@ public class Ringtone implements IHook {
                         }
                     }
                 });
-
+                Class<?> targetClass = loadPackageParam.classLoader.loadClass("com.linecorp.andromeda.audio.AudioManager");
+                Method[] methods = targetClass.getDeclaredMethods();
+                for (Method method : methods) {
+                    XposedBridge.hookMethod(method, new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            if (method.getName().equals("stop")) {
+                                if (ringtone != null && ringtone.isPlaying()) {
+                                    ringtone.stop();
+                                    isPlaying = false;
+                                }
+                            }
+                        }
+                    });
         Class<?> voIPBaseFragmentClass = loadPackageParam.classLoader.loadClass("com.linecorp.voip2.common.base.VoIPBaseFragment");
         XposedBridge.hookAllMethods(voIPBaseFragmentClass, "onCreate", new XC_MethodHook() {
             @Override
