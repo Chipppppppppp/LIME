@@ -9,7 +9,7 @@ v1.12.6 →適応するLINEバージョンの変更<br>
 v1.12.5a, v1.12.5a1→仕様変更
 
  
- |**端末別READ**| 
+ # *端末別READ*
  
  [ROOT](https://github.com/areteruhiro/LIMEs/blob/master/README%20for%20root.md) 
 
@@ -19,26 +19,6 @@ v1.12.5a, v1.12.5a1→仕様変更
 
 ## 確認済みのバグやエラー
 アプリがクラッシュする→トラッキング通信をブロックするを無効にしてください
-
-
-## LsPatchを利用の方へ 
-
-通知が届かないの解決方法 - 14.19.1 では以下をおこなわなくても良い
-
-下記の、LINE 14.3.2をインストールしパッチを行い、インストールを行って、ログインをしてください。
-
-
-ログイン後、LIMEに適応するバージョンのLINEにパッチを行って、**更新**するようにしてください。
-
-https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.3.2-apk
-
-推奨LsPatch<br>
-https://github.com/JingMatrix/LSPatch/actions
-
-
-# パッチするapkについて
-apkmは辞めてください。
-
 
 ## トーク履歴のリストアについて
 
