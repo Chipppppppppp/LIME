@@ -29,8 +29,15 @@ v1.12.5a, v1.12.5a1→仕様変更
 ③移動させたファイルの名前を`naver_line_backup.db`に変更する<br>
 ④LIME backup フォルダに入れ替え<br>
 で、移動させる<br>
-⑤リストアさせる
+⑤リストアボタンを押す　
 
+## トーク画像のリストアについて
+
+①chats_backupフォルダを長押しして別のフォルダに移動<br>
+②LINEを開いてトーク画像フォルダのバックアップを開始をクリック<br>
+④別の場所にあるフォルダを　LIME backup フォルダに移動させ入れ替え<br>
+
+⑤トーク画像のリストアボタンを押す　
 
 ファイルエクスプローラーは以下を使用してください（エラーなどの報告に対応しやすくするためです）
 https://play.google.com/store/apps/details?id=me.zhanghai.android.files
@@ -44,6 +51,11 @@ https://youtu.be/94JN4NLGdOI
 
 [Macro SAMPLE](https://drive.usercontent.google.com/u/0/uc?id=1rhZPmoMbti_l1JaX2EbjcRKUePkWlIXU&export=download)
 
+または以下を参考にしてください
+https://github.com/areteruhiro/LIMEs/issues/10
+
+
+
 # 寄付
 * [100円 PayPay](https://qr.paypay.ne.jp/p2p01_qIqiHEfm7jWiXaKd)<br>
 * [300円
@@ -55,6 +67,7 @@ PayPay](https://qr.paypay.ne.jp/p2p01_oc9qTsEoIg8kn8Gy)<br>
 
 * [Amazon Gift Card](https://www.amazon.co.jp/gp/product/B004N3APGO) Send to (limebeta.dev@gmail.com)<br>
 * [GitHub Sponsors](https://github.com/sponsors/areteruhiro)
+
 
 ## 概要
 
@@ -89,7 +102,6 @@ https://github.com/reindex-ot
 https://egg.5ch.net/test/read.cgi/android/1729438846/
 
 
-
 ## 使用方法
 LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に入り、右上の｢**LIME**｣のボタンより開けます。また、Root ユーザーは LI**M**E アプリから設定することも可能です。クローンアプリなどでは LI**M**E 側からしか設定できない場合があるようです。
 
@@ -99,13 +111,12 @@ LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に
 
 </details>
 
-また、トーク画面上の <kbd>トグル又は✉️ボタン</kbd> からスイッチをオン（緑）にすると**未読のまま閲覧**できます。(このスイッチは設定で削除可能です）
+また、トーク画面上の <kbd>トグル又は✉️ボタン</kbd> かオン（緑または、未開封）にすると**未読のまま閲覧**ができます。(このスイッチは設定で削除可能です）
 
 ※返信すると未読が解除されてしまうのでご注意ください
 
 <details><summary>画像を閲覧</summary>
-
-<a href="#"><img src="https://github.com/Chipppppppppp/LIME/assets/78024852/bd391a83-b041-4282-9eec-fe71b3b19aa0" width="400px" alt="Sample screenshot"></a>
+<a href="#"><img src="![image](https://github.com/user-attachments/assets/a9ee3b95-f785-4fac-9937-b904fe84f7b2)" width="400px" alt="Sample screenshot"></a>
 
 </details>
 
@@ -172,5 +183,5 @@ LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に
 
 新たなバグや修正方法を見つけた場合は、報告 をお願いします。
 
-> [!NOTE]
-> 日本語がわかる場合は日本語で記述してください。
+
+
