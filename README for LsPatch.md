@@ -15,7 +15,13 @@ https://github.com/JingMatrix/LSPatch/actions
 
 
 # パッチするapkについて
-apkmは辞めてください。
+14.19.1
+LINE
+https://www.apkmirror.com/apk/line-corporation/line/line-14-19-1-release/line-calls-messages-14-19-1-android-apk-download/download/?key=04c4d3ee9718db69de8d3dab66bf4842aaa1e6b4
+を
+M apk tool
+https://maximoff.su/apktool/?lang=en
+でapkに変換してからパッチしてください
 
 
 ## トーク履歴のリストアについて
