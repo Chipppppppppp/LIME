@@ -15,9 +15,13 @@ v1.12.5a, v1.12.5a1→仕様変更
 
 
  [LsPatch](https://github.com/areteruhiro/LIMEs/blob/master/README%20for%20LsPatch.md) 
+ 
 
+## 概要
 
- ## [機能リスト](https://github.com/areteruhiro/LIMEs/blob/master/FunctionLIST) 
+このアプリで追加されている機能は、いずれPRするものがおおいですが、機能の追加を優先しているため、修正が必要なものが多く、このような形で公開させていただいております。
+
+[機能リスト](https://github.com/areteruhiro/LIMEs/blob/master/FunctionLIST.md) 
  
 
 
@@ -72,12 +76,6 @@ PayPay](https://qr.paypay.ne.jp/p2p01_oc9qTsEoIg8kn8Gy)<br>
 * [Amazon Gift Card](https://www.amazon.co.jp/gp/product/B004N3APGO) Send to (limebeta.dev@gmail.com)<br>
 * [GitHub Sponsors](https://github.com/sponsors/areteruhiro)
 
-
-## 概要
-
-このアプリで追加されている機能は、いずれPRするものがおおいですが、機能の追加を優先しているため、修正が必要なものが多く、このような形で公開させていただいております。
-
-LIME開発者様 感謝しています
 
 
 ## Thank you
