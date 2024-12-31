@@ -165,13 +165,6 @@ LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に
 リクエスト・レスポンスともに、JavaScript は他の処理より早く実行され、「通信内容にログを出力」は最後に実行されます。
 Rhino の仕様、特に **Java 文字列との比較に `equals` を用いる**必要があることに注意してください。
 
-### Root 端末 (Magisk)
-
-1. [**LSPosed**](https://github.com/LSPosed/LSPosed) をインストール
-2. LI**N**E アプリと LI**M**E アプリを両方ともインストール
-3. Google Play ストアの自動アップデートを防ぐために、[**Update Locker**](https://github.com/Xposed-Modules-Repo/ru.mike.updatelocker) や [**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを指定する  
-  [Aurora Store](https://auroraoss.com) の場合はブラックリストを使用
-4. LSPosed のモジュールから LIME に移動し、<kbd>モジュールの有効化</kbd> と LINE アプリにチェックを入れる
 
 ### 非 Root 端末
 
