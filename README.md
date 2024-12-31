@@ -128,7 +128,7 @@ LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に
 - サービスのラベルを削除
 - 通知の「通知をオフ」アクションを削除
 - WebView を既定のブラウザで開く
-  
+  <br>
 - 送信取り消しの拒否
 　-add 取り消されたメッセージの保存機能 
 - 常にミュートメッセージとして送信
@@ -137,15 +137,16 @@ LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に
   - `noop`, `pushRecvReports`, `reportDeviceState`, `reportLocation`, `reportNetworkStatus` がブロックされます
 - 通信内容をログに出力
 - 通信内容を改変
- [- JavaScript で通信内容を改変できます](https://github.com/areteruhiro/LIMEs/blob/master/JavaRead.md) 
+ [- JavaScript で通信内容を改変できます](https://github.com/areteruhiro/LIMEs/blob/master/JavaRead.md)
+  <br>
 - ナビゲーションバーを黒色に固定化、ブラックテーマをナチュラルブラックに変更
 - 非表示にしたチャットの再表示を無効化
 - LsPatch用　着信音を鳴らす
 - サービスの項目の削除
-  
+    <br>
 - 未読のまま閲覧ボタンの位置調整
 - 常に既読をつけないの仕様変更
-
+  <br>
 - トークのバックアップ、リストア
 - 既読者の確認 
 - 音声ボタンの無効化
@@ -153,7 +154,7 @@ LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に
   -添付される画像 が別のものになる場合　DOWNLOADの LIMEbackp のwait_time.txtでミリ秒で調整できます
 - 登録しているグループ名の通知を無効化
   →ONにしている間に招待されたグループが自動で追加されます。
-
+- 更新されたプロフィールの削除
 
 ### 1. デバイス、アプリバージョンを偽装してログイン
 この機能は自己責任です
