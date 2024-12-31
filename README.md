@@ -116,9 +116,9 @@ LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に
 ※返信すると未読が解除されてしまうのでご注意ください
 
 <details><summary>画像を閲覧</summary>
-<a href="#"><img src="![image](https://github.com/user-attachments/assets/a9ee3b95-f785-4fac-9937-b904fe84f7b2)" width="400px" alt="Sample screenshot"></a>
-
+<img src="https://github.com/user-attachments/assets/a9ee3b95-f785-4fac-9937-b904fe84f7b2" width="400px" alt="Sample screenshot">
 </details>
+
 
 ## 機能
 
