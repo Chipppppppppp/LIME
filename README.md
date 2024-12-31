@@ -9,7 +9,7 @@ v1.12.6 →適応するLINEバージョンの変更<br>
 v1.12.5a, v1.12.5a1→仕様変更
 
  
- # *端末別READ*
+ # 導入方法
  
  [ROOT](https://github.com/areteruhiro/LIMEs/blob/master/README%20for%20root.md) 
 
