@@ -9,13 +9,12 @@ v1.12.6 →適応するLINEバージョンの変更<br>
 v1.12.5a, v1.12.5a1→仕様変更
 
  
- |**端末別READ** | 
+ |**端末別READ**| 
  
- [ROOT]([README_jp.md](https://github.com/areteruhiro/LIMEs/blob/master/README%20for%20root.md)) |
-
- |[LSPatch]([README_PT-BR.md](https://github.com/areteruhiro/LIMEs/blob/master/README%20for%20LsPatch.md)) |
+ [ROOT](https://github.com/areteruhiro/LIMEs/blob/master/README%20for%20root.md) 
 
 
+ [LsPatch](https://github.com/areteruhiro/LIMEs/blob/master/README%20for%20LsPatch.md) 
 
 
 ## 確認済みのバグやエラー
@@ -138,73 +137,32 @@ LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に
 - サービスのラベルを削除
 - 通知の「通知をオフ」アクションを削除
 - WebView を既定のブラウザで開く
-- 常に既読をつけない
-- 未読のまま閲覧
-  - トーク画面右上メニューのスイッチから設定できます (スイッチは削除可能)
+  
 - 送信取り消しの拒否
+　-add 取り消されたメッセージの保存機能 
 - 常にミュートメッセージとして送信
   - 送信時「通常メッセージ」を選択すれば通知されます
-- トラッキング通信のブロック
+- トラッキング通信のブロック(この機能は自己責任です)
   - `noop`, `pushRecvReports`, `reportDeviceState`, `reportLocation`, `reportNetworkStatus` がブロックされます
 - 通信内容をログに出力
 - 通信内容を改変
-  - JavaScript で通信内容を改変できます (後述)
-- ナビゲーションバーを黒色に固定化
+ [- JavaScript で通信内容を改変できます](https://github.com/areteruhiro/LIMEs/blob/master/JavaRead.md) 
+- ナビゲーションバーを黒色に固定化、ブラックテーマをナチュラルブラックに変更
 - 非表示にしたチャットの再表示を無効化
 - LsPatch用　着信音を鳴らす
 - サービスの項目の削除
+  
+- 未読のまま閲覧ボタンの位置調整
+- 常に既読をつけないの仕様変更
+
 - トークのバックアップ、リストア
-- 既読者の確認
+- 既読者の確認 
+- 音声ボタンの無効化
+- 通知に画像を添付、通知を更新させない機能
+  -添付される画像 が別のものになる場合　DOWNLOADの LIMEbackp のwait_time.txtでミリ秒で調整できます
+- 登録しているグループ名の通知を無効化
+  →ONにしている間に招待されたグループが自動で追加されます。
 
-
-### JavaScript で通信内容を改変する
-
-設定の「リクエストを改変」、「レスポンスを改変」では、Rhino の JavaScript コードを記述することで自由に通信内容を改変できます。これを利用して新たな機能が実装可能なことを確認済みです (`HOOK_SAMPLE.md`)。
-
-あらかじめ `data` という変数が用意されており、以下のプロパティが含まれます。
-
-- `type`: `REQUEST` または `RESPONSE` となる `Enum` 型
-- `name`: 通信の名前
-- `value`: 通信内容
-
-※`data` は、[こちらのクラス](https://github.com/Chipppppppppp/LIME/blob/master/app/src/main/java/io/github/chipppppppppp/lime/hooks/Communication.java) のインスタンスで、「通信内容をログに出力」で確認できます。
-
-また、`console.log` で `XposedBridge` にログを出力できます。エラーが発生した場合もここに出力されます。
-リクエスト・レスポンスともに、JavaScript は他の処理より早く実行され、「通信内容にログを出力」は最後に実行されます。
-Rhino の仕様、特に **Java 文字列との比較に `equals` を用いる**必要があることに注意してください。
-
-### Root 端末 (Magisk)
-1. [**LSPosed**](https://github.com/LSPosed/LSPosed) をインストール
-2. LI**N**E アプリと LI**M**E アプリを両方ともインストール
-3. Google Play ストアの自動アップデートを防ぐために、[**Update Locker**](https://github.com/Xposed-Modules-Repo/ru.mike.updatelocker) や [**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを指定する  
-  [Aurora Store](https://auroraoss.com) の場合はブラックリストを使用
-4. LSPosed のモジュールから LIME に移動し、<kbd>モジュールの有効化</kbd> と LINE アプリにチェックを入れる
-
-### 非 Root 端末
-
-> [!WARNING]
-> 非 root 端末では､ 以下の問題があります  
-> - Google アカウント (ドライブ) を使用したトーク履歴の復元ができない  
->   ([この方法](https://github.com/Chipppppppppp/LIME/issues/50#issuecomment-2174842592) でログインすれば可能)   
-> - 着信が入るとクラッシュ  
-> - コインの購入が不可  
-> - LINE Pay の一部の機能が使用不可  
-> -　△ Wear OS (スマートウォッチ)での連携
-1. [**LSPatch**](https://github.com/LSPosed/LSPatch) をインストール  
-  ※フォークで開発されている [**NPatch**](https://github.com/HSSkyBoy/NPatch) では不具合が発生する可能性があります。  
-  また、**LSPosed 公式** の LSPatch を利用してアプリがクラッシュする場合は、フォークで開発されている [**JingMatrix LSPatch**](https://github.com/JingMatrix/LSPatch/) を利用してパッチを適用すると正常に動作する場合があります。
-
-2. **LSPatch** アプリを開き、<kbd>管理</kbd> > 右下の <kbd>＋</kbd> > <kbd>ストレージからapkを選択</kbd> >  先程ダウンロードした LI**N**E の APK を選択 > <kbd>ローカル</kbd> →   <kbd>パッチを開始</kbd> 
-
-※[この方法](https://github.com/Chipppppppppp/LIME/issues/50#issuecomment-2174842592) を用いればトークの復元が可能なようです。
-
-> [!TIP]
-> <kbd>ディレクトリの選択</kbd>と出てきた場合は、<kbd>OK</kbd> を押してファイルピッカーを起動し、任意のディレクトリ下にフォルダを作成し、<kbd>このフォルダを使用</kbd> > <kbd>許可</kbd>を押す
-3. [**Shizuku**](https://github.com/RikkaApps/Shizuku) を使用している場合は <kbd>インストール</kbd> を押して続行する  
-  使用していない場合は、ファイルエクスプローラー等の別のアプリからインストールする
-
-> [!IMPORTANT]
-> 既に Playストア からインストールした LINE アプリがインストールされている場合は、署名が競合するため、最初にアンインストールを行ってください。
 
 ### 1. デバイス、アプリバージョンを偽装してログイン
 この機能は自己責任です
