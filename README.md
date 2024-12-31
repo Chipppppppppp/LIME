@@ -17,6 +17,10 @@ v1.12.5a, v1.12.5a1→仕様変更
  [LsPatch](https://github.com/areteruhiro/LIMEs/blob/master/README%20for%20LsPatch.md) 
 
 
+ ## [機能リスト]([https://github.com/areteruhiro/LIMEs/blob/master/README%20for%20LsPatch.md](https://github.com/areteruhiro/LIMEs/blob/master/FunctionLIST)) 
+ 
+
+
 ## 確認済みのバグやエラー
 アプリがクラッシュする→トラッキング通信をブロックするを無効にしてください
 
