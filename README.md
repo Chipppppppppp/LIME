@@ -9,9 +9,53 @@ v1.12.6 →適応するLINEバージョンの変更<br>
 v1.12.5a, v1.12.5a1→仕様変更
 
 
+
 ## 確認済みのバグやエラー
 アプリがクラッシュする→トラッキング通信をブロックするを無効にしてください
 
+
+## LsPatchを利用の方へ 
+
+通知が届かないの解決方法 - 14.19.1 では以下をおこなわなくても良い
+
+下記の、LINE 14.3.2をインストールしパッチを行い、インストールを行って、ログインをしてください。
+
+
+ログイン後、LIMEに適応するバージョンのLINEにパッチを行って、**更新**するようにしてください。
+
+https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.3.2-apk
+
+推奨LsPatch<br>
+https://github.com/JingMatrix/LSPatch/actions
+
+
+# パッチするapkについて
+apkmは辞めてください。
+
+
+## トーク履歴のリストアについて
+
+一度アプリをアンインストールした場合以下に従ってください。
+
+①リストアしたいファイルを移動させる<br>
+②LINEを開いてバックアップ<br>
+③移動させたファイルの名前を`naver_line_backup.db`に変更する<br>
+④LIME backup フォルダに入れ替え<br>
+で、移動させる<br>
+⑤リストアさせる
+
+
+ファイルエクスプローラーは以下を使用してください（エラーなどの報告に対応しやすくするためです）
+https://play.google.com/store/apps/details?id=me.zhanghai.android.files
+
+
+方法が怪しい場合以下の動画を参照してから、リストアを行ってください。(データが上書きされリストアできなくなる恐れがあります)
+https://youtu.be/94JN4NLGdOI
+
+
+## トーク履歴の自動バックアップについて
+
+[Macro SAMPLE](https://drive.usercontent.google.com/u/0/uc?id=1rhZPmoMbti_l1JaX2EbjcRKUePkWlIXU&export=download)
 
 # 寄付
 * [100円 PayPay](https://qr.paypay.ne.jp/p2p01_qIqiHEfm7jWiXaKd)<br>
@@ -121,6 +165,12 @@ LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に
 リクエスト・レスポンスともに、JavaScript は他の処理より早く実行され、「通信内容にログを出力」は最後に実行されます。
 Rhino の仕様、特に **Java 文字列との比較に `equals` を用いる**必要があることに注意してください。
 
+### Root 端末 (Magisk)
+1. [**LSPosed**](https://github.com/LSPosed/LSPosed) をインストール
+2. LI**N**E アプリと LI**M**E アプリを両方ともインストール
+3. Google Play ストアの自動アップデートを防ぐために、[**Update Locker**](https://github.com/Xposed-Modules-Repo/ru.mike.updatelocker) や [**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを指定する  
+  [Aurora Store](https://auroraoss.com) の場合はブラックリストを使用
+4. LSPosed のモジュールから LIME に移動し、<kbd>モジュールの有効化</kbd> と LINE アプリにチェックを入れる
 
 ### 非 Root 端末
 
@@ -132,7 +182,6 @@ Rhino の仕様、特に **Java 文字列との比較に `equals` を用いる**
 > - コインの購入が不可  
 > - LINE Pay の一部の機能が使用不可  
 > -　△ Wear OS (スマートウォッチ)での連携
-
 1. [**LSPatch**](https://github.com/LSPosed/LSPatch) をインストール  
   ※フォークで開発されている [**NPatch**](https://github.com/HSSkyBoy/NPatch) では不具合が発生する可能性があります。  
   また、**LSPosed 公式** の LSPatch を利用してアプリがクラッシュする場合は、フォークで開発されている [**JingMatrix LSPatch**](https://github.com/JingMatrix/LSPatch/) を利用してパッチを適用すると正常に動作する場合があります。
@@ -143,13 +192,11 @@ Rhino の仕様、特に **Java 文字列との比較に `equals` を用いる**
 
 > [!TIP]
 > <kbd>ディレクトリの選択</kbd>と出てきた場合は、<kbd>OK</kbd> を押してファイルピッカーを起動し、任意のディレクトリ下にフォルダを作成し、<kbd>このフォルダを使用</kbd> > <kbd>許可</kbd>を押す
-
 3. [**Shizuku**](https://github.com/RikkaApps/Shizuku) を使用している場合は <kbd>インストール</kbd> を押して続行する  
   使用していない場合は、ファイルエクスプローラー等の別のアプリからインストールする
 
 > [!IMPORTANT]
 > 既に Playストア からインストールした LINE アプリがインストールされている場合は、署名が競合するため、最初にアンインストールを行ってください。
-
 
 ### 1. デバイス、アプリバージョンを偽装してログイン
 この機能は自己責任です
