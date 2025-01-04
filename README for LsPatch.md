@@ -23,7 +23,7 @@ https://maximoff.su/apktool/?lang=en
 でapkに変換してからパッチしてください
 
 エラーが発生する場合以下からダウンロード<br>
-https://t.me/c/2298593410/36/83
+https://t.me/LsPosedLIMEs/36/83
 
 ## トーク履歴のリストアについて
 
