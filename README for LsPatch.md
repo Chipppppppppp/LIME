@@ -16,7 +16,9 @@ https://github.com/JingMatrix/LSPatch/actions
 
 # パッチするapkについて
 LINE 14.19.1 <br>
-https://www.apkmirror.com/apk/line-corporation/line/line-14-19-1-release/line-calls-messages-14-19-1-android-apk-download/download/?key=04c4d3ee9718db69de8d3dab66bf4842aaa1e6b4 <br>
+
+
+ <br>
 このapkを<br>
 M apk tool <br>
 https://maximoff.su/apktool/?lang=en
