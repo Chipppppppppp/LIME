@@ -61,7 +61,16 @@ import io.github.hiro.lime.LimeOptions;
                                 }
                             }
                         });
-
+                    Class<?> voIPBaseFragmentClass = loadPackageParam.classLoader.loadClass("com.linecorp.voip2.common.base.VoIPBaseFragment");
+                    XposedBridge.hookAllMethods(voIPBaseFragmentClass, "onCreate", new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            if (ringtone != null && ringtone.isPlaying()) {
+                                ringtone.stop();
+                                isPlaying = false;
+                            }
+                        }
+                    });
 
                 Class<?> targetClass = loadPackageParam.classLoader.loadClass("com.linecorp.andromeda.audio.AudioManager");
                 Method[] methods = targetClass.getDeclaredMethods();
