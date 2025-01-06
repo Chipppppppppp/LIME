@@ -75,13 +75,9 @@ public class ReadChecker implements IHook {
                     SQLiteDatabase.OpenParams dbParams1 = builder1.build();
 
 
-
-
                     SQLiteDatabase.OpenParams.Builder builder2 = new SQLiteDatabase.OpenParams.Builder();
                     builder2.addOpenFlags(SQLiteDatabase.OPEN_READWRITE);
                     SQLiteDatabase.OpenParams dbParams2 = builder2.build();
-
-
 
 
                     db3 = SQLiteDatabase.openDatabase(dbFile3, dbParams1);
@@ -95,8 +91,6 @@ public class ReadChecker implements IHook {
                 }
             }
         });
-
-
 
 
         Class<?> chatHistoryRequestClass = XposedHelpers.findClass("com.linecorp.line.chat.request.ChatHistoryRequest", loadPackageParam.classLoader);
@@ -114,8 +108,6 @@ public class ReadChecker implements IHook {
                 }
             }
         });
-
-
 
 
         Class<?> chatHistoryActivityClass = XposedHelpers.findClass("jp.naver.line.android.activity.chathistory.ChatHistoryActivity", loadPackageParam.classLoader);
@@ -154,8 +146,6 @@ public class ReadChecker implements IHook {
                 }
             }
         });
-
-
 
 
     }
@@ -303,8 +293,6 @@ public class ReadChecker implements IHook {
 
 
         builder.setPositiveButton("OK", null);
-
-
 
 
         builder.setNegativeButton(moduleContext.getResources().getString(R.string.Delete), (dialog, which) -> {
@@ -484,7 +472,6 @@ public class ReadChecker implements IHook {
     }
 
 
-
     private void writeToFile(File file, String text) {
         try (FileWriter writer = new FileWriter(file, true)) {
             writer.write(text + "\n");
@@ -594,7 +581,7 @@ public class ReadChecker implements IHook {
     }
 
 
-    private void saveData( String SendUser, String groupId, String serverId, String SentUser, String groupName, String content, String user_name, String createdTime, Context context) {
+    private void saveData(String SendUser, String groupId, String serverId, String SentUser, String groupName, String content, String user_name, String createdTime, Context context) {
         if (groupName == null) {
 
 
@@ -653,6 +640,7 @@ public class ReadChecker implements IHook {
 
 
                     limeDatabase.update("group_messages", values, "group_id=? AND server_id=?", new String[]{groupId, serverId});
+                    return;
                     //XposedBridge.log("Updated user_name for other records in group_id: " + groupId + ", server_id: " + serverId);
                 }
             }
@@ -671,33 +659,61 @@ public class ReadChecker implements IHook {
         return sdf.format(new Date());
     }
 
-
     private void insertNewRecord(String SendUser, String groupId, String serverId, String SentUser, String groupName, String content, String user_name, String createdTime) {
+        String selectQuery = "SELECT user_name FROM group_messages WHERE group_id=? AND server_id=?";
         String insertQuery = "INSERT INTO group_messages(group_id, server_id, Sent_User, group_name, content, user_name, created_time)" +
                 " VALUES(?, ?, ?, ?, ?, ?, ?);";
+        String updateQuery = "UPDATE group_messages SET user_name=? WHERE group_id=? AND server_id=?";
 
         if (!limeOptions.MySendMessage.checked) {
+            Cursor cursor = null;
             try {
-                limeDatabase.execSQL(insertQuery, new Object[]{groupId, serverId, SentUser, groupName, content, user_name, createdTime});
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                limeDatabase.endTransaction();
-            }
-            return;
-        }
+                // Check if the record with the same server_id exists
+                cursor = limeDatabase.rawQuery(selectQuery, new String[]{groupId, serverId});
 
-        if (SendUser == null) {
+                if (cursor.moveToFirst()) {
+                    // If it exists, update the user_name by appending the new name
+                    String existingUserName = cursor.getString(cursor.getColumnIndexOrThrow("user_name"));
+                    String updatedUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n") + user_name;
+                    limeDatabase.execSQL(updateQuery, new Object[]{updatedUserName, groupId, serverId});
+                } else {
+                    // If it doesn't exist, insert a new record
+                    limeDatabase.execSQL(insertQuery, new Object[]{groupId, serverId, SentUser, groupName, content, user_name, createdTime});
+                }
+                return;
+            } catch (Exception e) {
+                Log.e("insertNewRecord", "Error inserting or updating record:", e);
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+        } else if (SendUser == null) {
+            Cursor cursor = null;
             try {
-                limeDatabase.execSQL(insertQuery, new Object[]{groupId, serverId, SentUser, groupName, content, user_name, createdTime});
+                // Check if the record with the same server_id exists
+                cursor = limeDatabase.rawQuery(selectQuery, new String[]{groupId, serverId});
+
+                if (cursor.moveToFirst()) {
+                    // If it exists, update the user_name by appending the new name
+                    String existingUserName = cursor.getString(cursor.getColumnIndexOrThrow("user_name"));
+                    String updatedUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n") + user_name;
+                    limeDatabase.execSQL(updateQuery, new Object[]{updatedUserName, groupId, serverId});
+                } else {
+                    // If it doesn't exist, insert a new record
+                    limeDatabase.execSQL(insertQuery, new Object[]{groupId, serverId, SentUser, groupName, content, user_name, createdTime});
+                }
+                return;
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e("insertNewRecord", "Error inserting or updating record:", e);
             } finally {
-                limeDatabase.endTransaction();
+                if (cursor != null) {
+                    cursor.close();
+                }
             }
         }
-
     }
+
 
 }
 

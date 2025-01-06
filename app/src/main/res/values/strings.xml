@@ -136,7 +136,7 @@
     <string name="RemoveVoiceRecord">Disable audio button</string>
 
     <string name="MySendMessage">(Read function) Do not save messages other than your own</string>
-
+    <string name="TEST">既読 %S</string>
 
 
 </resources>
