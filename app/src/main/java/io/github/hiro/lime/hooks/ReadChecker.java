@@ -331,11 +331,12 @@ public class ReadChecker implements IHook {
         }
         String query = "SELECT user_name FROM group_messages WHERE server_id=? ORDER BY created_time ASC";
         Cursor cursor = limeDatabase.rawQuery(query, new String[]{serverId});
-        List<String> userNames = new ArrayList<>();
+       List<String> userNames = new ArrayList<>();
 
         while (cursor.moveToNext()) {
             String userNameStr = cursor.getString(0);
             if (userNameStr != null) {
+                // user_nameをそのままリストに追加
                 userNames.add(userNameStr);
             }
         }
