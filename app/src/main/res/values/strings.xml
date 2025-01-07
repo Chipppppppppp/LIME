@@ -40,7 +40,7 @@
     <string name="switch_output_communication">Output communication contents to log (for developers)</string>
     <string name="switch_BlockUpdateProfileNotification">Do not notify of profile updates</string>
 
-    <string name="calltone">For LsPatch Ringtones</string>
+    <string name="calltone">Device Ringtones(For LsPatch)</string>
     <string name="RemoveService">Remove service item</string>
     <string name="ReadChecker">Check the readership of sent messages</string>
     <string name="removeNotification">Remove updated profiles\n</string>
