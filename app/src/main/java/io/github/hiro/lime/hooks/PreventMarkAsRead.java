@@ -62,8 +62,8 @@ public class PreventMarkAsRead implements IHook {
                     isSendChatCheckedEnabled = readStateFromFile(moduleContext);
 
                     ToggleButton toggleButton = new ToggleButton(activity);
-                    toggleButton.setTextOn("UnRead");
-                    toggleButton.setTextOff("Read");
+                    toggleButton.setTextOn("Read");
+                    toggleButton.setTextOff("UnRead");
                     toggleButton.setChecked(isSendChatCheckedEnabled); // 初期状態を反映
                     toggleButton.setBackgroundColor(Color.BLACK);
                     toggleButton.setTextColor(Color.WHITE);
