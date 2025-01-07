@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.util.Log;
 
 import java.lang.reflect.Method;
 
@@ -41,6 +42,10 @@ import io.github.hiro.lime.LimeOptions;
 
                                         if (paramValue.contains("type:NOTIFIED_RECEIVED_CALL,") && !isPlaying) {
                                             if (context != null) {
+                                                if (ringtone != null && ringtone.isPlaying()) {
+                                                    //Log.d("Xposed", "Ringtone is already playing. Skipping playback.");
+                                                    return; // 再生中の場合は何もしない
+                                                }
                                                 Uri ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
                                                 ringtone = RingtoneManager.getRingtone(context, ringtoneUri);
                                                 ringtone.play();
@@ -54,13 +59,7 @@ import io.github.hiro.lime.LimeOptions;
                                                 isPlaying = false;
                                             }
                                         }
-                                        if (paramValue.contains("contentType:CALL,") && paramValue.contains("RESULT=NORMAL")) {
-                                            if (context != null) {
-                                                Uri notificationUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                                android.media.Ringtone notificationRingtone = RingtoneManager.getRingtone(context, notificationUri);
-                                                notificationRingtone.play();
-                                            }
-                                        }
+
                                     }
                                 });
 
@@ -74,12 +73,6 @@ import io.github.hiro.lime.LimeOptions;
                                 @Override
                                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
 
-                                    if (method.getName().equals("stop")) {
-                                        if (ringtone != null && ringtone.isPlaying()) {
-                                            ringtone.stop();
-                                            isPlaying = false;
-                                        }
-                                    }
                                     if (method.getName().equals("setServerConfig")) {
                                         if (ringtone != null && ringtone.isPlaying()) {
                                             ringtone.stop();
@@ -87,22 +80,50 @@ import io.github.hiro.lime.LimeOptions;
                                         }
                                     }
 
-                                    if (method.getName().equals("start")) {
-                                        if (appContext != null) {
-                                            Uri ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-                                            ringtone = RingtoneManager.getRingtone(appContext, ringtoneUri);
 
-                                            if (ringtone != null) {
-                                                ringtone.play();
-                                                isPlaying = true;
-                                            } else {
-                                               return;
-                                            }
-                                        } else {
-                                          return;
+                                    if (method.getName().equals("stop")) {
+                                        if (ringtone != null && ringtone.isPlaying()) {
+                                            ringtone.stop();
+                                            isPlaying = false;
                                         }
                                     }
-                                    if (method.getName().equals("ACTIVATED") && param.args != null && param.args.length > 0) {
+                                    if (method.getName().equals("processToneEvent")) {
+                                        Object arg0 = param.args[0];
+
+                                        if (arg0.toString().contains("START")) {
+                                            if (appContext != null) {
+                                                // ringtone が初期化されており、再生中の場合はスキップ
+                                                if (ringtone != null && ringtone.isPlaying()) {
+                                                    //Log.d("Xposed", "Ringtone is already playing. Skipping playback.");
+                                                    return; // 再生中の場合は何もしない
+                                                }
+
+                                                Uri ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+                                                ringtone = RingtoneManager.getRingtone(appContext, ringtoneUri);
+
+                                                if (ringtone != null) {
+                                                    //Log.d("Xposed", "Playing ringtone.");
+                                                    ringtone.play();
+                                                    isPlaying = true;
+                                                } else {
+                                                    //Log.d("Xposed", "Ringtone is null. Cannot play ringtone.");
+                                                    return;
+                                                }
+                                            } else {
+                                                //Log.d("Xposed", "appContext is null. Cannot play ringtone.");
+                                                return;
+                                            }
+                                        } else {
+                                            //Log.d("Xposed", "Argument is not 'START'. Actual value: " + arg0);
+                                        }
+
+                                        if (limeOptions.MuteTone.checked) {
+                                            //Log.d("Xposed", "MuteTone is enabled. Suppressing tone event.");
+                                            param.setResult(null);
+                                        }
+                                    }
+
+                                        if (method.getName().equals("ACTIVATED") && param.args != null && param.args.length > 0) {
                                         Object arg0 = param.args[0];
                                         if ("ACTIVATED".equals(arg0)) {
                                             if (ringtone != null && ringtone.isPlaying()) {
@@ -111,19 +132,10 @@ import io.github.hiro.lime.LimeOptions;
                                             }
                                         }
                                     }
-                                    if (limeOptions.MuteTone.checked) {
-                                        if (method.getName().equals("processToneEvent")) {
-                                            param.setResult(null);
-                                        }
-                                    }
                                 }
                             });
 
-                            if (limeOptions.MuteTone.checked) {
-                                if (method.getName().equals("processToneEvent")) {
-                                    param.setResult(null);
-                                }
-                            }
+
                         }
                     }
                 });
