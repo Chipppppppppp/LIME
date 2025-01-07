@@ -122,6 +122,12 @@ import io.github.hiro.lime.LimeOptions;
                                             param.setResult(null);
                                         }
                                     }
+                                    if (limeOptions.MuteTone.checked) {
+                                        if (method.getName().equals("setTonePlayer")) {
+                                         param.setResult(null);
+                                        }
+
+                                    }
 
                                         if (method.getName().equals("ACTIVATED") && param.args != null && param.args.length > 0) {
                                         Object arg0 = param.args[0];
