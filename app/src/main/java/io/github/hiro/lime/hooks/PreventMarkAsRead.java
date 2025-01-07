@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -61,20 +62,30 @@ public class PreventMarkAsRead implements IHook {
                 private void addButton(Activity activity, Context moduleContext) {
                     isSendChatCheckedEnabled = readStateFromFile(moduleContext);
 
+                    // スクリーンの幅と高さを取得
+                    DisplayMetrics displayMetrics = new DisplayMetrics();
+                    activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                    int screenWidth = displayMetrics.widthPixels;
+                    int screenHeight = displayMetrics.heightPixels;
+
+                    // 相対的なボタンサイズと文字サイズを計算（小さめに調整）
+                    int width = screenWidth / 8; // 画面幅の1/8
+                    int height = screenHeight / 25; // 画面高さの1/20
+                    float textSize = screenWidth / 85.0f; // 相対的な文字サイズ（小さめ）
+
                     ToggleButton toggleButton = new ToggleButton(activity);
                     toggleButton.setTextOn("Read");
                     toggleButton.setTextOff("UnRead");
                     toggleButton.setChecked(isSendChatCheckedEnabled); // 初期状態を反映
                     toggleButton.setBackgroundColor(Color.BLACK);
                     toggleButton.setTextColor(Color.WHITE);
-                    toggleButton.setTextSize(12);
-                    int width = 180;
-                    int height = 80;
+                    toggleButton.setTextSize(textSize); // 動的に計算した文字サイズを設定
                     FrameLayout.LayoutParams frameParams = new FrameLayout.LayoutParams(width, height);
 
+                    // ボタンの位置を画面に合わせて設定
                     frameParams.gravity = Gravity.TOP | Gravity.END;
-                    frameParams.topMargin = 150;
-                    frameParams.rightMargin = 300;
+                    frameParams.topMargin = screenHeight / 15; // 画面高さの1/15
+                    frameParams.rightMargin = screenWidth / 3; // 画面幅の1/15
                     toggleButton.setLayoutParams(frameParams);
 
                     toggleButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -85,6 +96,7 @@ public class PreventMarkAsRead implements IHook {
                     ViewGroup layout = activity.findViewById(android.R.id.content);
                     layout.addView(toggleButton);
                 }
+
 
                 private void send_chat_checked_state (Context context,boolean state){
                     String filename = "send_chat_checked_state.txt";
