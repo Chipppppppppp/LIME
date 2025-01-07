@@ -1,6 +1,8 @@
 package io.github.hiro.lime.hooks;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import dalvik.system.DexFile;
 import io.github.hiro.lime.LimeOptions;
@@ -30,11 +33,71 @@ public class test implements IHook {
 
         XposedBridge.log("Hooking package: " + packageName);
  //  hookOnViewAdded(loadPackageParam.classLoader);
-      hookAllClassesInPackage(loadPackageParam.classLoader, loadPackageParam);
+    //hookAllClassesInPackage(loadPackageParam.classLoader, loadPackageParam);
       //hookFragmentOnCreateView(loadPackageParam.classLoader);
         //hookChatHistoryActivity(loadPackageParam.classLoader); // ChatHistoryActivityのフック
         //hookLongClickListeners(loadPackageParam.classLoader); // 長押しリスナーのフック
+        // クラスを取得
+        Class<?> chatHistoryActivityClass = XposedHelpers.findClass(
+                "jp.naver.line.android.activity.chathistory.ChatHistoryActivity",
+                loadPackageParam.classLoader
+        );
 
+        XposedHelpers.findAndHookMethod(
+                "android.content.res.Resources",
+                loadPackageParam.classLoader,
+                "getString",
+                int.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        int resourceId = (int) param.args[0];
+                        Resources resources = (Resources) param.thisObject;
+
+                        try {
+                            String resourceName = resources.getResourceName(resourceId);
+                            XposedBridge.log("getString called with Resource ID: " + resourceId + ", Name: " + resourceName);
+                        } catch (Resources.NotFoundException e) {
+                            XposedBridge.log("getString called with unknown Resource ID: " + resourceId);
+                        }
+                    }
+                }
+        );
+
+
+        // onCreate メソッドをフック
+        XposedHelpers.findAndHookMethod(chatHistoryActivityClass, "onCreate", Bundle.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                Activity activity = (Activity) param.thisObject;
+                Resources resources = activity.getResources();
+
+                // 現在のアクティビティのルートビューを取得
+                View rootView = activity.findViewById(android.R.id.content);
+
+                if (rootView != null) {
+                    listAllViews(rootView, resources);
+                }
+            }
+
+            private void listAllViews(View view, Resources resources) {
+                if (view.getId() != View.NO_ID) {
+                    String resourceName = resources.getResourceName(view.getId());
+                    int resourceId = view.getId();
+
+                    // リソース名とIDをログに出力
+                    Log.d("Xposed", "Resource Name: " + resourceName + ", Resource ID: " + resourceId);
+                }
+
+                // 子ビューがある場合は再帰的に取得
+                if (view instanceof ViewGroup) {
+                    ViewGroup viewGroup = (ViewGroup) view;
+                    for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                        listAllViews(viewGroup.getChildAt(i), resources);
+                    }
+                }
+            }
+        });
 
 
     }

@@ -137,6 +137,7 @@
 
     <string name="MySendMessage">(Read function) Do not save messages other than your own</string>
     <string name="TEST">既読 %S</string>
+    <string name="MuteTone">(For Root) Mute incoming and outgoing calls</string>
 
 
 </resources>
