@@ -10,6 +10,8 @@
 
 ## 概要
 
+"LINEをより使いやすく"
+
 このアプリで追加されている機能は、いずれPRするものがおおいですが、機能の追加を優先しているため、修正が必要なものが多く、このような形で公開させていただいております。
 
 [機能リスト](https://github.com/areteruhiro/LIMEs/blob/master/FunctionLIST.md) 
