@@ -71,7 +71,7 @@ public class PreventMarkAsRead implements IHook {
                     // 相対的なボタンサイズと文字サイズを計算（小さめに調整）
                     int width = screenWidth / 8; // 画面幅の1/8
                     int height = screenHeight / 25; // 画面高さの1/20
-                    float textSize = screenWidth / 85.0f; // 相対的な文字サイズ（小さめ）
+                    float textSize = screenWidth / 93.0f; // 相対的な文字サイズ（小さめ）
 
                     ToggleButton toggleButton = new ToggleButton(activity);
                     toggleButton.setTextOn("Read");
