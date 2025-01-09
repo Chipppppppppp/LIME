@@ -54,17 +54,20 @@ https://youtu.be/94JN4NLGdOI
 https://github.com/areteruhiro/LIMEs/issues/10
 
 
+
+# 寄付
+
 以下の方々のおかげで開発を継続できています。大変感謝しています。<br>
 We are very grateful to the following people for making this possible:
 
 @Akira Kansaki
 @ハチワレ
-@WE ZARD 
+@WE ZARD
+@Imada
 
-継続した開発時間の確保のため寄付のほどお願いいたします。<br>
+継続した開発時間の確保のため寄付のほどお願いいたします<br>
 Please donate to ensure continued development time.
 
-# 寄付
 * [100円 PayPay](https://qr.paypay.ne.jp/p2p01_qIqiHEfm7jWiXaKd)<br>
 * [300円
 PayPay](https://qr.paypay.ne.jp/p2p01_oc9qTsEoIg8kn8Gy)<br>
