@@ -126,7 +126,7 @@
     <string name="Reader">既読者</string>
     <string name="Delete">削除</string>
     <string name="Reader_Data_Delete_Success">既読データが削除されました。</string>
-    <string name="calltone">本体の発着信音を鳴らす(LsPach用)</string>
+    <string name="callTone">本体の発着信音を鳴らす(LsPach用)</string>
     <string name="removeNotification">更新されたプロフィールを削除</string>
     <string name="AutomaticBackup">定期的にバックアップ</string>
     <string name="set_id">Set ID</string>

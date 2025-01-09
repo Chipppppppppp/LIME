@@ -43,6 +43,7 @@ import io.github.hiro.lime.hooks.Ringtone;
 import io.github.hiro.lime.hooks.SendMuteMessage;
 import io.github.hiro.lime.hooks.SpoofAndroidId;
 import io.github.hiro.lime.hooks.SpoofUserAgent;
+
 import io.github.hiro.lime.hooks.UnsentRec;
 import io.github.hiro.lime.hooks.Archived;
 import io.github.hiro.lime.hooks.ReadChecker;
@@ -89,6 +90,7 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new Disabled_Group_notification(),
             new PhotoAddNotification(),
             new RemoveVoiceRecord(),
+
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {

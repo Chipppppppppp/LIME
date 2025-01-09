@@ -40,7 +40,7 @@ public class LimeOptions {
     public Option outputCommunication = new Option("output_communication", R.string.switch_output_communication, false);
     public Option Archived = new Option("Archived_message", R.string.switch_archived, false);
     public Option removeAllServices = new Option("remove_Services", R.string.RemoveService, false);
-    public Option calltone = new Option("calltone", R.string.calltone, false);
+    public Option callTone = new Option("callTone", R.string.callTone, false);
     public Option MuteTone = new Option("MuteTone", R.string.MuteTone, false);
     public Option ReadChecker = new Option("ReadChecker", R.string.ReadChecker, false);
     public Option MySendMessage = new Option("MySendMessage", R.string.MySendMessage, false);
@@ -79,7 +79,7 @@ public class LimeOptions {
             blockTracking,
             stopVersionCheck,
             outputCommunication,
-            calltone,
+            callTone,
             MuteTone,
             DarkColor,
             MuteGroup,

@@ -116,7 +116,7 @@
 
     <string name="switch_BlockUpdateProfileNotification">不通知個人資料更新</string>
 
-    <string name="calltone">設備鈴聲（用於 LsPatch）</string>
+    <string name="callTone">設備鈴聲（用於 LsPatch）</string>
     <string name="RemoveService">刪除服務項目</string>
     <string name="ReadChecker">檢查已發送訊息的讀者人數</string>
     <string name="removeNotification">刪除更新的設定文件</string>
