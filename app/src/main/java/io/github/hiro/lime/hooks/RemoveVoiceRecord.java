@@ -39,7 +39,7 @@ public class RemoveVoiceRecord implements IHook {
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        if (!isXg1EaRunCalled) {
+                        if (isXg1EaRunCalled) {
                             return;
                         }
                         param.setResult(null);
