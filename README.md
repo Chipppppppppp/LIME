@@ -77,6 +77,8 @@ PayPay](https://qr.paypay.ne.jp/p2p01_oc9qTsEoIg8kn8Gy)<br>
 * [GitHub Sponsors](https://github.com/sponsors/areteruhiro)
 
 
+# Support Server
+https://t.me/LsPosedLIMEs
 
 ## Thank you
 
