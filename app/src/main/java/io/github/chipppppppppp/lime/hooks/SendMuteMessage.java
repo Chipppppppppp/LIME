@@ -1,7 +1,9 @@
 package io.github.chipppppppppp.lime.hooks;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.res.Resources;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
