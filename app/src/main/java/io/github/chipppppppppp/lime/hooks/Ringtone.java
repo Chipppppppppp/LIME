@@ -1,12 +1,17 @@
 package io.github.chipppppppppp.lime.hooks;
 
 import android.app.AndroidAppHelper;
+import android.app.Application;
 import android.content.Context;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.util.Log;
+
 import java.lang.reflect.Method;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
 
