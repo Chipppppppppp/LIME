@@ -67,7 +67,7 @@ public class PreventMarkAsRead implements IHook {
                     toggleButton.setChecked(isSendChatCheckedEnabled); // 初期状態を反映
                     toggleButton.setBackgroundColor(Color.BLACK);
                     toggleButton.setTextColor(Color.WHITE);
-                    toggleButton.setTextSize(12);
+                    toggleButton.setTextSize(8);
                     int width = 180;
                     int height = 80;
                     FrameLayout.LayoutParams frameParams = new FrameLayout.LayoutParams(width, height);
