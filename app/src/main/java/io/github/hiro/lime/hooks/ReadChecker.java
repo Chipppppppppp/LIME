@@ -686,7 +686,7 @@ public class ReadChecker implements IHook {
                 Log.e("insertNewRecord", "Error inserting or updating record:", e);
             } finally {
                 if (cursor != null) {
-                    cursor.close();
+                     return;
                 }
             }
         } else if (SendUser == null) {
@@ -709,7 +709,7 @@ public class ReadChecker implements IHook {
                 Log.e("insertNewRecord", "Error inserting or updating record:", e);
             } finally {
                 if (cursor != null) {
-                    cursor.close();
+                return;
                 }
             }
         }
