@@ -1,14 +1,5 @@
 # <img src="app/src/main/ic_launcher-playstore.png" width="60px"> LIME: Adkiller for Beta LINEs
 
-# 更新について
-更新内容を記載していないReleaseについては、差分を押してください、必要でない更新でなければ無理して更新を行う必要はありません。
-更新名による判断<br>
-(例)v1.12.5
-
-v1.12.6 →適応するLINEバージョンの変更<br>
-v1.12.5a, v1.12.5a1→仕様変更
-
- 
  # 導入方法
  
  [ROOT](https://github.com/areteruhiro/LIMEs/blob/master/README%20for%20root.md) 
@@ -63,6 +54,15 @@ https://youtu.be/94JN4NLGdOI
 https://github.com/areteruhiro/LIMEs/issues/10
 
 
+以下の方々のおかげで開発を継続できています。大変感謝しています。<br>
+We are very grateful to the following people for making this possible:
+
+@Akira Kansaki
+@ハチワレ
+@WE ZARD 
+
+継続した開発時間の確保のため寄付のほどお願いいたします。<br>
+Please donate to ensure continued development time.
 
 # 寄付
 * [100円 PayPay](https://qr.paypay.ne.jp/p2p01_qIqiHEfm7jWiXaKd)<br>
@@ -76,9 +76,23 @@ PayPay](https://qr.paypay.ne.jp/p2p01_oc9qTsEoIg8kn8Gy)<br>
 * [Amazon Gift Card](https://www.amazon.co.jp/gp/product/B004N3APGO) Send to (limebeta.dev@gmail.com)<br>
 * [GitHub Sponsors](https://github.com/sponsors/areteruhiro)
 
+* [PayPal](Contact us / お問い合わせください)
+
 
 # Support Server
 https://t.me/LsPosedLIMEs
+
+# List of donors
+
+
+# 更新について
+更新内容を記載していないReleaseについては、差分を押してください、必要でない更新でなければ無理して更新を行う必要はありません。
+更新名による判断<br>
+(例)v1.12.5
+
+v1.12.6 →適応するLINEバージョンの変更<br>
+v1.12.5a, v1.12.5a1→仕様変更
+
 
 ## Thank you
 
