@@ -20,7 +20,7 @@ import io.github.chipppppppppp.lime.LimeOptions;
             private boolean isPlaying = false;
             @Override
             public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-                if (!limeOptions.calltone.checked) return;
+                if (!limeOptions.callTone.checked) return;
 
                 XposedHelpers.findAndHookMethod(Application.class, "onCreate", new XC_MethodHook() {
                     @Override
