@@ -24,7 +24,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.hiro.lime.LimeOptions;
 
 public class PreventMarkAsRead implements IHook {
-    private boolean isSendChatCheckedEnabled = false; 
+    private boolean isSendChatCheckedEnabled = false; // デフォルト値
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
@@ -62,8 +62,8 @@ public class PreventMarkAsRead implements IHook {
                     isSendChatCheckedEnabled = readStateFromFile(moduleContext);
 
                     ToggleButton toggleButton = new ToggleButton(activity);
-                    toggleButton.setTextOn("UnRead");
-                    toggleButton.setTextOff("Read");
+                    toggleButton.setTextOn("Read");
+                    toggleButton.setTextOff("UnRead");
                     toggleButton.setChecked(isSendChatCheckedEnabled); // 初期状態を反映
                     toggleButton.setBackgroundColor(Color.BLACK);
                     toggleButton.setTextColor(Color.WHITE);
