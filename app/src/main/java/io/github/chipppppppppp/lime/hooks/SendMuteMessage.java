@@ -14,6 +14,8 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
 
 public class SendMuteMessage implements IHook {
+    private static boolean isHandlingHook = false;
+
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (!limeOptions.sendMuteMessage.checked) return;
@@ -33,6 +35,42 @@ public class SendMuteMessage implements IHook {
                     }
                 }
         );
+        XposedHelpers.findAndHookMethod(
+                "android.content.res.Resources",
+                loadPackageParam.classLoader,
+                "getString",
+                int.class,
+                new XC_MethodHook() {
+
+
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        if (isHandlingHook) {
+                            return;
+                        }
+
+                        int resourceId = (int) param.args[0];
+                        Resources resources = (Resources) param.thisObject;
+
+                        try {
+                            isHandlingHook = true;
+
+                            if (resourceId == 2132085513) {
+                                @SuppressLint("ResourceType") String replacement = resources.getString(2132085514);
+                                param.setResult(replacement);
+                            } else if (resourceId == 2132085514) {
+                                @SuppressLint("ResourceType") String replacement = resources.getString(2132085513);
+                                param.setResult(replacement);
+                            }
+                        } finally {
+                            isHandlingHook = false;
+                        }
+                    }
+
+
+                }
+        );
+
 
         XposedBridge.hookAllMethods(
                 ListView.class,
