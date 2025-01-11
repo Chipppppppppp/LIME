@@ -137,7 +137,11 @@
 
     <string name="MySendMessage">(Read function) Do not save messages other than your own</string>
     <string name="TEST">既読 %S</string>
-    <string name="MuteTone">(For Root) Mute incoming and outgoing calls</string>
+    <string name="MuteTone">(For Root) Mute ringtone</string>
+    <string name="edit_margin_settings">KeepUnread button location</string>
+    <string name="horizontalMarginFactor">"Horizontal margin "</string>
+    <string name="vertical">Vertical margin</string>
+    <string name="DialTone">発信音を無効にする\n</string>
 
 
 </resources>

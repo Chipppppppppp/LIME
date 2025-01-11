@@ -126,6 +126,9 @@
     <string name="RemoveVoiceRecord">禁用音訊按鈕</string>
 
     <string name="MySendMessage">（讀取功能）請勿儲存您自己以外的信息</string>
-    <string name="MuteTone">（對於 Root）將來電和去電靜音</string>
+    <string name="MuteTone">(對於 Root) 鈴聲靜音</string>
+    <string name="edit_margin_settings">保留未讀按鈕位置</string>
+    <string name="horizontalMarginFactor">水平邊距</string>
+    <string name="vertical">垂直邊距</string>
 
 </resources>

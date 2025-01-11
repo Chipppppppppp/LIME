@@ -18,6 +18,7 @@ import android.os.Process;
 import android.text.InputType;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -229,6 +231,18 @@ public class EmbedOptions implements IHook {
                                     }
                                 });
                                 layout.addView(MuteGroups_Button);
+                            }
+                            if (!limeOptions.removeKeepUnread.checked) {
+                                Button KeepUnread_Button = new Button(context);
+                                KeepUnread_Button.setLayoutParams(buttonParams);
+                                KeepUnread_Button.setText(moduleContext.getResources().getString(R.string.edit_margin_settings));
+                                KeepUnread_Button.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        KeepUnread_Button(context,moduleContext);
+                                    }
+                                });
+                                layout.addView(KeepUnread_Button);
                             }
 
 
@@ -437,6 +451,112 @@ public class EmbedOptions implements IHook {
                         frameLayout.addView(button);
                         viewGroup.addView(frameLayout);
                     }});}
+
+    private void KeepUnread_Button(Context context, Context moduleContext) {
+        // ファイルパスを取得
+        File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
+        if (!dir.exists() && !dir.mkdirs()) {
+            return;
+        }
+        File file = new File(dir, "margin_settings.txt");
+
+        // 初期値
+        float horizontalMarginFactor = 0.5f;
+        int verticalMarginDp = 15;
+
+        // ファイルの内容を読み込む
+        if (file.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split("=", 2);
+                    if (parts.length == 2) {
+                        if (parts[0].trim().equals("horizontalMarginFactor")) {
+                            horizontalMarginFactor = Float.parseFloat(parts[1].trim());
+                        } else if (parts[0].trim().equals("verticalMarginDp")) {
+                            verticalMarginDp = Integer.parseInt(parts[1].trim());
+                        }
+                    }
+                }
+            } catch (IOException | NumberFormatException ignored) {
+            }
+        } else {
+            // ファイルが存在しない場合は初期値で作成
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                String defaultSettings = "horizontalMarginFactor=0.5\nverticalMarginDp=15";
+                writer.write(defaultSettings);
+            } catch (IOException ignored) {
+                return;
+            }
+        }
+
+        // 横マージンの入力フィールド
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(16, 16, 16, 16);
+
+        TextView horizontalLabel = new TextView(context);
+        horizontalLabel.setText(moduleContext.getResources().getString(R.string.horizontalMarginFactor));
+        horizontalLabel.setLayoutParams(layoutParams);
+
+        final EditText horizontalInput = new EditText(context);
+        horizontalInput.setText(String.valueOf(horizontalMarginFactor));
+        horizontalInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        horizontalInput.setLayoutParams(layoutParams);
+
+        // 縦マージンの入力フィールド
+        TextView verticalLabel = new TextView(context);
+        verticalLabel.setText(moduleContext.getResources().getString(R.string.vertical));
+        verticalLabel.setLayoutParams(layoutParams);
+
+        final EditText verticalInput = new EditText(context);
+        verticalInput.setText(String.valueOf(verticalMarginDp));
+        verticalInput.setInputType(InputType.TYPE_CLASS_NUMBER);
+        verticalInput.setLayoutParams(layoutParams);
+
+        // Save ボタン
+        Button saveButton = new Button(context);
+        saveButton.setText("Save");
+        saveButton.setLayoutParams(layoutParams);
+        saveButton.setOnClickListener(v -> {
+            try {
+                float newHorizontalMarginFactor = Float.parseFloat(horizontalInput.getText().toString().trim());
+                int newVerticalMarginDp = Integer.parseInt(verticalInput.getText().toString().trim());
+
+                // ファイルに保存
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                    writer.write("horizontalMarginFactor=" + newHorizontalMarginFactor + "\n");
+                    writer.write("verticalMarginDp=" + newVerticalMarginDp);
+                    Toast.makeText(context, "Settings saved!", Toast.LENGTH_SHORT).show();
+                }
+            } catch (NumberFormatException e) {
+                Toast.makeText(context, "Invalid input format!", Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                Toast.makeText(context, "Failed to save settings.", Toast.LENGTH_SHORT).show();
+            }
+            Toast.makeText(context.getApplicationContext(), context.getString(R.string.restarting), Toast.LENGTH_SHORT).show();
+            Process.killProcess(Process.myPid());
+            context.startActivity(new Intent().setClassName(Constants.PACKAGE_NAME, "jp.naver.line.android.activity.SplashActivity"));
+        });
+
+        // レイアウトを構築
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.addView(horizontalLabel);
+        layout.addView(horizontalInput);
+        layout.addView(verticalLabel);
+        layout.addView(verticalInput);
+        layout.addView(saveButton);
+
+        // ダイアログを作成
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(moduleContext.getResources().getString(R.string.edit_margin_settings));
+        builder.setView(layout);
+        builder.setNegativeButton(moduleContext.getResources().getString(R.string.cancel), null);
+        builder.show();
+    }
+
+
     private void MuteGroups_Button(Context context,Context moduleContext) {
         File dir = context.getFilesDir();
         File file = new File(dir, "Notification.txt");

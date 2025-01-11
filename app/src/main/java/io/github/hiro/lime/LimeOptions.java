@@ -42,6 +42,8 @@ public class LimeOptions {
     public Option removeAllServices = new Option("remove_Services", R.string.RemoveService, false);
     public Option callTone = new Option("callTone", R.string.callTone, false);
     public Option MuteTone = new Option("MuteTone", R.string.MuteTone, false);
+    public Option DialTone = new Option("DialTone", R.string.DialTone, false);
+
     public Option ReadChecker = new Option("ReadChecker", R.string.ReadChecker, false);
     public Option MySendMessage = new Option("MySendMessage", R.string.MySendMessage, false);
 
@@ -81,6 +83,7 @@ public class LimeOptions {
             outputCommunication,
             callTone,
             MuteTone,
+            DialTone,
             DarkColor,
             MuteGroup,
             PhotoAddNotification,

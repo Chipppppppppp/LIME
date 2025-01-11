@@ -433,7 +433,6 @@ public class ReadChecker implements IHook {
     private void fetchDataAndSave(SQLiteDatabase db3, SQLiteDatabase db4, String paramValue, Context context, Context moduleContext) {
         File dbFile = new File(context.getFilesDir(), "data_log.txt");
 
-
         try {
             String serverId = extractServerId(paramValue, context);
             String SentUser = extractSentUser(paramValue);
@@ -444,6 +443,12 @@ public class ReadChecker implements IHook {
             String SendUser = queryDatabase(db3, "SELECT from_mid FROM chat_history WHERE server_id=?", serverId);
             String groupId = queryDatabase(db3, "SELECT chat_id FROM chat_history WHERE server_id=?", serverId);
             String groupName = queryDatabase(db3, "SELECT name FROM groups WHERE id=?", groupId);
+
+            // groupNameがnullの場合、SentUserのプロファイル名を取得
+            if (groupName == null || groupName.isEmpty()) {
+                groupName = queryDatabase(db4, "SELECT profile_name FROM contacts WHERE mid=?", SentUser);
+            }
+
             String content = queryDatabase(db3, "SELECT content FROM chat_history WHERE server_id=?", serverId);
             String user_name = queryDatabase(db4, "SELECT profile_name FROM contacts WHERE mid=?", SentUser);
             String timeEpochStr = queryDatabase(db3, "SELECT created_time FROM chat_history WHERE server_id=?", serverId);
@@ -469,6 +474,8 @@ public class ReadChecker implements IHook {
             String finalContent = (content != null && !content.isEmpty()) ? content : (!mediaDescription.isEmpty() ? mediaDescription : "No content:" + serverId);
             saveData(SendUser, groupId, serverId, SentUser, groupName, finalContent, user_name, timeFormatted, context);
         } catch (Exception e) {
+            // エラーハンドリング
+            writeToFile(dbFile, "Error occurred: " + e.getMessage());
         }
     }
 

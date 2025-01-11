@@ -30,12 +30,9 @@ public class PreventMarkAsRead implements IHook {
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
 
 
-        if (limeOptions.preventMarkAsRead.checked ) {
             Class<?> chatHistoryActivityClass = XposedHelpers.findClass("jp.naver.line.android.activity.chathistory.ChatHistoryActivity", loadPackageParam.classLoader);
             XposedHelpers.findAndHookMethod(chatHistoryActivityClass, "onCreate", Bundle.class, new XC_MethodHook() {
                 Context moduleContext;
-
-
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     if (moduleContext == null) {
@@ -47,8 +44,6 @@ public class PreventMarkAsRead implements IHook {
                         }
                     }
                 }
-
-
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     if (moduleContext == null) {
@@ -115,7 +110,6 @@ public class PreventMarkAsRead implements IHook {
                     new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) {
-
                                 param.setResult(null);
                             }
 
@@ -128,7 +122,7 @@ public class PreventMarkAsRead implements IHook {
                             @Override
                             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                                 if (param.args[0].toString().equals("sendChatChecked")) {
-                                    if (!isSendChatCheckedEnabled) { // isSendChatCheckedEnabledがfalseの場合のみnullを設定
+                                    if (!isSendChatCheckedEnabled) {
                                         param.setResult(null);
                                     }
                                 }
@@ -151,5 +145,5 @@ public class PreventMarkAsRead implements IHook {
                         }
                 );
             }
-        }
+
     }

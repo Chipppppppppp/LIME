@@ -12,6 +12,8 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,9 +24,16 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -77,13 +86,16 @@ public class KeepUnread implements IHook {
                         float density = resources.getDisplayMetrics().density;
 
 
-                        int horizontalMarginPx = (int) ((smallestWidthDp * 0.5) * density);
-                        int verticalMarginPx = (int) (15 * density);
+                        float horizontalMarginFactor = getHorizontalMarginFactor(appContext);
+                        int verticalMarginDp = getVerticalMarginDp(appContext);
 
+                        int horizontalMarginPx = (int) (smallestWidthDp * horizontalMarginFactor * density);
+                        int verticalMarginPx = (int) (verticalMarginDp * density);
 
                         RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         imageParams.setMargins(horizontalMarginPx, verticalMarginPx, 0, 0);
+
 
 
                         imageView.setOnClickListener(v -> {
@@ -118,6 +130,66 @@ public class KeepUnread implements IHook {
                         }
                     }
 
+                    private Map<String, String> readSettingsFromExternalFile(Context context) {
+                        String fileName = "margin_settings.txt";
+                        File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
+                        File file = new File(dir, fileName);
+                        Map<String, String> settings = new HashMap<>();
+
+                        if (!file.exists()) {
+                            // ファイルが存在しない場合は作成
+                            writeDefaultSettingsToExternalFile(context);
+                        }
+
+                        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                            String line;
+                            while ((line = reader.readLine()) != null) {
+                                String[] parts = line.split("=", 2);
+                                if (parts.length == 2) {
+                                    settings.put(parts[0].trim(), parts[1].trim());
+                                }
+                            }
+                        } catch (IOException e) {
+                            Log.e("FileError", "Error reading file: " + e.getMessage());
+                        }
+                        return settings;
+                    }
+
+                    private void writeDefaultSettingsToExternalFile(Context context) {
+                        String fileName = "margin_settings.txt";
+                        File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
+                        if (!dir.exists() && !dir.mkdirs()) {
+                            // ディレクトリ作成に失敗した場合
+                            Log.e("FileError", "Failed to create directory: " + dir.getAbsolutePath());
+                            return;
+                        }
+
+                        File file = new File(dir, fileName);
+                        try (FileOutputStream fos = new FileOutputStream(file)) {
+                            String defaultSettings = "horizontalMarginFactor=0.5\nverticalMarginDp=15";
+                            fos.write(defaultSettings.getBytes());
+                            Log.d("FileSuccess", "File written to: " + file.getAbsolutePath());
+                        } catch (IOException e) {
+                            Log.e("FileError", "Error writing file: " + e.getMessage());
+                        }
+                    }
+                    private float getHorizontalMarginFactor(Context context) {
+                        Map<String, String> settings = readSettingsFromExternalFile(context);
+                        try {
+                            return Float.parseFloat(settings.getOrDefault("horizontalMarginFactor", "0.5"));
+                        } catch (NumberFormatException e) {
+                            return 0.5f; // エラー時のデフォルト値
+                        }
+                    }
+
+                    private int getVerticalMarginDp(Context context) {
+                        Map<String, String> settings = readSettingsFromExternalFile(context);
+                        try {
+                            return Integer.parseInt(settings.getOrDefault("verticalMarginDp", "15"));
+                        } catch (NumberFormatException e) {
+                            return 15; // エラー時のデフォルト値
+                        }
+                    }
 
                     private void updateSwitchImage(ImageView imageView, boolean isOn, Context moduleContext) {
 
