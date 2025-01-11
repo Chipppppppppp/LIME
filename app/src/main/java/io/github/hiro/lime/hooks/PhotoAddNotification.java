@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 
@@ -17,8 +18,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -27,6 +34,8 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.hiro.lime.LimeOptions;
 
 public class PhotoAddNotification implements IHook {
+
+    private static Set<Integer> activeNotificationIds = new HashSet<>();
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (!limeOptions.PhotoAddNotification.checked) return;
@@ -72,26 +81,79 @@ public class PhotoAddNotification implements IHook {
 
     private void hookNotificationMethods(XC_LoadPackage.LoadPackageParam loadPackageParam,
                                          Context context, SQLiteDatabase dbGroups, SQLiteDatabase dbContacts) {
-        XposedHelpers.findAndHookMethod(NotificationManager.class, "notify",
-                int.class, Notification.class, new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        handleNotificationHook(context, dbGroups, dbContacts, param, false);
-                    }
-                });
 
-        XposedHelpers.findAndHookMethod(NotificationManager.class, "notify",
+        Class<?> notificationManagerClass = XposedHelpers.findClass(
+                "android.app.NotificationManager", loadPackageParam.classLoader
+        );
+        XposedHelpers.findAndHookMethod(notificationManagerClass, "notify",
                 String.class, int.class, Notification.class, new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        handleNotificationHook(context, dbGroups, dbContacts, param, true);
+
+                        String tag = (String) param.args[0];
+                        int id = (int) param.args[1];
+                        Notification notification = (Notification) param.args[2];
+
+                        if (param.args[0] == null) {
+                            param.setResult(null);
+                            return;
+                        }
+                        //logAllNotificationDetails("notify", id, notification, tag);
+
+                        handleNotificationHook(context, dbGroups, dbContacts, param,notification, true);
+
                     }
                 });
+
     }
+                        // param.argsの内容を詳細にログに出力
+//                        for (int i = 0; i < param.args.length; i++) {
+//                          //  Log.d("NotificationHook", "param.args[" + i + "]: " + param.args[i] + " (type: " + (param.args[i] != null ? param.args[i].getClass().getName() : "null") + ")");
+//                        }
+//                        // notifyメソッドの引数を動的に判断
+//                        String tag = null;
+//                        Integer id = null;
+//                        Notification notification = null;
+
+//                        if (param.args.length == 2) {
+//                            // notify(int id, Notification notification)
+//                            if (param.args[0] instanceof Integer && param.args[1] instanceof Notification) {
+//                                id = (Integer) param.args[0];
+//                                notification = (Notification) param.args[1];
+//                            }
+//                        } else if (param.args.length == 3) {
+//                            // notify(String tag, int id, Notification notification)
+//                            if (param.args[0] instanceof String && param.args[1] instanceof Integer && param.args[2] instanceof Notification) {
+//                                tag = (String) param.args[0];
+//                                id = (Integer) param.args[1];
+//                                notification = (Notification) param.args[2];
+//                            }
+//                        } else {
+//                            Log.e("NotificationHook", "Unexpected number of arguments: " + param.args.length);
+//                            return;
+//                        }
+//
+//                        // idまたはnotificationがnullの場合の処理
+//                        if (id == null || notification == null) {
+//                            // Log.e("NotificationHook", "Invalid arguments: id=" + id + ", notification=" + notification);
+//                            return;
+//                        }
+//
+//                        // ログに出力
+//                        Log.d("NotificationHook", "notify called with tag: " + tag + ", id: " + id);
+//                        Log.d("NotificationHook", "Notification title: " + getNotificationTitle(notification));
+//                        Log.d("NotificationHook", "Notification text: " + getNotificationText(notification));
+
+
+
+
 
     private static boolean isHandlingNotification = false;
 
-    private void handleNotificationHook(Context context, SQLiteDatabase dbGroups, SQLiteDatabase dbContacts, XC_MethodHook.MethodHookParam param, boolean hasTag) {
+
+    private static final Set<String> processedNotifications = new HashSet<>();
+
+    private void handleNotificationHook(Context context, SQLiteDatabase dbGroups, SQLiteDatabase dbContacts, XC_MethodHook.MethodHookParam param, Notification notification, boolean hasTag) {
 
         if (isHandlingNotification) {
             return;
@@ -109,41 +171,59 @@ public class PhotoAddNotification implements IHook {
 
             String originalText = getNotificationText(originalNotification);
             Notification newNotification = originalNotification;
+
             if (originalText.contains("LINE音声通話を着信中") ||
                     originalText.contains("Incoming LINE voice call") ||
                     originalText.contains("LINE語音通話來電中")) {
                 return;
             }
-            if (originalText != null &&
-                    (originalText.contains("写真を送信しました") ||
-                            originalText.contains("sent a photo") ||
-                            originalText.contains("傳送了照片"))) {
 
-                String chatId = resolveChatId(dbGroups, dbContacts, originalNotification);
-                if (chatId == null) {
-                    return;
+            if (notification.extras != null) {
+                Bundle extras = notification.extras;
+//                XposedBridge.log("Notification Extras:");
+                for (String key : extras.keySet()) {
+                    Object value = extras.get(key);
+                   // XposedBridge.log("  " + key + ": " + (value != null ? value.toString() : "null"));
                 }
-
-                File latestFile = getLatestMessageFile(chatId);
-                if (latestFile == null) {
-                    return;
+                if (extras.containsKey("line.sticker.url")) {
+                    String stickerUrl = extras.getString("line.sticker.url");
+                    if (stickerUrl != null) {
+                        Bitmap stickerBitmap = downloadBitmapFromUrl(stickerUrl);
+                        if (stickerBitmap != null) {
+                            newNotification = createNotificationWithImageFromBitmap(context, originalNotification, stickerBitmap, originalText);
+                        }
+                    }
                 }
+            }
 
-                Bitmap bitmap = loadBitmapFromFile(latestFile);
-                if (bitmap == null) {
-                    return;
-                }
+            if (originalText != null && (originalText.contains("写真を送信しました") || originalText.contains("sent a photo") || originalText.contains("傳送了照片"))) {
 
+                Bundle extras = notification.extras;
+                // Check if line.sticker.url exists in extras
+                if (extras.containsKey("line.chat.id")) {
+                    String chatId = extras.getString("line.chat.id");
+                    if (chatId != null) {
 
-                newNotification = createNotificationWithImageFromFile(context, originalNotification, latestFile, originalText);
+                        File latestFile = getLatestMessageFile(chatId);
+                        if (latestFile == null) {
+                            return;
+                        }
 
+                        Bitmap bitmap = loadBitmapFromFile(latestFile);
+                        if (bitmap == null) {
+                            return;
+                        }
 
-                param.setResult(null);
+                        newNotification = createNotificationWithImageFromFile(context, originalNotification, latestFile, originalText);
 
-                if (hasTag) {
-                    param.args[2] = newNotification;
-                } else {
-                    param.args[1] = newNotification;
+                        param.setResult(null);
+
+                        if (hasTag) {
+                            param.args[2] = newNotification;
+                        } else {
+                            param.args[1] = newNotification;
+                        }
+                    }
                 }
             }
 
@@ -164,7 +244,25 @@ public class PhotoAddNotification implements IHook {
             isHandlingNotification = false;
         }
     }
+    private Bitmap loadBitmapFromFile(File file) {
+        if (!file.exists()) {
+            return null;
+        }
+        return BitmapFactory.decodeFile(file.getAbsolutePath());
+    }
 
+    private Notification createNotificationWithImageFromFile(Context context, Notification original, File imageFile, String originalText) {
+        Bitmap bitmap = loadBitmapFromFile(imageFile);
+        if (bitmap == null) {
+            return original;
+        }
+
+        Notification.Builder builder = Notification.Builder.recoverBuilder(context, original)
+                .setStyle(new Notification.BigPictureStyle()
+                        .bigPicture(bitmap)
+                        .setSummaryText(originalText));
+        return builder.build();
+    }
 
     private String resolveChatId(SQLiteDatabase dbGroups, SQLiteDatabase dbContacts, Notification notification) {
         Set<String> keys = notification.extras.keySet();
@@ -203,7 +301,30 @@ public class PhotoAddNotification implements IHook {
     }
 
 
+    private Bitmap downloadBitmapFromUrl(String urlString) {
+        try {
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            return BitmapFactory.decodeStream(input);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    private Notification createNotificationWithImageFromBitmap(Context context, Notification original, Bitmap bitmap, String originalText) {
+        Notification.BigPictureStyle bigPictureStyle = new Notification.BigPictureStyle()
+                .bigPicture(bitmap) // メインの画像
+                .bigLargeIcon(bitmap) // 画像表示領域を広げる
+                .setSummaryText(originalText); // テキストを設定
 
+        Notification.Builder builder = Notification.Builder.recoverBuilder(context, original)
+                .setStyle(bigPictureStyle); // BigPictureStyle を適用
+
+        return builder.build();
+    }
 
     private File getLatestMessageFile(String chatId) {
         File messagesDir = new File(Environment.getExternalStorageDirectory(),
@@ -261,7 +382,6 @@ public class PhotoAddNotification implements IHook {
         cursor.close();
         return result;
     }
-
     private String getNotificationTitle(Notification notification) {
         if (notification.extras != null) {
             return notification.extras.getString(Notification.EXTRA_TITLE);
@@ -276,35 +396,47 @@ public class PhotoAddNotification implements IHook {
         return null;
     }
 
-    private Bitmap loadBitmapFromFile(File file) {
-        if (!file.exists()) {
-            return null;
-        }
-        return BitmapFactory.decodeFile(file.getAbsolutePath());
-    }
 
-    private Notification createNotificationWithImageFromFile(Context context, Notification original, File imageFile, String originalText) {
-        Bitmap bitmap = loadBitmapFromFile(imageFile);
-        if (bitmap == null) {
-            return original;
-        }
 
-        Notification.Builder builder = Notification.Builder.recoverBuilder(context, original)
-                .setStyle(new Notification.BigPictureStyle()
-                        .bigPicture(bitmap)
-                        .setSummaryText(originalText));
-        return builder.build();
-    }
-
-    private void logNotificationDetails(String method, int id, Notification notification, String tag) {
-      //  XposedBridge.log(method + " called. ID: " + id + (tag != null ? ", Tag: " + tag : ""));
+    private void logAllNotificationDetails(String method, int id, Notification notification, String tag) {
+        XposedBridge.log(method + " called. ID: " + id + (tag != null ? ", Tag: " + tag : ""));
+        XposedBridge.log("Notification Icon: " + notification.icon);
+        XposedBridge.log("Notification When: " + notification.when);
+        XposedBridge.log("Notification Flags: " + notification.flags);
+        XposedBridge.log("Notification Priority: " + notification.priority);
+        XposedBridge.log("Notification Category: " + notification.category);
         if (notification.extras != null) {
-            String title = notification.extras.getString(Notification.EXTRA_TITLE);
-            String text = notification.extras.getString(Notification.EXTRA_TEXT);
-            // XposedBridge.log("Notification Title: " + (title != null ? title : "No Title"));
-            // XposedBridge.log("Notification Text: " + (text != null ? text : "No Text"));
+            Bundle extras = notification.extras;
+            XposedBridge.log("Notification Extras:");
+            for (String key : extras.keySet()) {
+                Object value = extras.get(key);
+                XposedBridge.log("  " + key + ": " + (value != null ? value.toString() : "null"));
+            }
         } else {
-            // XposedBridge.log("Notification has no extras.");
+            XposedBridge.log("Notification has no extras.");
         }
+
+        if (notification.actions != null) {
+            XposedBridge.log("Notification Actions:");
+            for (int i = 0; i < notification.actions.length; i++) {
+                Notification.Action action = notification.actions[i];
+                XposedBridge.log("  Action " + i + ": " +
+                        "Title=" + action.title +
+                        ", Intent=" + action.actionIntent);
+            }
+        } else {
+            XposedBridge.log("No actions found.");
+        }
+
+        // その他の情報
+        XposedBridge.log("Notification Visibility: " + notification.visibility);
+        XposedBridge.log("Notification Color: " + notification.color);
+        XposedBridge.log("Notification Group: " + notification.getGroup());
+        XposedBridge.log("Notification SortKey: " + notification.getSortKey());
+        XposedBridge.log("Notification Sound: " + notification.sound);
+        XposedBridge.log("Notification Vibrate: " + (notification.vibrate != null ? "Yes" : "No"));
     }
+
+
+
 }

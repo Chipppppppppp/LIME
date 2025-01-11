@@ -197,7 +197,7 @@ public class ReadChecker implements IHook {
                 FrameLayout.LayoutParams.WRAP_CONTENT
         );
         frameParams.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
-        frameParams.topMargin = 150;
+        frameParams.topMargin = 100;
         button.setLayoutParams(frameParams);
 
 
