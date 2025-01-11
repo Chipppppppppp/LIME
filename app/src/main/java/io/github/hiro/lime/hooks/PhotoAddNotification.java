@@ -256,48 +256,13 @@ public class PhotoAddNotification implements IHook {
         if (bitmap == null) {
             return original;
         }
-
         Notification.Builder builder = Notification.Builder.recoverBuilder(context, original)
                 .setStyle(new Notification.BigPictureStyle()
                         .bigPicture(bitmap)
+                        .bigLargeIcon(bitmap)
                         .setSummaryText(originalText));
         return builder.build();
-    }
 
-    private String resolveChatId(SQLiteDatabase dbGroups, SQLiteDatabase dbContacts, Notification notification) {
-        Set<String> keys = notification.extras.keySet();
-      //  Log.d("NotificationKeys", "Notification Extras Keys: " + keys);
-
-        String title = notification.extras.getString(Notification.EXTRA_TITLE);
-        String text = notification.extras.getString(Notification.EXTRA_TEXT);
-        String subText = notification.extras.getString(Notification.EXTRA_SUB_TEXT);
-
-      /*  Log.d("ResolveChatId", "Notification Title: " + title);
-        Log.d("ResolveChatId", "Notification Text: " + text);
-        Log.d("ResolveChatId", "Notification SubText: " + subText);
-*/
-        if (subText != null) {
-            String groupId = queryDatabase(dbGroups, "SELECT id FROM groups WHERE name =?", subText);
-            if (groupId != null) {
-                return groupId;
-            }
-            String talkId = queryDatabase(dbContacts, "SELECT mid FROM contacts WHERE profile_name =?", subText);
-            if (talkId != null) {
-            }
-            return talkId;
-        } else {
-
-            // Use title if subText is null
-            String groupId = queryDatabase(dbGroups, "SELECT id FROM groups WHERE name =?", title);
-            if (groupId != null) {
-
-                return groupId;
-            }
-            String talkId = queryDatabase(dbContacts, "SELECT mid FROM contacts WHERE profile_name =?", title);
-            if (talkId != null) {
-            }
-            return talkId;
-        }
     }
 
 
