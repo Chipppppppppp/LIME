@@ -17,7 +17,11 @@ https://github.com/JingMatrix/LSPatch/actions
 # パッチするapkについて
 LINE 14.19.1 <br>
 
+・arm64-v8a + armeabi-v7a<br>
+https://www.apkmirror.com/apk/line-corporation/line/line-14-19-1-release/
 
+・
+ 
  <br>
 このapkを<br>
 M apk tool <br>
