@@ -161,7 +161,11 @@ public class PhotoAddNotification implements IHook {
 
         isHandlingNotification = true;
 
-         String originalText = getNotificationText(originalNotification);
+        
+
+        try {
+
+String originalText = getNotificationText(originalNotification);
             Notification newNotification = originalNotification;
 
             if (originalText.contains("LINE音声通話を着信中") ||
@@ -172,7 +176,7 @@ public class PhotoAddNotification implements IHook {
 
 
 
-        try {
+
             Notification originalNotification = hasTag ? (Notification) param.args[2] : (Notification) param.args[1];
             String title = getNotificationTitle(originalNotification);
 
