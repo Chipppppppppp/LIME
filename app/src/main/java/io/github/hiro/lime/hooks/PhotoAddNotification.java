@@ -93,59 +93,17 @@ public class PhotoAddNotification implements IHook {
                         String tag = (String) param.args[0];
                         int id = (int) param.args[1];
                         Notification notification = (Notification) param.args[2];
-
-                        if (param.args[0] == null) {
+                      //  logAllNotificationDetails("notify", id, notification, tag);
+                        if (param.args[0] != null) {
                             param.setResult(null);
                             return;
                         }
-                        //logAllNotificationDetails("notify", id, notification, tag);
-
                         handleNotificationHook(context, dbGroups, dbContacts, param,notification, true);
 
                     }
                 });
 
     }
-                        // param.argsの内容を詳細にログに出力
-//                        for (int i = 0; i < param.args.length; i++) {
-//                          //  Log.d("NotificationHook", "param.args[" + i + "]: " + param.args[i] + " (type: " + (param.args[i] != null ? param.args[i].getClass().getName() : "null") + ")");
-//                        }
-//                        // notifyメソッドの引数を動的に判断
-//                        String tag = null;
-//                        Integer id = null;
-//                        Notification notification = null;
-
-//                        if (param.args.length == 2) {
-//                            // notify(int id, Notification notification)
-//                            if (param.args[0] instanceof Integer && param.args[1] instanceof Notification) {
-//                                id = (Integer) param.args[0];
-//                                notification = (Notification) param.args[1];
-//                            }
-//                        } else if (param.args.length == 3) {
-//                            // notify(String tag, int id, Notification notification)
-//                            if (param.args[0] instanceof String && param.args[1] instanceof Integer && param.args[2] instanceof Notification) {
-//                                tag = (String) param.args[0];
-//                                id = (Integer) param.args[1];
-//                                notification = (Notification) param.args[2];
-//                            }
-//                        } else {
-//                            Log.e("NotificationHook", "Unexpected number of arguments: " + param.args.length);
-//                            return;
-//                        }
-//
-//                        // idまたはnotificationがnullの場合の処理
-//                        if (id == null || notification == null) {
-//                            // Log.e("NotificationHook", "Invalid arguments: id=" + id + ", notification=" + notification);
-//                            return;
-//                        }
-//
-//                        // ログに出力
-//                        Log.d("NotificationHook", "notify called with tag: " + tag + ", id: " + id);
-//                        Log.d("NotificationHook", "Notification title: " + getNotificationTitle(notification));
-//                        Log.d("NotificationHook", "Notification text: " + getNotificationText(notification));
-
-
-
 
 
     private static boolean isHandlingNotification = false;
@@ -168,7 +126,7 @@ public class PhotoAddNotification implements IHook {
             String title = getNotificationTitle(originalNotification);
 
 
-String originalText = getNotificationText(originalNotification);
+            String originalText = getNotificationText(originalNotification);
             Notification newNotification = originalNotification;
 
             if (originalText.contains("LINE音声通話を着信中") ||
@@ -176,11 +134,6 @@ String originalText = getNotificationText(originalNotification);
                     originalText.contains("LINE語音通話來電中")) {
                 return;
             }
-
-
-
-
- 
             if (title == null) {
                 return;
             }
