@@ -10,7 +10,8 @@
 
 https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.3.2-apk
 
-推奨LsPatch<br>
+## 推奨LsPatch<br>
+
 https://github.com/JingMatrix/LSPatch/actions
 
 
