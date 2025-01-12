@@ -22,7 +22,7 @@ M apk tool <br>
 https://maximoff.su/apktool/?lang=en
 でapkに変換してからパッチしてください
 
-エラーが発生する場合以下からダウンロード<br>
+エラーが発生する場合以下からダウンロード相談<br>
 https://t.me/LsPosedLIMEs/36/83
 
 
