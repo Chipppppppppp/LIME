@@ -1,8 +1,8 @@
+## 導入の仕方
+
 1. [**JingMatrix LSPatch**](https://github.com/JingMatrix/LSPatch/) をインストール
 
-1.5
-
- パッチするapkについて
+1.5パッチするapkについて
 LINE 14.19.1 <br>
 
 ・arm64-v8a + armeabi-v7a<br>（基本的にこれでok）
