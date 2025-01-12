@@ -1,19 +1,7 @@
+1.
+ [**JingMatrix LSPatch**](https://github.com/JingMatrix/LSPatch/) をインストール
 
-## LsPatchを利用の方へ 
-
-通知が届かないの解決方法 - 14.19.1 では以下をおこなわなくても良い
-
-下記の、LINE 14.3.2をインストールしパッチを行い、インストールを行って、ログインをしてください。
-
-
-ログイン後、LIMEに適応するバージョンのLINEにパッチを行って、**更新**するようにしてください。
-
-https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.3.2-apk
-
-## 推奨LsPatch<br>
-
-https://github.com/JingMatrix/LSPatch/actions
-
+1.5
 
 # パッチするapkについて
 LINE 14.19.1 <br>
@@ -38,6 +26,18 @@ https://maximoff.su/apktool/?lang=en
 
 エラーが発生する場合以下からダウンロード<br>
 https://t.me/LsPosedLIMEs/36/83
+
+
+2. **LSPatch** アプリを開き、<kbd>管理</kbd> > 右下の <kbd>＋</kbd> > <kbd>ストレージからapkを選択</kbd> >  先程ダウンロードした LI**N**E の APK を選択 > <kbd>統合</kbd> → <kbd>モジュールを埋め込む</kbd> > <kbd>インストールされているアプリを選択</kbd> > LI**M**E にチェックを入れて <kbd>＋</kbd> > <kbd>パッチを開始</kbd> より、パッチを適用
+
+※[この方法](https://github.com/Chipppppppppp/LIME/issues/50#issuecomment-2174842592) を用いればトークの復元が可能なようです。
+
+> [!TIP]
+> <kbd>ディレクトリの選択</kbd>と出てきた場合は、<kbd>OK</kbd> を押してファイルピッカーを起動し、任意のディレクトリ下にフォルダを作成し、<kbd>このフォルダを使用</kbd> > <kbd>許可</kbd>を押す
+
+3. [**Shizuku**](https://github.com/RikkaApps/Shizuku) を使用している場合は <kbd>インストール</kbd> を押して続行する  
+  使用していない場合は、ファイルエクスプローラー等の別のアプリからインストールする
+
 
 ## トーク履歴のリストアについて
 
