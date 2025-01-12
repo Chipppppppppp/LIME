@@ -164,6 +164,9 @@ public class PhotoAddNotification implements IHook {
         
 
         try {
+           Notification originalNotification = hasTag ? (Notification) param.args[2] : (Notification) param.args[1];
+            String title = getNotificationTitle(originalNotification);
+
 
 String originalText = getNotificationText(originalNotification);
             Notification newNotification = originalNotification;
@@ -177,9 +180,7 @@ String originalText = getNotificationText(originalNotification);
 
 
 
-            Notification originalNotification = hasTag ? (Notification) param.args[2] : (Notification) param.args[1];
-            String title = getNotificationTitle(originalNotification);
-
+ 
             if (title == null) {
                 return;
             }
