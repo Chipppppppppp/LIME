@@ -161,20 +161,22 @@ public class PhotoAddNotification implements IHook {
 
         isHandlingNotification = true;
 
-        try {
-            Notification originalNotification = hasTag ? (Notification) param.args[2] : (Notification) param.args[1];
-            String title = getNotificationTitle(originalNotification);
-
-            if (title == null) {
-                return;
-            }
-
-            String originalText = getNotificationText(originalNotification);
+         String originalText = getNotificationText(originalNotification);
             Notification newNotification = originalNotification;
 
             if (originalText.contains("LINE音声通話を着信中") ||
                     originalText.contains("Incoming LINE voice call") ||
                     originalText.contains("LINE語音通話來電中")) {
+                return;
+            }
+
+
+
+        try {
+            Notification originalNotification = hasTag ? (Notification) param.args[2] : (Notification) param.args[1];
+            String title = getNotificationTitle(originalNotification);
+
+            if (title == null) {
                 return;
             }
 
