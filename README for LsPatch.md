@@ -60,3 +60,6 @@ https://youtu.be/94JN4NLGdOI
 ## トーク履歴の自動バックアップについて
 
 [Macro SAMPLE](https://drive.usercontent.google.com/u/0/uc?id=1rhZPmoMbti_l1JaX2EbjcRKUePkWlIXU&export=download)
+
+または以下を参考にしてください
+https://github.com/areteruhiro/LIMEs/issues/10
