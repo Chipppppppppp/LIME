@@ -1,11 +1,9 @@
-1.
- [**JingMatrix LSPatch**](https://github.com/JingMatrix/LSPatch/) をインストール
+1. [**JingMatrix LSPatch**](https://github.com/JingMatrix/LSPatch/) をインストール
 
 1.5
 
-# パッチするapkについて
+ パッチするapkについて
 LINE 14.19.1 <br>
-
 
 ・arm64-v8a + armeabi-v7a<br>（基本的にこれでok）
 https://www.apkmirror.com/apk/line-corporation/line/line-14-19-1-release/
