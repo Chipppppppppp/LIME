@@ -17,13 +17,20 @@ https://github.com/JingMatrix/LSPatch/actions
 # パッチするapkについて
 LINE 14.19.1 <br>
 
-・arm64-v8a + armeabi-v7a<br>
+
+・arm64-v8a + armeabi-v7a<br>（基本的にこれでok）
 https://www.apkmirror.com/apk/line-corporation/line/line-14-19-1-release/
 
-・
- 
- <br>
-このapkを<br>
+クラッシュやなんらかのエラーが発生した場合、自分の端末のアーキテクチャに対応するファイルをダウンロード
+
+[アーキテクチャの確認](https://play.google.com/store/apps/details?id=com.ytheekshana.deviceinfo)→CPU→サーポートされているABI
+
+・armeabi-v7a
+https://line-android-universal-download.line-scdn.net/line-14.19.1.apk
+
+・arm64-v8a https://d.apkpure.com/b/XAPK/jp.naver.line.android?versionCode=141910383&nc=arm64-v8a&sv=28
+
+
 M apk tool <br>
 https://maximoff.su/apktool/?lang=en
 でapkに変換してからパッチしてください
