@@ -91,8 +91,7 @@ jobs:
         if: github.event.inputs.lspatch == 'true'
         run: |
           apk_url="https://d.apkpure.com/b/XAPK/jp.naver.line.android?versionCode=${{ env.line_ver_code }}&nc=arm64-v8a&sv=28"
-          cat << EOF > conf
- https://github.com/JingMatrix/LSPatch/releases/latest/download/lspatch.jar
+          cat << EOF > conf https://github.com/JingMatrix/LSPatch/releases/latest/download/lspatch.jar
             out=lspatch.jar
           $apk_url
             out=line-${{ env.line_ver }}-arm64-v8a.apk
@@ -106,8 +105,7 @@ jobs:
         if: github.event.inputs.lspatch == 'true'
         run: |
           apk_url="https://line-android-universal-download.line-scdn.net/line-14.19.1.apk"
-          cat << EOF > conf
- https://github.com/JingMatrix/LSPatch/releases/latest/download/lspatch.jar
+          cat << EOF > conf https://github.com/JingMatrix/LSPatch/releases/latest/download/lspatch.jar
             out=lspatch.jar
           $apk_url
             out=line-${{ env.line_ver }}-armeabi-v7a.apk
@@ -121,8 +119,7 @@ jobs:
         if: github.event.inputs.lspatch == 'true'
         run: |
           apk_url="https://www.apkmirror.com/apk/line-corporation/line/line-14-19-1-release/line-calls-messages-14-19-1-android-apk-download/download/?key=168fc2e8af120111c350b2943dd89a3841f1546b"
-          cat << EOF > conf
- https://github.com/JingMatrix/LSPatch/releases/latest/download/lspatch.jar
+          cat << EOF > conf https://github.com/JingMatrix/LSPatch/releases/latest/download/lspatch.jar
             out=lspatch.jar
           $apk_url
             out=line-${{ env.line_ver }}-both.apk
