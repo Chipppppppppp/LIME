@@ -87,35 +87,43 @@ jobs:
             ./gradlew assembleDebug --no-daemon --stacktrace
           fi
 
-      - name: LSPatch for arm64-v8a
+      - name: LSPatch for all architectures
         if: github.event.inputs.lspatch == 'true'
         run: |
-          apk_url="https://d.apkpure.com/b/XAPK/jp.naver.line.android?versionCode=${{ env.line_ver_code }}&nc=arm64-v8a&sv=28"
-          echo "Downloading APK for arm64-v8a..."
-          aria2c --no-conf -x16 -s16 -R -m0 -V "$apk_url" -o original-arm64-v8a.apk
+          # Define URLs and output file names in the conf file
+          cat << EOF > conf
+          https://github.com/JingMatrix/LSPatch/releases/latest/download/lspatch.jar
+            out=lspatch.jar
+          https://d.apkpure.com/b/XAPK/jp.naver.line.android?versionCode=${{ env.line_ver_code }}&nc=arm64-v8a&sv=28
+            out=original-arm64-v8a.apk
+          https://line-android-universal-download.line-scdn.net/line-14.19.1.apk
+            out=original-armeabi-v7a.apk
+          https://www.apkmirror.com/apk/line-corporation/line/line-14-19-1-release/line-calls-messages-14-19-1-android-apk-download/download/?key=168fc2e8af120111c350b2943dd89a3841f1546b
+            out=original-both.apk
+          EOF
+
+          # Download all files using aria2c
+          echo "Downloading APKs and LSPatch tool..."
+          aria2c --no-conf -x16 -s16 -R -m0 -V --async-dns=false -iconf=conf
+
+          # Patch arm64-v8a APK
           echo "Patching APK for arm64-v8a..."
           java -jar lspatch.jar "original-arm64-v8a.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
           mv "patched-apk-output.apk" "line-${{ env.line_ver }}-arm64-v8a.apk"
 
-      - name: LSPatch for armeabi-v7a
-        if: github.event.inputs.lspatch == 'true'
-        run: |
-          apk_url="https://line-android-universal-download.line-scdn.net/line-14.19.1.apk"
-          echo "Downloading APK for armeabi-v7a..."
-          aria2c --no-conf -x16 -s16 "$apk_url" -o original-armeabi-v7a.apk
+          # Patch armeabi-v7a APK
           echo "Patching APK for armeabi-v7a..."
           java -jar lspatch.jar "original-armeabi-v7a.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
           mv "patched-apk-output.apk" "line-${{ env.line_ver }}-armeabi-v7a.apk"
 
-      - name: LSPatch for Both Architectures
-        if: github.event.inputs.lspatch == 'true'
-        run: |
-          apk_url="https://www.apkmirror.com/apk/line-corporation/line/line-14-19-1-release/line-calls-messages-14-19-1-android-apk-download/download/?key=168fc2e8af120111c350b2943dd89a3841f1546b"
-          echo "Downloading APK for both architectures..."
-          aria2c --no-conf -x16 -s16 "$apk_url" -o original-both.apk
+          # Patch both architectures APK
           echo "Patching APK for both architectures..."
           java -jar lspatch.jar "original-both.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
           mv "patched-apk-output.apk" "line-${{ env.line_ver }}-both.apk"
+
+          # Verify generated APKs
+          echo "Checking generated APKs..."
+          ls -l
 
 
       - name: Upload Patched APKs
