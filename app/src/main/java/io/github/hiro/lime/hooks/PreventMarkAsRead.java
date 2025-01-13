@@ -146,7 +146,7 @@ public class PreventMarkAsRead implements IHook {
                     return settings;
                 }
                 private void updateSwitchImage(ImageView imageView, boolean isOn, Context moduleContext) {
-                    String imageName = isOn ? "switch_on" : "switch_off";
+                    String imageName = isOn ? "switch_off" : "switch_on";
                     int imageResource = moduleContext.getResources().getIdentifier(imageName, "drawable", "io.github.hiro.lime");
 
                     if (imageResource != 0) {
