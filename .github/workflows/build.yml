@@ -139,6 +139,8 @@ jobs:
 
       - name: Release
         if: github.event.inputs.release == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # ここでGH_TOKENを設定
         run: |
           echo "Releasing version ${{ env.version }}..."
           gh release create ${{ env.version }} \
@@ -146,4 +148,4 @@ jobs:
             line-${{ env.line_ver }}-armeabi-v7a.apk \
             line-${{ env.line_ver }}-both.apk \
             --title "Release ${{ env.version }}" \
-            --notes "## 対応するLINEのバージョン\n${{ env.line_ver }}\n\n### 差分\nhttps://github.com/${{ github.repository }}/compare/${{ steps.previous.outputs.tag }}...${{ env.version }}\n\n### パッチファイル\nline-${{ env.line_ver }}-arm64-v8a.apk\nline-${{ env.line_ver }}-armeabi-v7a.apk\nline-${{ env.line_ver }}-armeabi-v7a +arm64 .apk"
+            --notes "## 対応するLINEのバージョン\n${{ env.line_ver }}\n\n### 差分\nhttps://github.com/${{ github.repository }}/compare/${{ steps.previous.outputs.tag }}...${{ env.version }}\n\n### パッチファイル\nline-${{ env.line_ver }}-arm64-v8a.apk\nline-${{ env.line_ver }}-armeabi-v7.apk\nline-${{ env.line_ver }}-both.apk"
