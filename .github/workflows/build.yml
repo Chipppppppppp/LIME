@@ -98,17 +98,16 @@ jobs:
         if: github.event.inputs.lspatch == 'true'
         run: |
           cat << EOF > conf
-          https://line-android-universal-download.line-scdn.net/line-14.19.1.apk
-          out=line-armeabi-v7a.apk
-          https://www.apkmirror.com/apk/line-corporation/line/line-14-19-1-release/line-calls-messages-14-19-1-android-apk-download/download/?key=168fc2e8af120111c350b2943dd89a3841f1546b
-          out=line-arm64-v8a+armeabi-v7a.apk
+          https://github.com/JingMatrix/LSPatch/releases/latest/download/lspatch.jar
+            out=lspatch.jar
+          https://d.apkpure.net/b/APK/jp.naver.line.android?versionCode=${{ env.line_ver_code }}&nc=arm64-v8a%2Carmeabi-v7a&sv=28
+            out=line-${{ env.line_ver }}.apk
           EOF
-          echo "Downloading APKs..."
+          echo "Downloading APK..."
           aria2c --no-conf -x16 -s16 -R -m0 -V --async-dns=false -iconf
-          echo "Patching APKs..."
-          java -jar lspatch.jar line-armeabi-v7a.apk -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
-          java -jar lspatch.jar line-arm64-v8a+armeabi-v7a.apk -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
-
+          echo "Patching LIME..."
+          java -jar lspatch.jar "line-${{ env.line_ver }}.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
+          mv "line-${{ env.line_ver }}-*-lspatched.apk" "line-${{ env.line_ver }}-lspatched.apk"
 
       - name: Upload Module APK
         uses: actions/upload-artifact@v4
@@ -123,7 +122,7 @@ jobs:
         if: github.event.inputs.lspatch == 'true'
         with:
           name: LINE-${{ env.line_ver }}@${{ env.commit }}
-          path: line-${{ env.line_ver }}-*-lspatched.apk
+          path: line-${{ env.line_ver }}-lspatched.apk
           if-no-files-found: error
 
       - name: Release
@@ -133,7 +132,9 @@ jobs:
           tag_name: ${{ env.version }}
           draft: false
           prerelease: false
-          files: ${{ env.repo }}-${{ env.version }}.apk
+          files: |
+            ${{ env.repo }}-${{ env.version }}.apk
+            line-${{ env.line_ver }}-lspatched.apk
           body: |
             # 更新内容
             
