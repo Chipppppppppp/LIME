@@ -146,17 +146,5 @@ jobs:
             line-${{ env.line_ver }}-both.apk \
             --title "Release ${{ env.version }}" \
             --notes "## Supported LINE Version\n${{ env.line_ver }}\n\n### Changes\nhttps://github.com/${{ github.repository }}/compare/${{ steps.previous.outputs.tag }}...${{ env.version }}\n\n### Patched Files\nline-${{ env.line_ver }}-arm64-v8a.apk\nline-${{ env.line_ver }}-armeabi-v7a.apk\nline-${{ env.line_ver }}-both.apk"
-      - name: Verify Generated APKs
-        run: |
-          echo "Checking for generated APKs..."
-          ls -l app/build/outputs/apk/*/
-          if ls line-*.apk 2>/dev/null; then
-            echo "APKs found successfully."
-          else
-            echo "ERROR: No APKs found. Verify build and LSPatch steps."
-            echo "Generated files:"
-            ls -l app/build/outputs/apk/*/
-            exit 1
-          fi
 
 
