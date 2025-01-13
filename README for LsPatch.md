@@ -1,5 +1,12 @@
 ## 導入の仕方
 
+通知が届かないの場合
+
+下記の、LINE 14.3.2をインストールしパッチを行い、インストールを行って、ログインをしてください。
+ログイン後、LIMEに適応するバージョンのLINEにパッチを行って、**更新**するようにしてください。
+https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.3.2-apk
+
+
 1. [**JingMatrix LSPatch**](https://github.com/JingMatrix/LSPatch/) をインストール
 
 1.5パッチするapkについて
