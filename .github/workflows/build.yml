@@ -97,24 +97,26 @@ jobs:
           java -jar lspatch.jar "original-arm64-v8a.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
           mv "patched-apk-output.apk" "line-${{ env.line_ver }}-arm64-v8a.apk"
 
-
-      - name: LSPatch - armeabi-v7a
+      - name: LSPatch for armeabi-v7a
         if: github.event.inputs.lspatch == 'true'
         run: |
           apk_url="https://line-android-universal-download.line-scdn.net/line-14.19.1.apk"
           echo "Downloading APK for armeabi-v7a..."
-          aria2c --no-conf -x16 -s16 "$apk_url" -o line-${{ env.line_ver }}-armeabi-v7a.apk
+          aria2c --no-conf -x16 -s16 "$apk_url" -o original-armeabi-v7a.apk
           echo "Patching APK for armeabi-v7a..."
-          java -jar lspatch.jar line-${{ env.line_ver }}-armeabi-v7a.apk -m app/build/outputs/apk/debug/app-debug.apk -l 2 -v
+          java -jar lspatch.jar "original-armeabi-v7a.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
+          mv "patched-apk-output.apk" "line-${{ env.line_ver }}-armeabi-v7a.apk"
 
-      - name: LSPatch - Both Architectures
+      - name: LSPatch for Both Architectures
         if: github.event.inputs.lspatch == 'true'
         run: |
           apk_url="https://www.apkmirror.com/apk/line-corporation/line/line-14-19-1-release/line-calls-messages-14-19-1-android-apk-download/download/?key=168fc2e8af120111c350b2943dd89a3841f1546b"
           echo "Downloading APK for both architectures..."
-          aria2c --no-conf -x16 -s16 "$apk_url" -o line-${{ env.line_ver }}-both.apk
+          aria2c --no-conf -x16 -s16 "$apk_url" -o original-both.apk
           echo "Patching APK for both architectures..."
-          java -jar lspatch.jar line-${{ env.line_ver }}-both.apk -m app/build/outputs/apk/debug/app-debug.apk -l 2 -v
+          java -jar lspatch.jar "original-both.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
+          mv "patched-apk-output.apk" "line-${{ env.line_ver }}-both.apk"
+
 
       - name: Upload Patched APKs
         uses: actions/upload-artifact@v4
@@ -144,6 +146,9 @@ jobs:
             echo "APKs found successfully."
           else
             echo "ERROR: No APKs found. Verify build and LSPatch steps."
+            echo "Generated files:"
+            ls -l app/build/outputs/apk/*/
             exit 1
           fi
+
 
