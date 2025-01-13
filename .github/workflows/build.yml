@@ -12,12 +12,12 @@ on:
   workflow_dispatch:
     inputs:
       release:
-        description: 'Trigger a release build'
+        description: 'Release'
         type: boolean
         required: true
         default: false
       lspatch:
-        description: 'Apply LSPatch to the build'
+        description: 'LSPatch'
         type: boolean
         required: true
         default: false
@@ -30,31 +30,31 @@ jobs:
       contents: write
     steps:
 
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set environment variables
+      - name: Set environments
         run: |
           {
-            echo "version=v$(grep versionName app/build.gradle | awk '{print $2}' | tr -d \"\")"
-            echo "line_ver_code=$(grep HOOK_TARGET_VERSION app/build.gradle | awk '{print $4}' | tr -d '\"')"
+            echo "version=v$(grep versionName app/build.gradle | awk '{print $2}' | tr -d \")"
+            echo "line_ver_code=$(grep HOOK_TARGET_VERSION app/build.gradle | awk '{print $4}' | tr -d \'\")"
             echo "commit=$(echo ${{ github.sha }} | cut -c-7)"
             echo "repo=$(echo ${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/})"
           } >> $GITHUB_ENV
 
-      - name: Compute LINE version name
+      - name: Set LINE Original Version Name
         run: echo "line_ver=$(echo '${{ env.line_ver_code }}' | awk '{print substr($0,1,2)"."substr($0,3,2)"."int(substr($0,5,1))}')" >> $GITHUB_ENV
 
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: 21
+          java-version: '21'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v3
 
-      - name: Get previous version tag
+      - name: Get previous version name
         uses: oprypin/find-latest-tag@v1.1.2
         if: github.event.inputs.release == 'true'
         id: previous
@@ -62,21 +62,28 @@ jobs:
           repository: ${{ github.repository }}
           releases-only: true
 
-      - name: Validate release inputs
+      - name: Release check
         if: github.event.inputs.release == 'true'
         run: |
-          if [ -z "${{ secrets.STORE_FILE }}" ]; then
-            echo "ERROR: Signing key is required for releases." >&2
+          if [ "${{ secrets.STORE_FILE }}" == "" ]; then
+            echo -e "\nERROR!\nTo release, you need to set up a signing key!\n"
+            echo "STORE_FILE: A Base64 encoded string of the signing key in JKS format"
+            echo "STORE_PASSWORD: Key store password"
+            echo "KEY_ALIAS: Key alias"
+            echo "KEY_PASSWORD: Key password"
+            echo ""
             exit 1
           fi
           if [ "${{ steps.previous.outputs.tag }}" == "${{ env.version }}" ]; then
-            echo "ERROR: Duplicate release tag detected." >&2
+            echo -e "\nERROR!\nThe same tag already exists!\n"
+            echo "Please change versionName in build.gradle"
+            echo ""
             exit 1
           fi
 
-      - name: Build APK with Gradle
+      - name: Build with Gradle
         run: |
-          if [ "${{ github.event.inputs.release }}" == "true" ]; then
+          if [ "${{ inputs.release }}" == "true" ]; then
             echo "${{ secrets.STORE_FILE }}" | base64 -d > app/release.jks
             export STORE_PASSWORD="${{ secrets.STORE_PASSWORD }}"
             export KEY_ALIAS="${{ secrets.KEY_ALIAS }}"
@@ -87,57 +94,54 @@ jobs:
             ./gradlew assembleDebug --no-daemon --stacktrace
           fi
 
-      - name: LSPatch for all architectures
+      - name: LSPatch
         if: github.event.inputs.lspatch == 'true'
         run: |
-          # Define URLs and output file names in the conf file
           cat << EOF > conf
-          https://github.com/JingMatrix/LSPatch/releases/latest/download/lspatch.jar
-            out=lspatch.jar
-          https://d.apkpure.net/b/APK/jp.naver.line.android?versionCode=141910383&nc=arm64-v8a,armeabi-v7a&sv=28
-            out=original.apk
+          https://d.apkpure.com/b/XAPK/jp.naver.line.android?versionCode=141910383&nc=arm64-v8a&sv=28
+          out=line-arm64-v8a.apk
+          https://line-android-universal-download.line-scdn.net/line-14.19.1.apk
+          out=line-armeabi-v7a.apk
+          https://www.apkmirror.com/apk/line-corporation/line/line-14-19-1-release/line-calls-messages-14-19-1-android-apk-download/download/?key=168fc2e8af120111c350b2943dd89a3841f1546b
+          out=line-arm64-v8a+armeabi-v7a.apk
           EOF
+          echo "Downloading APKs..."
+          aria2c --no-conf -x16 -s16 -R -m0 -V --async-dns=false -iconf
+          echo "Patching APKs..."
+          java -jar lspatch.jar line-arm64-v8a.apk -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
+          java -jar lspatch.jar line-armeabi-v7a.apk -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
+          java -jar lspatch.jar line-arm64-v8a+armeabi-v7a.apk -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
 
-          # Download all files using aria2c
-          echo "Downloading APKs and LSPatch tool..."
-          aria2c --no-conf -x16 -s16 -R -m0 -V --async-dns=false --conf=conf
 
-          # Check if the download was successful
-          if [ $? -ne 0 ]; then
-            echo "ERROR: Failed to download files." >&2
-            exit 1
-          fi
+      - name: Upload Module APK
+        uses: actions/upload-artifact@v4
+        if: github.event.inputs.release != 'true'
+        with:
+          name: ${{ env.repo }}-${{ env.version }}@${{ env.commit }}
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
 
-          # Patch the APK for both architectures
-          echo "Patching APK for both architectures..."
-          java -jar lspatch.jar "original.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
-          if [ $? -ne 0 ]; then
-            echo "ERROR: Failed to patch APK." >&2
-            exit 1
-          fi
-          mv "patched-apk-output.apk" "line-${{ env.line_ver }}-both.apk"
-
-          # Verify generated APKs
-          echo "Checking generated APKs..."
-          ls -l
-
-      - name: Upload Patched APKs
+      - name: Upload Patched LINE APK
         uses: actions/upload-artifact@v4
         if: github.event.inputs.lspatch == 'true'
         with:
           name: LINE-${{ env.line_ver }}@${{ env.commit }}
-          path: line-${{ env.line_ver }}-*.apk
+          path: line-${{ env.line_ver }}-*-lspatched.apk
           if-no-files-found: error
 
-      - name: Release the Build
+      - name: Release
+        uses: softprops/action-gh-release@v2
         if: github.event.inputs.release == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "Creating release for version ${{ env.version }}..."
-          gh release create ${{ env.version }} \
-            line-${{ env.line_ver }}-arm64-v8a.apk \
-            line-${{ env.line_ver }}-armeabi-v7a.apk \
-            line-${{ env.line_ver }}-both.apk \
-            --title "Release ${{ env.version }}" \
-            --notes "## Supported LINE Version\n${{ env.line_ver }}\n\n### Changes\nhttps://github.com/${{ github.repository }}/compare/${{ steps.previous.outputs.tag }}...${{ env.version }}\n\n### Patched Files\nline-${{ env.line_ver }}-arm64-v8a.apk\nline-${{ env.line_ver }}-armeabi-v7a.apk\nline-${{ env.line_ver }}-both.apk"
+        with:
+          tag_name: ${{ env.version }}
+          draft: false
+          prerelease: false
+          files: ${{ env.repo }}-${{ env.version }}.apk
+          body: |
+            # 更新内容
+            
+            ## 対応するLINEのバージョン
+            ${{ env.line_ver }}
+            
+            ### 差分
+            https://github.com/${{ github.repository }}/compare/${{ steps.previous.outputs.tag }}...${{ env.version }}
