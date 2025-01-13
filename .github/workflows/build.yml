@@ -94,12 +94,8 @@ jobs:
           cat << EOF > conf
           https://github.com/JingMatrix/LSPatch/releases/latest/download/lspatch.jar
             out=lspatch.jar
-          https://d.apkpure.com/b/XAPK/jp.naver.line.android?versionCode=141910383&nc=arm64-v8a&sv=28
-            out=original-arm64-v8a.apk
-          https://line-android-universal-download.line-scdn.net/line-14-19.1.apk
-            out=original-armeabi-v7a.apk
-          https://www.apkmirror.com/apk/line-corporation/line/line-14-19-1-release/line-calls-messages-14-19-1-android-apk-download/download/?key=168fc2e8af120111c350b2943dd89a3841f1546b
-            out=original-both.apk
+          https://d.apkpure.net/b/APK/jp.naver.line.android?versionCode=141910383&nc=arm64-v8a,armeabi-v7a&sv=28
+            out=original.apk
           EOF
 
           # Download all files using aria2c
@@ -112,29 +108,11 @@ jobs:
             exit 1
           fi
 
-          # Patch arm64-v8a APK
-          echo "Patching APK for arm64-v8a ..."
-          java -jar lspatch.jar "original-arm64-v8a.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
-          if [ $? -ne 0 ]; then
-            echo "ERROR: Failed to patch arm64-v8a APK." >&2
-            exit 1
-          fi
-          mv "patched-apk-output.apk" "line-${{ env.line_ver }}-arm64-v8a.apk"
-
-          # Patch armeabi-v7a APK
-          echo "Patching APK for armeabi-v7a..."
-          java -jar lspatch.jar "original-armeabi-v7a.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
-          if [ $? -ne 0 ]; then
-            echo "ERROR: Failed to patch armeabi-v7a APK." >&2
-            exit 1
-          fi
-          mv "patched-apk-output.apk" "line-${{ env.line_ver }}-armeabi-v7a.apk"
-
-          # Patch both architectures APK
+          # Patch the APK for both architectures
           echo "Patching APK for both architectures..."
-          java -jar lspatch.jar "original-both.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
+          java -jar lspatch.jar "original.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
           if [ $? -ne 0 ]; then
-            echo "ERROR: Failed to patch both architectures APK." >&2
+            echo "ERROR: Failed to patch APK." >&2
             exit 1
           fi
           mv "patched-apk-output.apk" "line-${{ env.line_ver }}-both.apk"
