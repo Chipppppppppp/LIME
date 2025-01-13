@@ -88,7 +88,7 @@ jobs:
           fi
 
       - name: LSPatch for arm64-v8a
-        if: github.event.inputs.l spatch == 'true'
+        if: github.event.inputs.lspatch == 'true'
         run: |
           apk_url="https://d.apkpure.com/b/XAPK/jp.naver.line.android?versionCode=${{ env.line_ver_code }}&nc=arm64-v8a&sv=28"
           cat << EOF > conf
