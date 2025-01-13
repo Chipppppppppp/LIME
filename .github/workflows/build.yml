@@ -21,6 +21,14 @@ on:
         type: boolean
         required: true
         default: false
+      architecture:
+        description: 'Target Architecture'
+        type: choice
+        required: true
+        options:
+          - arm64-v8a
+          - armeabi-v7a
+          - both
 
 jobs:
   build:
@@ -49,10 +57,10 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: 21
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Get previous version name
         uses: oprypin/find-latest-tag@v1.1.2
@@ -67,17 +75,10 @@ jobs:
         run: |
           if [ "${{ secrets.STORE_FILE }}" == "" ]; then
             echo -e "\nERROR!\nTo release, you need to set up a signing key!\n"
-            echo "STORE_FILE: A Base64 encoded string of the signing key in JKS format"
-            echo "STORE_PASSWORD: Key store password"
-            echo "KEY_ALIAS: Key alias"
-            echo "KEY_PASSWORD: Key password"
-            echo ""
             exit 1
           fi
           if [ "${{ steps.previous.outputs.tag }}" == "${{ env.version }}" ]; then
             echo -e "\nERROR!\nThe same tag already exists!\n"
-            echo "Please change versionName in build.gradle"
-            echo ""
             exit 1
           fi
 
@@ -97,10 +98,26 @@ jobs:
       - name: LSPatch
         if: github.event.inputs.lspatch == 'true'
         run: |
+          case "${{ inputs.architecture }}" in
+            arm64-v8a)
+              apk_url="https://d.apkpure.com/b/XAPK/jp.naver.line.android?versionCode=${{ env.line_ver_code }}&nc=arm64-v8a&sv=28"
+              ;;
+            armeabi-v7a)
+              apk_url="https://line-android-universal-download.line-scdn.net/line-14.19.1.apk"
+              ;;
+            both)
+              apk_url="https://www.apkmirror.com/apk/line-corporation/line/line-14-19-1-release/line-calls-messages-14-19-1-android-apk-download/download/?key=168fc2e8af120111c350b2943dd89a3841f1546b"
+              ;;
+            *)
+              echo "Invalid architecture specified."
+              exit 1
+              ;;
+          esac
+
           cat << EOF > conf
-          https://github.com/JingMatrix/LSPatch/releases/latest/download/lspatch.jar
+ https://github.com/JingMatrix/LSPatch/releases/latest/download/lspatch.jar
             out=lspatch.jar
-          https://d.apkpure.net/b/APK/jp.naver.line.android?versionCode=${{ env.line_ver_code }}&nc=arm64-v8a%2Carmeabi-v7a&sv=28
+          $apk_url
             out=line-${{ env.line_ver }}.apk
           EOF
           echo "Downloading APK..."
@@ -125,18 +142,7 @@ jobs:
           if-no-files-found: error
 
       - name: Release
-        uses: softprops/action-gh-release@v2
         if: github.event.inputs.release == 'true'
-        with:
-          tag_name: ${{ env.version }}
-          draft: false
-          prerelease: false
-          files: ${{ env.repo }}-${{ env.version }}.apk
-          body: |
-            # 更新内容
-            
-            ## 対応するLINEのバージョン
-            ${{ env.line_ver }}
-            
-            ### 差分
-            https://github.com/${{ github.repository }}/compare/${{ steps.previous.outputs.tag }}...${{ env.version }}
+        run: |
+          echo "Releasing version ${{ env.version }}..."
+          gh release create ${{ env.version }} ${{ env.repo }}-${{ env.version }}.apk line-${{ env.line_ver }}-*-lspatched.apk --title "Release ${{ env.version }}" --notes "## 対応するLINEのバージョン\n${{ env.line_ver }}\n\n### 差分\nhttps://github.com/${{ github.repository }}/compare/${{ steps.previous.outputs.tag }}...${{ env.version }}" ```yaml
