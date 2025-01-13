@@ -87,14 +87,16 @@ jobs:
             ./gradlew assembleDebug --no-daemon --stacktrace
           fi
 
-      - name: LSPatch - arm64-v8a
+      - name: LSPatch for arm64-v8a
         if: github.event.inputs.lspatch == 'true'
         run: |
           apk_url="https://d.apkpure.com/b/XAPK/jp.naver.line.android?versionCode=${{ env.line_ver_code }}&nc=arm64-v8a&sv=28"
           echo "Downloading APK for arm64-v8a..."
-          aria2c --no-conf -x16 -s16 "$apk_url" -o line-${{ env.line_ver }}-arm64-v8a.apk
+          aria2c --no-conf -x16 -s16 -R -m0 -V "$apk_url" -o original-arm64-v8a.apk
           echo "Patching APK for arm64-v8a..."
-          java -jar lspatch.jar line-${{ env.line_ver }}-arm64-v8a.apk -m app/build/outputs/apk/debug/app-debug.apk -l 2 -v
+          java -jar lspatch.jar "original-arm64-v8a.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
+          mv "patched-apk-output.apk" "line-${{ env.line_ver }}-arm64-v8a.apk"
+
 
       - name: LSPatch - armeabi-v7a
         if: github.event.inputs.lspatch == 'true'
