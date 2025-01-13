@@ -88,10 +88,10 @@ jobs:
           fi
 
       - name: LSPatch for arm64-v8a
-        if: github.event.inputs.lspatch == 'true'
+        if: github.event.inputs.l spatch == 'true'
         run: |
           apk_url="https://d.apkpure.com/b/XAPK/jp.naver.line.android?versionCode=${{ env.line_ver_code }}&nc=arm64-v8a&sv=28"
-          cat << EOF > conf https://github.com/JingMatrix/LSPatch/releases/latest/download/lspatch.jar
+          cat << EOF > conf
             out=lspatch.jar
           $apk_url
             out=line-${{ env.line_ver }}-arm64-v8a.apk
@@ -99,13 +99,13 @@ jobs:
           echo "Downloading APK for arm64-v8a..."
           aria2c --no-conf -x16 -s16 -R -m0 -V --async-dns=false -iconf
           echo "Patching LIME for arm64-v8a..."
-          java -jar lspatch.jar "line-${{ env.line_ver }}-arm64-v8a.apk" -m " app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
+          java -jar lspatch.jar "line-${{ env.line_ver }}-arm64-v8a.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
 
       - name: LSPatch for armeabi-v7a
         if: github.event.inputs.lspatch == 'true'
         run: |
           apk_url="https://line-android-universal-download.line-scdn.net/line-14.19.1.apk"
-          cat << EOF > conf https://github.com/JingMatrix/LSPatch/releases/latest/download/lspatch.jar
+          cat << EOF > conf
             out=lspatch.jar
           $apk_url
             out=line-${{ env.line_ver }}-armeabi-v7a.apk
@@ -119,7 +119,7 @@ jobs:
         if: github.event.inputs.lspatch == 'true'
         run: |
           apk_url="https://www.apkmirror.com/apk/line-corporation/line/line-14-19-1-release/line-calls-messages-14-19-1-android-apk-download/download/?key=168fc2e8af120111c350b2943dd89a3841f1546b"
-          cat << EOF > conf https://github.com/JingMatrix/LSPatch/releases/latest/download/lspatch.jar
+          cat << EOF > conf
             out=lspatch.jar
           $apk_url
             out=line-${{ env.line_ver }}-both.apk
@@ -136,6 +136,7 @@ jobs:
           name: LINE-${{ env.line_ver }}@${{ env.commit }}
           path: line-${{ env.line_ver }}-*-lspatched.apk
           if-no-files-found: error
+
       - name: Check for generated APKs
         run: |
           echo "Checking for generated APKs..."
@@ -144,7 +145,7 @@ jobs:
       - name: Release
         if: github.event.inputs.release == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # ここでGH_TOKENを設定
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Releasing version ${{ env.version }}..."
           gh release create ${{ env.version }} \
@@ -152,4 +153,4 @@ jobs:
             line-${{ env.line_ver }}-armeabi-v7a.apk \
             line-${{ env.line_ver }}-both.apk \
             --title "Release ${{ env.version }}" \
-            --notes "## 対応するLINEのバージョン\n${{ env.line_ver }}\n\n### 差分\nhttps://github.com/${{ github.repository }}/compare/${{ steps.previous.outputs.tag }}...${{ env.version }}\n\n### パッチファイル\nline-${{ env.line_ver }}-arm64-v8a.apk\nline-${{ env.line_ver }}-armeabi-v7.apk\nline-${{ env.line_ver }}-both.apk"
+            --notes "## 対応するLINEのバージョン\n${{ env.line_ver }}\n\n### 差分\nhttps://github.com/${{ github.repository }}/compare/${{ steps.previous.outputs.tag }}...${{ env.version }}\n\n### パッチファイル\nline-${{ env.line_ver }}-arm64-v8a.apk\nline-${{ env.line_ver }}-armeabi-v7.apk\nline-${{ env.line_ver }}-both.apk
