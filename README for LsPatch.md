@@ -1,4 +1,29 @@
-## 導入の仕方
+# 通知が届かない場合
+
+## （チャット復元を行う場合）
+
+パッチをしていないLINE（14.3.2をインストール）
+https://www.apkmirror.com/apk/line-corporation/line/line-14-3-2-release/
+
+2、Googleアカウントでログイン <br>
+3、ホームに戻ると一瞬で<br>
+4,パッチを当てたLINE（14.3.2）をインストール（公式LINEは署名が違うのでアンインストール）<br>
+5、パスワード入力（6桁）画面で入力した瞬間にスキップを繰り返すとアカウントを選択<br>
+6、Googleアカウントでログイン<br>
+7,ログイン後にLINE （14.19.1パッチ）をインストールし**更新**するようにしてください。<br>
+
+（LINEapk配布先）
+https://t.me/LsPosedLIMEs/36/83
+
+# チャット復元を行わない場合
+
+パッチ済みの14.3.2でログインをし、パッチ済みの14.19.1に更新
+
+
+（LINEapk配布先）
+https://t.me/LsPosedLIMEs/36/83
+
+## 自分で導入する方法
 
 1. [**JingMatrix LSPatch**](https://github.com/JingMatrix/LSPatch/) をインストール
 
@@ -22,7 +47,7 @@ M apk tool <br>
 https://maximoff.su/apktool/?lang=en
 でapkに変換してからパッチしてください
 
-エラーが発生する場合以下からダウンロード相談<br>
+エラーが発生する場合以下からダウンロードまたは相談<br>
 https://t.me/LsPosedLIMEs/36/83
 
 
