@@ -16,7 +16,9 @@ https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.3.2-apk
 パッチ済みLINE（ローカル）
 https://t.me/LsPosedLIMEs/36/83
 
-チャット復元を行わない場合、4〜9の手順のみで大丈夫です。
+チャット復元を行わない場合
+
+パッチ済みの14.3.2でログインをし、パッチ済みの14.19.1に更新
 
 ## 導入の仕方
 
