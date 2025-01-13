@@ -86,11 +86,11 @@ public class KeepUnread implements IHook {
                         float density = resources.getDisplayMetrics().density;
 
 
-                        float horizontalMarginFactor = getHorizontalMarginFactor(appContext);
-                        int verticalMarginDp = getVerticalMarginDp(appContext);
+                        float keep_unread_horizontalMarginFactor = getkeep_unread_horizontalMarginFactor(appContext);
+                        int keep_unread_verticalMarginDp = getkeep_unread_verticalMarginDp(appContext);
 
-                        int horizontalMarginPx = (int) (smallestWidthDp * horizontalMarginFactor * density);
-                        int verticalMarginPx = (int) (verticalMarginDp * density);
+                        int horizontalMarginPx = (int) (smallestWidthDp * keep_unread_horizontalMarginFactor * density);
+                        int verticalMarginPx = (int) (keep_unread_verticalMarginDp * density);
 
                         RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams(
                                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -137,8 +137,7 @@ public class KeepUnread implements IHook {
                         Map<String, String> settings = new HashMap<>();
 
                         if (!file.exists()) {
-                            // ファイルが存在しない場合は作成
-                            writeDefaultSettingsToExternalFile(context);
+
                         }
 
                         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -155,37 +154,19 @@ public class KeepUnread implements IHook {
                         return settings;
                     }
 
-                    private void writeDefaultSettingsToExternalFile(Context context) {
-                        String fileName = "margin_settings.txt";
-                        File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
-                        if (!dir.exists() && !dir.mkdirs()) {
-                            // ディレクトリ作成に失敗した場合
-                            Log.e("FileError", "Failed to create directory: " + dir.getAbsolutePath());
-                            return;
-                        }
-
-                        File file = new File(dir, fileName);
-                        try (FileOutputStream fos = new FileOutputStream(file)) {
-                            String defaultSettings = "horizontalMarginFactor=0.5\nverticalMarginDp=15";
-                            fos.write(defaultSettings.getBytes());
-                            Log.d("FileSuccess", "File written to: " + file.getAbsolutePath());
-                        } catch (IOException e) {
-                            Log.e("FileError", "Error writing file: " + e.getMessage());
-                        }
-                    }
-                    private float getHorizontalMarginFactor(Context context) {
+                    private float getkeep_unread_horizontalMarginFactor(Context context) {
                         Map<String, String> settings = readSettingsFromExternalFile(context);
                         try {
-                            return Float.parseFloat(settings.getOrDefault("horizontalMarginFactor", "0.5"));
+                            return Float.parseFloat(settings.getOrDefault("keep_unread_horizontalMarginFactor", "0.5"));
                         } catch (NumberFormatException e) {
                             return 0.5f; // エラー時のデフォルト値
                         }
                     }
 
-                    private int getVerticalMarginDp(Context context) {
+                    private int getkeep_unread_verticalMarginDp(Context context) {
                         Map<String, String> settings = readSettingsFromExternalFile(context);
                         try {
-                            return Integer.parseInt(settings.getOrDefault("verticalMarginDp", "15"));
+                            return Integer.parseInt(settings.getOrDefault("keep_unread_verticalMarginDp", "15"));
                         } catch (NumberFormatException e) {
                             return 15; // エラー時のデフォルト値
                         }
@@ -194,7 +175,7 @@ public class KeepUnread implements IHook {
                     private void updateSwitchImage(ImageView imageView, boolean isOn, Context moduleContext) {
 
 
-                        String imageName = isOn ? "switch_on" : "switch_off";
+                        String imageName = isOn ? "unread" : "read";
                         int imageResource = moduleContext.getResources().getIdentifier(imageName, "drawable", "io.github.hiro.lime");
 
 

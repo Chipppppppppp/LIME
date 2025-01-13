@@ -134,9 +134,13 @@
     <string name="MySendMessage">(既読機能)自分以外のメッセージを保存しない</string>
     <string name="MuteTone">(Root用)着信音のミュート</string>
     <string name="edit_margin_settings">KeepUnreadボタンの位置</string>
-    <string name="horizontalMarginFactor">横マージン</string>
-    <string name="vertical">縦マージン</string>
+    <string name="keep_unread_horizontalMarginFactor">横マージン (KeepUnread)</string>
+    <string name="keep_unread_vertical">縦マージン (KeepUnread)</string>
     <string name="DialTone">発信音を無効にする\n</string>
+    <string name="Read_buttom_Chat_horizontalMarginFactor">チャット内の既読ボタン(横マージン)</string>
+    <string name="Read_checker_horizontalMarginFactor">既読者確認ボタン(横マージン)</string>
+    <string name="Read_checker_verticalMarginDp">既読者確認ボタン(縦マージン)</string>
+    <string name="Read_buttom_Chat_verticalMarginDp">チャット内の既読ボタン(縦マージン)</string>
 
 
 </resources>

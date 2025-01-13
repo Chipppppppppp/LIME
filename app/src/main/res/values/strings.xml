@@ -139,9 +139,13 @@
     <string name="TEST">既読 %S</string>
     <string name="MuteTone">(For Root) Mute ringtone</string>
     <string name="edit_margin_settings">KeepUnread button location</string>
-    <string name="horizontalMarginFactor">"Horizontal margin "</string>
-    <string name="vertical">Vertical margin</string>
-    <string name="DialTone">発信音を無効にする\n</string>
+    <string name="keep_unread_horizontalMarginFactor">Horizontal margin (KeepUnread)</string>
+    <string name="keep_unread_vertical">Vertical margin (KeepUnread)</string>
+    <string name="DialTone">Disable dial tone</string>
+    <string name="Read_buttom_Chat_horizontalMarginFactor">Read button in chat (horizontal margin)</string>
+    <string name="Read_buttom_Chat_verticalMarginDp">Read button in chat (vertical margin)</string>
+    <string name="Read_checker_verticalMarginDp">Read button (vertical margin)</string>
+    <string name="Read_checker_horizontalMarginFactor">Read button (horizontal margin)</string>
 
 
 </resources>

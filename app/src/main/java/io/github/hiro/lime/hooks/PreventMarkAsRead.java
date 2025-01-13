@@ -4,18 +4,30 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ToggleButton;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.Map;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -59,31 +71,96 @@ public class PreventMarkAsRead implements IHook {
                     addButton(activity, moduleContext);
                 }
                 private void addButton(Activity activity, Context moduleContext) {
-                    isSendChatCheckedEnabled = readStateFromFile(moduleContext);
 
-                    ToggleButton toggleButton = new ToggleButton(activity);
-                    toggleButton.setTextOn("Read");
-                    toggleButton.setTextOff("UnRead");
-                    toggleButton.setChecked(isSendChatCheckedEnabled); // 初期状態を反映
-                    toggleButton.setBackgroundColor(Color.BLACK);
-                    toggleButton.setTextColor(Color.WHITE);
-                    toggleButton.setTextSize(10);
+                    Map<String, String> settings = readSettingsFromExternalFile(moduleContext);
+
+                    float horizontalMarginFactor = 0.5f;
+                    int verticalMarginDp = 15;
+
+                    if (settings.containsKey("Read_buttom_Chat_horizontalMarginFactor")) {
+                        horizontalMarginFactor = Float.parseFloat(settings.get("Read_buttom_Chat_horizontalMarginFactor"));
+                    }
+                    if (settings.containsKey("Read_buttom_Chat_verticalMarginDp")) {
+                        verticalMarginDp = Integer.parseInt(settings.get("Read_buttom_Chat_verticalMarginDp"));
+                    }
+
+                    ImageView imageView = new ImageView(activity);
+                    updateSwitchImage(imageView, isSendChatCheckedEnabled, moduleContext);
+
                     int width = 150;
                     int height = 100;
                     FrameLayout.LayoutParams frameParams = new FrameLayout.LayoutParams(width, height);
 
-                    frameParams.gravity = Gravity.TOP | Gravity.END;
-                    frameParams.topMargin = 100;
-                    frameParams.rightMargin = 320;
-                    toggleButton.setLayoutParams(frameParams);
 
-                    toggleButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                        isSendChatCheckedEnabled = isChecked;
+                    int horizontalMarginPx = (int) (horizontalMarginFactor * activity.getResources().getDisplayMetrics().widthPixels);
+                    int verticalMarginPx = (int) (verticalMarginDp * activity.getResources().getDisplayMetrics().density);
+                    frameParams.setMargins(horizontalMarginPx, verticalMarginPx, 0, 0);
+                    imageView.setLayoutParams(frameParams);
+
+
+                    imageView.setOnClickListener(v -> {
+                        isSendChatCheckedEnabled = !isSendChatCheckedEnabled;
+                        updateSwitchImage(imageView, isSendChatCheckedEnabled, moduleContext);
                         send_chat_checked_state(moduleContext, isSendChatCheckedEnabled);
                     });
 
                     ViewGroup layout = activity.findViewById(android.R.id.content);
-                    layout.addView(toggleButton);
+                    layout.addView(imageView);
+                }
+                private Map<String, String> readSettingsFromExternalFile(Context context) {
+                    String fileName = "margin_settings.txt";
+                    File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
+                    File file = new File(dir, fileName);
+                    Map<String, String> settings = new HashMap<>();
+
+                    if (!file.exists()) {
+                    }
+
+                    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            String[] parts = line.split("=", 2);
+                            if (parts.length == 2) {
+                                settings.put(parts[0].trim(), parts[1].trim());
+                            }
+                        }
+                    } catch (IOException e) {
+
+                    }
+                    return settings;
+                }
+
+                private Map<String, String> readSettingsFromFile(File file) {
+                    Map<String, String> settings = new HashMap<>();
+                    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            String[] parts = line.split("=", 2);
+                            if (parts.length == 2) {
+                                settings.put(parts[0].trim(), parts[1].trim());
+                            }
+                        }
+                    } catch (IOException e) {
+                        Log.e("FileError", "Error reading file: " + e.getMessage());
+                    }
+                    return settings;
+                }
+                private void updateSwitchImage(ImageView imageView, boolean isOn, Context moduleContext) {
+                    String imageName = isOn ? "switch_on" : "switch_off";
+                    int imageResource = moduleContext.getResources().getIdentifier(imageName, "drawable", "io.github.hiro.lime");
+
+                    if (imageResource != 0) {
+                        Drawable drawable = moduleContext.getResources().getDrawable(imageResource, null);
+                        if (drawable != null) {
+                            drawable = scaleDrawable(drawable, 86, 86); // サイズを調整
+                            imageView.setImageDrawable(drawable);
+                        }
+                    }
+                }
+                private Drawable scaleDrawable(Drawable drawable, int width, int height) {
+                    Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+                    Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+                    return new BitmapDrawable(scaledBitmap);
                 }
 
                 private void send_chat_checked_state (Context context,boolean state){

@@ -128,7 +128,12 @@
     <string name="MySendMessage">（讀取功能）請勿儲存您自己以外的信息</string>
     <string name="MuteTone">(對於 Root) 鈴聲靜音</string>
     <string name="edit_margin_settings">保留未讀按鈕位置</string>
-    <string name="horizontalMarginFactor">水平邊距</string>
-    <string name="vertical">垂直邊距</string>
+    <string name="keep_unread_horizontalMarginFactor">水平邊距 (KeepUnread)</string>
+    <string name="keep_unread_vertical">垂直邊距 (KeepUnread)</string>
+    <string name="DialTone">停用撥號音</string>
+    <string name="Read_buttom_Chat_horizontalMarginFactor">聊天中的閱讀按鈕（水平邊距）</string>
+    <string name="Read_checker_horizontalMarginFactor">讀取確認按鈕（水平邊距）</string>
+    <string name="Read_checker_verticalMarginDp">閱讀確認按鈕（垂直邊距）</string>
+    <string name="Read_buttom_Chat_verticalMarginDp">聊天中的閱讀按鈕（垂直邊距）</string>
 
 </resources>

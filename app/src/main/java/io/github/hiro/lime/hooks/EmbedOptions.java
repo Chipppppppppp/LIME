@@ -18,7 +18,6 @@ import android.os.Process;
 import android.text.InputType;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Base64;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -461,8 +460,12 @@ public class EmbedOptions implements IHook {
         File file = new File(dir, "margin_settings.txt");
 
         // 初期値
-        float horizontalMarginFactor = 0.5f;
-        int verticalMarginDp = 15;
+        float keep_unread_horizontalMarginFactor = 0.5f;
+        int keep_unread_verticalMarginDp = 15;
+        float read_button_horizontalMarginFactor = 0.6f;
+        int read_button_verticalMarginDp = 60;
+        float read_checker_horizontalMarginFactor = 0.5f; // Read_checker ボタンの初期値
+        int read_checker_verticalMarginDp = 60; // Read_checker ボタンの初期値
 
         // ファイルの内容を読み込む
         if (file.exists()) {
@@ -471,10 +474,18 @@ public class EmbedOptions implements IHook {
                 while ((line = reader.readLine()) != null) {
                     String[] parts = line.split("=", 2);
                     if (parts.length == 2) {
-                        if (parts[0].trim().equals("horizontalMarginFactor")) {
-                            horizontalMarginFactor = Float.parseFloat(parts[1].trim());
-                        } else if (parts[0].trim().equals("verticalMarginDp")) {
-                            verticalMarginDp = Integer.parseInt(parts[1].trim());
+                        if (parts[0].trim().equals("keep_unread_horizontalMarginFactor")) {
+                            keep_unread_horizontalMarginFactor = Float.parseFloat(parts[1].trim());
+                        } else if (parts[0].trim().equals("keep_unread_verticalMarginDp")) {
+                            keep_unread_verticalMarginDp = Integer.parseInt(parts[1].trim());
+                        } else if (parts[0].trim().equals("Read_buttom_Chat_horizontalMarginFactor")) {
+                            read_button_horizontalMarginFactor = Float.parseFloat(parts[1].trim());
+                        } else if (parts[0].trim().equals("Read_buttom_Chat_verticalMarginDp")) {
+                            read_button_verticalMarginDp = Integer.parseInt(parts[1].trim());
+                        } else if (parts[0].trim().equals("Read_checker_horizontalMarginFactor")) {
+                            read_checker_horizontalMarginFactor = Float.parseFloat(parts[1].trim());
+                        } else if (parts[0].trim().equals("Read_checker_verticalMarginDp")) {
+                            read_checker_verticalMarginDp = Integer.parseInt(parts[1].trim());
                         }
                     }
                 }
@@ -483,7 +494,13 @@ public class EmbedOptions implements IHook {
         } else {
             // ファイルが存在しない場合は初期値で作成
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                String defaultSettings = "horizontalMarginFactor=0.5\nverticalMarginDp=15";
+                String defaultSettings = "keep_unread_horizontalMarginFactor=0.5\n" +
+                        "keep_unread_verticalMarginDp=15\n" +
+                        "Read_buttom_Chat_horizontalMarginFactor=0.6\n" +
+                        "Read_buttom_Chat_verticalMarginDp=60\n" +
+                        "Read_checker_horizontalMarginFactor=0.5\n" +
+                        "Read_checker_verticalMarginDp=60";
+
                 writer.write(defaultSettings);
             } catch (IOException ignored) {
                 return;
@@ -496,23 +513,63 @@ public class EmbedOptions implements IHook {
         layoutParams.setMargins(16, 16, 16, 16);
 
         TextView horizontalLabel = new TextView(context);
-        horizontalLabel.setText(moduleContext.getResources().getString(R.string.horizontalMarginFactor));
+        horizontalLabel.setText(moduleContext.getResources().getString(R.string.keep_unread_horizontalMarginFactor));
         horizontalLabel.setLayoutParams(layoutParams);
 
         final EditText horizontalInput = new EditText(context);
-        horizontalInput.setText(String.valueOf(horizontalMarginFactor));
+        horizontalInput.setText(String.valueOf(keep_unread_horizontalMarginFactor));
         horizontalInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         horizontalInput.setLayoutParams(layoutParams);
 
         // 縦マージンの入力フィールド
         TextView verticalLabel = new TextView(context);
-        verticalLabel.setText(moduleContext.getResources().getString(R.string.vertical));
+        verticalLabel.setText(moduleContext.getResources().getString(R.string.keep_unread_vertical));
         verticalLabel.setLayoutParams(layoutParams);
 
         final EditText verticalInput = new EditText(context);
-        verticalInput.setText(String.valueOf(verticalMarginDp));
+        verticalInput.setText(String.valueOf(keep_unread_verticalMarginDp));
         verticalInput.setInputType(InputType.TYPE_CLASS_NUMBER);
         verticalInput.setLayoutParams(layoutParams);
+
+        // Read_buttom_Chat_horizontalMarginFactor の入力フィールド
+        TextView readButtonHorizontalLabel = new TextView(context);
+        readButtonHorizontalLabel.setText(moduleContext.getResources().getString(R.string.Read_buttom_Chat_horizontalMarginFactor));
+        readButtonHorizontalLabel.setLayoutParams(layoutParams);
+
+        final EditText readButtonHorizontalInput = new EditText(context);
+        readButtonHorizontalInput.setText(String.valueOf(read_button_horizontalMarginFactor));
+        readButtonHorizontalInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        readButtonHorizontalInput.setLayoutParams(layoutParams);
+
+        // Read_buttom_Chat_verticalMarginDp の入力フィールド
+        TextView readButtonVerticalLabel = new TextView(context);
+        readButtonVerticalLabel.setText(moduleContext.getResources().getString(R.string.Read_buttom_Chat_verticalMarginDp));
+        readButtonVerticalLabel.setLayoutParams(layoutParams);
+
+        final EditText readButtonVerticalInput = new EditText(context);
+        readButtonVerticalInput.setText(String.valueOf(read_button_verticalMarginDp));
+        readButtonVerticalInput.setInputType(InputType.TYPE_CLASS_NUMBER);
+        readButtonVerticalInput.setLayoutParams(layoutParams);
+
+        // Read_checker_horizontalMarginFactor の入力フィールド
+        TextView readCheckerHorizontalLabel = new TextView(context);
+        readCheckerHorizontalLabel.setText(moduleContext.getResources().getString(R.string.Read_checker_horizontalMarginFactor));
+        readCheckerHorizontalLabel.setLayoutParams(layoutParams);
+
+        final EditText readCheckerHorizontalInput = new EditText(context);
+        readCheckerHorizontalInput.setText(String.valueOf(read_checker_horizontalMarginFactor));
+        readCheckerHorizontalInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        readCheckerHorizontalInput.setLayoutParams(layoutParams);
+
+        // Read_checker_verticalMarginDp の入力フィールド
+        TextView readCheckerVerticalLabel = new TextView(context);
+        readCheckerVerticalLabel.setText(moduleContext.getResources().getString(R.string.Read_checker_verticalMarginDp));
+        readCheckerVerticalLabel.setLayoutParams(layoutParams);
+
+        final EditText readCheckerVerticalInput = new EditText(context);
+        readCheckerVerticalInput.setText(String.valueOf(read_checker_verticalMarginDp));
+        readCheckerVerticalInput.setInputType(InputType.TYPE_CLASS_NUMBER);
+        readCheckerVerticalInput.setLayoutParams(layoutParams);
 
         // Save ボタン
         Button saveButton = new Button(context);
@@ -520,13 +577,21 @@ public class EmbedOptions implements IHook {
         saveButton.setLayoutParams(layoutParams);
         saveButton.setOnClickListener(v -> {
             try {
-                float newHorizontalMarginFactor = Float.parseFloat(horizontalInput.getText().toString().trim());
-                int newVerticalMarginDp = Integer.parseInt(verticalInput.getText().toString().trim());
+                float newKeepUnreadHorizontalMarginFactor = Float.parseFloat(horizontalInput.getText().toString().trim());
+                int newKeepUnreadVerticalMarginDp = Integer.parseInt(verticalInput.getText().toString().trim());
+                float newReadButtonHorizontalMarginFactor = Float.parseFloat(readButtonHorizontalInput.getText().toString().trim());
+                int newReadButtonVerticalMarginDp = Integer.parseInt(readButtonVerticalInput.getText().toString().trim());
+                float newReadCheckerHorizontalMarginFactor = Float.parseFloat(readCheckerHorizontalInput.getText().toString().trim());
+                int newReadCheckerVerticalMarginDp = Integer.parseInt(readCheckerVerticalInput.getText().toString().trim());
 
                 // ファイルに保存
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                    writer.write("horizontalMarginFactor=" + newHorizontalMarginFactor + "\n");
-                    writer.write("verticalMarginDp=" + newVerticalMarginDp);
+                    writer.write("keep_unread_horizontalMarginFactor=" + newKeepUnreadHorizontalMarginFactor + "\n");
+                    writer.write("keep_unread_verticalMarginDp=" + newKeepUnreadVerticalMarginDp + "\n");
+                    writer.write("Read_buttom_Chat_horizontalMarginFactor=" + newReadButtonHorizontalMarginFactor + "\n");
+                    writer.write("Read_buttom_Chat_verticalMarginDp=" + newReadButtonVerticalMarginDp + "\n");
+                    writer.write("Read_checker_horizontalMarginFactor=" + newReadCheckerHorizontalMarginFactor + "\n");
+                    writer.write("Read_checker_verticalMarginDp=" + newReadCheckerVerticalMarginDp);
                     Toast.makeText(context, "Settings saved!", Toast.LENGTH_SHORT).show();
                 }
             } catch (NumberFormatException e) {
@@ -546,6 +611,14 @@ public class EmbedOptions implements IHook {
         layout.addView(horizontalInput);
         layout.addView(verticalLabel);
         layout.addView(verticalInput);
+        layout.addView(readButtonHorizontalLabel);
+        layout.addView(readButtonHorizontalInput);
+        layout.addView(readButtonVerticalLabel);
+        layout.addView(readButtonVerticalInput);
+        layout.addView(readCheckerHorizontalLabel);
+        layout.addView(readCheckerHorizontalInput);
+        layout.addView(readCheckerVerticalLabel);
+        layout.addView(readCheckerVerticalInput);
         layout.addView(saveButton);
 
         // ダイアログを作成
@@ -555,7 +628,6 @@ public class EmbedOptions implements IHook {
         builder.setNegativeButton(moduleContext.getResources().getString(R.string.cancel), null);
         builder.show();
     }
-
 
     private void MuteGroups_Button(Context context,Context moduleContext) {
         File dir = context.getFilesDir();
