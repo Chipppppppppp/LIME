@@ -4,7 +4,7 @@
 ## （チャット復元を行う場合）
 
 パッチをしていないLINE（14.3.2をインストール）
-https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.3.2-apk
+https://www.apkmirror.com/apk/line-corporation/line/line-14-3-2-release/
 
 2、Googleアカウントでログイン <br>
 3、ホームに戻ると一瞬で<br>
