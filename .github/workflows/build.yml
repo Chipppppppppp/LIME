@@ -98,8 +98,6 @@ jobs:
         if: github.event.inputs.lspatch == 'true'
         run: |
           cat << EOF > conf
-          https://d.apkpure.com/b/XAPK/jp.naver.line.android?versionCode=141910383&nc=arm64-v8a&sv=28
-          out=line-arm64-v8a.apk
           https://line-android-universal-download.line-scdn.net/line-14.19.1.apk
           out=line-armeabi-v7a.apk
           https://www.apkmirror.com/apk/line-corporation/line/line-14-19-1-release/line-calls-messages-14-19-1-android-apk-download/download/?key=168fc2e8af120111c350b2943dd89a3841f1546b
@@ -108,7 +106,6 @@ jobs:
           echo "Downloading APKs..."
           aria2c --no-conf -x16 -s16 -R -m0 -V --async-dns=false -iconf
           echo "Patching APKs..."
-          java -jar lspatch.jar line-arm64-v8a.apk -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
           java -jar lspatch.jar line-armeabi-v7a.apk -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
           java -jar lspatch.jar line-arm64-v8a+armeabi-v7a.apk -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
 
