@@ -24,7 +24,7 @@ https://t.me/LsPosedLIMEs/36/83
 （LINEapk配布先）
 https://t.me/LsPosedLIMEs/36/83
 
-## 導入の仕方
+## 自分で導入する方
 
 1. [**JingMatrix LSPatch**](https://github.com/JingMatrix/LSPatch/) をインストール
 
