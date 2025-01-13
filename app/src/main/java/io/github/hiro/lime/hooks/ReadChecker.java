@@ -667,10 +667,38 @@ public class ReadChecker implements IHook {
             if (existingCursor.moveToFirst()) {
                 do {
                     String existingUserName = existingCursor.getString(existingCursor.getColumnIndexOrThrow("user_name"));
-                    if (!existingUserName.contains(userName)) {
-                        String updatedUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n") + "-" + userName;
+                    // "-" を除いた名前を比較
+                    String cleanedUserName = userName.replace("-", "").trim();
+                    // 時間部分を正規表現で削除
+                    cleanedUserName = cleanedUserName.replaceAll("\\[.*?\\]", "").trim();
+
+                    // user_name を改行で分割して、すべての名前をチェック
+                    String[] existingNames = existingUserName.split("\n");
+                    boolean alreadyContains = false;
+
+                    XposedBridge.log("Checking user_name for groupId: " + groupId);
+                    XposedBridge.log("Existing user_names: " + existingUserName);
+                    XposedBridge.log("Checking for userName: " + userName);
+
+                    for (String existingName : existingNames) {
+                        // "-" を除いた名前を比較し、時間部分を削除
+                        String cleanedExistingName = existingName.replace("-", "").trim();
+                        cleanedExistingName = cleanedExistingName.replaceAll("\\[.*?\\]", "").trim();
+                        XposedBridge.log("Comparing cleanedExistingName: " + cleanedExistingName + " with cleanedUserName: " + cleanedUserName);
+                        if (cleanedExistingName.equals(cleanedUserName)) {
+                            alreadyContains = true;
+                            XposedBridge.log("user_name already contains: " + cleanedUserName + " for groupId: " + groupId);
+                            break;
+                        }
+                    }
+
+                    // すべての改行で名前を確認して、含まれていない場合のみ更新する
+                    if (!alreadyContains) {
+                        String updatedUserName = existingUserName + (existingUserName.isEmpty() ? "" : "\n")  + userName;
                         limeDatabase.execSQL(updateQuery, new Object[]{updatedUserName, groupId, "%-" + userName + "%"});
                         XposedBridge.log("Updated user_name for groupId: " + groupId + " to include: " + userName);
+                    } else {
+                        XposedBridge.log("Skipping update, user_name already contains: " + userName + " for groupId: " + groupId);
                     }
                 } while (existingCursor.moveToNext());
             }
@@ -680,6 +708,7 @@ public class ReadChecker implements IHook {
             XposedBridge.log("Error inserting or updating record: " + e.getMessage());
         }
     }
+
 
 }
 
