@@ -13,14 +13,15 @@ https://apkcombo.com/ja/line/jp.naver.line.android/download/phone-14.3.2-apk
 6、Googleアカウントでログイン<br>
 7,ログイン後にLINE （14.19.1パッチ）をインストールし**更新**するようにしてください。<br>
 
-パッチ済みLINE（ローカルは不安定な場合があります、統合版を希望の場合はご自身でパッチを行ってください）
+（LINEapk配布先）
 https://t.me/LsPosedLIMEs/36/83
 
 # チャット復元を行わない場合
 
 パッチ済みの14.3.2でログインをし、パッチ済みの14.19.1に更新
 
-パッチ済みLINE（ローカルは不安定な場合があります、統合版を希望の場合はご自身でパッチを行ってください）
+
+（LINEapk配布先）
 https://t.me/LsPosedLIMEs/36/83
 
 ## 導入の仕方
