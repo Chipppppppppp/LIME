@@ -135,7 +135,6 @@
     <string name="Talk_Picture_Back_up_Success">The talk picture folder was successfully backed up</string>
     <string name="RemoveVoiceRecord">Disable microphone button</string>
 
-    <string name="MySendMessage">(Read function) Do not save messages other than your own</string>
     <string name="TEST">既読 %S</string>
     <string name="MuteTone">(For Root) Mute ringtone</string>
     <string name="edit_margin_settings">KeepUnread button location</string>
@@ -146,6 +145,7 @@
     <string name="Read_buttom_Chat_verticalMarginDp">Read button in chat (vertical margin)</string>
     <string name="Read_checker_verticalMarginDp">Read button (vertical margin)</string>
     <string name="Read_checker_horizontalMarginFactor">Read button (horizontal margin)</string>
+    <string name="MySendMessage">(Read function) Do not display messages other than your own</string>
 
 
 </resources>

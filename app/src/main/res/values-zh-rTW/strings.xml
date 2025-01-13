@@ -125,7 +125,7 @@
     <string name="AutomaticBackup">將您訂閱的群組的通知靜音</string>
     <string name="RemoveVoiceRecord">禁用音訊按鈕</string>
 
-    <string name="MySendMessage">（讀取功能）請勿儲存您自己以外的信息</string>
+    <string name="MySendMessage">（閱讀功能）不要顯示您自己的資訊以外的信息</string>
     <string name="MuteTone">(對於 Root) 鈴聲靜音</string>
     <string name="edit_margin_settings">保留未讀按鈕位置</string>
     <string name="keep_unread_horizontalMarginFactor">水平邊距 (KeepUnread)</string>
