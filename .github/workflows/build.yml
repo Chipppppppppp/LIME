@@ -107,7 +107,7 @@ jobs:
           aria2c --no-conf -x16 -s16 -R -m0 -V --async-dns=false -iconf=conf
 
           # Patch arm64-v8a APK
-          echo "Patching APK for arm64-v8a..."
+          echo "Patching APK for arm64-v8a ..."
           java -jar lspatch.jar "original-arm64-v8a.apk" -m "app/build/outputs/apk/debug/app-debug.apk" -l 2 -v
           mv "patched-apk-output.apk" "line-${{ env.line_ver }}-arm64-v8a.apk"
 
@@ -125,13 +125,12 @@ jobs:
           echo "Checking generated APKs..."
           ls -l
 
-
       - name: Upload Patched APKs
         uses: actions/upload-artifact@v4
         if: github.event.inputs.lspatch == 'true'
         with:
           name: LINE-${{ env.line_ver }}@${{ env.commit }}
-          path: line-${{ env.line_ver }}-*-lspatched.apk
+          path: line-${{ env.line_ver }}-*.apk
           if-no-files-found: error
 
       - name: Release the Build
@@ -146,5 +145,3 @@ jobs:
             line-${{ env.line_ver }}-both.apk \
             --title "Release ${{ env.version }}" \
             --notes "## Supported LINE Version\n${{ env.line_ver }}\n\n### Changes\nhttps://github.com/${{ github.repository }}/compare/${{ steps.previous.outputs.tag }}...${{ env.version }}\n\n### Patched Files\nline-${{ env.line_ver }}-arm64-v8a.apk\nline-${{ env.line_ver }}-armeabi-v7a.apk\nline-${{ env.line_ver }}-both.apk"
-
-
