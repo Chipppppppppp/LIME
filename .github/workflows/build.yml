@@ -136,6 +136,10 @@ jobs:
           name: LINE-${{ env.line_ver }}@${{ env.commit }}
           path: line-${{ env.line_ver }}-*-lspatched.apk
           if-no-files-found: error
+      - name: Check for generated APKs
+        run: |
+          echo "Checking for generated APKs..."
+          ls -l line-*.apk
 
       - name: Release
         if: github.event.inputs.release == 'true'
