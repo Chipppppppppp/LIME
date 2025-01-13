@@ -1,5 +1,4 @@
-# 通知が届かないの場合
-
+# 通知が届かない場合
 
 ## （チャット復元を行う場合）
 
@@ -24,7 +23,7 @@ https://t.me/LsPosedLIMEs/36/83
 （LINEapk配布先）
 https://t.me/LsPosedLIMEs/36/83
 
-## 自分で導入する方
+## 自分で導入する方法
 
 1. [**JingMatrix LSPatch**](https://github.com/JingMatrix/LSPatch/) をインストール
 
@@ -48,7 +47,7 @@ M apk tool <br>
 https://maximoff.su/apktool/?lang=en
 でapkに変換してからパッチしてください
 
-エラーが発生する場合以下からダウンロード相談<br>
+エラーが発生する場合以下からダウンロードまたは相談<br>
 https://t.me/LsPosedLIMEs/36/83
 
 
