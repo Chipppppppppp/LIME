@@ -137,7 +137,7 @@
 
     <string name="TEST">既読 %S</string>
     <string name="MuteTone">(For Root) Mute ringtone</string>
-    <string name="edit_margin_settings">KeepUnread button location</string>
+    <string name="edit_margin_settings">button setting</string>
     <string name="keep_unread_horizontalMarginFactor">Horizontal margin (KeepUnread)</string>
     <string name="keep_unread_vertical">Vertical margin (KeepUnread)</string>
     <string name="DialTone">Disable dial tone</string>
@@ -147,5 +147,5 @@
     <string name="Read_checker_horizontalMarginFactor">Read button (horizontal margin)</string>
     <string name="MySendMessage">(Read function) Do not display messages other than your own</string>
 
-
+    <string name="keep_unread_size">keep unread button size</string>
 </resources>

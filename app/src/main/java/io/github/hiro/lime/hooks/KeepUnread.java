@@ -31,7 +31,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -173,20 +175,48 @@ public class KeepUnread implements IHook {
                     }
 
                     private void updateSwitchImage(ImageView imageView, boolean isOn, Context moduleContext) {
+                        String imageName = isOn ? "switch_on.png" : "switch_off.png"; // 拡張子を追加
+                        File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");
 
+                        // ディレクトリが存在しない場合は作成
+                        if (!dir.exists()) {
+                            dir.mkdirs();
+                        }
 
-                        String imageName = isOn ? "unread" : "read";
-                        int imageResource = moduleContext.getResources().getIdentifier(imageName, "drawable", "io.github.hiro.lime");
+                        File imageFile = new File(dir, imageName);
 
+                        // 画像ファイルが存在しない場合はリソースからコピー
+                        if (!imageFile.exists()) {
+                            try (InputStream in = moduleContext.getResources().openRawResource(
+                                    moduleContext.getResources().getIdentifier(imageName.replace(".png", ""), "drawable", "io.github.hiro.lime"));
+                                 OutputStream out = new FileOutputStream(imageFile)) {
+                                byte[] buffer = new byte[1024];
+                                int length;
+                                while ((length = in.read(buffer)) > 0) {
+                                    out.write(buffer, 0, length);
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
 
-                        if (imageResource != 0) {
-                            Drawable drawable = moduleContext.getResources().getDrawable(imageResource, null);
+                        // コピーした画像をImageViewに設定
+                        if (imageFile.exists()) {
+                            Drawable drawable = Drawable.createFromPath(imageFile.getAbsolutePath());
                             if (drawable != null) {
-                                drawable = scaleDrawable(drawable, 86, 86);
+                                Map<String, String> settings = readSettingsFromExternalFile(moduleContext);
+                                float sizeInDp = Float.parseFloat(settings.getOrDefault("keep_unread_size", "60")); // 既定値 38dp
+                                int sizeInPx = dpToPx(moduleContext, sizeInDp); // dp を px に変換
+                                drawable = scaleDrawable(drawable, sizeInPx, sizeInPx);
                                 imageView.setImageDrawable(drawable);
                             }
                         }
                     }
+                    private int dpToPx(Context context, float dp) {
+                        float density = context.getResources().getDisplayMetrics().density;
+                        return Math.round(dp * density);
+                    }
+
 
 
                     private Drawable scaleDrawable(Drawable drawable, int width, int height) {

@@ -464,8 +464,9 @@ public class EmbedOptions implements IHook {
         int keep_unread_verticalMarginDp = 15;
         float read_button_horizontalMarginFactor = 0.6f;
         int read_button_verticalMarginDp = 60;
-        float read_checker_horizontalMarginFactor = 0.5f; // Read_checker ボタンの初期値
-        int read_checker_verticalMarginDp = 60; // Read_checker ボタンの初期値
+        float read_checker_horizontalMarginFactor = 0.5f;
+        int read_checker_verticalMarginDp = 60;
+        float keep_unread_size = 60.0f; // 新しい項目の初期値
 
         // ファイルの内容を読み込む
         if (file.exists()) {
@@ -474,18 +475,28 @@ public class EmbedOptions implements IHook {
                 while ((line = reader.readLine()) != null) {
                     String[] parts = line.split("=", 2);
                     if (parts.length == 2) {
-                        if (parts[0].trim().equals("keep_unread_horizontalMarginFactor")) {
-                            keep_unread_horizontalMarginFactor = Float.parseFloat(parts[1].trim());
-                        } else if (parts[0].trim().equals("keep_unread_verticalMarginDp")) {
-                            keep_unread_verticalMarginDp = Integer.parseInt(parts[1].trim());
-                        } else if (parts[0].trim().equals("Read_buttom_Chat_horizontalMarginFactor")) {
-                            read_button_horizontalMarginFactor = Float.parseFloat(parts[1].trim());
-                        } else if (parts[0].trim().equals("Read_buttom_Chat_verticalMarginDp")) {
-                            read_button_verticalMarginDp = Integer.parseInt(parts[1].trim());
-                        } else if (parts[0].trim().equals("Read_checker_horizontalMarginFactor")) {
-                            read_checker_horizontalMarginFactor = Float.parseFloat(parts[1].trim());
-                        } else if (parts[0].trim().equals("Read_checker_verticalMarginDp")) {
-                            read_checker_verticalMarginDp = Integer.parseInt(parts[1].trim());
+                        switch (parts[0].trim()) {
+                            case "keep_unread_horizontalMarginFactor":
+                                keep_unread_horizontalMarginFactor = Float.parseFloat(parts[1].trim());
+                                break;
+                            case "keep_unread_verticalMarginDp":
+                                keep_unread_verticalMarginDp = Integer.parseInt(parts[1].trim());
+                                break;
+                            case "Read_buttom_Chat_horizontalMarginFactor":
+                                read_button_horizontalMarginFactor = Float.parseFloat(parts[1].trim());
+                                break;
+                            case "Read_buttom_Chat_verticalMarginDp":
+                                read_button_verticalMarginDp = Integer.parseInt(parts[1].trim());
+                                break;
+                            case "Read_checker_horizontalMarginFactor":
+                                read_checker_horizontalMarginFactor = Float.parseFloat(parts[1].trim());
+                                break;
+                            case "Read_checker_verticalMarginDp":
+                                read_checker_verticalMarginDp = Integer.parseInt(parts[1].trim());
+                                break;
+                            case "keep_unread_size":
+                                keep_unread_size = Float.parseFloat(parts[1].trim());
+                                break;
                         }
                     }
                 }
@@ -499,18 +510,30 @@ public class EmbedOptions implements IHook {
                         "Read_buttom_Chat_horizontalMarginFactor=0.6\n" +
                         "Read_buttom_Chat_verticalMarginDp=60\n" +
                         "Read_checker_horizontalMarginFactor=0.5\n" +
-                        "Read_checker_verticalMarginDp=60";
-
+                        "Read_checker_verticalMarginDp=60\n" +
+                        "keep_unread_size=60";
                 writer.write(defaultSettings);
             } catch (IOException ignored) {
                 return;
             }
         }
 
-        // 横マージンの入力フィールド
+        // レイアウト設定
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(16, 16, 16, 16);
+
+
+
+        // "keep_unread_size" 入力フィールド
+        TextView keepUnreadSizeLabel = new TextView(context);
+        keepUnreadSizeLabel.setText(moduleContext.getResources().getString(R.string.keep_unread_size));
+        keepUnreadSizeLabel.setLayoutParams(layoutParams);
+
+        final EditText keepUnreadSizeInput = new EditText(context);
+        keepUnreadSizeInput.setText(String.valueOf(keep_unread_size));
+        keepUnreadSizeInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        keepUnreadSizeInput.setLayoutParams(layoutParams);
 
         TextView horizontalLabel = new TextView(context);
         horizontalLabel.setText(moduleContext.getResources().getString(R.string.keep_unread_horizontalMarginFactor));
@@ -577,6 +600,8 @@ public class EmbedOptions implements IHook {
         saveButton.setLayoutParams(layoutParams);
         saveButton.setOnClickListener(v -> {
             try {
+                // 追加: keep_unread_size の取得
+                int newKeepUnreadSize = Integer.parseInt(keepUnreadSizeInput.getText().toString().trim());
                 float newKeepUnreadHorizontalMarginFactor = Float.parseFloat(horizontalInput.getText().toString().trim());
                 int newKeepUnreadVerticalMarginDp = Integer.parseInt(verticalInput.getText().toString().trim());
                 float newReadButtonHorizontalMarginFactor = Float.parseFloat(readButtonHorizontalInput.getText().toString().trim());
@@ -586,6 +611,8 @@ public class EmbedOptions implements IHook {
 
                 // ファイルに保存
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                    // 追加: keep_unread_size の書き込み
+                    writer.write("keep_unread_size=" + newKeepUnreadSize + "\n");
                     writer.write("keep_unread_horizontalMarginFactor=" + newKeepUnreadHorizontalMarginFactor + "\n");
                     writer.write("keep_unread_verticalMarginDp=" + newKeepUnreadVerticalMarginDp + "\n");
                     writer.write("Read_buttom_Chat_horizontalMarginFactor=" + newReadButtonHorizontalMarginFactor + "\n");
@@ -604,9 +631,11 @@ public class EmbedOptions implements IHook {
             context.startActivity(new Intent().setClassName(Constants.PACKAGE_NAME, "jp.naver.line.android.activity.SplashActivity"));
         });
 
-        // レイアウトを構築
+// レイアウトを構築
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
+        layout.addView(keepUnreadSizeLabel);
+        layout.addView(keepUnreadSizeInput);
         layout.addView(horizontalLabel);
         layout.addView(horizontalInput);
         layout.addView(verticalLabel);
@@ -621,10 +650,14 @@ public class EmbedOptions implements IHook {
         layout.addView(readCheckerVerticalInput);
         layout.addView(saveButton);
 
-        // ダイアログを作成
+// ScrollView を作成
+        ScrollView scrollView = new ScrollView(context);
+        scrollView.addView(layout);
+
+// ダイアログを作成
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(moduleContext.getResources().getString(R.string.edit_margin_settings));
-        builder.setView(layout);
+        builder.setView(scrollView); // ScrollView をダイアログのビューとして設定
         builder.setNegativeButton(moduleContext.getResources().getString(R.string.cancel), null);
         builder.show();
     }

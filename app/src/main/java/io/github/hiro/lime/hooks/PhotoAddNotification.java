@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import de.robv.android.xposed.XC_MethodHook;
@@ -90,8 +91,13 @@ public class PhotoAddNotification implements IHook {
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
 
                         Notification notification = (Notification) param.args[2];
-
-                        if (param.args[0] != null) {
+                        String tag = (String) param.args[0];
+                        int ids = (int) param.args[1];
+                        logAllNotificationDetails("notify", ids, notification, tag);
+                        if (Objects.equals(notification.category, "call")) {
+                            return;
+                        }
+                        if (param.args[0] == null) {
                             param.setResult(null);
                             return;
                         }
@@ -123,11 +129,6 @@ public class PhotoAddNotification implements IHook {
             String originalText = getNotificationText(originalNotification);
             Notification newNotification = originalNotification;
 
-            if (originalText.contains("LINE音声通話を着信中") ||
-                    originalText.contains("Incoming LINE voice call") ||
-                    originalText.contains("LINE語音通話來電中")) {
-                return;
-            }
             if (title == null) {
                 return;
             }
@@ -151,9 +152,7 @@ public class PhotoAddNotification implements IHook {
             }
 
          if (originalText != null && (originalText.contains("写真を送信しました") || originalText.contains("sent a photo") || originalText.contains("傳送了照片"))) {
-                String tag = (String) param.args[0];
-                int ids = (int) param.args[1];
-                logAllNotificationDetails("notify", ids, notification, tag);
+
                 Bundle extras = notification.extras;
 
                 if (extras.containsKey("line.message.id")) {
@@ -394,42 +393,42 @@ public class PhotoAddNotification implements IHook {
 
 
     private void logAllNotificationDetails(String method, int ids, Notification notification, String tag) {
-       //XposedBridge.log(method + " called. ID: " + ids + (tag != null ? ", Tag: " + tag : ""));
-       //XposedBridge.log("Notification Icon: " + notification.icon);
-       //XposedBridge.log("Notification When: " + notification.when);
-       //XposedBridge.log("Notification Flags: " + notification.flags);
-       //XposedBridge.log("Notification Priority: " + notification.priority);
-       //XposedBridge.log("Notification Category: " + notification.category);
+       XposedBridge.log(method + " called. ID: " + ids + (tag != null ? ", Tag: " + tag : ""));
+       XposedBridge.log("Notification Icon: " + notification.icon);
+       XposedBridge.log("Notification When: " + notification.when);
+       XposedBridge.log("Notification Flags: " + notification.flags);
+       XposedBridge.log("Notification Priority: " + notification.priority);
+       XposedBridge.log("Notification Category: " + notification.category);
         if (notification.extras != null) {
             Bundle extras = notification.extras;
-           //XposedBridge.log("Notification Extras:");
+           XposedBridge.log("Notification Extras:");
             for (String key : extras.keySet()) {
                 Object value = extras.get(key);
-               //XposedBridge.log("  " + key + ": " + (value != null ? value.toString() : "null"));
+               XposedBridge.log("  " + key + ": " + (value != null ? value.toString() : "null"));
             }
         } else {
-           //XposedBridge.log("Notification has no extras.");
+           XposedBridge.log("Notification has no extras.");
         }
 
         if (notification.actions != null) {
-           //XposedBridge.log("Notification Actions:");
+           XposedBridge.log("Notification Actions:");
             for (int i = 0; i < notification.actions.length; i++) {
                 Notification.Action action = notification.actions[i];
-               //XposedBridge.log("  Action " + i + ": " +
-//                        "Title=" + action.title +
-//                        ", Intent=" + action.actionIntent);
+               XposedBridge.log("  Action " + i + ": " +
+                        "Title=" + action.title +
+                        ", Intent=" + action.actionIntent);
             }
         } else {
            //XposedBridge.log("No actions found.");
         }
 
         // その他の情報
-       //XposedBridge.log("Notification Visibility: " + notification.visibility);
-       //XposedBridge.log("Notification Color: " + notification.color);
-       //XposedBridge.log("Notification Group: " + notification.getGroup());
-       //XposedBridge.log("Notification SortKey: " + notification.getSortKey());
-       //XposedBridge.log("Notification Sound: " + notification.sound);
-       //XposedBridge.log("Notification Vibrate: " + (notification.vibrate != null ? "Yes" : "No"));
+       XposedBridge.log("Notification Visibility: " + notification.visibility);
+       XposedBridge.log("Notification Color: " + notification.color);
+       XposedBridge.log("Notification Group: " + notification.getGroup());
+       XposedBridge.log("Notification SortKey: " + notification.getSortKey());
+       XposedBridge.log("Notification Sound: " + notification.sound);
+       XposedBridge.log("Notification Vibrate: " + (notification.vibrate != null ? "Yes" : "No"));
     }
 
 

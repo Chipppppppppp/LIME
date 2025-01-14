@@ -133,7 +133,7 @@
     <string name="RemoveVoiceRecord">音声ボタンを無効化</string>
     <string name="MySendMessage">(既読機能)自分以外のメッセージを表示しない</string>
     <string name="MuteTone">(Root用)着信音のミュート</string>
-    <string name="edit_margin_settings">KeepUnreadボタンの位置</string>
+    <string name="edit_margin_settings">ボタンの設定</string>
     <string name="keep_unread_horizontalMarginFactor">横マージン (KeepUnread)</string>
     <string name="keep_unread_vertical">縦マージン (KeepUnread)</string>
     <string name="DialTone">発信音を無効にする\n</string>
