@@ -31,9 +31,9 @@ public class SendMuteMessage implements IHook {
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         final Method valueOf = param.args[0].getClass().getMethod("valueOf", String.class);
                         if (param.args[0].toString().equals("NONE")) {
-                            param.args[0] = valueOf.invoke(param.args[0], "TO_BE_SENT_SILENTLY");
+                            param.args[0] = valueOf.invoke(null, "TO_BE_SENT_SILENTLY");
                         } else {
-                            param.args[0] = valueOf.invoke(param.args[0], "NONE");
+                            param.args[0] = valueOf.invoke(null, "NONE");
                         }
                     }
                 }
