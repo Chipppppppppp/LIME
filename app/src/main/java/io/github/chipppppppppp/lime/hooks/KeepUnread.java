@@ -1,6 +1,7 @@
 package io.github.chipppppppppp.lime.hooks;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -14,6 +15,7 @@ import io.github.chipppppppppp.lime.LimeOptions;
 import io.github.chipppppppppp.lime.R;
 
 public class KeepUnread implements IHook {
+    SharedPreferences prefs;
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
@@ -27,6 +29,9 @@ public class KeepUnread implements IHook {
 
                 ViewGroup viewGroup = (ViewGroup) param.thisObject;
                 Context context = viewGroup.getContext();
+
+                prefs = context.getSharedPreferences(Constants.MODULE_NAME + "-options", Context.MODE_PRIVATE);
+
                 Context moduleContext = context.getApplicationContext().createPackageContext(Constants.MODULE_NAME, Context.CONTEXT_IGNORE_SECURITY);
                 String textKeepUnread = moduleContext.getResources().getString(R.string.switch_keep_unread);
                 RelativeLayout layout = new RelativeLayout(context);
@@ -40,8 +45,9 @@ public class KeepUnread implements IHook {
                         RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 switchParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 
-                switchView.setChecked(false);
+                switchView.setChecked(prefs.getBoolean("keep_unread", false));
                 switchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    prefs.edit().putBoolean("keep_unread", isChecked).apply();
                 });
 
                 layout.addView(switchView, switchParams);
@@ -56,7 +62,9 @@ public class KeepUnread implements IHook {
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        param.setResult(null);
+                        if (prefs != null && prefs.getBoolean("keep_unread", false)) {
+                            param.setResult(null);
+                        }
                     }
                 }
         );
