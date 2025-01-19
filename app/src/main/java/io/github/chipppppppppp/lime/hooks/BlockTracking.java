@@ -32,7 +32,7 @@ public class BlockTracking implements IHook {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         if (requests.contains(param.args[0].toString())) {
-                            param.setResult(null);
+                            param.args[0] = "noop";
                         }
                     }
                 }
