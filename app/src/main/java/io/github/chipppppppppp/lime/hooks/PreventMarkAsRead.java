@@ -17,7 +17,7 @@ public class PreventMarkAsRead implements IHook {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         if (param.args[0].toString().equals("sendChatChecked")) {
-                            param.setResult(null);
+                            param.args[0] = param.args[0].getClass().getMethod("valueOf", String.class).invoke(null, "DUMMY");
                         }
                     }
                 }
