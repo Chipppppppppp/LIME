@@ -69,8 +69,6 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new Archived(),
             new Ringtone(),
             new UnsentCap(),
-            new KeepUnreadLSpatch(),
-            new NaviColor(),
             new RemoveVoiceRecord()
 
     };
