@@ -73,4 +73,5 @@
     <string name="confirm_delete">Really want to delete it?</string>
     <string name="no_backup_found">Nothing backed up</string>
     <string name="no_get_restart_app">Could not get properly.\nPlease restart the app</string>
+    <string name="RemoveVoiceRecord">Disable microphone button</string>
 </resources>

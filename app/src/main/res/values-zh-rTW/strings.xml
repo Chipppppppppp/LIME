@@ -42,4 +42,5 @@
     <string name="button_paste">貼上</string>
     <!-- Menu -->
     <string name="switch_keep_unread">保持未讀</string>
+    <string name="RemoveVoiceRecord">禁用音訊按鈕</string>
 </resources>

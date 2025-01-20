@@ -32,6 +32,7 @@ import io.github.chipppppppppp.lime.hooks.RemoveFlexibleContents;
 import io.github.chipppppppppp.lime.hooks.RemoveIconLabels;
 import io.github.chipppppppppp.lime.hooks.RemoveIcons;
 import io.github.chipppppppppp.lime.hooks.RemoveReplyMute;
+import io.github.chipppppppppp.lime.hooks.RemoveVoiceRecord;
 import io.github.chipppppppppp.lime.hooks.Ringtone;
 import io.github.chipppppppppp.lime.hooks.SendMuteMessage;
 import io.github.chipppppppppp.lime.hooks.SpoofAndroidId;
@@ -71,7 +72,9 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new Ringtone(),
             new UnsentCap(),
             new KeepUnreadLSpatch(),
-            new NaviColor()
+            new NaviColor(),
+            new RemoveVoiceRecord()
+
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
