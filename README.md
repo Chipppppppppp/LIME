@@ -52,7 +52,7 @@ LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に
 
 <details>
 
-設定の「リクエストを改変」、「レスポンスを改変」では、Rhino の JavaScript コードを記述することで自由に通信内容を改変できます。これを利用して新たな機能が実装可能なことを確認済みです (`HOOK_SAMPLE.md`)。
+設定の「リクエストを改変」、「レスポンスを改変」では、Rhino の JavaScript コードを記述することで自由に通信内容を改変できます。これを利用して新たな機能が実装可能なことを確認済みです (`communication_modification_sample.md`)。
 
 あらかじめ `data` という変数が用意されており、以下のプロパティが含まれます。
 
@@ -89,7 +89,8 @@ LI**M**E
 
 ### Root 端末 (Magisk)
 
-1. [**LSPosed**](https://github.com/LSPosed/LSPosed) をインストール
+1. [**LSPosed for JingMatrix**](https://github.com/JingMatrix/LSPatch/releases) をインストール
+
 2. LI**N**E アプリと LI**M**E アプリを両方ともインストール
 3. Google Play ストアの自動アップデートを防ぐために、[**Update Locker**](https://github.com/Xposed-Modules-Repo/ru.mike.updatelocker) や [**Hide My Applist**](https://github.com/Dr-TSNG/Hide-My-Applist) で LINE アプリを指定する  
   [Aurora Store](https://auroraoss.com) の場合はブラックリストを使用

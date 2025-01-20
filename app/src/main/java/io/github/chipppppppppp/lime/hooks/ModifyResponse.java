@@ -29,6 +29,16 @@ public class ModifyResponse implements IHook {
                             Object jsData = Context.javaToJS(new Communication(Communication.Type.RESPONSE, param.args[0].toString(), param.args[1]), scope);
                             ScriptableObject.putProperty(scope, "data", jsData);
                             ScriptableObject.putProperty(scope, "console", Context.javaToJS(new Console(), scope));
+
+                            String utilityScript =
+                                    "function getMember(obj, key) {" +
+                                            "    return obj.getClass().getField(key).get(obj);" +
+                                            "}" +
+                                            "function setMember(obj, key, value) {" +
+                                            "    return obj.getClass().getField(key).set(obj, value);" +
+                                            "}";
+                            ctx.evaluateString(scope, utilityScript, "UtilityScript", 1, null);
+
                             ctx.evaluateString(scope, script, "Script", 1, null);
                         } catch (Exception e) {
                             XposedBridge.log(e.toString());

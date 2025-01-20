@@ -14,10 +14,10 @@ public class Constants {
         }
     }
 
-    static final HookTarget USER_AGENT_HOOK = new HookTarget("C81.c", "h");
-    static final HookTarget WEBVIEW_CLIENT_HOOK = new HookTarget("qH0.m", "onPageFinished");
-    static final HookTarget MUTE_MESSAGE_HOOK = new HookTarget("u71.b", "H");
-    static final HookTarget MARK_AS_READ_HOOK = new HookTarget("JL.e$d", "run");
-    static final HookTarget REQUEST_HOOK = new HookTarget("org.apache.thrift.k", "b");
-    static final HookTarget RESPONSE_HOOK = new HookTarget("org.apache.thrift.k", "a");
+    static final HookTarget USER_AGENT_HOOK = new HookTarget("vf1.c", "j");
+    static final HookTarget WEBVIEW_CLIENT_HOOK = new HookTarget("pN0.l", "onPageFinished");
+    static final HookTarget MUTE_MESSAGE_HOOK = new HookTarget("ne1.b", "H");
+    static final HookTarget MARK_AS_READ_HOOK = new HookTarget("xN.b$d", "run");
+    static final HookTarget REQUEST_HOOK = new HookTarget("org.apache.thrift.l", "b");
+    static final HookTarget RESPONSE_HOOK = new HookTarget("org.apache.thrift.l", "a");
 }

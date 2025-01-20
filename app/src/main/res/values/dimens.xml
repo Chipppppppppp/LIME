@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="main_bnb_button_height">106dp</dimen>
     <dimen name="main_bnb_button_width">80dp</dimen>

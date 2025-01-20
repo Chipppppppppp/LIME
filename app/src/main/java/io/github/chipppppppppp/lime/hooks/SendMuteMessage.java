@@ -1,7 +1,9 @@
 package io.github.chipppppppppp.lime.hooks;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.res.Resources;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -10,10 +12,13 @@ import java.lang.reflect.Method;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
 
 public class SendMuteMessage implements IHook {
+    private static boolean isHandlingHook = false;
+
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (!limeOptions.sendMuteMessage.checked) return;
@@ -26,13 +31,49 @@ public class SendMuteMessage implements IHook {
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         final Method valueOf = param.args[0].getClass().getMethod("valueOf", String.class);
                         if (param.args[0].toString().equals("NONE")) {
-                            param.args[0] = valueOf.invoke(param.args[0], "TO_BE_SENT_SILENTLY");
+                            param.args[0] = valueOf.invoke(null, "TO_BE_SENT_SILENTLY");
                         } else {
-                            param.args[0] = valueOf.invoke(param.args[0], "NONE");
+                            param.args[0] = valueOf.invoke(null, "NONE");
                         }
                     }
                 }
         );
+        XposedHelpers.findAndHookMethod(
+                "android.content.res.Resources",
+                loadPackageParam.classLoader,
+                "getString",
+                int.class,
+                new XC_MethodHook() {
+
+
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        if (isHandlingHook) {
+                            return;
+                        }
+
+                        int resourceId = (int) param.args[0];
+                        Resources resources = (Resources) param.thisObject;
+
+                        try {
+                            isHandlingHook = true;
+
+                            if (resourceId == 2132085513) {
+                                @SuppressLint("ResourceType") String replacement = resources.getString(2132085514);
+                                param.setResult(replacement);
+                            } else if (resourceId == 2132085514) {
+                                @SuppressLint("ResourceType") String replacement = resources.getString(2132085513);
+                                param.setResult(replacement);
+                            }
+                        } finally {
+                            isHandlingHook = false;
+                        }
+                    }
+
+
+                }
+        );
+
 
         XposedBridge.hookAllMethods(
                 ListView.class,

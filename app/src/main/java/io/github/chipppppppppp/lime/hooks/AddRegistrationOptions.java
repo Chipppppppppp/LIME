@@ -97,6 +97,7 @@ public class AddRegistrationOptions implements IHook {
                             }
                         });
 
+                        /*
                         Switch switchAndroidSecondary = new Switch(activity);
                         switchAndroidSecondary.setText(R.string.switch_android_secondary);
                         switchAndroidSecondary.setChecked(prefs.getBoolean("android_secondary", false));
@@ -105,9 +106,10 @@ public class AddRegistrationOptions implements IHook {
                             Toast.makeText(activity.getApplicationContext(), activity.getString(R.string.need_refresh), Toast.LENGTH_SHORT).show();
                             activity.finish();
                         });
+                        */
 
                         linearLayout.addView(switchSpoofAndroidId);
-                        linearLayout.addView(switchAndroidSecondary);
+                        // linearLayout.addView(switchAndroidSecondary);
                         frameLayout.addView(linearLayout);
                         viewGroup.addView(frameLayout);
                     }

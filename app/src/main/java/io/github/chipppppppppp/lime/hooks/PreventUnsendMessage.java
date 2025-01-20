@@ -31,7 +31,7 @@ public class PreventUnsendMessage implements IHook {
                                 Field typeField = operation.getClass().getDeclaredField("c");
                                 Object type = typeField.get(operation);
                                 if (type.toString().equals("NOTIFIED_DESTROY_MESSAGE")) {
-                                    typeField.set(operation, type.getClass().getMethod("valueOf", String.class).invoke(operation, "DUMMY"));
+                                    typeField.set(operation, type.getClass().getMethod("valueOf", String.class).invoke(null, "DUMMY"));
                                 } else if (type.toString().equals("RECEIVE_MESSAGE")) {
                                     Object message = operation.getClass().getDeclaredField("j").get(operation);
                                     Map<String, String> contentMetadata = (Map<String, String>) message.getClass().getDeclaredField("k").get(message);
