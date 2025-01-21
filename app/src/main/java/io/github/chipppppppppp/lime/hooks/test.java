@@ -6,10 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-
-//import androidx.constraintlayout.widget.ConstraintLayout;
-//import androidx.constraintlayout.widget.ConstraintSet;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -26,17 +22,17 @@ import io.github.chipppppppppp.lime.LimeOptions;
 
 public class test implements IHook {
     private boolean isButtonAdded = false; // ボタンが追加されたかどうかを追跡するフラグ
+
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         String packageName = loadPackageParam.packageName;
 
         XposedBridge.log("Hooking package: " + packageName);
-      //  hookOnViewAdded(loadPackageParam.classLoader);
+        //  hookOnViewAdded(loadPackageParam.classLoader);
         hookAllClassesInPackage(loadPackageParam.classLoader, loadPackageParam);
         hookFragmentOnCreateView(loadPackageParam.classLoader);
         //hookChatHistoryActivity(loadPackageParam.classLoader); // ChatHistoryActivityのフック
         //hookLongClickListeners(loadPackageParam.classLoader); // 長押しリスナーのフック
-
 
 
     }

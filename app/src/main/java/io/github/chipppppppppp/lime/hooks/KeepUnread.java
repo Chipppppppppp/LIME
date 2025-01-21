@@ -1,7 +1,6 @@
 package io.github.chipppppppppp.lime.hooks;
 
 import android.content.Context;
-
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.view.View;
@@ -95,6 +94,7 @@ public class KeepUnread implements IHook {
                 }
         );
     }
+
     private void saveStateToFile(Context context, boolean state) {
         String filename = "keep_unread_state.txt";
         try (FileOutputStream fos = context.openFileOutput(filename, Context.MODE_PRIVATE)) {
@@ -103,6 +103,7 @@ public class KeepUnread implements IHook {
             e.printStackTrace();
         }
     }
+
     private boolean readStateFromFile(Context context) {
         String filename = "keep_unread_state.txt";
         try (FileInputStream fis = context.openFileInput(filename)) {

@@ -1,30 +1,24 @@
 package io.github.chipppppppppp.lime.hooks;
 
 
-import static android.content.ContentValues.TAG;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.widget.Toast;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import io.github.chipppppppppp.lime.LimeOptions;
-import io.github.chipppppppppp.lime.hooks.IHook;
 
 public class AutomaticBackup implements IHook {
     @Override
@@ -40,6 +34,7 @@ public class AutomaticBackup implements IHook {
                     }
                 });
     }
+
     private void handleIntent(Intent intent, Object activity) {
         if (intent != null) {
             String text = intent.getStringExtra(Intent.EXTRA_TEXT);
@@ -55,7 +50,6 @@ public class AutomaticBackup implements IHook {
             }
         }
     }
-
 
 
     private void backupChatHistory(Context appContext) {
@@ -76,6 +70,7 @@ public class AutomaticBackup implements IHook {
             showToast(appContext, "自動バックアップ中にエラーが発生しました: " + e.getMessage());
         }
     }
+
     private void backupChatsFolder(Context context) {
         File originalChatsDir = new File(Environment.getExternalStorageDirectory(), "Android/data/jp.naver.line.android/files/chats");
         File backupDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "LimeBackup");

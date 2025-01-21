@@ -18,7 +18,7 @@ public class NaviColor implements IHook {
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-         if (!limeOptions.NaviColor.checked) return;
+        if (!limeOptions.NaviColor.checked) return;
         XposedBridge.hookAllMethods(Activity.class, "onCreate", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
