@@ -98,7 +98,7 @@ public class ReadChecker implements IHook {
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 String chatId = (String) param.getResult();
                 XposedBridge.log(chatId);
-                if (isGroupExists(chatId)) {
+                if (groupExists(chatId)) {
                     shouldHookOnCreate = true;
                     currentGroupId = chatId;
                 } else {
@@ -115,7 +115,7 @@ public class ReadChecker implements IHook {
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 if (shouldHookOnCreate && currentGroupId != null) {
 
-                    if (!isNoGroup(currentGroupId)) {
+                    if (!isNotGroup(currentGroupId)) {
                         Activity activity = (Activity) param.thisObject;
                         addButton(activity);
                     }
@@ -126,7 +126,7 @@ public class ReadChecker implements IHook {
 
     }
 
-    private boolean isGroupExists(String groupId) {
+    private boolean groupExists(String groupId) {
         if (limeDatabase == null) {
             // XposedBridge.log("Database is not initialized.");
             return false;
@@ -142,7 +142,7 @@ public class ReadChecker implements IHook {
         return exists;
     }
 
-    private boolean isNoGroup(String groupId) {
+    private boolean isNotGroup(String groupId) {
         if (limeDatabase == null) {
             // XposedBridge.log("Database is not initialized.");
             return true;
