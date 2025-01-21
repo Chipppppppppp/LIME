@@ -11,8 +11,10 @@
     <string name="video">動画</string>
     <string name="picture">写真</string>
     <string name="reacquisition">再取得</string>
+
     <!-- Xposed API -->
     <string name="xposed_desc">LINE をクリーンに。</string>
+
     <!-- Options -->
     <string name="module_not_enabled_title">エラー</string>
     <string name="module_not_enabled_text">モジュールが有効化されていません！</string>
@@ -37,7 +39,7 @@
     <string name="switch_remove_service_labels">サービスのラベルを削除</string>
     <string name="switch_remove_service">サービスの項目を削除</string>
     <string name="switch_remove_reply_mute">通知から \"通知をオフ\" アクションを削除</string>
-    <string name="switch_redirect_webview">WebView をデフォルトのブラウザにリダイレクト</string>
+    <string name="switch_redirect_webview">WebView を既定のブラウザにリダイレクト</string>
     <string name="switch_open_in_browser">ブラウザアプリで開く</string>
     <string name="switch_prevent_mark_as_read">常に既読をつけない</string>
     <string name="switch_send_mute_message">常にミュートメッセージとして送信</string>
@@ -49,10 +51,12 @@
     <string name="modify_request">リクエストを改変</string>
     <string name="modify_response">レスポンスを改変</string>
     <string name="button_copy">コピー</string>
-    <string name="button_paste">貼り付け</string>
+    <string name="button_paste">ペースト</string>
     <string name="call_tone">着信音を鳴らす（LSPatch用）</string>
+
     <!-- Menu -->
     <string name="switch_keep_unread">未読のまま閲覧</string>
+
     <!-- UNSENT CAP -->
     <string name="backup">バックアップ</string>
     <string name="backup_creation_failed">バックアップの作成に失敗しました</string>
@@ -72,4 +76,9 @@
     <string name="confirm_delete">本当に削除しますか？</string>
     <string name="no_backup_found">何もバックアップされていません</string>
     <string name="no_get_restart_app">正しく取得できませんでした。\nアプリを再起動してください</string>
+
+    <!-- TODO: Fix name -->
+    <string name="switch_KeepUnreadLSpatch">LSPatch の「既読を未読にする」スイッチを表示</string>
+    <string name="NaviColor">ナビの色を黒に設定</string>
+    <string name="ReadChecker">友達の既読を確認</string>
 </resources>

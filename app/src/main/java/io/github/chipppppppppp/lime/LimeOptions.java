@@ -29,37 +29,43 @@ public class LimeOptions {
     public Option openInBrowser = new Option("open_in_browser", R.string.switch_open_in_browser, false);
     public Option preventMarkAsRead = new Option("prevent_mark_as_read", R.string.switch_prevent_mark_as_read, false);
     public Option preventUnsendMessage = new Option("prevent_unsend_message", R.string.switch_prevent_unsend_message, false);
+    public Option archived = new Option("archived_message", R.string.switch_archived, false);
     public Option sendMuteMessage = new Option("mute_message", R.string.switch_send_mute_message, false);
+    public Option ReadChecker = new Option("ReadChecker", R.string.ReadChecker, false);
     public Option removeKeepUnread = new Option("remove_keep_unread", R.string.switch_remove_keep_unread, false);
+    public Option KeepUnreadLSpatch = new Option("Keep_UnreadLSpatch", R.string.switch_KeepUnreadLSpatch, false);
     public Option blockTracking = new Option("block_tracking", R.string.switch_block_tracking, false);
     public Option stopVersionCheck = new Option("stop_version_check", R.string.switch_stop_version_check, false);
     public Option outputCommunication = new Option("output_communication", R.string.switch_output_communication, false);
-    public Option archived = new Option("archived_message", R.string.switch_archived, false);
     public Option callTone = new Option("call_tone", R.string.call_tone, false);
+    public Option NaviColor = new Option("NaviColor", R.string.NaviColor, false);
 
     public Option[] options = {
-            removeVoom,
-            removeWallet,
-            removeNewsOrCall,
-            distributeEvenly,
-            extendClickableArea,
-            removeIconLabels,
-            removeAds,
-            removeRecommendation,
-            removePremiumRecommendation,
-            removeServiceLabels,
-            removeAllServices,
-            removeReplyMute,
-            redirectWebView,
-            openInBrowser,
-            preventMarkAsRead,
-            preventUnsendMessage,
-            archived,
-            sendMuteMessage,
-            removeKeepUnread,
-            blockTracking,
-            stopVersionCheck,
-            outputCommunication,
-            callTone
+        removeVoom,
+        removeWallet,
+        removeNewsOrCall,
+        distributeEvenly,
+        extendClickableArea,
+        removeIconLabels,
+        removeAds,
+        removeRecommendation,
+        removePremiumRecommendation,
+        removeServiceLabels,
+        removeAllServices,
+        removeReplyMute,
+        redirectWebView,
+        openInBrowser,
+        preventMarkAsRead,
+        preventUnsendMessage,
+        archived,
+        sendMuteMessage,
+        ReadChecker,
+        removeKeepUnread,
+        KeepUnreadLSpatch,
+        blockTracking,
+        stopVersionCheck,
+        outputCommunication,
+        callTone,
+        NaviColor
     };
 }
