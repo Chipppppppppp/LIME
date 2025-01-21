@@ -327,9 +327,9 @@ public class ReadChecker implements IHook {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                             String paramValue = param.args[0].toString();
-                            XposedBridge.log(paramValue);
+                            // XposedBridge.log(paramValue);
                             if (appContext == null) {
-                                XposedBridge.log("appContext is null!");
+                                // XposedBridge.log("appContext is null!");
                                 return;
                             }
 
