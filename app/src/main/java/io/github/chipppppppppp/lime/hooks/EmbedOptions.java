@@ -43,6 +43,7 @@ public class EmbedOptions implements IHook {
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         ViewGroup viewGroup = ((ViewGroup) param.args[0]);
                         Context context = viewGroup.getContext();
+                        viewGroup = (ViewGroup) viewGroup.findViewById(context.getResources().getIdentifier("header_root", "id", context.getPackageName()));
                         Utils.addModuleAssetPath(context);
 
                         SharedPreferences prefs = context.getSharedPreferences(Constants.MODULE_NAME + "-options", Context.MODE_PRIVATE);
@@ -370,9 +371,9 @@ public class EmbedOptions implements IHook {
                         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                                 FrameLayout.LayoutParams.WRAP_CONTENT,
                                 FrameLayout.LayoutParams.WRAP_CONTENT);
-                        layoutParams.gravity = Gravity.TOP | Gravity.END;
+                        layoutParams.gravity = Gravity.BOTTOM | Gravity.END;
+                        layoutParams.bottomMargin = Utils.dpToPx(5, context);
                         layoutParams.rightMargin = Utils.dpToPx(10, context);
-                        layoutParams.topMargin = Utils.dpToPx(5, context);
                         button.setLayoutParams(layoutParams);
 
                         button.setOnClickListener(new View.OnClickListener() {
@@ -387,9 +388,12 @@ public class EmbedOptions implements IHook {
                                 ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.MATCH_PARENT));
 
-                        frameLayout.addView(button);
+                        ViewGroup parent = (ViewGroup) viewGroup.getParent();
+                        parent.removeView(viewGroup);
+                        parent.addView(frameLayout);
+                        frameLayout.addView(viewGroup);
 
-                        viewGroup.addView(frameLayout);
+                        frameLayout.addView(button);
                     }
                 }
         );
