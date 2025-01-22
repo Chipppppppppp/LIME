@@ -27,6 +27,7 @@ import io.github.chipppppppppp.lime.hooks.OutputRequest;
 import io.github.chipppppppppp.lime.hooks.OutputResponse;
 import io.github.chipppppppppp.lime.hooks.PreventMarkAsRead;
 import io.github.chipppppppppp.lime.hooks.PreventUnsendMessage;
+import io.github.chipppppppppp.lime.hooks.ReadChecker;
 import io.github.chipppppppppp.lime.hooks.RedirectWebView;
 import io.github.chipppppppppp.lime.hooks.RemoveAds;
 import io.github.chipppppppppp.lime.hooks.RemoveFlexibleContents;
@@ -66,14 +67,15 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
             new SendMuteMessage(),
             new KeepUnread(),
             new BlockTracking(),
-            new ModifyResponse(),
-            new OutputRequest(),
             new Archived(),
             new Ringtone(),
             new UnsentCap(),
             new KeepUnreadLSpatch(),
             new NaviColor(),
-            new AutomaticBackup()
+            new AutomaticBackup(),
+            new ReadChecker(),
+            new ModifyResponse(),
+            new OutputRequest()
     };
 
     public void handleLoadPackage(@NonNull XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
