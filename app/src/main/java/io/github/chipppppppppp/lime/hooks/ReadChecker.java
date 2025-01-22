@@ -97,7 +97,7 @@ public class ReadChecker implements IHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 String chatId = (String) param.getResult();
-                XposedBridge.log(chatId);
+                // XposedBridge.log(chatId);
                 if (groupExists(chatId)) {
                     shouldHookOnCreate = true;
                     currentGroupId = chatId;
