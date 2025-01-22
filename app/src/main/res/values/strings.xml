@@ -81,6 +81,6 @@
 
     <!-- TODO: Fix name -->
     <string name="switch_KeepUnreadLSpatch">Show \"Read as unread\" switch for LSPatch</string>
-    <string name="NaviColor">Set nav color to Black</string>
-    <string name="ReadChecker">Check read friends</string>
+    <string name="NaviColor">Set the navigation bar color to black</string>
+    <string name="ReadChecker">Check the read recipients of the group</string>
 </resources>

@@ -79,6 +79,6 @@
 
     <!-- TODO: Fix name -->
     <string name="switch_KeepUnreadLSpatch">顯示 LSPatch 的「標記為未讀」開關</string>
-    <string name="NaviColor">將導航欄顏色設置為黑色</string>
-    <string name="ReadChecker">檢查已讀好友</string>
+    <string name="NaviColor">將導航列的顏色設為黑色</string>
+    <string name="ReadChecker">確認群組的已讀者</string>
 </resources>

@@ -79,6 +79,6 @@
 
     <!-- TODO: Fix name -->
     <string name="switch_KeepUnreadLSpatch">LSPatch の「既読を未読にする」スイッチを表示</string>
-    <string name="NaviColor">ナビの色を黒に設定</string>
-    <string name="ReadChecker">友達の既読を確認</string>
+    <string name="NaviColor">ナビゲーションバーの色を黒に設定</string>
+    <string name="ReadChecker">グループの既読者を確認</string>
 </resources>
