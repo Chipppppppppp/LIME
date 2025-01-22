@@ -14,6 +14,8 @@ public class BlockTracking implements IHook {
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (!limeOptions.blockTracking.checked) return;
 
+        final Class<?> noopClass = loadPackageParam.classLoader.loadClass(Constants.NOOP_HOOK.className);
+
         XposedBridge.hookAllMethods(
                 loadPackageParam.classLoader.loadClass(Constants.REQUEST_HOOK.className),
                 Constants.REQUEST_HOOK.methodName,
@@ -33,7 +35,7 @@ public class BlockTracking implements IHook {
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         if (requests.contains(param.args[0].toString())) {
                             param.args[0] = "noop";
-                            param.args[1] = null;
+                            param.args[1] = noopClass.getDeclaredConstructor().newInstance();
                         }
                     }
                 }
