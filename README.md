@@ -47,6 +47,7 @@ LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に
 - 常にミュートメッセージとして送信
   - 送信時「通常メッセージ」を選択すれば通知される
 - 非表示にしたチャットが再表示されないようにする
+- トーク履歴の自動バックアップ (参考：https://github.com/areteruhiro/LIMEs/issues/10)
 - トラッキング通信のブロック
   - `noop`, `pushRecvReports`, `reportDeviceState`, `reportLocation`, `reportNetworkStatus` をブロック
 - 通信内容をログに出力
