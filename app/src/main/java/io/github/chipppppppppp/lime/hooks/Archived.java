@@ -59,7 +59,7 @@ public class Archived implements IHook {
                     new XC_MethodHook() {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            String paramValue = param.args[1].toString();
+                            String paramValue = String.valueOf(param.args[1]);
                             String talkId = extractTalkId(paramValue);
                             if (talkId == null) return;
 
