@@ -34,19 +34,22 @@ LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に
 - ボトムバーのアイコンのラベルの削除
 - 広告・おすすめの削除
 - サービスのラベルを削除
+- ナビバーの色を黒に設定
 - 通知の「通知をオフ」アクションを削除
 - WebView を既定のブラウザで開く
 - 常に既読をつけない
+- 友達の既読時間を確認
 - 未読のまま閲覧
-  - トーク画面右上メニューのスイッチから設定できます (スイッチは削除可能)
-- 送信取り消しの拒否
+  - トーク画面右上メニューのスイッチから設定できる (スイッチは削除可能)
+- 送信取り消しの拒否　 
+  - 送信取り消しの内容と時間が保存される 
 - 常にミュートメッセージとして送信
-  - 送信時「通常メッセージ」を選択すれば通知されます
+  - 送信時「通常メッセージ」を選択すれば通知される
 - トラッキング通信のブロック
   - `noop`, `pushRecvReports`, `reportDeviceState`, `reportLocation`, `reportNetworkStatus` をブロック
 - 通信内容をログに出力
 - 通信内容を改変
-  - JavaScript で通信内容を改変できます (後述)
+  - JavaScript で通信内容を改変できる (後述)
 
 ### JavaScript で通信内容を改変する
 
@@ -61,6 +64,13 @@ LINEアプリの <kbd>ホーム</kbd> > <kbd>⚙</kbd> から｢**設定**｣に
 - `value`: 通信内容
 
 ※`data` は、[こちらのクラス](https://github.com/Chipppppppppp/LIME/blob/master/app/src/main/java/io/github/chipppppppppp/lime/hooks/Communication.java) のインスタンスで、「通信内容をログに出力」で確認できます。
+
+`getMember`, `setMember` という関数があらかじめ用意されており、メンバ変数を取得・設定できます (`.` を使用するとメンバ変数ではなくメソッドのほうにアクセスしてしまう可能性があるので、これらの関数を使うほうが無難です)。
+
+```js
+console.log(getMember(data.value, "a")); // メンバ変数 a の値を取得
+setMember(data.value, "a", false); // メンバ変数 a を false に設定
+```
 
 また、`console.log` で `XposedBridge` にログを出力できます。エラーが発生した場合もここに出力されます。
 リクエスト・レスポンスともに、JavaScript は他の処理より早く実行され、「通信内容にログを出力」は最後に実行されます。
