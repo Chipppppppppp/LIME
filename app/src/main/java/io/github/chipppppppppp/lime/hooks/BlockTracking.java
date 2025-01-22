@@ -33,6 +33,7 @@ public class BlockTracking implements IHook {
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         if (requests.contains(param.args[0].toString())) {
                             param.args[0] = "noop";
+                            param.args[1] = null;
                         }
                     }
                 }
