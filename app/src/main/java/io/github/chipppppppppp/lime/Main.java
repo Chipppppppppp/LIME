@@ -1,7 +1,8 @@
 package io.github.chipppppppppp.lime;
 
 import android.content.res.XModuleResources;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
