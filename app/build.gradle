@@ -68,8 +68,7 @@ android {
 
 dependencies {
     compileOnly 'de.robv.android.xposed:api:82'
-    //noinspection GradleCompatible
-    implementation 'com.android.support:customtabs:23.0.0'
+    implementation 'androidx.browser:browser:1.8.0'
     implementation 'org.mozilla:rhino:1.8.0'
 }
 
