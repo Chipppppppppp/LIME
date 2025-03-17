@@ -1,2 +1,3 @@
 -keep class io.github.chipppppppppp.lime.Main
--ignorewarnings
+-keepattributes LineNumberTable,SourceFile
+-renamesourcefileattribute SourceFile

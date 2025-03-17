@@ -22,7 +22,7 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
       discussions: write
@@ -37,11 +37,21 @@ jobs:
             echo "packageId=$(grep namespace app/build.gradle | awk '{print $2}' | tr -d \')"
             echo "versionName=v$(grep versionName app/build.gradle | awk '{print $2}' | tr -d \")"
             echo "versionCode=$(grep versionCode app/build.gradle | awk '{print $2}')"
-            echo "LINE_versionName=$(echo '${{ env.line_ver_code }}' | awk '{print substr($0,1,2)"."substr($0,3,2)"."int(substr($0,5,1))}')"
             echo "LINE_versionCode=$(grep HOOK_TARGET_VERSION app/build.gradle | awk '{print $4}' | tr -d \'\")"
             echo "commit=$(echo ${{ github.sha }} | cut -c-7)"
             echo "repo=$(echo ${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/})"
           } >> $GITHUB_ENV
+
+      - name: Set LINE versionName
+        run: |
+          LINE_versionCode="${{ env.LINE_versionCode }}"
+          major="${LINE_versionCode:0:2}"
+          minor="${LINE_versionCode:2:2}"
+          patch="${LINE_versionCode:4:1}"
+          if (( ${minor} < 10 )); then
+              minor="${LINE_versionCode:2:1}"
+          fi
+          echo "LINE_versionName=$(echo ${major}.${minor}.${patch})" >> $GITHUB_ENV
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -86,10 +96,10 @@ jobs:
             export STORE_PASSWORD="${{ secrets.STORE_PASSWORD }}"
             export KEY_ALIAS="${{ secrets.KEY_ALIAS }}"
             export KEY_PASSWORD="${{ secrets.KEY_PASSWORD }}"
-            ./gradlew assembleRelease --no-daemon --stacktrace
+            ./gradlew --no-daemon --stacktrace --warning-mode=all assembleRelease
             cp -f app/build/outputs/apk/release/app-release.apk ${{ env.repo }}-${{ env.versionName }}.apk
           else
-            ./gradlew assembleDebug --no-daemon --stacktrace
+            ./gradlew --no-daemon --stacktrace --warning-mode=all assembleDebug
           fi
 
       - name: LSPatch

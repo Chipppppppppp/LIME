@@ -5,9 +5,13 @@
 # IntelliJ
 /.idea/
 # Gradle Build
-build/
+/app/build/
+# AGP Lint
+/build/
 # Android Studio Signing APK
 /app/debug/
 /app/release/
 # VS Code
 /.vscode/
+# KeyStore
+/app/release.jks
