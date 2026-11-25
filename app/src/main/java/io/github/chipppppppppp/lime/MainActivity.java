@@ -8,12 +8,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Base64;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -27,6 +29,10 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // targetSdk 35 on Android 15 forces edge-to-edge; hide the overlapping ActionBar so
+        // content is not drawn behind it (the window insets below handle the system bars).
+        if (getActionBar() != null) getActionBar().hide();
 
         SharedPreferences prefs;
         try {
@@ -335,9 +341,34 @@ public class MainActivity extends Activity {
 
         ScrollView scrollView = new ScrollView(this);
         scrollView.addView(layout);
+        applyWindowInsets(scrollView);
 
         ViewGroup rootView = findViewById(android.R.id.content);
         rootView.addView(scrollView);
+    }
+
+    // Pad the given view by the system bar / cutout insets so content is not hidden behind the
+    // status bar or navigation bar under edge-to-edge (enforced on Android 15 with targetSdk 35).
+    private void applyWindowInsets(final View v) {
+        v.setOnApplyWindowInsetsListener((view, insets) -> {
+            int left, top, right, bottom;
+            if (Build.VERSION.SDK_INT >= 30) {
+                android.graphics.Insets bars = insets.getInsets(
+                        WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
+                left = bars.left;
+                top = bars.top;
+                right = bars.right;
+                bottom = bars.bottom;
+            } else {
+                left = insets.getSystemWindowInsetLeft();
+                top = insets.getSystemWindowInsetTop();
+                right = insets.getSystemWindowInsetRight();
+                bottom = insets.getSystemWindowInsetBottom();
+            }
+            view.setPadding(left, top, right, bottom);
+            return insets;
+        });
+        v.requestApplyInsets();
     }
 
     private void showModuleNotEnabledAlert() {

@@ -8,6 +8,7 @@ import de.robv.android.xposed.IXposedHookInitPackageResources;
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XSharedPreferences;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.callbacks.XC_InitPackageResources;
 import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -94,7 +95,13 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
         }
 
         for (IHook hook : hooks) {
-            hook.hook(limeOptions, loadPackageParam);
+            try {
+                hook.hook(limeOptions, loadPackageParam);
+            } catch (Throwable t) {
+                // One hook failing (e.g. an obfuscated target that moved in a newer LINE
+                // release) must not prevent the remaining hooks from installing.
+                XposedBridge.log("LIME: hook " + hook.getClass().getSimpleName() + " failed: " + t);
+            }
         }
     }
 
@@ -103,6 +110,10 @@ public class Main implements IXposedHookLoadPackage, IXposedHookInitPackageResou
         if (!resparam.packageName.equals(Constants.PACKAGE_NAME))
             return;
 
+        if (modulePath == null || !new java.io.File(modulePath).exists()) {
+            XposedBridge.log("LIME: module path unavailable, skipping resource hooks");
+            return;
+        }
         XModuleResources xModuleResources = XModuleResources.createInstance(modulePath, resparam.res);
 
         if (limeOptions.removeIconLabels.checked) {

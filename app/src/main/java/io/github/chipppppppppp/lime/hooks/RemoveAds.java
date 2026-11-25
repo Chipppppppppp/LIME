@@ -3,11 +3,8 @@ package io.github.chipppppppppp.lime.hooks;
 import android.graphics.Canvas;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.webkit.WebView;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -17,11 +14,30 @@ import io.github.chipppppppppp.lime.LimeOptions;
 
 public class RemoveAds implements IHook {
 
-    static final List<String> adClassNames = new ArrayList<>(List.of());
+    static void hookAdFacade(XC_LoadPackage.LoadPackageParam lp) {
+        try {
+            Class<?> impl = lp.classLoader.loadClass("k03.b");
+            XposedBridge.hookAllMethods(impl, "a", new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    param.setResult(null);
+                }
+            });
+            XposedBridge.hookAllMethods(impl, "b", new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    param.setResult(null);
+                }
+            });
+        } catch (Throwable ignored) {
+            // Ad facade not present in this LINE build; other hooks stay intact.
+        }
+    }
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         if (!limeOptions.removeAds.checked) return;
+        hookAdFacade(loadPackageParam);
 
         XposedBridge.hookAllMethods(
                 loadPackageParam.classLoader.loadClass(Constants.REQUEST_HOOK.className),
@@ -30,7 +46,12 @@ public class RemoveAds implements IHook {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                         String request = param.args[0].toString();
-                        if (request.equals("getBanners") || request.equals("getPrefetchableBanners")) {
+                        // LINE 26.x serves home promotional banners through three RPCs; the
+                        // original list covered only the first two, so campaign banners still
+                        // rendered.
+                        if (request.equals("getBanners")
+                                || request.equals("getPrefetchableBanners")
+                                || request.equals("getBannersWithInCampaignPeriod")) {
                             param.setResult(null);
                         }
                     }
@@ -75,35 +96,11 @@ public class RemoveAds implements IHook {
                         View view = (View) param.args[0];
                         String className = view.getClass().getName();
                         if (className.contains("Ad")) {
-                            if (!adClassNames.contains(className)) {
-                                adClassNames.add(className);
-                            }
                             view.setVisibility(View.GONE);
                         }
                     }
                 }
         );
-
-        for (String adClassName : adClassNames) {
-            XposedBridge.hookAllConstructors(
-                    loadPackageParam.classLoader.loadClass(adClassName),
-                    new XC_MethodHook() {
-                        @Override
-                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            View view = (View) param.thisObject;
-                            view.setVisibility(View.GONE);
-                            view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                                @Override
-                                public void onGlobalLayout() {
-                                    if (view.getVisibility() != View.GONE) {
-                                        view.setVisibility(View.GONE);
-                                    }
-                                }
-                            });
-                        }
-                    }
-            );
-        }
 
         XposedHelpers.findAndHookMethod(
                 loadPackageParam.classLoader.loadClass(Constants.WEBVIEW_CLIENT_HOOK.className),

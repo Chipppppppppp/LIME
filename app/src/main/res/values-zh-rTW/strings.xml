@@ -29,6 +29,7 @@
     <string name="switch_unembed_options">不要將選項嵌入 LINE（選項將不會同步）</string>
     <string name="switch_remove_voom">刪除 VOOM 圖示</string>
     <string name="switch_remove_wallet">刪除錢包圖示</string>
+    <string name="switch_remove_commerce">刪除購物分頁</string>
     <string name="switch_remove_news_or_call">刪除新聞或通話圖示</string>
     <string name="switch_distribute_evenly">均勻排列底欄的圖示</string>
     <string name="switch_extend_clickable_area">擴大底欄圖示的可點擊區域</string>

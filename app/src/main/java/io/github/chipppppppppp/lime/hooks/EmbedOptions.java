@@ -41,9 +41,13 @@ public class EmbedOptions implements IHook {
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        ViewGroup viewGroup = ((ViewGroup) param.args[0]);
-                        Context context = viewGroup.getContext();
-                        viewGroup = (ViewGroup) viewGroup.findViewById(context.getResources().getIdentifier("header_root", "id", context.getPackageName()));
+                        ViewGroup root = ((ViewGroup) param.args[0]);
+                        Context context = root.getContext();
+                        // LINE 15+/26 settings screen dropped "header_root"; anchor on the settings
+                        // list (falls back to the fragment root) so the LIME button still appears.
+                        int anchorId = context.getResources().getIdentifier("setting_list", "id", context.getPackageName());
+                        View anchor = anchorId != 0 ? root.findViewById(anchorId) : null;
+                        if (anchor == null) anchor = root;
                         Utils.addModuleAssetPath(context);
 
                         SharedPreferences prefs = context.getSharedPreferences(Constants.MODULE_NAME + "-options", Context.MODE_PRIVATE);
@@ -65,7 +69,14 @@ public class EmbedOptions implements IHook {
                                     LinearLayout.LayoutParams.WRAP_CONTENT);
                             params.topMargin = Utils.dpToPx(20, context);
                             switchView.setLayoutParams(params);
-                            switchView.setText(option.id);
+                            try {
+                                switchView.setText(option.id);
+                            } catch (android.content.res.Resources.NotFoundException e) {
+                                // Module resources are not merged into LINE; if addAssetPath
+                                // failed the label id is unresolvable. Fall back to the option key
+                                // so the row still renders instead of aborting the whole screen.
+                                switchView.setText(name);
+                            }
                             switchView.setChecked(option.checked);
 
                             if (name.equals("redirect_webview")) switchRedirectWebView = switchView;
@@ -120,7 +131,7 @@ public class EmbedOptions implements IHook {
                             buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
 
                             Button copyButton = new Button(context);
-                            copyButton.setText(R.string.button_copy);
+                            copyButton.setText(Utils.str(context, R.string.button_copy, "Copy"));
                             copyButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -133,7 +144,7 @@ public class EmbedOptions implements IHook {
                             buttonLayout.addView(copyButton);
 
                             Button pasteButton = new Button(context);
-                            pasteButton.setText(R.string.button_paste);
+                            pasteButton.setText(Utils.str(context, R.string.button_paste, "Paste"));
                             pasteButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -157,24 +168,24 @@ public class EmbedOptions implements IHook {
                             scrollView.addView(layoutModifyRequest);
 
                             AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                                    .setTitle(R.string.modify_request);
+                                    .setTitle(Utils.str(context, R.string.modify_request, "Modify request"));
 
                             builder.setView(scrollView);
 
-                            builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
+                            builder.setPositiveButton(Utils.str(context, R.string.positive_button, "OK"), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     String code = editText.getText().toString();
                                     if (!code.equals(script)) {
                                         prefs.edit().putString("encoded_js_modify_request", Base64.encodeToString(code.getBytes(), Base64.NO_WRAP)).commit();
-                                        Toast.makeText(context.getApplicationContext(), context.getString(R.string.restarting), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context.getApplicationContext(), Utils.str(context, R.string.restarting, "Restarting"), Toast.LENGTH_SHORT).show();
                                         Process.killProcess(Process.myPid());
                                         context.startActivity(new Intent().setClassName(Constants.PACKAGE_NAME, "jp.naver.line.android.activity.SplashActivity"));
                                     }
                                 }
                             });
 
-                            builder.setNegativeButton(R.string.negative_button, null);
+                            builder.setNegativeButton(Utils.str(context, R.string.negative_button, "Cancel"), null);
 
                             builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                                 @Override
@@ -191,7 +202,7 @@ public class EmbedOptions implements IHook {
                                     LinearLayout.LayoutParams.WRAP_CONTENT);
                             params.topMargin = Utils.dpToPx(20, context);
                             button.setLayoutParams(params);
-                            button.setText(R.string.modify_request);
+                            button.setText(Utils.str(context, R.string.modify_request, "Modify request"));
 
                             button.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -240,7 +251,7 @@ public class EmbedOptions implements IHook {
                             buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
 
                             Button copyButton = new Button(context);
-                            copyButton.setText(R.string.button_copy);
+                            copyButton.setText(Utils.str(context, R.string.button_copy, "Copy"));
                             copyButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -253,7 +264,7 @@ public class EmbedOptions implements IHook {
                             buttonLayout.addView(copyButton);
 
                             Button pasteButton = new Button(context);
-                            pasteButton.setText(R.string.button_paste);
+                            pasteButton.setText(Utils.str(context, R.string.button_paste, "Paste"));
                             pasteButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -277,24 +288,24 @@ public class EmbedOptions implements IHook {
                             scrollView.addView(layoutModifyResponse);
 
                             AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                                    .setTitle(R.string.modify_response);
+                                    .setTitle(Utils.str(context, R.string.modify_response, "Modify response"));
 
                             builder.setView(scrollView);
 
-                            builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
+                            builder.setPositiveButton(Utils.str(context, R.string.positive_button, "OK"), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     String code = editText.getText().toString();
                                     if (!code.equals(script)) {
                                         prefs.edit().putString("encoded_js_modify_response", Base64.encodeToString(code.getBytes(), Base64.NO_WRAP)).commit();
-                                        Toast.makeText(context.getApplicationContext(), context.getString(R.string.restarting), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context.getApplicationContext(), Utils.str(context, R.string.restarting, "Restarting"), Toast.LENGTH_SHORT).show();
                                         Process.killProcess(Process.myPid());
                                         context.startActivity(new Intent().setClassName(Constants.PACKAGE_NAME, "jp.naver.line.android.activity.SplashActivity"));
                                     }
                                 }
                             });
 
-                            builder.setNegativeButton(R.string.negative_button, null);
+                            builder.setNegativeButton(Utils.str(context, R.string.negative_button, "Cancel"), null);
 
                             builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                                 @Override
@@ -311,7 +322,7 @@ public class EmbedOptions implements IHook {
                                     LinearLayout.LayoutParams.WRAP_CONTENT);
                             params.topMargin = Utils.dpToPx(20, context);
                             button.setLayoutParams(params);
-                            button.setText(R.string.modify_response);
+                            button.setText(Utils.str(context, R.string.modify_response, "Modify response"));
 
                             button.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -328,11 +339,11 @@ public class EmbedOptions implements IHook {
                         scrollView.addView(layout);
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                                .setTitle(R.string.options_title);
+                                .setTitle(Utils.str(context, R.string.options_title, "LIME"));
 
                         builder.setView(scrollView);
 
-                        builder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
+                        builder.setPositiveButton(Utils.str(context, R.string.positive_button, "OK"), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 boolean optionChanged = false;
@@ -345,14 +356,14 @@ public class EmbedOptions implements IHook {
                                 }
 
                                 if (optionChanged) {
-                                    Toast.makeText(context.getApplicationContext(), context.getString(R.string.restarting), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context.getApplicationContext(), Utils.str(context, R.string.restarting, "Restarting"), Toast.LENGTH_SHORT).show();
                                     Process.killProcess(Process.myPid());
                                     context.startActivity(new Intent().setClassName(Constants.PACKAGE_NAME, "jp.naver.line.android.activity.SplashActivity"));
                                 }
                             }
                         });
 
-                        builder.setNegativeButton(R.string.negative_button, null);
+                        builder.setNegativeButton(Utils.str(context, R.string.negative_button, "Cancel"), null);
 
                         builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                             @Override
@@ -367,13 +378,22 @@ public class EmbedOptions implements IHook {
                         AlertDialog dialog = builder.create();
 
                         Button button = new Button(context);
-                        button.setText(R.string.app_name);
+                        button.setText(Utils.str(context, R.string.app_name, "LIME"));
                         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                                 FrameLayout.LayoutParams.WRAP_CONTENT,
                                 FrameLayout.LayoutParams.WRAP_CONTENT);
                         layoutParams.gravity = Gravity.BOTTOM | Gravity.END;
-                        layoutParams.bottomMargin = Utils.dpToPx(5, context);
-                        layoutParams.rightMargin = Utils.dpToPx(10, context);
+                        // Keep the button clear of the gesture/navigation area. A fixed 5dp sits
+                        // inside mandatorySystemGestures (bottom 63px here), so the control hugs
+                        // the screen edge and is easy to miss. Add the bottom system inset.
+                        int systemBottomInset = 0;
+                        if (android.os.Build.VERSION.SDK_INT >= 23) {
+                            android.view.WindowInsets insets = root.getRootWindowInsets();
+                            if (insets != null) systemBottomInset = insets.getSystemWindowInsetBottom();
+                        }
+                        layoutParams.bottomMargin = Utils.dpToPx(5, context)
+                                + Math.max(systemBottomInset, Utils.dpToPx(16, context));
+                        layoutParams.rightMargin = Utils.dpToPx(15, context);
                         button.setLayoutParams(layoutParams);
 
                         button.setOnClickListener(new View.OnClickListener() {
@@ -383,17 +403,24 @@ public class EmbedOptions implements IHook {
                             }
                         });
 
-                        FrameLayout frameLayout = new FrameLayout(context);
-                        frameLayout.setLayoutParams(new ViewGroup.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.MATCH_PARENT));
-
-                        ViewGroup parent = (ViewGroup) viewGroup.getParent();
-                        parent.removeView(viewGroup);
-                        parent.addView(frameLayout);
-                        frameLayout.addView(viewGroup);
-
-                        frameLayout.addView(button);
+                        ViewGroup anchorParent = (ViewGroup) anchor.getParent();
+                        if (anchorParent != null) {
+                            // Wrap the anchor in a FrameLayout (reusing its LayoutParams so it keeps
+                            // its slot in the parent) and overlay the LIME button at the bottom-end.
+                            int index = anchorParent.indexOfChild(anchor);
+                            ViewGroup.LayoutParams anchorLp = anchor.getLayoutParams();
+                            anchorParent.removeView(anchor);
+                            FrameLayout frameLayout = new FrameLayout(context);
+                            frameLayout.setLayoutParams(anchorLp);
+                            anchorParent.addView(frameLayout, index);
+                            frameLayout.addView(anchor, new FrameLayout.LayoutParams(
+                                    FrameLayout.LayoutParams.MATCH_PARENT,
+                                    FrameLayout.LayoutParams.MATCH_PARENT));
+                            frameLayout.addView(button);
+                        } else {
+                            // Fallback: no wrappable parent (layout changed again) — add directly.
+                            root.addView(button);
+                        }
                     }
                 }
         );

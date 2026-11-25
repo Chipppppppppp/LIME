@@ -21,7 +21,7 @@ public class RedirectWebView implements IHook {
         if (!limeOptions.redirectWebView.checked) return;
 
         XposedHelpers.findAndHookMethod(
-                loadPackageParam.classLoader.loadClass("jp.naver.line.android.activity.iab.InAppBrowserActivity"),
+                loadPackageParam.classLoader.loadClass(Constants.IN_APP_BROWSER_ACTIVITY),
                 "onResume",
                 new XC_MethodHook() {
                     @Override

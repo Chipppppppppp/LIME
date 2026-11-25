@@ -18,6 +18,8 @@ import io.github.chipppppppppp.lime.LimeOptions;
 
 public class SendMuteMessage implements IHook {
     private static boolean isHandlingHook = false;
+    private static int normalMessageId = 0;
+    private static int silentMessageId = 0;
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
@@ -29,11 +31,20 @@ public class SendMuteMessage implements IHook {
                 new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        final Method valueOf = param.args[0].getClass().getMethod("valueOf", String.class);
-                        if (param.args[0].toString().equals("NONE")) {
-                            param.args[0] = valueOf.invoke(null, "TO_BE_SENT_SILENTLY");
-                        } else {
-                            param.args[0] = valueOf.invoke(null, "NONE");
+                        // Find the mute-type enum argument regardless of its position
+                        for (int i = 0; i < param.args.length; i++) {
+                            Object arg = param.args[i];
+                            if (arg == null) continue;
+                            String name = arg.toString();
+                            if (!name.equals("NONE") && !name.equals("TO_BE_SENT_SILENTLY")) continue;
+                            final Method valueOf;
+                            try {
+                                valueOf = arg.getClass().getMethod("valueOf", String.class);
+                            } catch (NoSuchMethodException e) {
+                                continue;
+                            }
+                            param.args[i] = valueOf.invoke(null, name.equals("NONE") ? "TO_BE_SENT_SILENTLY" : "NONE");
+                            break;
                         }
                     }
                 }
@@ -58,11 +69,18 @@ public class SendMuteMessage implements IHook {
                         try {
                             isHandlingHook = true;
 
-                            if (resourceId == 2132085513) {
-                                @SuppressLint("ResourceType") String replacement = resources.getString(2132085514);
+                            // Swap the "normal message" / "silent message" labels of the send menu
+                            if (normalMessageId == 0 || silentMessageId == 0) {
+                                normalMessageId = resources.getIdentifier("chathistory_send_normal_message", "string", Constants.PACKAGE_NAME);
+                                silentMessageId = resources.getIdentifier("chathistory_send_silent_message", "string", Constants.PACKAGE_NAME);
+                            }
+                            if (normalMessageId == 0 || silentMessageId == 0) return;
+
+                            if (resourceId == normalMessageId) {
+                                @SuppressLint("ResourceType") String replacement = resources.getString(silentMessageId);
                                 param.setResult(replacement);
-                            } else if (resourceId == 2132085514) {
-                                @SuppressLint("ResourceType") String replacement = resources.getString(2132085513);
+                            } else if (resourceId == silentMessageId) {
+                                @SuppressLint("ResourceType") String replacement = resources.getString(normalMessageId);
                                 param.setResult(replacement);
                             }
                         } finally {

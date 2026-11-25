@@ -31,6 +31,7 @@
     <string name="switch_unembed_options">Do not embed options in LINE (options will not be synchronized)</string>
     <string name="switch_remove_voom">Remove the VOOM icon</string>
     <string name="switch_remove_wallet">Remove the wallet icon</string>
+    <string name="switch_remove_commerce">Remove the shopping tab</string>
     <string name="switch_remove_news_or_call">Remove the news or call icon</string>
     <string name="switch_distribute_evenly">Distribute the icons on the bottom bar evenly</string>
     <string name="switch_extend_clickable_area">Extend the clickable area of the icons on the bottom bar</string>
