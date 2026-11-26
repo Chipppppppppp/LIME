@@ -29,6 +29,7 @@
     <string name="switch_unembed_options">設定を LINE に埋め込まない (設定は同期されません)</string>
     <string name="switch_remove_voom">VOOM アイコンを削除</string>
     <string name="switch_remove_wallet">ウォレットアイコンを削除</string>
+    <string name="switch_remove_commerce">ショッピングタブを削除</string>
     <string name="switch_remove_news_or_call">ニュースまたは通話アイコンを削除</string>
     <string name="switch_distribute_evenly">ボトムバーのアイコンを均等に配置</string>
     <string name="switch_extend_clickable_area">ボトムバーのアイコンの当たり判定を拡張する</string>

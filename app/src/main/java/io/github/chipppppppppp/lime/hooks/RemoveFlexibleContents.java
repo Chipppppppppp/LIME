@@ -63,6 +63,22 @@ public class RemoveFlexibleContents implements IHook {
                             layoutParams.height = 0;
                             view.setLayoutParams(layoutParams);
                             view.setVisibility(View.GONE);
+                            // LINE re-shows these containers on a later layout pass; keep them
+                            // collapsed so the row does not reappear.
+                            view.getViewTreeObserver().addOnGlobalLayoutListener(
+                                    new android.view.ViewTreeObserver.OnGlobalLayoutListener() {
+                                        @Override
+                                        public void onGlobalLayout() {
+                                            if (view.getVisibility() != View.GONE) {
+                                                view.setVisibility(View.GONE);
+                                            }
+                                            ViewGroup.LayoutParams p2 = view.getLayoutParams();
+                                            if (p2 != null && p2.height != 0) {
+                                                p2.height = 0;
+                                                view.setLayoutParams(p2);
+                                            }
+                                        }
+                                    });
                         } else if (viewId == notificationResId) {
                             ((View) view.getParent()).setVisibility(View.GONE);
                         }

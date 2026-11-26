@@ -24,7 +24,7 @@ public class AddRegistrationOptions implements IHook {
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         XposedBridge.hookAllMethods(
-                loadPackageParam.classLoader.loadClass("com.linecorp.registration.ui.fragment.WelcomeFragment"),
+                loadPackageParam.classLoader.loadClass(Constants.WELCOME_FRAGMENT),
                 "onViewCreated",
                 new XC_MethodHook() {
                     @Override

@@ -22,6 +22,7 @@ public class KeepUnreadLSpatch implements IHook {
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
+        if (true) return; // disabled: na3.e$d target gone in 26.x
         if (!limeOptions.KeepUnreadLSpatch.checked) return;
 
         XposedBridge.hookAllConstructors(
@@ -75,17 +76,6 @@ public class KeepUnreadLSpatch implements IHook {
                 }
         );
 
-        XposedHelpers.findAndHookMethod(
-                loadPackageParam.classLoader.loadClass(Constants.MARK_AS_READ_HOOK.className),
-                Constants.MARK_AS_READ_HOOK.methodName,
-                new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        if (keepUnread) {
-                            param.setResult(null);
-                        }
-                    }
-                }
-        );
+        // MARK_AS_READ_HOOK (na3.e$d#run) removed in 26.x; hook disabled.
     }
 }

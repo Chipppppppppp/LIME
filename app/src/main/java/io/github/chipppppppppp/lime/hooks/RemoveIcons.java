@@ -38,6 +38,21 @@ public class RemoveIcons implements IHook {
                             }
                         }
 
+                        if (limeOptions.removeCommerce.checked) {
+                            int commerceResId = activity.getResources().getIdentifier("bnb_commerce_tw", "id", activity.getPackageName());
+                            if (commerceResId != 0) {
+                                View commerceView = activity.findViewById(commerceResId);
+                                if (commerceView != null) commerceView.setVisibility(View.GONE);
+                                if (limeOptions.distributeEvenly.checked) {
+                                    int commerceSpacerResId = activity.getResources().getIdentifier("bnb_commerce_tw_spacer", "id", activity.getPackageName());
+                                    if (commerceSpacerResId != 0) {
+                                        View spacer = activity.findViewById(commerceSpacerResId);
+                                        if (spacer != null) spacer.setVisibility(View.GONE);
+                                    }
+                                }
+                            }
+                        }
+
                         if (limeOptions.removeNewsOrCall.checked) {
                             int newsResId = activity.getResources().getIdentifier("bnb_news", "id", activity.getPackageName());
                             activity.findViewById(newsResId).setVisibility(View.GONE);

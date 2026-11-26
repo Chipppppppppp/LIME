@@ -9,11 +9,11 @@ android {
     defaultConfig {
         minSdk 28
         targetSdk 35
-        versionCode 18
-        versionName "1.12.1"
+        versionCode 19
+        versionName "1.13.0"
         multiDexEnabled false
         proguardFiles += 'proguard-rules.pro'
-        buildConfigField 'String', 'HOOK_TARGET_VERSION', '"150000454"'
+        buildConfigField 'String', 'HOOK_TARGET_VERSION', '"261820153"'
     }
 
     signingConfigs {
