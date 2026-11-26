@@ -76,17 +76,6 @@ public class KeepUnreadLSpatch implements IHook {
                 }
         );
 
-        XposedHelpers.findAndHookMethod(
-                loadPackageParam.classLoader.loadClass(Constants.MARK_AS_READ_HOOK.className),
-                Constants.MARK_AS_READ_HOOK.methodName,
-                new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        if (keepUnread) {
-                            param.setResult(null);
-                        }
-                    }
-                }
-        );
+        // MARK_AS_READ_HOOK (na3.e$d#run) removed in 26.x; hook disabled.
     }
 }
