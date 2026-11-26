@@ -1,7 +1,14 @@
 package io.github.chipppppppppp.lime.hooks;
 
+import android.graphics.Canvas;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
+
+
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 
 
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -10,9 +17,23 @@ import io.github.chipppppppppp.lime.LimeOptions;
 public class RemoveAds implements IHook {
 
     static void hookAdFacade(XC_LoadPackage.LoadPackageParam lp) {
-        // Disabled: k03.b a/b turned out to be a thrift client whose receive
-        // method crashes when its paired send is short-circuited. See
-        // LINE26-FAILED-APPROACHES.md.
+        try {
+            Class<?> impl = lp.classLoader.loadClass("k03.b");
+            XposedBridge.hookAllMethods(impl, "a", new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    param.setResult(null);
+                }
+            });
+            XposedBridge.hookAllMethods(impl, "b", new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    param.setResult(null);
+                }
+            });
+        } catch (Throwable ignored) {
+            // Ad facade not present in this LINE build; other hooks stay intact.
+        }
     }
 
     @Override
@@ -20,26 +41,76 @@ public class RemoveAds implements IHook {
         if (!limeOptions.removeAds.checked) return;
         hookAdFacade(loadPackageParam);
 
-        // Block banner RPCs on BOTH sides. Blocking only the send side leaves
-        // the matching receive call with no source and crashes the app
-        // ("receiveSource is not set"), because LINE pairs every send with a
-        // receive. Block both so neither side runs.
-        // RPC blocking for banner ads is disabled: blocking the send side
-        // ("getBanners" etc.) leaves the paired receive call with no source and
-        // crashes the app ("receiveSource is not set"). The home banner is
-        // Compose-rendered and cannot be hidden at the View layer either, so
-        // the Leger ad fetch is left untouched here. See
-        // LINE26-FAILED-APPROACHES.md.
+        XposedHelpers.findAndHookMethod(
+                loadPackageParam.classLoader.loadClass("com.linecorp.line.admolin.smartch.v2.view.SmartChannelViewLayout"),
+                "dispatchDraw",
+                Canvas.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        ((View) ((View) param.thisObject).getParent()).setVisibility(View.GONE);
+                    }
+                }
+        );
 
-        // SmartChannelViewLayout hook disabled: it touches the parent view and
-        // may NPE if the layout is not attached. Re-enable only after confirming
-        // it does not crash. See LINE26-FAILED-APPROACHES.md.
+        XposedHelpers.findAndHookMethod(
+                loadPackageParam.classLoader.loadClass("com.linecorp.line.ladsdk.ui.common.view.lifecycle.LadAdView"),
+                "onAttachedToWindow",
+                new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        View view = (View) ((View) param.thisObject).getParent().getParent();
+                        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+                        layoutParams.height = 0;
+                        view.setLayoutParams(layoutParams);
+                        view.setVisibility(View.GONE);
+                    }
+                }
+        );
 
-        // LadAdView hook disabled: getParent().getParent() may be null and NPE.
-        // Re-enable only after verifying no crash.
+        XposedHelpers.findAndHookMethod(
+                ViewGroup.class,
+                "addView",
+                View.class,
+                ViewGroup.LayoutParams.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        View view = (View) param.args[0];
+                        String className = view.getClass().getName();
+                        if (className.contains("Ad")) {
+                            view.setVisibility(View.GONE);
+                        }
+                    }
+                }
+        );
 
-        // addView Ad-hiding hook disabled for crash isolation.
-
-        // WebView client hook disabled for crash isolation.
+        XposedHelpers.findAndHookMethod(
+                loadPackageParam.classLoader.loadClass(Constants.WEBVIEW_CLIENT_HOOK.className),
+                Constants.WEBVIEW_CLIENT_HOOK.methodName,
+                WebView.class,
+                String.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        WebView webView = (WebView) param.args[0];
+                        webView.evaluateJavascript("(() => {\n" +
+                                "    const observer = new MutationObserver(mutations => {\n" +
+                                "        mutations.forEach(mutation => {\n" +
+                                "            mutation.addedNodes.forEach(node => {\n" +
+                                "                if (!node.querySelectorAll) return;\n" +
+                                "                node.querySelectorAll('.ad_wrap, .lc__ad_root, .lc__ad_element').forEach(ad => ad.remove());\n" +
+                                "            });\n" +
+                                "        });\n" +
+                                "    });\n" +
+                                "    const config = {\n" +
+                                "        childList: true,\n" +
+                                "        subtree: true\n" +
+                                "    };\n" +
+                                "    observer.observe(document.body, config);\n" +
+                                "})();", null);
+                    }
+                }
+        );
     }
 }
