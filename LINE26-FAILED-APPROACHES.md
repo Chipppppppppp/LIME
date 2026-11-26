@@ -144,3 +144,13 @@ Not attempted here, recorded so the option is not lost:
    the banner as the list moves.
 
 Both need composition-level work. Neither is a view hook, an id, or a constant.
+
+## Network-level blocking
+
+The ad data comes via thrift RPC (`getBanners` / `getPrefetchableBanners` /
+`getBannersWithInCampaignPeriod`), not a separate HTTP domain. The only
+ad-related HTTP endpoint found is `uts-front.line-apps.com` (telemetry), which
+cannot be blocked without breaking LINE functionality.
+
+Blocking the thrift RPC itself crashes the app ("receiveSource is not set"),
+so network-level blocking is not viable either.
