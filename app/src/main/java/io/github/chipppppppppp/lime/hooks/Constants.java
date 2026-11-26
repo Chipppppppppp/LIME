@@ -23,7 +23,8 @@ public class Constants {
     static final HookTarget WEBVIEW_CLIENT_HOOK = new HookTarget("zw2.m0", "onPageFinished");
     // hs8.o1#a(cp8.b metadata, lm8.f muteType): writes the mute flag into outgoing message metadata
     static final HookTarget MUTE_MESSAGE_HOOK = new HookTarget("hs8.o1", "a");
-    // na3.e$d#run(): Runnable that sends sendChatChecked for a chat
+    // PreventMarkAsRead hooks the thrift send method (REQUEST_HOOK) instead;
+    // the old na3.e$d#run target no longer exists in 26.x.
     static final HookTarget MARK_AS_READ_HOOK = new HookTarget("na3.e$d", "run");
     // MainChatDataManager$getUnarchivedChatDataListOrderedByLastMessage$2#invokeSuspend
     static final HookTarget ARCHIVE_HOOK = new HookTarget("ei3.c1", "invokeSuspend");

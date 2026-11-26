@@ -22,6 +22,7 @@ public class KeepUnreadLSpatch implements IHook {
 
     @Override
     public void hook(LimeOptions limeOptions, XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
+        if (true) return; // disabled: na3.e$d target gone in 26.x
         if (!limeOptions.KeepUnreadLSpatch.checked) return;
 
         XposedBridge.hookAllConstructors(
